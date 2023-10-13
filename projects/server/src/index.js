@@ -1,6 +1,7 @@
 require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
+const bearerToken = require("express-bearer-token")
 const { join } = require("path");
 
 const PORT = process.env.PORT || 8000;
@@ -9,12 +10,13 @@ app.use(
   cors({
     origin: [
       process.env.WHITELISTED_DOMAIN &&
-        process.env.WHITELISTED_DOMAIN.split(","),
+      process.env.WHITELISTED_DOMAIN.split(","),
     ],
   })
 );
 
 app.use(express.json());
+app.use(bearerToken())
 
 //#region API ROUTES
 

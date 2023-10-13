@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>Nexocomp - Activate your account!</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+    </head>
+    <body style="font-family: 'Inter', sans-serif; margin: 0; padding: 0">
+        <div style="background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradient 2s ease infinite">
+            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                    <td style="padding: 20px">
+                        <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                                <td align="center" style="background-color: #f3f4f6">
+                                    <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                        <tr>
+                                            <td align="center" style="padding: 20px">
+                                                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 720px">
+                                                    <tr>
+                                                        <td align="center" style="background-color: #ffffff; border-radius: 5px; padding: 20px">
+                                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                                                <tr>
+                                                                    <td align="center">
+                                                                        <img src="./festivent-logo-black.png" alt="" style="max-width: 100%; height: auto; display: block" />
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                                                <tr>
+                                                                    <td style="text-align: center; padding: 20px">
+                                                                        <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 10px">Welcome, {{fullname}}!</h1>
+                                                                        <p style="font-size: 16px; font-weight: 500">
+                                                                            We're excited to have you get started. <br />
+                                                                            First, you need to confirm your account. Just press the button below.
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                                                <tr>
+                                                                    <td align="center" style="padding: 20px">
+                                                                        <a
+                                                                            href="http://localhost:3000/verified/{{token1}}"
+                                                                            style="
+                                                                                background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+                                                                                background-size: 400% 400%;
+                                                                                padding: 10px 20px;
+                                                                                border-radius: 5px;
+                                                                                text-decoration: none;
+                                                                                display: inline-block;
+                                                                                transition: transform 0.15s;
+                                                                            "
+                                                                        >
+                                                                            <span style="font-weight: 500; color: #ffffff; font-size: 18px">Confirm Account</span>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                                                <tr>
+                                                                    <td style="text-align: center; padding: 20px">
+                                                                        <h2 style="font-weight: bold; font-size: 28px">{{verification_code}}</h2>
+                                                                        <p style="font-weight: 500; font-size: 16px">
+                                                                            If the button doesn't work, copy the code above and
+                                                                            <a href="http://localhost:3000/confirm/{{token2}}" style="color: #3b82f6; text-decoration: underline">confirm with code.</a>
+                                                                        </p>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

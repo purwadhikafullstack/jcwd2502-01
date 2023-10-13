@@ -1,7 +1,7 @@
 import axios from "axios";
-import logo from "./logo.svg";
 import "./App.css";
 import { useEffect, useState } from "react";
+import NexoLogo from "../../client/src/assets/logo/nexocomp_logo_dark.svg"
 
 function App() {
   const [message, setMessage] = useState("");
@@ -14,10 +14,11 @@ function App() {
       setMessage(data?.message || "");
     })();
   }, []);
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={NexoLogo} className="App-logo w-[500px]" alt="logo" />
         {message}
       </header>
     </div>
