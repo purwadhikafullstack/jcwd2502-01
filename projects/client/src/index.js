@@ -9,11 +9,11 @@ import { NextUIProvider } from "@nextui-org/react";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <NextUIProvider>
-      <App />
-    </NextUIProvider>
-  </BrowserRouter>
+	<BrowserRouter>
+		<NextUIProvider>
+			<App />
+		</NextUIProvider>
+	</BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
