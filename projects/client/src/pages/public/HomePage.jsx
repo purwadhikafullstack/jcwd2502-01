@@ -1,8 +1,16 @@
-import React from "react";
+import GearCategories from "../../components/sections/GearCategories";
+import PromotionBanner from "../../components/sections/PromotionBanner";
+import BestSellingGears from "../../components/sections/BestSellingGears";
 
 const HomePage = () => {
 	return (
-		<div>HomePage</div>
+		<>
+			<main className="main-home-page bg-background">
+				<PromotionBanner />
+				<BestSellingGears />
+				<GearCategories />
+			</main>
+		</>
 	)
 }
 
