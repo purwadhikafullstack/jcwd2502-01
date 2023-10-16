@@ -8,7 +8,7 @@ const Footer = () => {
 	return (
 		<>
 			<footer className={`footer border-t-2 border-t-neutral-800 bg-background w-full`}>
-				<div className="my-container px-6">
+				<div className="my-container-mobile px-6">
 					<div className="footer-body md:flex block pt-12">
 						<div className="download-column mb-2 w-full text-left">
 							<h3 className="font-bold text-lg md:mb-4">Download the app</h3>

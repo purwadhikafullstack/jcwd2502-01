@@ -1,13 +1,13 @@
 import React from 'react'
 
-import SwiperTopDeals from '../layouts/SwiperTopDeals'
+import SwiperBestSellingGears from '../layouts/SwiperBestSellingGears'
 
 const BestSellingGears = () => {
 	return (
 		<>
-			<section className="top-deals px-8 py-6 my-container bg-neutral-50 dark:bg-neutral-900 rounded-[20px] relative">
+			<section className="top-deals my-container-mobile rounded-[20px] relative">
 				<h2 className='font-bold text-headline-sm mb-4'>Best Selling Gears!</h2>
-				<SwiperTopDeals />
+				<SwiperBestSellingGears />
 			</section >
 		</>
 	)
