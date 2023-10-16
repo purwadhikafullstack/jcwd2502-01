@@ -49,20 +49,12 @@ const NavigationBar = () => {
 				</NavbarContent>
 				<NavbarContent justify="end" className='gap-2'>
 					<NavbarItem className="hidden lg:flex">
-<<<<<<< HEAD
-						<Button as={Link} className='bg-accent-500 text-white font-medium hover' href="#">
-=======
 						<Button as={Link} className='bg-secondary-500 text-black font-medium hover' href="#">
->>>>>>> 8ac879f3bba1277d3b209059f766ee026b6d7278
 							Login
 						</Button>
 					</NavbarItem>
 					<NavbarItem>
-<<<<<<< HEAD
-						<Button as={Link} className='bg-primary-500 text-accent-500 font-medium hover' href="#" >
-=======
 						<Button as={Link} className='bg-primary-500 text-black font-medium hover' href="#" >
->>>>>>> 8ac879f3bba1277d3b209059f766ee026b6d7278
 							Sign Up
 						</Button>
 					</NavbarItem>
