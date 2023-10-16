@@ -1,4 +1,5 @@
 require("dotenv/config");
+const db = require("./models")
 const express = require("express");
 const cors = require("cors");
 const bearerToken = require("express-bearer-token")
@@ -71,9 +72,9 @@ app.listen(PORT, (err) => {
 	if (err) {
 		console.log(`ERROR: ${err}`);
 	} else {
-		console.log(`APP RUNNING at ${PORT} ✅`);
 		db.sequelize.sync({
 			alter:true,
 		})
+		console.log(`APP RUNNING at ${PORT} ✅`);
 	}
 });
