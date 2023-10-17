@@ -15,7 +15,7 @@ const HomePage = () => {
 				<FooterPromotion />
 			</main>
 		</>
-	)
-}
+	);
+};
 
 export default HomePage;
