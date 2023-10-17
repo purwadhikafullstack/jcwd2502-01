@@ -20,9 +20,10 @@ app.use(express.json());
 app.use(bearerToken());
 
 //#region API ROUTES
-
+const { productsRouter } = require("./routers");
 // ===========================
 // NOTE : Add your routes here
+app.use("/api/products", productsRouter);
 
 app.get("/api", (req, res) => {
 	res.send(`Hello, this is my API`);
@@ -46,15 +47,25 @@ app.use((req, res, next) => {
 });
 
 // error
-app.use((err, req, res, next) => {
-	if (req.path.includes("/api/")) {
-		console.error("Error : ", err.stack);
-		res.status(500).send("Error !");
-	} else {
-		next();
-	}
-});
+// app.use((err, req, res, next) => {
+// 	if (req.path.includes("/api/")) {
+// 		console.error("Error : ", err.stack);
+// 		res.status(500).send("Error !");
+// 	} else {
+// 		next();
+// 	}
+// });
 
+app.use((err, req, res, next) => {
+	const statusCode = err.status || 500;
+	const statusMessage = err.message || "Error!";
+
+	return res.status(statusCode).send({
+		isError: true,
+		message: statusMessage,
+		data: null,
+	});
+});
 //#endregion
 
 //#region CLIENT
@@ -71,10 +82,10 @@ app.get("*", (req, res) => {
 app.listen(PORT, (err) => {
 	if (err) {
 		console.log(`ERROR: ${err}`);
-		// } else {
-		// 	db.sequelize.sync({
-		// 		alter: true,
-		// 	});
+	} else {
+		// db.sequelize.sync({
+		// 	alter:true,
+		// })
 		console.log(`APP RUNNING at ${PORT} ✅`);
 	}
 });
