@@ -73,7 +73,7 @@ app.listen(PORT, (err) => {
 		console.log(`ERROR: ${err}`);
 	} else {
 		db.sequelize.sync({
-			alter:true,
+			alter: true,
 		})
 		console.log(`APP RUNNING at ${PORT} ✅`);
 	}
