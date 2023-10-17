@@ -13,7 +13,7 @@ app.use(
 			process.env.WHITELISTED_DOMAIN &&
 				process.env.WHITELISTED_DOMAIN.split(","),
 		],
-	})
+	}),
 );
 
 app.use(express.json());

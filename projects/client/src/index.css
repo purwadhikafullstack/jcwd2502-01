@@ -2,114 +2,123 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 
 @layer base {
-    :root {
-      --text: #101010;
-      
-      --background: #ffffff;
-      
-      --primary-50: #E9FFE5;
-      --primary-100: #CFFFC7;
-      --primary-200: #A4FF94;
-      --primary-300: #74FF5C;
-      --primary-400: #49FF29;
-      --primary-500: #24EF00;
-      --primary-600: #1DC200;
-      --primary-700: #158F00;
-      --primary-800: #0F6100;
-      --primary-900: #072E00;
-      --primary-950: #041900;
-      
-      --secondary-50: #EAEAF1;
-      --secondary-100: #D3D1E0;
-      --secondary-200: #AAA6C4;
-      --secondary-300: #7E79A5;
-      --secondary-400: #5B5680;
-      --secondary-500: #3A3752;
-      --secondary-600: #302D43;
-      --secondary-700: #232131;
-      --secondary-800: #181722;
-      --secondary-900: #0B0A0F;
-      --secondary-950: #060609;
+  :root {
+    --text: #101010;
 
-      --accent-50: #f0f0f5;
-      --accent-100: #E4FBF7;
-      --accent-200: #C5F6EE;
-      --accent-300: #ABF2E6;
-      --accent-400: #90EEDF;
-      --accent-500: #73EAD7;
-      --accent-600: #37E1C5;
-      --accent-700: #1BB69C;
-      --accent-800: #127867;
-      --accent-900: #093E35;
-      --accent-950: #051F1B;
-    }
-    .dark {
-      --text: #ffffff;
-      
-      --background: #101010;
-      
-      --primary-50: #E9FFE5;
-      --primary-100: #CFFFC7;
-      --primary-200: #A4FF94;
-      --primary-300: #74FF5C;
-      --primary-400: #49FF29;
-      --primary-500: #24EF00;
-      --primary-600: #1DC200;
-      --primary-700: #158F00;
-      --primary-800: #0F6100;
-      --primary-900: #072E00;
-      --primary-950: #041900;
-      
-      --secondary-50: #EAEAF1;
-      --secondary-100: #D3D1E0;
-      --secondary-200: #AAA6C4;
-      --secondary-300: #7E79A5;
-      --secondary-400: #5B5680;
-      --secondary-500: #3A3752;
-      --secondary-600: #302D43;
-      --secondary-700: #232131;
-      --secondary-800: #181722;
-      --secondary-900: #0B0A0F;
-      --secondary-950: #060609;
-      
-      --accent-50: #f0f0f5;
-      --accent-100: #E4FBF7;
-      --accent-200: #C5F6EE;
-      --accent-300: #ABF2E6;
-      --accent-400: #90EEDF;
-      --accent-500: #73EAD7;
-      --accent-600: #37E1C5;
-      --accent-700: #1BB69C;
-      --accent-800: #127867;
-      --accent-900: #093E35;
-      --accent-950: #051F1B;
-    }
+    --background: #ffffff;
+
+    --primary-50: #e9ffe5;
+    --primary-100: #cfffc7;
+    --primary-200: #a4ff94;
+    --primary-300: #74ff5c;
+    --primary-400: #49ff29;
+    --primary-500: #24ef00;
+    --primary-600: #1dc200;
+    --primary-700: #158f00;
+    --primary-800: #0f6100;
+    --primary-900: #072e00;
+    --primary-950: #041900;
+
+    --secondary-50: #eaeaf1;
+    --secondary-100: #d3d1e0;
+    --secondary-200: #aaa6c4;
+    --secondary-300: #7e79a5;
+    --secondary-400: #5b5680;
+    --secondary-500: #3a3752;
+    --secondary-600: #302d43;
+    --secondary-700: #232131;
+    --secondary-800: #181722;
+    --secondary-900: #0b0a0f;
+    --secondary-950: #060609;
+
+    --accent-50: #f0f0f5;
+    --accent-100: #e4fbf7;
+    --accent-200: #c5f6ee;
+    --accent-300: #abf2e6;
+    --accent-400: #90eedf;
+    --accent-500: #73ead7;
+    --accent-600: #37e1c5;
+    --accent-700: #1bb69c;
+    --accent-800: #127867;
+    --accent-900: #093e35;
+    --accent-950: #051f1b;
   }
-  
+  .dark {
+    --text: #ffffff;
+
+    --background: #101010;
+
+    --primary-50: #e9ffe5;
+    --primary-100: #cfffc7;
+    --primary-200: #a4ff94;
+    --primary-300: #74ff5c;
+    --primary-400: #49ff29;
+    --primary-500: #24ef00;
+    --primary-600: #1dc200;
+    --primary-700: #158f00;
+    --primary-800: #0f6100;
+    --primary-900: #072e00;
+    --primary-950: #041900;
+
+    --secondary-50: #eaeaf1;
+    --secondary-100: #d3d1e0;
+    --secondary-200: #aaa6c4;
+    --secondary-300: #7e79a5;
+    --secondary-400: #5b5680;
+    --secondary-500: #3a3752;
+    --secondary-600: #302d43;
+    --secondary-700: #232131;
+    --secondary-800: #181722;
+    --secondary-900: #0b0a0f;
+    --secondary-950: #060609;
+
+    --accent-50: #f0f0f5;
+    --accent-100: #e4fbf7;
+    --accent-200: #c5f6ee;
+    --accent-300: #abf2e6;
+    --accent-400: #90eedf;
+    --accent-500: #73ead7;
+    --accent-600: #37e1c5;
+    --accent-700: #1bb69c;
+    --accent-800: #127867;
+    --accent-900: #093e35;
+    --accent-950: #051f1b;
+  }
+}
 
 .ff-inter {
-    font-family: "Inter", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 .ff-space-g {
-    font-family: "Space Grotesk", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Space Grotesk", "Inter", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Space Grotesk", "Inter",
+    "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
-.my-container-mobile {
-    max-width: 100%;
-    margin: 0 16px;
+.my-container {
+  max-width: 100%;
+  margin: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .my-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 }
