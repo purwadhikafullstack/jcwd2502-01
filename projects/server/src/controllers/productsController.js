@@ -17,6 +17,7 @@ module.exports = {
 			const {
 				search,
 				category,
+				brand,
 				orderField,
 				orderDirection,
 				offset,
