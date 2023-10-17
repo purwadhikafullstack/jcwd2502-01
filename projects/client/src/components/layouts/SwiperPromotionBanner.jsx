@@ -36,7 +36,7 @@ const SwiperPromotionBanner = ({ className }) => {
 				},
 			}}
 			modules={[Autoplay, Navigation, Pagination]}
-			className={`mySwiper h-[240px] md:h-screen w-full ${className} relative`}
+			className={`mySwiper h-[240px] md:h-[70vh] w-full ${className} relative`}
 		>
 			<MySwiperButtonPrev />
 			<SwiperSlide className="bg-primary-500 h-full">Slide 1</SwiperSlide>

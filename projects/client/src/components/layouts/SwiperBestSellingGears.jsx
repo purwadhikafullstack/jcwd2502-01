@@ -35,7 +35,7 @@ const SwiperBestSellingGears = () => {
 					},
 				}}
 				modules={[Autoplay, Navigation, FreeMode]}
-				className={`mySwiper h-full rounded-[20px] w-full`}
+				className={`mySwiper h-full w-full`}
 			>
 				<MySwiperButtonPrev />
 				<SwiperSlide className="my-2">
