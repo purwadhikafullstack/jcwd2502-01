@@ -7,7 +7,7 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 // import required modules
-import { Navigation, Autoplay } from 'swiper/modules';
+import { Navigation, Autoplay, Pagination } from 'swiper/modules';
 import MySwiperButtonPrev from '../uis/MySwiperButtons/MySwiperButtonPrev';
 import MySwiperButtonNext from '../uis/MySwiperButtons/MySwiperButtonNext';
 
@@ -20,8 +20,8 @@ const SwiperPromotionBanner = ({ className }) => {
 				delay: 3500,
 				disableOnInteraction: false
 			}}
-			modules={[Autoplay, Navigation]}
-			className={`mySwiper h-full rounded-[20px] w-full ${className} relative`}
+			modules={[Autoplay, Navigation, Pagination]}
+			className={`mySwiper h-[240px] w-full ${className} relative`}
 		>
 			<MySwiperButtonPrev />
 			<SwiperSlide className='bg-primary-500 h-full'>Slide 1</SwiperSlide>

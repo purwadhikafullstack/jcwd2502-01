@@ -6,7 +6,7 @@
 
 @layer base {
     :root {
-      --text: #202020;
+      --text: #101010;
       
       --background: #ffffff;
       
@@ -109,7 +109,7 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
-.my-container {
-    max-width: 1200px;
-    margin: 0 auto;
+.my-container-mobile {
+    max-width: 100%;
+    margin: 0 16px;
 }
