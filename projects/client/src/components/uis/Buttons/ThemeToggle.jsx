@@ -24,7 +24,7 @@ const ThemeToggle = () => {
 
 	return (
 		<>
-			<div className='fixed bottom-10 right-10 z-20'>
+			<div className='fixed bottom-6 right-4 z-20'>
 				<Switch
 					size="lg"
 					color="default"

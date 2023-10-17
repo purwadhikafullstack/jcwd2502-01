@@ -25,20 +25,19 @@ const SwiperBestSellingGears = () => {
 					delay: 3500,
 					disableOnInteraction: false
 				}}
-				freeMode={true}
 				centeredSlides={true}
 				modules={[Autoplay, Navigation, FreeMode]}
 				className={`mySwiper h-full rounded-[20px] w-full`}
 			>
 				<MySwiperButtonPrev />
-				<SwiperSlide><ProductCard /></SwiperSlide>
-				<SwiperSlide><ProductCard /></SwiperSlide>
-				<SwiperSlide><ProductCard /></SwiperSlide>
-				<SwiperSlide><ProductCard /></SwiperSlide>
-				<SwiperSlide><ProductCard /></SwiperSlide>
-				<SwiperSlide><ProductCard /></SwiperSlide>
-				<SwiperSlide><ProductCard /></SwiperSlide>
-				<SwiperSlide><ProductCard /></SwiperSlide>
+				<SwiperSlide className='my-2'><ProductCard /></SwiperSlide>
+				<SwiperSlide className='my-2'><ProductCard /></SwiperSlide>
+				<SwiperSlide className='my-2'><ProductCard /></SwiperSlide>
+				<SwiperSlide className='my-2'><ProductCard /></SwiperSlide>
+				<SwiperSlide className='my-2'><ProductCard /></SwiperSlide>
+				<SwiperSlide className='my-2'><ProductCard /></SwiperSlide>
+				<SwiperSlide className='my-2'><ProductCard /></SwiperSlide>
+				<SwiperSlide className='my-2'><ProductCard /></SwiperSlide>
 				<MySwiperButtonNext />
 			</Swiper>
 		</>
