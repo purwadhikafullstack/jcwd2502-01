@@ -2,7 +2,7 @@ const express = require("express");
 const Router = express.Router();
 
 // Import Controller
-const { usersController } = require("./../controllers");
+const { usersController } = require("../controllers");
 const { checkLogin, checkRegister } = require("../middlewares/validator");
 
 Router.post("/register", checkRegister, usersController.register);

@@ -23,8 +23,12 @@ app.use(bearerToken());
 app.use(express.static("public"));
 
 //#region API ROUTES
-const { productsRouter, categoriesRouter, brandsRouter } = require("./routers");
-const { productsRouter, usersRouter } = require("./routers");
+const {
+	productsRouter,
+	categoriesRouter,
+	brandsRouter,
+	usersRouter,
+} = require("./routers");
 // ===========================
 // NOTE : Add your routes here
 app.use("/api/products", productsRouter);
