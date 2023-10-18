@@ -3,7 +3,9 @@ const Router = express.Router();
 
 // Import Controller
 const { usersController } = require("./../controllers");
+const { checkLogin, checkRegister } = require("../middlewares/validator");
 
-Router.post("/register", usersController.register);
+Router.post("/register", checkRegister, usersController.register);
+// Router.post("/login", checkLogin, usersController.register);
 
 module.exports = Router;
