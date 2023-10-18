@@ -8,7 +8,7 @@ const config = {
 	password: DB_PASSWORD,
 	database: DB_NAME,
 	host: DB_HOST,
-	dialect: "mysql",
+	dialect: DB_DIALECT,
 	timezone: DB_TIMEZONE,
 };
 
