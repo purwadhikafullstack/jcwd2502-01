@@ -9,6 +9,7 @@ const ProductCard = () => {
 					<img
 						src={`http://localhost:8000/api/1.png`}
 						className="image w-full h-full bg-primary-500 rounded-t-[20px]"
+						alt="product_image"
 					/>
 				</div>
 				<div className="product-content flex flex-col p-2 md:pt-2 md:px-2 md:pb-4">
