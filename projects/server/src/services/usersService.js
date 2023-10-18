@@ -5,24 +5,25 @@ const path = require("path");
 const transporter = require("./../helper/transporter");
 const { createJWT } = require("./../lib/jwt");
 const { hash, match } = require("./../helper/hashing");
+const respHandler = require("../utils/respHandler");
 
 module.exports = {
 	createUser: async (body) => {
 		try {
-			const { username, email, password, role } = body;
+			const { username, email, password } = body;
 			const checkUsername = await db.user.findOne({
 				where: { username },
 			});
-			if (checkUsername) return { message: "username already used" };
+			if (checkUsername) throw { message: "username already used" };
 			// const checkEmail = await db.user.findOne({ where: { email } });
-			// if (checkEmail) return { message: "email already used" };
+			// if (checkEmail) throw { message: "email already used" };
 			const hashPassword = await hash(password);
 			console.log(hashPassword);
 			const registerUser = await db.user.create({
 				username,
 				email,
 				password: hashPassword,
-				role,
+				role: "user",
 				status: "inactive",
 			});
 
@@ -46,6 +47,53 @@ module.exports = {
 			return true;
 		} catch (error) {
 			console.log(error);
+			return error;
+		}
+	},
+	loginUser: async (body) => {
+		try {
+			const { email, password } = body;
+			const checkEmail = await db.user.findOne({ where: { email } });
+			// console.log(checkEmail);
+			if (!checkEmail)
+				throw {
+					message: "No account associated with this email address.",
+				};
+			const hashMatch = await match(
+				password,
+				checkEmail.dataValues.password
+			);
+			console.log(hashMatch);
+			if (!hashMatch) throw { message: "password salah" };
+			const tokenTransaction = await createJWT(
+				{
+					id: checkEmail.dataValues.id,
+					apiKey: "Approved",
+				},
+				"20m"
+			);
+			const accessToken = await createJWT(
+				{
+					username: checkEmail.dataValues.username,
+					apiKey: "Approved",
+				},
+				"30"
+			);
+			console.log(tokenTransaction);
+			console.log(accessToken);
+			return {
+				isError: false,
+				message: "Login is success",
+				data: {
+					username: checkEmail.dataValues.username,
+					profileUser: checkEmail.dataValues.profile_picture,
+					email: checkEmail.dataValues.email,
+					role: checkEmail.dataValues.role,
+					accessToken: accessToken,
+					tokenTransaction: tokenTransaction,
+				},
+			};
+		} catch (error) {
 			return error;
 		}
 	},
