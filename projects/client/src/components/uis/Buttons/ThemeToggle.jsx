@@ -1,30 +1,10 @@
-import { Switch } from '@nextui-org/react'
-import React, { useEffect, useState } from 'react'
+import { Switch } from "@nextui-org/react";
+import { IoMoon, IoSunny } from "react-icons/io5";
 
-import { IoMoon, IoSunny } from "react-icons/io5"
-
-const ThemeToggle = () => {
-	const [theme, setTheme] = useState(
-		localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
-	);
-
-	const handleToggle = (e) => {
-		if (e.target.checked) {
-			setTheme("dark")
-		} else {
-			setTheme("light")
-		}
-	}
-
-	useEffect(() => {
-		localStorage.setItem("theme", theme);
-		const localTheme = localStorage.getItem("theme")
-		document.querySelector("html").setAttribute("class", localTheme)
-	}, [theme])
-
+const ThemeToggle = ({ theme, handleToggle }) => {
 	return (
 		<>
-			<div className='fixed bottom-6 right-4 z-20'>
+			<div className="fixed bottom-6 right-4 z-20">
 				<Switch
 					size="lg"
 					color="default"
@@ -32,11 +12,10 @@ const ThemeToggle = () => {
 					endContent={<IoSunny />}
 					onChange={handleToggle}
 					isSelected={theme === "dark" ? true : false}
-				>
-				</Switch>
+				></Switch>
 			</div>
 		</>
-	)
-}
+	);
+};
 
-export default ThemeToggle
+export default ThemeToggle;
