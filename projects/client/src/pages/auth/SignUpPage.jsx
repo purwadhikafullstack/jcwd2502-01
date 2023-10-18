@@ -85,7 +85,7 @@ const SignupPage = () => {
 										</div>
 										<div className="form-group">
 											<Button
-												className="bg-primary-500 text-black font-medium hover"
+												className="bg-primary-500 text-black font-bold hover"
 												fullWidth
 												size="lg"
 											>

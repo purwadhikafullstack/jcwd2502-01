@@ -26,14 +26,14 @@ const NavigationBar = () => {
 		<>
 			<Navbar
 				onMenuOpenChange={setIsMenuOpen}
-				maxWidth="xl"
+				maxWidth="full"
 				className="md:py-2 shadow-sm bg-background border-b-2 dark:border-neutral-800"
 				isBlurred={false}
 			>
 				<NavbarContent className="hidden md:flex">
 					<NavbarBrand>
 						<Link to={"/"}>
-							<div className="-mb-1.5 mr-2 w-full">
+							<div className="-mb-1.5 w-full">
 								<NexocompLogo
 									width={160}
 									fill={"fill-primary-500"}
@@ -47,7 +47,7 @@ const NavigationBar = () => {
 						<Link to={"/"}>
 							<div className=" w-full">
 								<NexoLogo
-									width={80}
+									width={64}
 									fill={"fill-primary-500"}
 								/>
 							</div>
@@ -84,10 +84,10 @@ const NavigationBar = () => {
 						</Link>
 					</NavbarItem>
 				</NavbarContent>
-				<NavbarContent>
+				<NavbarContent className="sm:hidden">
 					<NavbarMenuToggle
 						aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-						className="sm:hidden"
+						className=""
 					/>
 				</NavbarContent>
 				<NavbarMenu className="pt-4">

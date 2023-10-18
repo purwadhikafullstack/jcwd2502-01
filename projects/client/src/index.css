@@ -6,6 +6,8 @@
 
 @layer base {
   :root {
+    --swiper-pagination-color: #101010;
+
     --text: #101010;
 
     --background: #ffffff;
@@ -89,6 +91,17 @@
   }
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
 .ff-inter {
   font-family: "Inter", sans-serif;
 }
@@ -118,7 +131,7 @@ code {
 
 @media (min-width: 768px) {
   .my-container {
-    max-width: 1200px;
+    max-width: 1232px;
     margin: 0 auto;
   }
 }
