@@ -31,14 +31,20 @@ module.exports = {
 			};
 
 			if (category) {
+				const arrayCategory = category.split("");
 				categoryInclude.where = {
-					id: category,
+					id: {
+						[Op.in]: arrayCategory,
+					},
 				};
 			}
 
 			if (brand) {
+				const arrayBrand = brand.split("");
 				brandInclude.where = {
-					id: brand,
+					id: {
+						[Op.in]: arrayBrand,
+					},
 				};
 			}
 
@@ -59,7 +65,7 @@ module.exports = {
 					categoryInclude,
 					brandInclude,
 				],
-				limit: 10,
+				limit: 12,
 				order: orderOptions,
 			};
 
@@ -74,7 +80,7 @@ module.exports = {
 			if (offset) {
 				baseQuery.offset = Number(offset);
 			}
-			// console.log(">>", baseQuery);
+			console.log(">>", baseQuery);
 
 			const dataAllProducts = await db.product.findAll(baseQuery);
 
