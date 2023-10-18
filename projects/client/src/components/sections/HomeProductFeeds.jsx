@@ -1,5 +1,5 @@
 import React from "react";
-import ProductCard from "../uis/ProductCard/ProductCard";
+import ProductCard from "../uis/Cards/ProductCard";
 
 const HomeProductFeeds = () => {
 	return (

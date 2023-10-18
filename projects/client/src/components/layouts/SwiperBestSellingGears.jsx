@@ -10,7 +10,7 @@ import "swiper/css/navigation";
 // import required modules
 import { Navigation, FreeMode, Autoplay } from "swiper/modules";
 
-import ProductCard from "../uis/ProductCard/ProductCard";
+import ProductCard from "../uis/Cards/ProductCard";
 import MySwiperButtonPrev from "../uis/MySwiperButtons/MySwiperButtonPrev";
 import MySwiperButtonNext from "../uis/MySwiperButtons/MySwiperButtonNext";
 

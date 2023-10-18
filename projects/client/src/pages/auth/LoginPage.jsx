@@ -42,7 +42,7 @@ const LoginPage = () => {
 												id="email"
 												variant="bordered"
 												size="lg"
-												label="Email address"
+												label="Email Address"
 											/>
 										</div>
 										<div className="form-group">
@@ -78,7 +78,7 @@ const LoginPage = () => {
 										</div>
 										<div className="form-group">
 											<Button
-												className="bg-primary-500 text-black font-medium hover"
+												className="bg-primary-500 text-black font-bold hover"
 												fullWidth
 												size="lg"
 											>
