@@ -4,11 +4,8 @@ const { sequelize } = require("./../models");
 const { Op } = require("sequelize");
 
 const {
-	findUsername,
-	findUserId,
-	findUserEmail,
-	findAllUsers,
-	passwordUpdate,
+	findAllProducts,
+	findOneProduct,
 } = require("./../services/productsService");
 
 const respHandler = require("../utils/respHandler");
@@ -16,18 +13,8 @@ const respHandler = require("../utils/respHandler");
 module.exports = {
 	getAllProducts: async (req, res, next) => {
 		try {
-			const {
-				search,
-				category,
-				brand,
-				orderField,
-				orderDirection,
-				offset,
-				status,
-			} = req.query;
-
-			const findProducts = await db.product.findAll();
-			respHandler(res, "Get products data success", findProducts);
+			const data = await findAllProducts(req.query);
+			respHandler(res, "Get products data success", data);
 		} catch (error) {
 			next(error);
 		}
@@ -35,18 +22,9 @@ module.exports = {
 	getProduct: async (req, res, next) => {
 		try {
 			const { productId } = req.params;
-
-			const product = await db.product.findOne({
-				where: { id: productId },
-			});
-
-			res.status(200).send({
-				isError: false,
-				message: "Get one product success",
-				data: product,
-			});
+			const data = await findOneProduct(productId);
+			respHandler(res, "Get product's data success", data);
 		} catch (error) {
-			console.log(error);
 			next(error);
 		}
 	},
