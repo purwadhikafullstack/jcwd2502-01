@@ -1,7 +1,5 @@
 const { deleteFiles } = require("../helper/deleteFiles");
 const db = require("./../models");
-const { sequelize } = require("./../models");
-const { Op } = require("sequelize");
 
 const {
 	findAllProducts,

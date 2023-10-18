@@ -9,12 +9,13 @@ const PORT = process.env.PORT || 8000;
 const app = express();
 
 app.use(
-	cors({
-		origin: [
-			process.env.WHITELISTED_DOMAIN &&
-				process.env.WHITELISTED_DOMAIN.split(","),
-		],
-	})
+	cors()
+	// 	{
+	// 	origin: [
+	// 		process.env.WHITELISTED_DOMAIN &&
+	// 			process.env.WHITELISTED_DOMAIN.split(","),
+	// 	],
+	// }
 );
 
 app.use(express.json());
@@ -22,10 +23,17 @@ app.use(bearerToken());
 app.use(express.static("public"));
 
 //#region API ROUTES
-const { productsRouter, usersRouter } = require("./routers");
+const {
+	productsRouter,
+	categoriesRouter,
+	brandsRouter,
+	usersRouter,
+} = require("./routers");
 // ===========================
 // NOTE : Add your routes here
 app.use("/api/products", productsRouter);
+app.use("/api/categories", categoriesRouter);
+app.use("/api/brands", brandsRouter);
 app.use("/api/users", usersRouter);
 
 app.get("/api", (req, res) => {
@@ -72,13 +80,13 @@ app.use((err, req, res, next) => {
 //#endregion
 
 //#region CLIENT
-const clientPath = "../../client/build";
-app.use(express.static(join(__dirname, clientPath)));
+// const clientPath = "../../client/build";
+// app.use(express.static(join(__dirname, clientPath)));
 
 // Serve the HTML page
-app.get("*", (req, res) => {
-	res.sendFile(join(__dirname, clientPath, "index.html"));
-});
+// app.get("*", (req, res) => {
+// 	res.sendFile(join(__dirname, clientPath, "index.html"));
+// });
 
 //#endregion
 
