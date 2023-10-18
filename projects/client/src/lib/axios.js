@@ -2,7 +2,7 @@ import axios from "axios";
 
 function ApiInstance(authorization = null) {
 	return axios.create({
-		baseURL: import.meta.env.REACT_APP_API_BASE_URL,
+		baseURL: "http://localhost:8000/api",
 		headers: {
 			authorization,
 		},
