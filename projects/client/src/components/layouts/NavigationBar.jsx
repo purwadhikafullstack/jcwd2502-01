@@ -55,13 +55,15 @@ const NavigationBar = () => {
 					</NavbarBrand>
 				</NavbarContent>
 				<NavbarContent className="flex gap-4 w-full" justify="center">
-					<Input
-						type="text"
-						placeholder="Search on Nexocomp"
-						startContent={<IoSearch opacity={".5"} />}
-						variant="bordered"
-						fullWidth
-					/>
+					<form>
+						<Input
+							type="text"
+							placeholder="Search on Nexocomp"
+							startContent={<IoSearch opacity={".5"} />}
+							variant="bordered"
+							fullWidth
+						/>
+					</form>
 				</NavbarContent>
 				<NavbarContent justify="end" className="hidden md:flex">
 					<Button isIconOnly aria-label="Cart" variant="flat">
