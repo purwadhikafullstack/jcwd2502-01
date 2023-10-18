@@ -1,87 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <title>Nexocomp - Activate your account!</title>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
-    </head>
-    <body style="font-family: 'Inter', sans-serif; margin: 0; padding: 0">
-        <div style="background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab); background-size: 400% 400%; animation: gradient 2s ease infinite">
-            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                    <td style="padding: 20px">
-                        <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                            <tr>
-                                <td align="center" style="background-color: #f3f4f6">
-                                    <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                                        <tr>
-                                            <td align="center" style="padding: 20px">
-                                                <table width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 720px">
-                                                    <tr>
-                                                        <td align="center" style="background-color: #ffffff; border-radius: 5px; padding: 20px">
-                                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                                                                <tr>
-                                                                    <td align="center">
-                                                                        <img src="./festivent-logo-black.png" alt="" style="max-width: 100%; height: auto; display: block" />
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                                                                <tr>
-                                                                    <td style="text-align: center; padding: 20px">
-                                                                        <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 10px">Welcome, {{fullname}}!</h1>
-                                                                        <p style="font-size: 16px; font-weight: 500">
-                                                                            We're excited to have you get started. <br />
-                                                                            First, you need to confirm your account. Just press the button below.
-                                                                        </p>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                                                                <tr>
-                                                                    <td align="center" style="padding: 20px">
-                                                                        <a
-                                                                            href="http://localhost:3000/verified/{{token1}}"
-                                                                            style="
-                                                                                background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-                                                                                background-size: 400% 400%;
-                                                                                padding: 10px 20px;
-                                                                                border-radius: 5px;
-                                                                                text-decoration: none;
-                                                                                display: inline-block;
-                                                                                transition: transform 0.15s;
-                                                                            "
-                                                                        >
-                                                                            <span style="font-weight: 500; color: #ffffff; font-size: 18px">Confirm Account</span>
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                            <table width="100%" cellspacing="0" cellpadding="0" border="0">
-                                                                <tr>
-                                                                    <td style="text-align: center; padding: 20px">
-                                                                        <h2 style="font-weight: bold; font-size: 28px">{{verification_code}}</h2>
-                                                                        <p style="font-weight: 500; font-size: 16px">
-                                                                            If the button doesn't work, copy the code above and
-                                                                            <a href="http://localhost:3000/confirm/{{token2}}" style="color: #3b82f6; text-decoration: underline">confirm with code.</a>
-                                                                        </p>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Nexocomp - Activate your account!</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body style="font-family: 'Inter', sans-serif; margin: 0; padding: 0">
+    <div
+      style="
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradient 2s ease infinite;
+        height: 100vh;
+      "
+    >
+      <table width="100%" height="100%" cellspacing="0" cellpadding="0" border="0">
+        <tr>
+          <td style="padding: 20px">
+            <table width="100%" height="100%" cellspacing="0" cellpadding="0" border="0">
+              <tr>
+                <td align="center" style="background-color: #f3f4f6">
+                  <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                    <tr>
+                      <td align="center" style="padding: 20px">
+                        <table
+                          width="100%"
+                          cellspacing="0"
+                          cellpadding="0"
+                          border="0"
+                          style="max-width: 720px"
+                        >
+                          <tr>
+                            <td
+                              align="center"
+                              style="
+                                background-color: #ffffff;
+                                border-radius: 5px;
+                                padding: 20px 20px 0px 20px;
+                              "
+                            >
+                              <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                  <td
+                                    align="center"
+                                    style="
+                                      display: flex;
+                                      justify-content: center;
+                                      align-items: center;
+                                    "
+                                  >
+                                    <svg
+                                      width="73"
+                                      height="72"
+                                      viewBox="0 0 73 72"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <rect
+                                        x="0.779419"
+                                        width="72"
+                                        height="72"
+                                        rx="9"
+                                        fill="#202020"
+                                      />
+                                      <path
+                                        d="M59.9867 24.7139H46.7088C45.318 24.7139 44.4396 26.1468 45.1763 27.2517C45.372 27.5436 45.6013 27.8065 45.8666 28.0381C46.7449 28.8052 47.8241 29.1888 49.1017 29.1888C50.6883 29.1888 51.8732 28.6653 52.6536 27.6208C52.9859 27.1769 53.5474 26.9308 54.1269 26.9308H58.5881C59.9378 26.9308 60.8161 28.2841 60.1644 29.3938C59.8193 29.9824 59.4123 30.5397 58.9435 31.0704C57.8566 32.2958 56.4966 33.2583 54.8584 33.9555C53.2203 34.6526 51.3915 35 49.367 35C46.9252 35 44.7539 34.5127 42.8504 33.5357C40.9444 32.5612 39.4582 31.1669 38.3867 29.3552C37.3152 27.5436 36.7794 25.4256 36.7794 23.0012C36.7794 20.5768 37.3074 18.4588 38.3635 16.6472C39.4195 14.8356 40.9006 13.4413 42.804 12.4667C44.7127 11.4873 46.8994 11 49.3696 11C51.7804 11 53.9235 11.4752 55.7986 12.4208C57.6737 13.3689 59.1393 14.7198 60.1953 16.4759C61.2514 18.2321 61.7794 20.2801 61.7794 22.6225C61.7794 22.7696 61.7768 22.9168 61.7743 23.0639C61.7459 23.9782 60.9629 24.7139 59.9867 24.7139ZM51.443 20.7409C53.0709 20.7409 53.8745 18.8448 52.6536 17.8365C52.6459 17.8292 52.6356 17.822 52.6279 17.8148C51.7341 17.0911 50.6188 16.7268 49.2794 16.7268C47.9993 16.7268 46.9201 17.0766 46.0443 17.7713C46.0211 17.7882 46.0005 17.8075 45.9773 17.8244C44.7513 18.8376 45.5446 20.7385 47.1776 20.7385H51.443V20.7409Z"
+                                        fill="#24EF00"
+                                      />
+                                      <path
+                                        d="M42.8354 59.5923C40.9527 58.6584 39.4729 57.3223 38.396 55.5863C37.3191 53.8504 36.7794 51.8208 36.7794 49.4977C36.7794 47.2 37.3241 45.1774 38.4184 43.4275C39.5102 41.6777 41.0049 40.337 42.9001 39.4008C44.7977 38.4669 46.9242 38 49.2794 38C51.6347 38 53.7611 38.4669 55.6587 39.4031C57.5564 40.3393 59.0486 41.68 60.1404 43.4298C61.2323 45.1797 61.7794 47.2023 61.7794 49.5C61.7794 51.7977 61.2248 53.8203 60.1205 55.5702C59.0138 57.32 57.5066 58.6607 55.5941 59.5969C53.6815 60.5331 51.5501 61 49.1924 61C46.8371 60.9954 44.7181 60.5284 42.8354 59.5923ZM52.7936 53.6238C53.786 52.6622 54.2809 51.2868 54.2809 49.4977C54.2809 47.7085 53.7984 46.3332 52.8359 45.3716C51.8734 44.4099 50.6871 43.9291 49.2794 43.9291C47.8419 43.9291 46.6506 44.403 45.703 45.3508C44.7554 46.2985 44.2804 47.6808 44.2804 49.4977C44.2804 51.2868 44.748 52.6622 45.6806 53.6238C46.6133 54.5854 47.7847 55.0662 49.1949 55.0662C50.6 55.0662 51.8013 54.5854 52.7936 53.6238Z"
+                                        fill="#24EF00"
+                                      />
+                                      <path
+                                        d="M34.7794 22.9096V31.3363C34.7794 33.3609 33.2037 35 31.2573 35C29.311 35 27.7352 33.3609 27.7352 31.3363V22.9345C27.7352 21.3253 27.3335 20.0742 26.5325 19.1838C25.7315 18.2933 24.6531 17.8481 23.2997 17.8481C21.9464 17.8481 20.868 18.2933 20.067 19.1838C19.266 20.0742 18.8666 21.3253 18.8666 22.9345V31.3363C18.8666 33.3609 17.2909 35 15.3446 35H15.3015C13.3552 35 11.7794 33.3609 11.7794 31.3363V22.9096C11.7794 17.4477 15.6841 12.4384 20.8058 11.2669C25.7243 10.1427 30.9584 12.6523 33.3758 17.2363C33.5217 17.5123 33.6556 17.7909 33.7799 18.0769C34.4327 19.5942 34.7794 21.2482 34.7794 22.9096Z"
+                                        fill="#24EF00"
+                                      />
+                                      <path
+                                        d="M29.38 38C28.2698 38 27.2324 38.5138 26.5969 39.3748L23.2789 43.882L19.9608 39.3748C19.3254 38.5138 18.288 38 17.1778 38C14.435 38 12.8274 40.9208 14.3948 43.0495L19.1445 49.5L14.3948 55.9505C12.8274 58.0792 14.435 61 17.1778 61C18.288 61 19.3254 60.4862 19.9608 59.6252L23.2789 55.118L26.5969 59.6252C27.2324 60.4862 28.2698 61 29.38 61C32.1228 61 33.7303 58.0792 32.163 55.9505L27.4132 49.5L32.163 43.0495C33.7328 40.9184 32.1228 38 29.38 38Z"
+                                        fill="#24EF00"
+                                      />
+                                    </svg>
+                                  </td>
+                                </tr>
+                              </table>
+                              <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                  <td style="text-align: center; padding: 20px">
+                                    <h1
+                                      style="
+                                        font-size: 24px;
+                                        font-weight: bold;
+                                        margin-bottom: 10px;
+                                      "
+                                    >
+                                      Welcome, {{fullname}}!
+                                    </h1>
+                                    <p style="font-size: 16px; font-weight: 500">
+                                      We're excited to have you get started. <br />
+                                      First, you need to confirm your account. Just press the button
+                                      below.
+                                    </p>
+                                  </td>
+                                </tr>
+                              </table>
+                              <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                  <td align="center" style="padding: 20px">
+                                    <a
+                                      href="http://localhost:3000/verified/{{token1}}"
+                                      style="
+                                        background: linear-gradient(
+                                          -45deg,
+                                          #ee7752,
+                                          #e73c7e,
+                                          #23a6d5,
+                                          #23d5ab
+                                        );
+                                        background-size: 400% 400%;
+                                        padding: 10px 20px;
+                                        border-radius: 5px;
+                                        text-decoration: none;
+                                        display: inline-block;
+                                        transition: transform 0.15s;
+                                      "
+                                    >
+                                      <span
+                                        style="font-weight: 500; color: #ffffff; font-size: 18px"
+                                        >Confirm Account</span
+                                      >
+                                    </a>
+                                  </td>
+                                </tr>
+                              </table>
+                              <table width="100%" cellspacing="0" cellpadding="0" border="0">
+                                <tr>
+                                  <td style="text-align: center; padding: 15px">
+                                    <h2 style="font-weight: bold; font-size: 28px">
+                                      {{verification_code}}
+                                    </h2>
+                                    <p style="font-weight: 500; font-size: 16px">
+                                      If the button doesn't work, copy the code above and
+                                      <a
+                                        href="http://localhost:3000/confirm/{{token2}}"
+                                        style="color: #3b82f6; text-decoration: underline"
+                                        >confirm with code.</a
+                                      >
+                                    </p>
+                                  </td>
+                                </tr>
+                              </table>
+                              <svg
+                                id="wave"
+                                style="transform: rotate(0deg); transition: 0.3s"
+                                viewBox="0 0 1440 480"
+                                version="1.1"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <defs>
+                                  <linearGradient id="sw-gradient-0" x1="0" x2="0" y1="1" y2="0">
+                                    <stop stop-color="rgba(35, 213, 171, 1)" offset="0%"></stop>
+                                    <stop stop-color="rgba(255, 179, 11, 1)" offset="100%"></stop>
+                                  </linearGradient>
+                                </defs>
+                                <path
+                                  style="transform: translate(0, 0px); opacity: 1"
+                                  fill="url(#sw-gradient-0)"
+                                  d="M0,432L30,400C60,368,120,304,180,272C240,240,300,240,360,240C420,240,480,240,540,208C600,176,660,112,720,80C780,48,840,48,900,104C960,160,1020,272,1080,312C1140,352,1200,320,1260,296C1320,272,1380,256,1440,256C1500,256,1560,272,1620,248C1680,224,1740,160,1800,120C1860,80,1920,64,1980,56C2040,48,2100,48,2160,88C2220,128,2280,208,2340,256C2400,304,2460,320,2520,280C2580,240,2640,144,2700,88C2760,32,2820,16,2880,72C2940,128,3000,256,3060,272C3120,288,3180,192,3240,184C3300,176,3360,256,3420,248C3480,240,3540,144,3600,152C3660,160,3720,272,3780,320C3840,368,3900,352,3960,288C4020,224,4080,112,4140,128C4200,144,4260,288,4290,360L4320,432L4320,480L4290,480C4260,480,4200,480,4140,480C4080,480,4020,480,3960,480C3900,480,3840,480,3780,480C3720,480,3660,480,3600,480C3540,480,3480,480,3420,480C3360,480,3300,480,3240,480C3180,480,3120,480,3060,480C3000,480,2940,480,2880,480C2820,480,2760,480,2700,480C2640,480,2580,480,2520,480C2460,480,2400,480,2340,480C2280,480,2220,480,2160,480C2100,480,2040,480,1980,480C1920,480,1860,480,1800,480C1740,480,1680,480,1620,480C1560,480,1500,480,1440,480C1380,480,1320,480,1260,480C1200,480,1140,480,1080,480C1020,480,960,480,900,480C840,480,780,480,720,480C660,480,600,480,540,480C480,480,420,480,360,480C300,480,240,480,180,480C120,480,60,480,30,480L0,480Z"
+                                ></path>
+                              </svg>
+                            </td>
+                          </tr>
                         </table>
-                    </td>
-                </tr>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
             </table>
-        </div>
-    </body>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
 </html>
