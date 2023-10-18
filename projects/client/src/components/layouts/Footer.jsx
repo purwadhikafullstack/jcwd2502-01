@@ -42,9 +42,9 @@ const Footer = () => {
 								<div className="app-store">
 									<a href="https://">
 										<img
-											alt="Get it on AppStore"
+											alt="Download on the App Store"
 											src={AppStore}
-											className="w-[140px] md:w-[600px]"
+											className="h-[40px] md:h-[52px]"
 										/>
 									</a>
 								</div>
@@ -53,7 +53,7 @@ const Footer = () => {
 										<img
 											alt="Get it on Google Play"
 											src={GooglePlay}
-											className="w-[140px] md:w-[600px]"
+											className="h-[40px] md:h-[52px]"
 										/>
 									</a>
 								</div>
