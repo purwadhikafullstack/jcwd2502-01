@@ -39,9 +39,6 @@ const ExploreProductsHeader = () => {
 									variant="bordered"
 									className="min-w-[178px]"
 									placeholder="Options"
-									// onChange={(e) =>
-									// 	dispatch(onSort(e.target.value))
-									// }
 								>
 									<SelectItem
 										key={"az"}
