@@ -36,13 +36,7 @@ function App() {
 	const { pathname } = useLocation();
 
 	const excludedPathsNavbar = ["/login", "/signup", "/verified", "/confirm"];
-	const excludedPathsFooter = [
-		"/login",
-		"/signup",
-		"/verified",
-		"/confirm",
-		"/cart",
-	];
+	const excludedPathsFooter = ["/login", "/signup", "/verified", "/confirm"];
 
 	const isExcludedNavbar = excludedPathsNavbar.some((path) =>
 		pathname.startsWith(path)
@@ -57,9 +51,9 @@ function App() {
 			{isExcludedNavbar ? null : <NavigationBar />}
 			<ThemeToggle handleToggle={handleToggle} theme={theme} />
 			<Routes>
+				<Route path="/" element={<HomePage />} />
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
-				<Route path="/" element={<HomePage />} />
 				<Route path="/cart" element={<CartPage />} />
 				<Route path="/explore" element={<ExploreProductsPage />} />
 				<Route path="*" element={<NotFoundPage />} />

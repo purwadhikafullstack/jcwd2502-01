@@ -26,7 +26,7 @@ const ProductCard = (props) => {
 					<span className="product-title font-medium text-body-sm md:text-body-lg line-clamp-2">
 						{data?.product_name}
 					</span>
-					<div className="frame-8 flex gap-1 md:gap-2 my-2">
+					<div className="flex gap-1 md:gap-2 my-2">
 						<Chip className="chip md:px-2" size="sm">
 							<p className="text-[10px] md:text-label-lg">
 								{data?.brand.brand_name}

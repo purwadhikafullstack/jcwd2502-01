@@ -1,16 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { Button } from "@nextui-org/react";
+import { Button, Checkbox, CheckboxGroup, cn } from "@nextui-org/react";
+
+import ProductCartCard from "../../components/uis/Cards/ProductCartCard";
 
 const CartPage = () => {
+	const [productSelected, setProductSelected] = useState([]);
+
 	return (
 		<>
-			<main className="cart-page my-container h-[100vh] py-2">
-				<div className="page-heading">
+			<main className="cart-page max-w-full mx-[16px] md:max-w-[1120px] md:mx-auto py-4 pb-12">
+				<div className="page-heading mb-4">
 					<h3 className="font-bold text-headline-sm">Cart</h3>
 				</div>
 				<div className="page-body flex">
-					<div className="product-cart-list w-full"></div>
+					<div className="product-cart-list w-full">
+						<div className="product-cart-list-wrapper">
+							<CheckboxGroup
+								value={productSelected}
+								onChange={setProductSelected}
+							>
+								<ProductCartCard />
+								<ProductCartCard />
+								<ProductCartCard />
+								<ProductCartCard />
+								<ProductCartCard />
+							</CheckboxGroup>
+						</div>
+					</div>
 					<div className="cart-action">
 						<div className="cart-action-card md:col-span-2 md:ml-12 w-full md:w-[320px]">
 							<div className="bg-background md:rounded-lg fixed bottom-0 left-0 right-0 md:sticky md:top-[140px] md:bottom-auto shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)]">
