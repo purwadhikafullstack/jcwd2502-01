@@ -2,14 +2,36 @@ import React, { useState } from "react";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
 import LoopLogo from "../../assets/images/loop-logo.svg";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { FcGoogle } from "react-icons/fc";
-
+import { onLoginAsync } from "../../redux/features/users";
 import { Button, Input } from "@nextui-org/react";
+import { onLoginSync } from "../../redux/features/users";
 
 const LoginPage = () => {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
+	// const [inputEmail, setInputEmail] = useState("");
+	// const [inputPassword, setInputPassword] = useState("");
+	const [state, setState] = useState({
+		email: "",
+		password: "",
+	});
+
+	const handleChange = (e) => {
+		console.log(e.target.value);
+		const value = e.target.value;
+		setState({
+			...state,
+			[e.target.name]: value,
+		});
+	};
+
+	const handleLogin = (email, password) => {
+		dispatch(onLoginAsync(email, password));
+	};
 
 	return (
 		<>
@@ -43,6 +65,8 @@ const LoginPage = () => {
 												variant="bordered"
 												size="lg"
 												label="Email Address"
+												value={state.email}
+												onChange={handleChange}
 											/>
 										</div>
 										<div className="form-group">
@@ -54,6 +78,8 @@ const LoginPage = () => {
 												}
 												name="password"
 												id="password"
+												value={state.password}
+												onChange={handleChange}
 												variant="bordered"
 												size="lg"
 												label="Password"
@@ -81,6 +107,12 @@ const LoginPage = () => {
 												className="bg-primary-500 text-black font-bold hover"
 												fullWidth
 												size="lg"
+												onClick={() =>
+													handleLogin(
+														state.email,
+														state.password
+													)
+												}
 											>
 												Login
 											</Button>
