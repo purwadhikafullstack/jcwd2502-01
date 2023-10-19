@@ -28,7 +28,7 @@ const GearCategories = () => {
 							}
 						/>
 						<CategorySelection
-							subtitle={"Mouse"}
+							subtitle={"Keyboard"}
 							image={
 								<img
 									src={KeyboardCategory}
@@ -38,7 +38,7 @@ const GearCategories = () => {
 							}
 						/>
 						<CategorySelection
-							subtitle={"Mouse"}
+							subtitle={"Headset"}
 							image={
 								<img
 									src={HeadphoneCategory}
@@ -48,7 +48,7 @@ const GearCategories = () => {
 							}
 						/>
 						<CategorySelection
-							subtitle={"Mouse"}
+							subtitle={"Controller"}
 							image={
 								<img
 									src={ControllerCategory}
@@ -58,7 +58,7 @@ const GearCategories = () => {
 							}
 						/>
 						<CategorySelection
-							subtitle={"Mouse"}
+							subtitle={"Mousepad"}
 							image={
 								<img
 									src={MousepadCategory}
@@ -68,7 +68,7 @@ const GearCategories = () => {
 							}
 						/>
 						<CategorySelection
-							subtitle={"Mouse"}
+							subtitle={"Monitor"}
 							image={
 								<img
 									src={MonitorCategory}
