@@ -818,7 +818,7 @@ module.exports = {
 				},
 				{
 					id: 163,
-					product_id: 62,
+					product_id: 63,
 					image: "public/163.png",
 				},
 				{
@@ -838,7 +838,7 @@ module.exports = {
 				},
 				{
 					id: 167,
-					product_id: 65,
+					product_id: 66,
 					image: "public/167.png",
 				},
 				{
@@ -848,7 +848,7 @@ module.exports = {
 				},
 				{
 					id: 169,
-					product_id: 66,
+					product_id: 67,
 					image: "public/169.png",
 				},
 				{
@@ -858,18 +858,18 @@ module.exports = {
 				},
 				{
 					id: 171,
-					product_id: 67,
-					image: "public/171.png",
-				},
-				{
-					id: 172,
 					product_id: 68,
 					image: "public/171.jpg",
 				},
 				{
-					id: 173,
+					id: 172,
 					product_id: 68,
 					image: "public/172.jpg",
+				},
+				{
+					id: 173,
+					product_id: 68,
+					image: "public/173.jpg",
 				},
 			],
 			{}
