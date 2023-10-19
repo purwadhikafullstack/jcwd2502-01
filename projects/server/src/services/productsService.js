@@ -12,7 +12,6 @@ module.exports = {
 				orderDirection,
 				offset,
 			} = query;
-
 			const selectedAttributes = [
 				"id",
 				"product_name",
@@ -80,11 +79,11 @@ module.exports = {
 			if (offset) {
 				baseQuery.offset = Number(offset);
 			}
-			console.log(">>", baseQuery);
 
 			const dataAllProducts = await db.product.findAll(baseQuery);
+			const count = await db.product.count(baseQuery);
 
-			return dataAllProducts;
+			return { count, products: dataAllProducts };
 		} catch (error) {
 			return error;
 		}
