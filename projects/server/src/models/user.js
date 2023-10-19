@@ -13,9 +13,12 @@ module.exports = (sequelize, DataTypes) => {
 	}
 	user.init(
 		{
-			name: DataTypes.STRING,
+			username: DataTypes.STRING,
 			email: DataTypes.STRING,
 			password: DataTypes.STRING,
+			profile_picture: DataTypes.STRING,
+			role: DataTypes.STRING,
+			status: DataTypes.STRING,
 			createdAt: {
 				type: DataTypes.DATE,
 				defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),

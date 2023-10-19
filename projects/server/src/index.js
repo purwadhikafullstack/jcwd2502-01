@@ -23,10 +23,18 @@ app.use(bearerToken());
 app.use(express.static("public"));
 
 //#region API ROUTES
-const { productsRouter } = require("./routers");
+const {
+	productsRouter,
+	categoriesRouter,
+	brandsRouter,
+	usersRouter,
+} = require("./routers");
 // ===========================
 // NOTE : Add your routes here
 app.use("/api/products", productsRouter);
+app.use("/api/categories", categoriesRouter);
+app.use("/api/brands", brandsRouter);
+app.use("/api/users", usersRouter);
 
 app.get("/api", (req, res) => {
 	res.send(`Hello, this is my API`);
@@ -87,8 +95,8 @@ app.listen(PORT, (err) => {
 		console.log(`ERROR: ${err}`);
 	} else {
 		// db.sequelize.sync({
-		// 	alter:true,
-		// })
+		// 	alter: true,
+		// });
 		console.log(`APP RUNNING at ${PORT} ✅`);
 	}
 });
