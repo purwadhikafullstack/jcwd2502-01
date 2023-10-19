@@ -1,10 +1,14 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setCategory } from "../../../redux/features/products";
 
 const CategorySelection = ({ subtitle, image, categoryId }) => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const onCategory = (category) => {
+		dispatch(setCategory(category));
 		navigate(`/explore?category=${category}`);
 	};
 	return (
