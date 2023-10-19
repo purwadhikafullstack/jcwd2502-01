@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Checkbox, CheckboxGroup, Input } from "@nextui-org/react";
+import { axiosInstance } from "../../lib/axios";
+import { useDispatch, useSelector } from "react-redux";
+import { onBrand, onCategory } from "../../redux/features/products";
 
-const ExploreProductsFilterAside = () => {
+const ExploreProductsFilterAside = (props) => {
+	const category = useSelector((state) => state.products.category);
+	const brand = useSelector((state) => state.products.brand);
+
+	const dispatch = useDispatch();
 	return (
 		<>
 			<div className="filter-aside hidden md:block w-[20%] h-full sticky top-[150px]">
@@ -10,31 +17,55 @@ const ExploreProductsFilterAside = () => {
 					<div className="wrapper flex flex-col gap-4">
 						<div className="filter-group">
 							<h5 className="font-medium mb-2">Brand</h5>
-							<CheckboxGroup color="primary">
-								<Checkbox value="logitech">Logitech</Checkbox>
-								<Checkbox value="razer">Razer</Checkbox>
-								<Checkbox value="steelseries">
-									Steelseries
-								</Checkbox>
-								<Checkbox value="corsair">Corsair</Checkbox>
-								<Checkbox value="fantech">Fantech</Checkbox>
-								<Checkbox value="aoc">AOC</Checkbox>
-							</CheckboxGroup>
+							{/* <CheckboxGroup defaultValue={brand} color="primary"> */}
+							<div className="grid">
+								{props.brandsData?.map((value) => {
+									return (
+										<Checkbox
+											key={value.id}
+											value={String(value.id)}
+											onClick={() =>
+												dispatch(
+													onBrand(String(value.id))
+												)
+											}
+											defaultSelected={brand.includes(
+												String(value.id)
+											)}
+										>
+											{value.brand_name}
+										</Checkbox>
+									);
+								})}
+							</div>
+							{/* </CheckboxGroup> */}
 						</div>
 						<div className="filter-group">
 							<h5 className="font-medium mb-2">Category</h5>
-							<CheckboxGroup color="primary">
-								<Checkbox value="mouse">Mouse</Checkbox>
-								<Checkbox value="keyboard">Keyboard</Checkbox>
-								<Checkbox value="headset">Headset</Checkbox>
-								<Checkbox value="controller">
-									Controller
-								</Checkbox>
-								<Checkbox value="monitor">Monitor</Checkbox>
-								<Checkbox value="mousepad">Mousepad</Checkbox>
-							</CheckboxGroup>
+							{/* <CheckboxGroup color="primary"> */}
+							<div>
+								{props.categoriesData?.map((value) => {
+									return (
+										<Checkbox
+											key={value.id}
+											value={value.id}
+											onClick={() =>
+												dispatch(
+													onCategory(String(value.id))
+												)
+											}
+											defaultSelected={category.includes(
+												String(value.id)
+											)}
+										>
+											{value.category_type}
+										</Checkbox>
+									);
+								})}
+							</div>
+							{/* </CheckboxGroup> */}
 						</div>
-						<div className="filter-group">
+						{/* <div className="filter-group">
 							<h5 className="font-medium mb-2">Price</h5>
 							<div className="price-inputs">
 								<Input
@@ -66,7 +97,7 @@ const ExploreProductsFilterAside = () => {
 									}
 								/>
 							</div>
-						</div>
+						</div> */}
 					</div>
 				</div>
 			</div>

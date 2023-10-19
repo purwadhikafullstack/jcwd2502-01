@@ -1,7 +1,15 @@
 import React from "react";
 import { Select, SelectItem } from "@nextui-org/react";
+import { useDispatch, useSelector } from "react-redux";
+import { onClear, onSort } from "../../redux/features/products";
 
 const ExploreProductsHeader = () => {
+	const dispatch = useDispatch();
+	const search = useSelector((state) => state.products.search);
+	const clear = async () => {
+		await dispatch(onClear());
+		window.location.reload(false);
+	};
 	return (
 		<>
 			<div class="header-position sticky top-[54px] md:top-[70px] z-10 bg-background w-full">
@@ -16,9 +24,10 @@ const ExploreProductsHeader = () => {
 								<br />
 							</span>
 							<span className="font-medium text-title-lg">
-								{`<VALUE>:STR`}
+								{search}
 							</span>
 						</h1>
+						<button onClick={() => clear()}>clear</button>
 						<nav class="wall-header__nav mt-2 hidden md:block">
 							<div className="sort-by flex items-center">
 								<div className="w-full mr-2 font-medium">
@@ -30,17 +39,52 @@ const ExploreProductsHeader = () => {
 									variant="bordered"
 									className="min-w-[178px]"
 									placeholder="Options"
+									// onChange={(e) =>
+									// 	dispatch(onSort(e.target.value))
+									// }
 								>
-									<SelectItem key={"az"} value={"az"}>
+									<SelectItem
+										key={"az"}
+										value={"az"}
+										onClick={() =>
+											dispatch(
+												onSort("product_name", "asc")
+											)
+										}
+									>
 										A-Z
 									</SelectItem>
-									<SelectItem key={"za"} value={"za"}>
+									<SelectItem
+										key={"za"}
+										value={"za"}
+										onClick={() =>
+											dispatch(
+												onSort("product_name", "desc")
+											)
+										}
+									>
 										Z-A
 									</SelectItem>
-									<SelectItem key={"high"} value={"high"}>
+									<SelectItem
+										key={"high"}
+										value={"high"}
+										onClick={() =>
+											dispatch(
+												onSort("product_price", "desc")
+											)
+										}
+									>
 										Highest price
 									</SelectItem>
-									<SelectItem key={"low"} value={"low"}>
+									<SelectItem
+										key={"low"}
+										value={"low"}
+										onClick={() =>
+											dispatch(
+												onSort("product_price", "asc")
+											)
+										}
+									>
 										Lowest price
 									</SelectItem>
 								</Select>

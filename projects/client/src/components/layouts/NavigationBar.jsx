@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useFormik } from "formik";
 
 import { IoSearch, IoCartOutline } from "react-icons/io5";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
 
 import {
@@ -20,17 +20,42 @@ import {
 } from "@nextui-org/react";
 
 import NexoLogo from "../../assets/logo/NexoLogo";
+import { useDispatch, useSelector } from "react-redux";
+import { onSearch, setSearch } from "../../redux/features/products";
 
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	const search = useSelector((state) => state.products.search);
+
+	// const takeFromQuery = () => {
+	// 	const queryParams = new URLSearchParams(location.search);
+	// 	const selectedSearch = queryParams.get("search");
+	// 	if (selectedSearch) {
+	// 		dispatch(setSearch(selectedSearch));
+	// 	}
+	// };
 
 	const formik = useFormik({
 		initialValues: { searchQuery: "" },
 		onSubmit: (values) => {
 			// Handle the search query submission here
-			console.log("Search Query:", values.searchQuery);
+			dispatch(onSearch(values.searchQuery));
+			navigate("/explore");
 		},
 	});
+
+	// useEffect(() => {
+	// 	takeFromQuery();
+	// }, []);
+
+	useEffect(() => {
+		formik.setFieldValue("searchQuery", search);
+	}, [search]);
 
 	return (
 		<>
@@ -78,6 +103,7 @@ const NavigationBar = () => {
 									e.target.value
 								)
 							}
+							value={formik.values.searchQuery}
 						/>
 					</form>
 				</NavbarContent>

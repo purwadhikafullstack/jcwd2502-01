@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ProductCard from "../uis/Cards/ProductCard";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductAsync } from "../../redux/features/products";
 
 const HomeProductFeeds = () => {
+	const dispatch = useDispatch();
+	const products = useSelector((state) => state.products.products);
+
+	useEffect(() => {
+		dispatch(fetchProductAsync());
+	}, []);
+
 	return (
 		<>
 			<section className="home-product-feeds my-container">
@@ -15,14 +24,9 @@ const HomeProductFeeds = () => {
 						</p>
 					</div>
 					<div className="grid-wrapper grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 py-4">
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
-						<ProductCard />
+						{products?.map((product) => {
+							return <ProductCard data={product} />;
+						})}
 					</div>
 				</div>
 			</section>
