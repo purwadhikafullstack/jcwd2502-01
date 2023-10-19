@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { useFormik } from "formik";
 
 import { IoSearch, IoCartOutline } from "react-icons/io5";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
 
 import {
@@ -18,9 +20,42 @@ import {
 } from "@nextui-org/react";
 
 import NexoLogo from "../../assets/logo/NexoLogo";
+import { useDispatch, useSelector } from "react-redux";
+import { onSearch, setSearch } from "../../redux/features/products";
 
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	const search = useSelector((state) => state.products.search);
+
+	// const takeFromQuery = () => {
+	// 	const queryParams = new URLSearchParams(location.search);
+	// 	const selectedSearch = queryParams.get("search");
+	// 	if (selectedSearch) {
+	// 		dispatch(setSearch(selectedSearch));
+	// 	}
+	// };
+
+	const formik = useFormik({
+		initialValues: { searchQuery: "" },
+		onSubmit: (values) => {
+			// Handle the search query submission here
+			dispatch(onSearch(values.searchQuery));
+			navigate("/explore");
+		},
+	});
+
+	// useEffect(() => {
+	// 	takeFromQuery();
+	// }, []);
+
+	useEffect(() => {
+		formik.setFieldValue("searchQuery", search);
+	}, [search]);
 
 	return (
 		<>
@@ -55,20 +90,29 @@ const NavigationBar = () => {
 					</NavbarBrand>
 				</NavbarContent>
 				<NavbarContent className="flex gap-4 w-full" justify="center">
-					<form>
+					<form className="w-full" onSubmit={formik.handleSubmit}>
 						<Input
 							type="text"
 							placeholder="Search on Nexocomp"
 							startContent={<IoSearch opacity={".5"} />}
 							variant="bordered"
 							fullWidth
+							onChange={(e) =>
+								formik.setFieldValue(
+									"searchQuery",
+									e.target.value
+								)
+							}
+							value={formik.values.searchQuery}
 						/>
 					</form>
 				</NavbarContent>
 				<NavbarContent justify="end" className="hidden md:flex">
-					<Button isIconOnly aria-label="Cart" variant="flat">
-						<IoCartOutline size={22} className="fill-accent" />
-					</Button>
+					<Link to={"/cart"}>
+						<Button isIconOnly aria-label="Cart" variant="flat">
+							<IoCartOutline size={22} className="fill-accent" />
+						</Button>
+					</Link>
 				</NavbarContent>
 				<NavbarContent justify="end" className="gap-2 hidden md:flex">
 					<NavbarItem className="">
@@ -89,7 +133,6 @@ const NavigationBar = () => {
 				<NavbarContent className="sm:hidden">
 					<NavbarMenuToggle
 						aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-						className=""
 					/>
 				</NavbarContent>
 				<NavbarMenu className="pt-4">

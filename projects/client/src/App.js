@@ -12,6 +12,7 @@ import LoginPage from "./pages/auth/LoginPage";
 import { useEffect, useState } from "react";
 import SignupPage from "./pages/auth/SignUpPage";
 import ExploreProductsPage from "./pages/public/ExploreProductsPage";
+import CartPage from "./pages/user/CartPage";
 
 function App() {
 	const [theme, setTheme] = useState(
@@ -34,12 +35,19 @@ function App() {
 
 	const { pathname } = useLocation();
 
-	const excludedPaths = ["/login", "/signup", "/verified", "/confirm"];
+	const excludedPathsNavbar = ["/login", "/signup", "/verified", "/confirm"];
+	const excludedPathsFooter = [
+		"/login",
+		"/signup",
+		"/verified",
+		"/confirm",
+		"/cart",
+	];
 
-	const isExcludedNavbar = excludedPaths.some((path) =>
+	const isExcludedNavbar = excludedPathsNavbar.some((path) =>
 		pathname.startsWith(path)
 	);
-	const isExcludedFooter = excludedPaths.some((path) =>
+	const isExcludedFooter = excludedPathsFooter.some((path) =>
 		pathname.startsWith(path)
 	);
 
@@ -52,6 +60,7 @@ function App() {
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
 				<Route path="/" element={<HomePage />} />
+				<Route path="/cart" element={<CartPage />} />
 				<Route path="/explore" element={<ExploreProductsPage />} />
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>

@@ -1,7 +1,11 @@
+const db = require("./../models");
+
 module.exports = {
 	findAllCategories: async () => {
 		try {
-			const dataAllCategories = await db.category.findAll();
+			const dataAllCategories = await db.category.findAll({
+				attributes: ["id", "category_type"],
+			});
 			return dataAllCategories;
 		} catch (error) {
 			return error;
