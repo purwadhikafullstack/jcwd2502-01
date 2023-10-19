@@ -89,13 +89,13 @@ const ProductListFeed = () => {
 				</div>
 				<div className="flex justify-center items-center py-12">
 					<Pagination
-						size="lg"
+						size="md"
 						showControls
 						total={10}
-						// initialPage={1}
 						page={page ? page : 1}
 						color="secondary"
 						variant="flat"
+						className="z-0"
 						onChange={(e) =>
 							dispatch(setPagination(e, (e - 1) * 12))
 						}
