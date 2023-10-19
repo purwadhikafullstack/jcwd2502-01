@@ -9,7 +9,7 @@ const ProductCard = (props) => {
 			<div className="product-card bg-background rounded-[20px] flex flex-col items-start border-1 border-neutral-200 hover:border-primary-500 dark:border-neutral-800 hover:dark:border-secondary-500 hover:shadow-md hover:shadow-primary-200 dark:hover:shadow-secondary-500 duration-200 hover:cursor-pointer">
 				<div className="image-wrapper aspect-square w-full h-full">
 					<img
-						src={`http://localhost:8000/api/${data?.product_images[0].image.substring(
+						src={`http://localhost:8000/static/${data?.product_images[0].image.substring(
 							7
 						)}`}
 						className="image w-full h-full bg-primary-500 rounded-t-[20px]"

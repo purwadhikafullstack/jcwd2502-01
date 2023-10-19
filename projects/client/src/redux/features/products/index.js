@@ -11,6 +11,7 @@ const initialState = {
 	brand: [],
 	page: 1,
 	offset: 0,
+	count: 0,
 };
 
 export const productsSlice = createSlice({
@@ -19,6 +20,9 @@ export const productsSlice = createSlice({
 	reducers: {
 		setProducts: (initialState, { payload }) => {
 			initialState.products = payload;
+		},
+		setCount: (initialState, { payload }) => {
+			initialState.count = payload;
 		},
 		setOrderField: (initialState, { payload }) => {
 			initialState.orderField = payload;
@@ -86,7 +90,8 @@ export const fetchProductAsync = (query) => async (dispatchEvent) => {
 		const { data } = await axiosInstance().get(
 			`products/all${query ? query : ""}`
 		);
-		dispatchEvent(setProducts(data.data));
+		dispatchEvent(setProducts(data.data.products));
+		dispatchEvent(setCount(data.data.count));
 	} catch (error) {
 		console.log(error);
 	}
@@ -180,6 +185,7 @@ export const {
 	resetOffset,
 	setCategory,
 	setBrand,
+	setCount,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;

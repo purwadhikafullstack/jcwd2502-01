@@ -63,15 +63,22 @@ const ProductListFeed = () => {
 		// fetchCategories();
 		takeFromQuery();
 	}, []);
-	useEffect(() => {
-		console.log(products);
-	}, [products]);
 
 	useEffect(() => {
-		console.log(page);
+		// if (
+		// 	orderDirection === "" &&
+		// 	orderField === "" &&
+		// 	search === "" &&
+		// 	page === 1 &&
+		// 	category.length === 0 &&
+		// 	brand.length === 0
+		// ) {
+		// } else {
 		navigate(
 			`/explore?search=${search}&brand=${brand}&category=${category}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 		);
+		// }
+
 		dispatch(
 			fetchProductAsync(
 				`?&search=${search}&brand=${brand}&category=${category}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`

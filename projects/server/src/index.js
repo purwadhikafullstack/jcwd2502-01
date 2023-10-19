@@ -20,7 +20,7 @@ app.use(
 
 app.use(express.json());
 app.use(bearerToken());
-app.use(express.static("public"));
+app.use("/static", express.static("public"));
 
 //#region API ROUTES
 const { productsRouter, categoriesRouter, brandsRouter } = require("./routers");
