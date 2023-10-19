@@ -20,7 +20,7 @@ app.use(
 
 app.use(express.json());
 app.use(bearerToken());
-app.use("/static", express.static("public"));
+app.use("/static", express.static(`${__dirname}/public`));
 
 //#region API ROUTES
 const {
@@ -80,13 +80,13 @@ app.use((err, req, res, next) => {
 //#endregion
 
 //#region CLIENT
-// const clientPath = "../../client/build";
-// app.use(express.static(join(__dirname, clientPath)));
+const clientPath = "../../client/build";
+app.use(express.static(join(__dirname, clientPath)));
 
 // Serve the HTML page
-// app.get("*", (req, res) => {
-// 	res.sendFile(join(__dirname, clientPath, "index.html"));
-// });
+app.get("*", (req, res) => {
+	res.sendFile(join(__dirname, clientPath, "index.html"));
+});
 
 //#endregion
 

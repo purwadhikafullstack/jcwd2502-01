@@ -8,16 +8,17 @@ import { useDispatch, useSelector } from "react-redux";
 
 import {
 	fetchProductAsync,
-	onBrand,
-	onCategory,
 	onSearch,
 	onSort,
+	setBrand,
+	setCategory,
 	setPagination,
 } from "../../redux/features/products";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const ProductListFeed = () => {
+const ProductListFeed = (props) => {
 	const products = useSelector((state) => state.products.products);
+	const count = useSelector((state) => state.products.count);
 	const orderField = useSelector((state) => state.products.orderField);
 	const orderDirection = useSelector(
 		(state) => state.products.orderDirection
@@ -32,6 +33,8 @@ const ProductListFeed = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	const totalPage = Math.ceil(count / 12);
+
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedSearch = queryParams.get("search");
@@ -44,10 +47,10 @@ const ProductListFeed = () => {
 			dispatch(onSearch(selectedSearch));
 		}
 		if (selectedCategory) {
-			dispatch(onCategory(selectedCategory));
+			dispatch(setCategory(selectedCategory));
 		}
 		if (selectedBrand) {
-			dispatch(onBrand(selectedBrand));
+			dispatch(setBrand(selectedBrand));
 		}
 		if (selectedOrderDirection && selectedOrderField) {
 			dispatch(onSort(selectedOrderField, selectedOrderDirection));
@@ -59,29 +62,36 @@ const ProductListFeed = () => {
 	};
 
 	useEffect(() => {
-		dispatch(fetchProductAsync());
+		// dispatch(fetchProductAsync());
 		// fetchCategories();
 		takeFromQuery();
 	}, []);
 
 	useEffect(() => {
-		// if (
-		// 	orderDirection === "" &&
-		// 	orderField === "" &&
-		// 	search === "" &&
-		// 	page === 1 &&
-		// 	category.length === 0 &&
-		// 	brand.length === 0
-		// ) {
-		// } else {
-		navigate(
-			`/explore?search=${search}&brand=${brand}&category=${category}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		);
-		// }
+		if (
+			orderDirection !== "" ||
+			orderField !== "" ||
+			search !== "" ||
+			page !== 1 ||
+			category.length !== 0 ||
+			brand.length !== 0
+		) {
+			navigate(
+				`/explore?search=${search}&brand=${brand.join(
+					""
+				)}&category=${category.join(
+					""
+				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			);
+		}
 
 		dispatch(
 			fetchProductAsync(
-				`?&search=${search}&brand=${brand}&category=${category}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				`?&search=${search}&brand=${brand.join(
+					""
+				)}&category=${category.join(
+					""
+				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 			)
 		);
 	}, [orderField, orderDirection, search, page, category, brand]);
@@ -98,8 +108,8 @@ const ProductListFeed = () => {
 					<Pagination
 						size="md"
 						showControls
-						total={10}
-						page={page ? page : 1}
+						total={props.totalPage}
+						page={page}
 						color="secondary"
 						variant="flat"
 						className="z-0"

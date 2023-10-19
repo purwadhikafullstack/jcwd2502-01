@@ -18,7 +18,7 @@ const ProductCard = (props) => {
 						src={`http://localhost:8000/static/${data?.product_images[0].image.substring(
 							7
 						)}`}
-						className="image w-full h-full bg-primary-500 rounded-t-[20px]"
+						className="image w-full h-full rounded-t-[20px] object-contain"
 						alt={`${data?.product_images[0].image.substring(7)}`}
 					/>
 				</div>

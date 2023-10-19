@@ -69,6 +69,12 @@ export const productsSlice = createSlice({
 			if (initialState.category.includes(payload)) {
 				const index = initialState.category.indexOf(payload);
 				initialState.category.splice(index, 1);
+			} else if (payload.length > 1) {
+				initialState.category = payload.split("").filter((v) => {
+					return Number(v);
+				});
+			} else if (payload.length === 0) {
+				initialState.category = [];
 			} else {
 				initialState.category.push(payload);
 			}
@@ -77,6 +83,12 @@ export const productsSlice = createSlice({
 			if (initialState.brand.includes(payload)) {
 				const index = initialState.brand.indexOf(payload);
 				initialState.brand.splice(index, 1);
+			} else if (payload.length > 1) {
+				initialState.brand = payload.split("").filter((v) => {
+					return Number(v);
+				});
+			} else if (payload.length === 0) {
+				initialState.brand = [];
 			} else {
 				initialState.brand.push(payload);
 			}
@@ -164,7 +176,8 @@ export const onClear = () => async (dispatchEvent) => {
 		dispatchEvent(resetOffset());
 		dispatchEvent(setOrderField(""));
 		dispatchEvent(setOrderDirection(""));
-		dispatchEvent(setCategory(""));
+		dispatchEvent(setCategory([]));
+		dispatchEvent(setBrand([]));
 	} catch (error) {
 		console.log(error);
 	}

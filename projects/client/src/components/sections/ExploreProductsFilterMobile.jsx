@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
 	Button,
@@ -12,19 +12,30 @@ import {
 	ModalHeader,
 	Radio,
 	RadioGroup,
+	Select,
+	SelectItem,
 	useDisclosure,
 } from "@nextui-org/react";
 
 import { IoOptionsOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { axiosInstance } from "../../lib/axios";
+import { onBrand, onCategory, onSort } from "../../redux/features/products";
 
-const ExploreProductsFilterMobile = () => {
+const ExploreProductsFilterMobile = (props) => {
+	const category = useSelector((state) => state.products.category);
+	const brand = useSelector((state) => state.products.brand);
+	const count = useSelector((state) => state.products.count);
+
+	const dispatch = useDispatch();
+
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	return (
 		<>
 			<div className="subheading-mobile min-h-[70px] flex justify-between items-center md:hidden">
 				<span className="font-medium text-neutral-400">
-					{`<VALUE>:NUM`} Results
+					{count} Results
 				</span>
 				<div className="filter-mobile">
 					<Button
@@ -53,24 +64,132 @@ const ExploreProductsFilterMobile = () => {
 											<h5 className="font-medium mb-2">
 												Sort by
 											</h5>
-											<RadioGroup
+											{/* <RadioGroup
 												defaultValue={"newest"}
 												color="primary"
 											>
-												<Radio value={"newest"}>
-													Newest
+												<Radio
+													value={"az"}
+													onClick={() =>
+														dispatch(
+															onSort(
+																"product_name",
+																"asc"
+															)
+														)
+													}
+												>
+													A-Z
 												</Radio>
-												<Radio value={"az"}>A-Z</Radio>
-												<Radio value={"za"}>Z-A</Radio>
-												<Radio value={"high"}>
+												<Radio
+													value={"za"}
+													onClick={() =>
+														dispatch(
+															onSort(
+																"product_name",
+																"desc"
+															)
+														)
+													}
+												>
+													Z-A
+												</Radio>
+												<Radio
+													value={"high"}
+													onClick={() =>
+														dispatch(
+															onSort(
+																"product_price",
+																"desc"
+															)
+														)
+													}
+												>
 													Highest price
 												</Radio>
-												<Radio value={"low"}>
+												<Radio
+													value={"low"}
+													onClick={() =>
+														dispatch(
+															onSort(
+																"product_price",
+																"asc"
+															)
+														)
+													}
+												>
 													Lowest price
 												</Radio>
-											</RadioGroup>
+											</RadioGroup> */}
+											<Select
+												labelPlacement={"outside-left"}
+												size="md"
+												variant="bordered"
+												className="min-w-[178px]"
+												placeholder="Options"
+												// onChange={(e) =>
+												// 	dispatch(onSort(e.target.value))
+												// }
+											>
+												<SelectItem
+													key={"az"}
+													value={"az"}
+													onClick={() =>
+														dispatch(
+															onSort(
+																"product_name",
+																"asc"
+															)
+														)
+													}
+												>
+													A-Z
+												</SelectItem>
+												<SelectItem
+													key={"za"}
+													value={"za"}
+													onClick={() =>
+														dispatch(
+															onSort(
+																"product_name",
+																"desc"
+															)
+														)
+													}
+												>
+													Z-A
+												</SelectItem>
+												<SelectItem
+													key={"high"}
+													value={"high"}
+													onClick={() =>
+														dispatch(
+															onSort(
+																"product_price",
+																"desc"
+															)
+														)
+													}
+												>
+													Highest price
+												</SelectItem>
+												<SelectItem
+													key={"low"}
+													value={"low"}
+													onClick={() =>
+														dispatch(
+															onSort(
+																"product_price",
+																"asc"
+															)
+														)
+													}
+												>
+													Lowest price
+												</SelectItem>
+											</Select>
 										</div>
-										<div className="filter-group-modal">
+										{/* <div className="filter-group-modal">
 											<h5 className="font-medium mb-2">
 												Price
 											</h5>
@@ -103,56 +222,80 @@ const ExploreProductsFilterMobile = () => {
 													}
 												/>
 											</div>
-										</div>
+										</div> */}
 										<div className="filter-group-modal">
 											<h5 className="font-medium mb-2">
 												Brand
 											</h5>
-											<CheckboxGroup color="primary">
-												<Checkbox value="logitech">
-													Logitech
-												</Checkbox>
-												<Checkbox value="razer">
-													Razer
-												</Checkbox>
-												<Checkbox value="steelseries">
-													Steelseries
-												</Checkbox>
-												<Checkbox value="corsair">
-													Corsair
-												</Checkbox>
-												<Checkbox value="fantech">
-													Fantech
-												</Checkbox>
-												<Checkbox value="aoc">
-													AOC
-												</Checkbox>
-											</CheckboxGroup>
+											<div className="grid">
+												{props.brandsData?.map(
+													(value) => {
+														return (
+															<Checkbox
+																key={value.id}
+																value={String(
+																	value.id
+																)}
+																onClick={() =>
+																	dispatch(
+																		onBrand(
+																			String(
+																				value.id
+																			)
+																		)
+																	)
+																}
+																defaultSelected={brand.includes(
+																	String(
+																		value.id
+																	)
+																)}
+															>
+																{
+																	value.brand_name
+																}
+															</Checkbox>
+														);
+													}
+												)}
+											</div>
 										</div>
 										<div className="filter-group-modal">
 											<h5 className="font-medium mb-2">
 												Category
 											</h5>
-											<CheckboxGroup color="primary">
-												<Checkbox value="mouse">
-													Mouse
-												</Checkbox>
-												<Checkbox value="keyboard">
-													Keyboard
-												</Checkbox>
-												<Checkbox value="headset">
-													Headset
-												</Checkbox>
-												<Checkbox value="controller">
-													Controller
-												</Checkbox>
-												<Checkbox value="monitor">
-													Monitor
-												</Checkbox>
-												<Checkbox value="mousepad">
-													Mousepad
-												</Checkbox>
-											</CheckboxGroup>
+											<div className="grid">
+												{props.categoriesData?.map(
+													(value) => {
+														return (
+															<Checkbox
+																key={value.id}
+																value={String(
+																	value.id
+																)}
+																onClick={() =>
+																	dispatch(
+																		onCategory(
+																			String(
+																				value.id
+																			)
+																		)
+																	)
+																}
+																defaultSelected={category.includes(
+																	String(
+																		value.id
+																	)
+																)}
+															>
+																{
+																	value.category_type
+																}
+															</Checkbox>
+														);
+													}
+												)}
+											</div>
 										</div>
 									</ModalBody>
 									<ModalFooter className="justify-between">

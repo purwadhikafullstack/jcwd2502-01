@@ -12,7 +12,6 @@ module.exports = {
 				orderDirection,
 				offset,
 			} = query;
-
 			const selectedAttributes = [
 				"id",
 				"product_name",
