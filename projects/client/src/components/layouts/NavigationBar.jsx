@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
-
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 
 import { IoSearch, IoCartOutline } from "react-icons/io5";
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
 
 import {
@@ -17,11 +16,13 @@ import {
 	NavbarMenuToggle,
 	Input,
 	NavbarMenuItem,
+	Badge,
 } from "@nextui-org/react";
 
 import NexoLogo from "../../assets/logo/NexoLogo";
 import { useDispatch, useSelector } from "react-redux";
 import { onSearch, setSearch } from "../../redux/features/products";
+import { fetchCartAsync } from "../../redux/features/carts";
 
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,6 +32,8 @@ const NavigationBar = () => {
 	const location = useLocation();
 
 	const search = useSelector((state) => state.products.search);
+
+	const count = useSelector((state) => state.carts.count);
 
 	// const takeFromQuery = () => {
 	// 	const queryParams = new URLSearchParams(location.search);
@@ -52,6 +55,10 @@ const NavigationBar = () => {
 	// useEffect(() => {
 	// 	takeFromQuery();
 	// }, []);
+
+	useEffect(() => {
+		dispatch(fetchCartAsync(1));
+	}, []);
 
 	useEffect(() => {
 		formik.setFieldValue("searchQuery", search);
@@ -94,6 +101,8 @@ const NavigationBar = () => {
 						<Input
 							type="text"
 							placeholder="Search on Nexocomp"
+							isClearable
+							onClear={() => dispatch(setSearch(""))}
 							startContent={<IoSearch opacity={".5"} />}
 							variant="bordered"
 							fullWidth
@@ -109,9 +118,19 @@ const NavigationBar = () => {
 				</NavbarContent>
 				<NavbarContent justify="end" className="hidden md:flex">
 					<Link to={"/cart"}>
-						<Button isIconOnly aria-label="Cart" variant="flat">
-							<IoCartOutline size={22} className="fill-accent" />
-						</Button>
+						<Badge
+							disableOutline
+							content={count}
+							shape="circle"
+							className="bg-red-500 text-white"
+						>
+							<Button isIconOnly aria-label="Cart" variant="flat">
+								<IoCartOutline
+									size={22}
+									className="fill-accent"
+								/>
+							</Button>
+						</Badge>
 					</Link>
 				</NavbarContent>
 				<NavbarContent justify="end" className="gap-2 hidden md:flex">
