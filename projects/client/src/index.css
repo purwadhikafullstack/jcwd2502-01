@@ -102,6 +102,11 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+input[type="number"].font-normal {
+  font-weight: 700;
+  text-align: center;
+}
+
 .ff-inter {
   font-family: "Inter", sans-serif;
 }
@@ -135,4 +140,3 @@ code {
     margin: 0 auto;
   }
 }
-
