@@ -2,12 +2,15 @@ import React from "react";
 import { Select, SelectItem } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { onClear, onSort } from "../../redux/features/products";
+import { useNavigate } from "react-router-dom";
 
 const ExploreProductsHeader = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const search = useSelector((state) => state.products.search);
 	const clear = async () => {
 		await dispatch(onClear());
+		navigate(`/explore${search && `?search=${search}`}`);
 		window.location.reload(false);
 	};
 	return (
@@ -39,9 +42,6 @@ const ExploreProductsHeader = () => {
 									variant="bordered"
 									className="min-w-[178px]"
 									placeholder="Options"
-									// onChange={(e) =>
-									// 	dispatch(onSort(e.target.value))
-									// }
 								>
 									<SelectItem
 										key={"az"}

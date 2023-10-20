@@ -19,6 +19,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const ProductListFeed = (props) => {
 	const products = useSelector((state) => state.products.products);
 	const count = useSelector((state) => state.products.count);
+	const totalPage = useSelector((state) => state.products.totalPage);
 	const orderField = useSelector((state) => state.products.orderField);
 	const orderDirection = useSelector(
 		(state) => state.products.orderDirection
@@ -32,8 +33,6 @@ const ProductListFeed = (props) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
-
-	const totalPage = Math.ceil(count / 12);
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
@@ -62,28 +61,17 @@ const ProductListFeed = (props) => {
 	};
 
 	useEffect(() => {
-		// dispatch(fetchProductAsync());
-		// fetchCategories();
 		takeFromQuery();
 	}, []);
 
 	useEffect(() => {
-		if (
-			orderDirection !== "" ||
-			orderField !== "" ||
-			search !== "" ||
-			page !== 1 ||
-			category.length !== 0 ||
-			brand.length !== 0
-		) {
-			navigate(
-				`/explore?search=${search}&brand=${brand.join(
-					""
-				)}&category=${category.join(
-					""
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			);
-		}
+		navigate(
+			`/explore?search=${search}&brand=${brand.join(
+				""
+			)}&category=${category.join(
+				""
+			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+		);
 
 		dispatch(
 			fetchProductAsync(
@@ -108,8 +96,8 @@ const ProductListFeed = (props) => {
 					<Pagination
 						size="md"
 						showControls
-						total={props.totalPage}
-						page={page}
+						total={totalPage ? totalPage : 10}
+						page={page ? page : 0}
 						color="secondary"
 						variant="flat"
 						className="z-0"

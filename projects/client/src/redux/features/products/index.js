@@ -12,6 +12,7 @@ const initialState = {
 	page: 1,
 	offset: 0,
 	count: 0,
+	totalPage: 6,
 };
 
 export const productsSlice = createSlice({
@@ -23,6 +24,9 @@ export const productsSlice = createSlice({
 		},
 		setCount: (initialState, { payload }) => {
 			initialState.count = payload;
+		},
+		setTotalPage: (initialState, { payload }) => {
+			initialState.totalPage = payload;
 		},
 		setOrderField: (initialState, { payload }) => {
 			initialState.orderField = payload;
@@ -102,6 +106,8 @@ export const fetchProductAsync = (query) => async (dispatchEvent) => {
 		const { data } = await axiosInstance().get(
 			`products/all${query ? query : ""}`
 		);
+		const totalPage = await Math.ceil(data.data.count / 12);
+		dispatchEvent(setTotalPage(totalPage));
 		dispatchEvent(setProducts(data.data.products));
 		dispatchEvent(setCount(data.data.count));
 	} catch (error) {
@@ -199,6 +205,7 @@ export const {
 	setCategory,
 	setBrand,
 	setCount,
+	setTotalPage,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;
