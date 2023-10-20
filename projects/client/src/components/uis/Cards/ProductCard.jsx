@@ -1,14 +1,19 @@
 import React from "react";
-import { Chip } from "@nextui-org/react";
+import { Button, Chip } from "@nextui-org/react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/features/carts";
 
 const ProductCard = (props) => {
 	const data = props.data;
+
 	const productPrice = data?.product_price.toLocaleString("id-ID", {
 		style: "currency",
 		currency: "IDR",
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	});
+
+	const dispatch = useDispatch();
 
 	return (
 		<>
@@ -22,11 +27,11 @@ const ProductCard = (props) => {
 						alt={`${data?.product_images[0].image.substring(7)}`}
 					/>
 				</div>
-				<div className="product-content h-auto flex flex-col p-2 md:pt-2 md:px-2 md:pb-4">
+				<div className="product-content min-w- w-full min-h-[200px] flex flex-col p-2 md:pt-2 md:px-2 md:pb-4">
 					<span className="product-title font-medium text-body-sm md:text-body-lg line-clamp-2">
 						{data?.product_name}
 					</span>
-					<div className="frame-8 flex gap-1 md:gap-2 my-2">
+					<div className="flex gap-1 md:gap-2 my-2">
 						<Chip className="chip md:px-2" size="sm">
 							<p className="text-[10px] md:text-label-lg">
 								{data?.brand.brand_name}
@@ -41,6 +46,18 @@ const ProductCard = (props) => {
 					<p className="price text-price-xs md:text-price-md font-bold">
 						{productPrice}
 					</p>
+					<div className="w-full mt-auto">
+						<Button
+							fullWidth
+							color="primary"
+							onClick={() => dispatch(addToCart(1, data?.id))}
+						>
+							<span className="text-black font-medium flex items-center gap-2">
+								<span className="text-[24px]">+</span> Add to
+								cart
+							</span>
+						</Button>
+					</div>
 				</div>
 			</div>
 		</>
