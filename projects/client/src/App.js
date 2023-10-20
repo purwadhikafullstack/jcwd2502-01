@@ -13,6 +13,8 @@ import { useEffect, useState } from "react";
 import SignupPage from "./pages/auth/SignUpPage";
 import ExploreProductsPage from "./pages/public/ExploreProductsPage";
 import CartPage from "./pages/user/CartPage";
+import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
+import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 
 function App() {
 	const [theme, setTheme] = useState(
@@ -35,8 +37,18 @@ function App() {
 
 	const { pathname } = useLocation();
 
-	const excludedPathsNavbar = ["/login", "/signup", "/verified", "/confirm"];
-	const excludedPathsFooter = ["/login", "/signup", "/verified", "/confirm"];
+	const excludedPathsNavbar = [
+		"/login",
+		"/signup",
+		"/verify",
+		"/reset_password",
+	];
+	const excludedPathsFooter = [
+		"/login",
+		"/signup",
+		"/verify",
+		"/reset_password",
+	];
 
 	const isExcludedNavbar = excludedPathsNavbar.some((path) =>
 		pathname.startsWith(path)
@@ -52,6 +64,8 @@ function App() {
 			<ThemeToggle handleToggle={handleToggle} theme={theme} />
 			<Routes>
 				<Route path="/" element={<HomePage />} />
+				<Route path="/verify" element={<AccountVerificationPage />} />
+				<Route path="/reset_password" element={<ResetPasswordPage />} />
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
 				<Route path="/cart" element={<CartPage />} />
