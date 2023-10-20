@@ -39,7 +39,7 @@ const SignupPage = () => {
 												id="name"
 												variant="bordered"
 												size="lg"
-												label="Fullname"
+												label="Username"
 											/>
 										</div>
 										<div className="form-group">
