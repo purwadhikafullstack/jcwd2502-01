@@ -96,7 +96,7 @@ const ProductListFeed = (props) => {
 					<Pagination
 						size="md"
 						showControls
-						total={totalPage ? totalPage : 10}
+						total={totalPage ? totalPage : 1}
 						page={page ? page : 0}
 						color="secondary"
 						variant="flat"
