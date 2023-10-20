@@ -50,6 +50,12 @@ module.exports = {
 				quantity -= 1;
 			}
 
+			if (quantity === 0) {
+				await db.cart.destroy({ where: { id } });
+
+				return respHandler(res, "Delete Cart Success", null);
+			}
+
 			await db.cart.update({ quantity }, { where: { id } });
 
 			respHandler(res, "Update Cart Success", null);
