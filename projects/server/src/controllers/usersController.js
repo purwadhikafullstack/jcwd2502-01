@@ -10,7 +10,7 @@ module.exports = {
 		try {
 			const getUsername = await createUser(req.body);
 			if (getUsername.message) {
-				respHandler(res, getUsername.message, null, 500, true);
+				respHandler(res, getUsername.message, null, 200, true);
 			} else {
 				respHandler(res, "Register Successed");
 			}

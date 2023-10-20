@@ -14,7 +14,8 @@ module.exports = {
 			const checkUsername = await db.user.findOne({
 				where: { username },
 			});
-			if (checkUsername) throw { message: "username already used" };
+			if (checkUsername)
+				throw { isError: true, message: "username already used" };
 			// const checkEmail = await db.user.findOne({ where: { email } });
 			// if (checkEmail) throw { message: "email already used" };
 			const hashPassword = await hash(password);
@@ -27,7 +28,7 @@ module.exports = {
 				status: "inactive",
 			});
 
-			const token = createJWT({ id: registerUser.dataValues.id }, "1h");
+			const token = createJWT({ id: registerUser.dataValues.id }, "1d");
 			const readTemplate = await fs.readFile(
 				path.join(__dirname, "../public/index.html"),
 				"utf-8"
@@ -57,6 +58,7 @@ module.exports = {
 			// console.log(checkEmail);
 			if (!checkEmail)
 				throw {
+					isError: true,
 					message: "No account associated with this email address.",
 				};
 			const hashMatch = await match(
@@ -64,7 +66,11 @@ module.exports = {
 				checkEmail.dataValues.password
 			);
 			console.log(hashMatch);
-			if (!hashMatch) throw { message: "password salah" };
+			if (!hashMatch)
+				throw {
+					isError: true,
+					message: "Incorrect password. Please try again.",
+				};
 			const tokenTransaction = await createJWT(
 				{
 					id: checkEmail.dataValues.id,
@@ -83,7 +89,7 @@ module.exports = {
 			console.log(accessToken);
 			return {
 				isError: false,
-				message: "Login is success",
+				message: "Login successful. Welcome back!",
 				data: {
 					username: checkEmail.dataValues.username,
 					profileUser: checkEmail.dataValues.profile_picture,

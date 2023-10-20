@@ -1,12 +1,46 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
 import LoopLogo from "../../assets/images/loop-logo.svg";
 import { Button, Input } from "@nextui-org/react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import { onRegisterAsync } from "../../redux/features/users";
+import { useDispatch, useSelector } from "react-redux";
 
 const SignupPage = () => {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
+	const { isLogin } = useSelector((state) => state.user);
+	const [click, setClick] = useState(true);
+	const [state, setState] = useState({
+		username: "",
+		email: "",
+		password: "",
+	});
+
+	const handleChange = (e) => {
+		console.log(e.target.value);
+		const value = e.target.value;
+		setState({
+			...state,
+			[e.target.name]: value,
+		});
+	};
+
+	const handleRegister = (username, email, password) => {
+		if (!click) return;
+		dispatch(onRegisterAsync(username, email, password));
+
+		setClick(false);
+		setTimeout(() => setClick(true), 2000);
+	};
+
+	useEffect(() => {
+		if (isLogin) {
+			navigate("/");
+		}
+	}, [isLogin]);
 
 	return (
 		<>
@@ -35,11 +69,13 @@ const SignupPage = () => {
 										<div className="form-group">
 											<Input
 												type="text"
-												name="name"
+												name="username"
 												id="name"
 												variant="bordered"
 												size="lg"
 												label="Fullname"
+												value={state.username}
+												onChange={handleChange}
 											/>
 										</div>
 										<div className="form-group">
@@ -50,6 +86,8 @@ const SignupPage = () => {
 												variant="bordered"
 												size="lg"
 												label="Email Address"
+												value={state.email}
+												onChange={handleChange}
 											/>
 										</div>
 										<div className="form-group">
@@ -64,6 +102,8 @@ const SignupPage = () => {
 												variant="bordered"
 												size="lg"
 												label="Password"
+												value={state.password}
+												onChange={handleChange}
 												endContent={
 													<button
 														className="focus:outline-none"
@@ -88,6 +128,13 @@ const SignupPage = () => {
 												className="bg-primary-500 text-black font-bold hover"
 												fullWidth
 												size="lg"
+												onClick={() =>
+													handleRegister(
+														state.username,
+														state.email,
+														state.password
+													)
+												}
 											>
 												Create Account
 											</Button>
