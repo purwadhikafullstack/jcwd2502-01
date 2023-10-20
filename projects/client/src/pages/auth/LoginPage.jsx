@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
 import LoopLogo from "../../assets/images/loop-logo.svg";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
@@ -13,8 +13,8 @@ const LoginPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
-	// const [inputEmail, setInputEmail] = useState("");
-	// const [inputPassword, setInputPassword] = useState("");
+	const { role } = useSelector((state) => state.user);
+	const [click, setClick] = useState(true);
 	const [state, setState] = useState({
 		email: "",
 		password: "",
@@ -30,8 +30,22 @@ const LoginPage = () => {
 	};
 
 	const handleLogin = (email, password) => {
+		if (!click) return;
 		dispatch(onLoginAsync(email, password));
+
+		setClick(false);
+		setTimeout(() => setClick(true), 2000);
 	};
+
+	useEffect(() => {
+		console.log("test");
+		console.log(role);
+		if (role === "user") {
+			navigate("/");
+		} else if (role === "admin") {
+			navigate("/admin");
+		}
+	}, [role]);
 
 	return (
 		<>
