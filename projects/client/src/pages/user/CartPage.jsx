@@ -1,11 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 
-import { Button, Checkbox, CheckboxGroup, cn } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 
 import ProductCartCard from "../../components/uis/Cards/ProductCartCard";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCartAsync } from "../../redux/features/carts";
 
 const CartPage = () => {
-	const [productSelected, setProductSelected] = useState([]);
+	const cart = useSelector((state) => state.carts.carts);
+
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(fetchCartAsync(1));
+	}, []);
 
 	return (
 		<>
@@ -15,18 +23,29 @@ const CartPage = () => {
 				</div>
 				<div className="page-body flex">
 					<div className="product-cart-list w-full">
-						<div className="product-cart-list-wrapper">
-							<CheckboxGroup
-								value={productSelected}
-								onChange={setProductSelected}
-							>
-								<ProductCartCard />
-								<ProductCartCard />
-								<ProductCartCard />
-								<ProductCartCard />
-								<ProductCartCard />
-							</CheckboxGroup>
-						</div>
+						{cart.length ? (
+							<>
+								<div className="product-cart-list-wrapper">
+									<div>
+										{cart?.map((product) => {
+											return (
+												<>
+													<ProductCartCard
+														dataProduct={product}
+													/>
+												</>
+											);
+										})}
+									</div>
+								</div>
+							</>
+						) : (
+							<>
+								<div>
+									<h1>Cart empty</h1>
+								</div>
+							</>
+						)}
 					</div>
 					<div className="cart-action">
 						<div className="cart-action-card md:col-span-2 md:ml-12 w-full md:w-[320px]">
