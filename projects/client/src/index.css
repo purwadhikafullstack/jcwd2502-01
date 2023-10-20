@@ -2,13 +2,141 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+
+@layer base {
+  :root {
+    --swiper-pagination-color: #101010;
+
+    --text: #101010;
+
+    --background: #ffffff;
+
+    --primary-50: #e9ffe5;
+    --primary-100: #cfffc7;
+    --primary-200: #a4ff94;
+    --primary-300: #74ff5c;
+    --primary-400: #49ff29;
+    --primary-500: #24ef00;
+    --primary-600: #1dc200;
+    --primary-700: #158f00;
+    --primary-800: #0f6100;
+    --primary-900: #072e00;
+    --primary-950: #041900;
+
+    --secondary-50: #eaeaf1;
+    --secondary-100: #d3d1e0;
+    --secondary-200: #aaa6c4;
+    --secondary-300: #7e79a5;
+    --secondary-400: #5b5680;
+    --secondary-500: #3a3752;
+    --secondary-600: #302d43;
+    --secondary-700: #232131;
+    --secondary-800: #181722;
+    --secondary-900: #0b0a0f;
+    --secondary-950: #060609;
+
+    --accent-50: #f0f0f5;
+    --accent-100: #e4fbf7;
+    --accent-200: #c5f6ee;
+    --accent-300: #abf2e6;
+    --accent-400: #90eedf;
+    --accent-500: #73ead7;
+    --accent-600: #37e1c5;
+    --accent-700: #1bb69c;
+    --accent-800: #127867;
+    --accent-900: #093e35;
+    --accent-950: #051f1b;
+  }
+  .dark {
+    --text: #ffffff;
+
+    --background: #101010;
+
+    --primary-50: #e9ffe5;
+    --primary-100: #cfffc7;
+    --primary-200: #a4ff94;
+    --primary-300: #74ff5c;
+    --primary-400: #49ff29;
+    --primary-500: #24ef00;
+    --primary-600: #1dc200;
+    --primary-700: #158f00;
+    --primary-800: #0f6100;
+    --primary-900: #072e00;
+    --primary-950: #041900;
+
+    --secondary-50: #eaeaf1;
+    --secondary-100: #d3d1e0;
+    --secondary-200: #aaa6c4;
+    --secondary-300: #7e79a5;
+    --secondary-400: #5b5680;
+    --secondary-500: #3a3752;
+    --secondary-600: #302d43;
+    --secondary-700: #232131;
+    --secondary-800: #181722;
+    --secondary-900: #0b0a0f;
+    --secondary-950: #060609;
+
+    --accent-50: #f0f0f5;
+    --accent-100: #e4fbf7;
+    --accent-200: #c5f6ee;
+    --accent-300: #abf2e6;
+    --accent-400: #90eedf;
+    --accent-500: #73ead7;
+    --accent-600: #37e1c5;
+    --accent-700: #1bb69c;
+    --accent-800: #127867;
+    --accent-900: #093e35;
+    --accent-950: #051f1b;
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input[type="number"].font-normal {
+  font-weight: 700;
+  text-align: center;
+}
+
+.ff-inter {
+  font-family: "Inter", sans-serif;
+}
+
+.ff-space-g {
+  font-family: "Space Grotesk", sans-serif;
+}
+
 body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  font-family: "Space Grotesk", "Inter", "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif, -apple-system, BlinkMacSystemFont;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.my-container {
+  max-width: 100%;
+  margin: 0 16px;
+}
+
+@media (min-width: 768px) {
+  .my-container {
+    max-width: 1232px;
+    margin: 0 auto;
+  }
 }
