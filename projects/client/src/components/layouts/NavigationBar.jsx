@@ -26,7 +26,6 @@ import { fetchCartAsync } from "../../redux/features/carts";
 
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
