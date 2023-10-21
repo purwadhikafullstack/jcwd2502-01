@@ -13,10 +13,12 @@ module.exports = {
 	verify: (req, res, next) => {
 		try {
 			const { authorization } = req.headers;
+			console.log(authorization);
 			if (!authorization) throw { message: "token was not found" };
 			const decodeData = jwt.verify(authorization, "abc123");
 			req.dataToken = decodeData;
 			if (decodeData.apiKey == "Approved") {
+				console.log(decodeData);
 				next();
 			} else {
 				throw { message: "User is not approved" };

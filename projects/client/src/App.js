@@ -64,7 +64,10 @@ function App() {
 			<ThemeToggle handleToggle={handleToggle} theme={theme} />
 			<Routes>
 				<Route path="/" element={<HomePage />} />
-				<Route path="/verify" element={<AccountVerificationPage />} />
+				<Route
+					path="/verify/:token/:email"
+					element={<AccountVerificationPage />}
+				/>
 				<Route path="/reset_password" element={<ResetPasswordPage />} />
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
@@ -78,3 +81,4 @@ function App() {
 }
 
 export default App;
+

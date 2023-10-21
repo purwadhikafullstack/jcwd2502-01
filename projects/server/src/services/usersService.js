@@ -6,6 +6,7 @@ const transporter = require("./../helper/transporter");
 const { createJWT } = require("./../lib/jwt");
 const { hash, match } = require("./../helper/hashing");
 const respHandler = require("../utils/respHandler");
+const { check } = require("express-validator");
 
 module.exports = {
 	createUser: async (body) => {
@@ -34,7 +35,7 @@ module.exports = {
 				"utf-8"
 			);
 			const compiledTemplate = await handlebars.compile(readTemplate);
-			const newTemplate = compiledTemplate({ username, token });
+			const newTemplate = compiledTemplate({ username, token, email });
 
 			await transporter.sendMail({
 				from: {
@@ -76,14 +77,14 @@ module.exports = {
 					id: checkEmail.dataValues.id,
 					apiKey: "Approved",
 				},
-				"20m"
+				"365d"
 			);
 			const accessToken = await createJWT(
 				{
 					username: checkEmail.dataValues.username,
 					apiKey: "Approved",
 				},
-				"30"
+				"365d"
 			);
 			console.log(tokenTransaction);
 			console.log(accessToken);
@@ -98,6 +99,56 @@ module.exports = {
 					accessToken: accessToken,
 					tokenTransaction: tokenTransaction,
 				},
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+	verifyAccessToken: async (dataToken) => {
+		try {
+			const { username } = dataToken;
+			console.log(username);
+			const checkData = await db.user.findOne({ where: { username } });
+			if (!checkData)
+				throw { isError: true, message: "Account is not exist" };
+
+			return {
+				isError: false,
+				message: "token still on going!",
+				data: {
+					username: checkData.dataValues.username,
+					profileUser: checkData.dataValues.profile_picture,
+					email: checkData.dataValues.email,
+					role: checkData.dataValues.role,
+				},
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+	verifyStatusUser: async (dataToken, headers) => {
+		try {
+			const { username } = dataToken;
+			const { password } = headers;
+			console.log(username);
+			console.log(password);
+			const checkUser = await db.user.findOne({ where: { username } });
+			if (!checkUser)
+				throw { isError: true, message: "Account is not exist" };
+			console.log(checkUser);
+			const checkPassword = await match(
+				password,
+				checkUser.dataValues.password
+			);
+			if (!checkPassword)
+				throw { isError: true, message: "Password is Wrong!" };
+			await db.user.update(
+				{ status: "verified" },
+				{ where: { id: checkUser.dataValues.id } }
+			);
+			return {
+				isError: false,
+				message: "Verification is Success",
 			};
 		} catch (error) {
 			return error;

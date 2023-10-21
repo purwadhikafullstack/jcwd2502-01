@@ -21,7 +21,7 @@ const LoginPage = () => {
 	});
 
 	const handleChange = (e) => {
-		console.log(e.target.value);
+		// console.log(e.target.value);
 		const value = e.target.value;
 		setState({
 			...state,
