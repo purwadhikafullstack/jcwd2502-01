@@ -29,7 +29,13 @@ module.exports = {
 				status: "inactive",
 			});
 
-			const token = createJWT({ id: registerUser.dataValues.id }, "1d");
+			const token = createJWT(
+				{
+					username: registerUser.dataValues.username,
+					apiKey: "Approved",
+				},
+				"1d"
+			);
 			const readTemplate = await fs.readFile(
 				path.join(__dirname, "../public/index.html"),
 				"utf-8"
@@ -86,8 +92,6 @@ module.exports = {
 				},
 				"365d"
 			);
-			console.log(tokenTransaction);
-			console.log(accessToken);
 			return {
 				isError: false,
 				message: "Login successful. Welcome back!",
@@ -107,7 +111,6 @@ module.exports = {
 	verifyAccessToken: async (dataToken) => {
 		try {
 			const { username } = dataToken;
-			console.log(username);
 			const checkData = await db.user.findOne({ where: { username } });
 			if (!checkData)
 				throw { isError: true, message: "Account is not exist" };
@@ -130,8 +133,6 @@ module.exports = {
 		try {
 			const { username } = dataToken;
 			const { password } = headers;
-			console.log(username);
-			console.log(password);
 			const checkUser = await db.user.findOne({ where: { username } });
 			if (!checkUser)
 				throw { isError: true, message: "Account is not exist" };

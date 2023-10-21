@@ -58,8 +58,8 @@ module.exports = {
 				.withMessage("Password Must be filled!")
 				.isAlphanumeric()
 				.withMessage("Spaces are not allowed.")
-				.isLength({ min: 6 })
-				.withMessage("Password must be more than 5 characters!")
+				// .isLength({ min: 6 })
+				// .withMessage("Password must be more than 5 characters!")
 				.isLength({ max: 20 })
 				.withMessage("Password must be less than 21 characters!")
 				.run(req);
