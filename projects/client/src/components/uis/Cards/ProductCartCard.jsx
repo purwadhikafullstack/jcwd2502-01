@@ -14,7 +14,7 @@ import { changeQuantity, deleteOrder } from "../../../redux/features/carts";
 const ProductCartCard = ({ dataProduct }) => {
 	const { id, quantity, product } = dataProduct;
 
-	const productPrice = product.product_price.toLocaleString("id-ID", {
+	const productPrice = product?.product_price.toLocaleString("id-ID", {
 		style: "currency",
 		currency: "IDR",
 		minimumFractionDigits: 0,
@@ -33,13 +33,13 @@ const ProductCartCard = ({ dataProduct }) => {
 								base: cn("max-w-full w-full"),
 								label: "w-full",
 							}}
-							value={product.product_name}
+							value={product?.product_name}
 						></Checkbox>
 					</div>
 					<div className="product-cart-card-wrapper w-full flex gap-2 justify-between ml-2">
 						<div className="product-card-img-wrapper">
 							<img
-								src={`http://localhost:8000/static/${product.product_images[0].image.substring(
+								src={`http://localhost:8000/static/${product?.product_images[0].image.substring(
 									7
 								)}`}
 								alt=""
@@ -49,12 +49,12 @@ const ProductCartCard = ({ dataProduct }) => {
 						<div className="product-cart-info w-full">
 							<div className="product-detail ml-1">
 								<p className="product-title md:font-medium text-body-md md:text-body-lg line-clamp-1">
-									{product.product_name}
+									{product?.product_name}
 								</p>
 								<div className="flex gap-1 md:gap-2">
 									<p className="text-[10px] md:text-label-lg ">
-										{product.brand.brand_name} •{" "}
-										{product.category.category_type}
+										{product?.brand.brand_name} •{" "}
+										{product?.category.category_type}
 									</p>
 								</div>
 								<p className="price text-body-md md:text-price-sm font-bold">

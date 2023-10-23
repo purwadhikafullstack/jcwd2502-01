@@ -1,17 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import {
 	Button,
 	Checkbox,
-	CheckboxGroup,
-	Input,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	Radio,
-	RadioGroup,
 	Select,
 	SelectItem,
 	useDisclosure,
@@ -19,17 +15,31 @@ import {
 
 import { IoOptionsOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { axiosInstance } from "../../lib/axios";
-import { onBrand, onCategory, onSort } from "../../redux/features/products";
+import {
+	onBrand,
+	onCategory,
+	onClear,
+	onSort,
+} from "../../redux/features/products";
+import { useNavigate } from "react-router-dom";
 
 const ExploreProductsFilterMobile = (props) => {
 	const category = useSelector((state) => state.products.category);
 	const brand = useSelector((state) => state.products.brand);
 	const count = useSelector((state) => state.products.count);
 
+	const search = useSelector((state) => state.products.search);
+
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+	const clear = async () => {
+		await dispatch(onClear());
+		navigate(`/explore${search && `?search=${search}`}`);
+		window.location.reload(false);
+	};
 
 	return (
 		<>
@@ -64,72 +74,12 @@ const ExploreProductsFilterMobile = (props) => {
 											<h5 className="font-medium mb-2">
 												Sort by
 											</h5>
-											{/* <RadioGroup
-												defaultValue={"newest"}
-												color="primary"
-											>
-												<Radio
-													value={"az"}
-													onClick={() =>
-														dispatch(
-															onSort(
-																"product_name",
-																"asc"
-															)
-														)
-													}
-												>
-													A-Z
-												</Radio>
-												<Radio
-													value={"za"}
-													onClick={() =>
-														dispatch(
-															onSort(
-																"product_name",
-																"desc"
-															)
-														)
-													}
-												>
-													Z-A
-												</Radio>
-												<Radio
-													value={"high"}
-													onClick={() =>
-														dispatch(
-															onSort(
-																"product_price",
-																"desc"
-															)
-														)
-													}
-												>
-													Highest price
-												</Radio>
-												<Radio
-													value={"low"}
-													onClick={() =>
-														dispatch(
-															onSort(
-																"product_price",
-																"asc"
-															)
-														)
-													}
-												>
-													Lowest price
-												</Radio>
-											</RadioGroup> */}
 											<Select
 												labelPlacement={"outside-left"}
 												size="md"
 												variant="bordered"
 												className="min-w-[178px]"
 												placeholder="Options"
-												// onChange={(e) =>
-												// 	dispatch(onSort(e.target.value))
-												// }
 											>
 												<SelectItem
 													key={"az"}
@@ -189,40 +139,6 @@ const ExploreProductsFilterMobile = (props) => {
 												</SelectItem>
 											</Select>
 										</div>
-										{/* <div className="filter-group-modal">
-											<h5 className="font-medium mb-2">
-												Price
-											</h5>
-											<div className="price-inputs flex gap-2 items-center">
-												<Input
-													type="number"
-													placeholder="Lowest"
-													variant="bordered"
-													min={0}
-													startContent={
-														<div className="pointer-events-none flex items-center">
-															<span className="text-default-400 font-medium">
-																Rp
-															</span>
-														</div>
-													}
-												/>
-												<span>-</span>
-												<Input
-													type="number"
-													placeholder="Highest"
-													variant="bordered"
-													min={0}
-													startContent={
-														<div className="pointer-events-none flex items-center">
-															<span className="text-default-400 font-medium">
-																Rp
-															</span>
-														</div>
-													}
-												/>
-											</div>
-										</div> */}
 										<div className="filter-group-modal">
 											<h5 className="font-medium mb-2">
 												Brand
@@ -300,18 +216,18 @@ const ExploreProductsFilterMobile = (props) => {
 									</ModalBody>
 									<ModalFooter className="justify-between">
 										<Button
-											onPress={onClose}
+											onPress={() => clear()}
 											variant="bordered"
 											fullWidth
 										>
-											Clear
+											{`Clear Filter(s)`}
 										</Button>
 										<Button
-											className="bg-primary-500"
+											className="bg-primary-500 text-black font-medium"
 											onPress={onClose}
 											fullWidth
 										>
-											Action
+											Apply
 										</Button>
 									</ModalFooter>
 								</>

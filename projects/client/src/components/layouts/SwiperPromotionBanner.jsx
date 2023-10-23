@@ -11,6 +11,9 @@ import { Navigation, Autoplay, Pagination } from "swiper/modules";
 import MySwiperButtonPrev from "../uis/MySwiperButtons/MySwiperButtonPrev";
 import MySwiperButtonNext from "../uis/MySwiperButtons/MySwiperButtonNext";
 
+import BannerLogitech1 from "../../assets/images/promotion-banners/banner_logitech.png";
+import BannerRazer1 from "../../assets/images/promotion-banners/banner_razer.png";
+
 const SwiperPromotionBanner = ({ className }) => {
 	return (
 		<Swiper
@@ -36,18 +39,23 @@ const SwiperPromotionBanner = ({ className }) => {
 				},
 			}}
 			modules={[Autoplay, Navigation, Pagination]}
-			className={`mySwiper h-[240px] md:h-[70vh] w-full ${className} relative`}
+			className={`mySwiper h-[220px] md:h-[80vh] w-full ${className} relative`}
 		>
 			<MySwiperButtonPrev />
-			<SwiperSlide className="bg-primary-500 h-full">Slide 1</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">Slide 2</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">Slide 3</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">Slide 4</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">Slide 5</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">Slide 6</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">Slide 7</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">Slide 8</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">Slide 9</SwiperSlide>
+			<SwiperSlide className="bg-primary-500 h-full">
+				<img
+					src={BannerLogitech1}
+					alt="logitech"
+					className="w-full h-full object-cover"
+				/>
+			</SwiperSlide>
+			<SwiperSlide className="bg-primary-500 h-full">
+				<img
+					src={BannerRazer1}
+					alt="razer"
+					className="w-full h-full object-cover"
+				/>
+			</SwiperSlide>
 			<MySwiperButtonNext />
 		</Swiper>
 	);

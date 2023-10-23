@@ -136,14 +136,18 @@ const NavigationBar = () => {
 				<NavbarContent justify="end" className="gap-2 hidden md:flex">
 					<NavbarItem className="">
 						<Link to={"/login"}>
-							<Button className="bg-secondary-500 text-white font-medium hover">
+							<Button
+								variant="ghost"
+								color="primary"
+								className="font-medium text-text"
+							>
 								Login
 							</Button>
 						</Link>
 					</NavbarItem>
 					<NavbarItem className="">
 						<Link to={"/signup"}>
-							<Button className="bg-primary-500 text-black font-medium hover">
+							<Button className="bg-primary-500 text-black font-medium">
 								Sign Up
 							</Button>
 						</Link>
@@ -159,7 +163,7 @@ const NavigationBar = () => {
 						<div className="flex justify-between gap-2">
 							<Link to={"/login"} className="w-full">
 								<Button
-									className="bg-secondary-500 text-white font-medium hover"
+									className="bg-secondary-500 text-white font-medium"
 									fullWidth
 								>
 									Login
@@ -167,7 +171,7 @@ const NavigationBar = () => {
 							</Link>
 							<Link to={"/signup"} className="w-full">
 								<Button
-									className="bg-primary-500 text-black font-medium hover"
+									className="bg-primary-500 text-black font-medium"
 									fullWidth
 								>
 									Sign Up
