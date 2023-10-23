@@ -117,6 +117,67 @@ export const onRegisterAsync =
 			console.log(error);
 		}
 	};
+
+export const OnCheckIsLogin = () => async (dispatch) => {
+	try {
+		const accessToken = localStorage.getItem("accessToken");
+
+		const CheckToken = await axiosInstance(accessToken).get(
+			"/users/verifyAccess"
+		);
+
+		dispatch(setUsername(CheckToken.data.data.name));
+		dispatch(setProfileUser(CheckToken.data.data.image));
+		dispatch(setRole(CheckToken.data.data.role));
+	} catch (error) {
+		if (error.response.data.isError && localStorage.getItem("tokenLogin")) {
+			localStorage.removeItem("tokenLogin");
+			toast.error("your account is expired");
+		} else {
+			console.log(error);
+		}
+	}
+};
+
+export const onLogout = () => async (dispatch) => {
+	try {
+		localStorage.removeItem("tokenLogin");
+		dispatch(setProfileUser(""));
+		dispatch(setRole(""));
+		dispatch(setUsername(""));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const verifyUser = (password, token) => async (dispatch) => {
+	try {
+		if (!password) {
+			return toast.error("Please fill out this field.");
+		} else if (password.length < 6) {
+			return toast.error(
+				"The Password must be at least 6 characters long"
+			);
+		}
+
+		const statusUser = await axiosInstance(token, password).patch(
+			"/users/verifyStatus"
+		);
+		if (statusUser.data.isError)
+			return toast.error(`${statusUser.data.message}`);
+
+		toast.success(`${statusUser.data.message}`);
+		setTimeout(() => {
+			toast.success("Now try to login");
+		}, 1000);
+		setTimeout(() => {
+			dispatch(setIsLogin(true));
+		}, 1500);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 export const { setUsername, setProfileUser, setRole, setEmail, setIsLogin } =
 	userSlice.actions;
 export default userSlice.reducer;

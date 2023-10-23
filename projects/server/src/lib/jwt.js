@@ -17,6 +17,7 @@ module.exports = {
 			const decodeData = jwt.verify(authorization, "abc123");
 			req.dataToken = decodeData;
 			if (decodeData.apiKey == "Approved") {
+				console.log(decodeData);
 				next();
 			} else {
 				throw { message: "User is not approved" };
