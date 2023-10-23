@@ -17,17 +17,17 @@ const ProductCard = (props) => {
 
 	return (
 		<>
-			<div className="product-card bg-background rounded-[20px] flex flex-col items-start border-1 border-neutral-200 hover:border-primary-500 dark:border-neutral-800 hover:dark:border-secondary-500 hover:shadow-md hover:shadow-primary-200 dark:hover:shadow-secondary-500 duration-200 hover:cursor-pointer">
+			<div className="product-card bg-background rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer hover:scale-[1.015]">
 				<div className="image-wrapper aspect-square w-full">
 					<img
 						src={`http://localhost:8000/static/${data?.product_images[0].image.substring(
 							7
 						)}`}
-						className="image w-full h-full rounded-t-[20px] object-contain"
+						className="image aspect-square w-full h-full rounded-t-[20px] object-contain"
 						alt={`${data?.product_images[0].image.substring(7)}`}
 					/>
 				</div>
-				<div className="product-content min-w- w-full min-h-[200px] flex flex-col p-2 md:pt-2 md:px-2 md:pb-4">
+				<div className="product-content min-w- w-full min-h-[160px] md:min-h-[200px] flex flex-col p-2 md:pt-2 md:px-2 md:pb-4">
 					<span className="product-title font-medium text-body-sm md:text-body-lg line-clamp-2">
 						{data?.product_name}
 					</span>

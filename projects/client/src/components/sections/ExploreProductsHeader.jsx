@@ -1,5 +1,5 @@
 import React from "react";
-import { Select, SelectItem } from "@nextui-org/react";
+import { Button, Select, SelectItem } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { onClear, onSort } from "../../redux/features/products";
 import { useNavigate } from "react-router-dom";
@@ -22,16 +22,25 @@ const ExploreProductsHeader = () => {
 							class="wall-header__title css-69xvwy m-0 pt-6 pb-4 px-0"
 							id=""
 						>
-							<span class="title_prefix absolute top-[-6px]">
-								Search results for
-								<br />
-							</span>
+							{search ? (
+								<>
+									<span class="title_prefix absolute top-[-6px]">
+										Search results for
+										<br />
+									</span>
+								</>
+							) : (
+								<>
+									<span className="font-bold text-title-lg">
+										Explore
+									</span>
+								</>
+							)}
 							<span className="font-medium text-title-lg">
 								{search}
 							</span>
 						</h1>
-						<button onClick={() => clear()}>clear</button>
-						<nav class="wall-header__nav mt-2 hidden md:block">
+						<nav class="wall-header__nav mt-2 hidden md:flex md:gap-4 md:py-4">
 							<div className="sort-by flex items-center">
 								<div className="w-full mr-2 font-medium">
 									Sort by:
@@ -89,6 +98,11 @@ const ExploreProductsHeader = () => {
 									</SelectItem>
 								</Select>
 							</div>
+							<Button
+								variant="bordered"
+								className="border-neutral-200 dark:border-neutral-700"
+								onClick={() => clear()}
+							>{`Clear Filter(s)`}</Button>
 						</nav>
 					</div>
 				</header>

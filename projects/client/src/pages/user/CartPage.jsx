@@ -1,10 +1,13 @@
 import React, { useEffect } from "react";
 
+import { Link } from "react-router-dom";
+
 import { Button } from "@nextui-org/react";
 
 import ProductCartCard from "../../components/uis/Cards/ProductCartCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCartAsync } from "../../redux/features/carts";
+import EmptyCartSVG from "../../assets/illustrations/EmptyCartSVG";
 
 const CartPage = () => {
 	const cart = useSelector((state) => state.carts.carts);
@@ -17,7 +20,7 @@ const CartPage = () => {
 
 	return (
 		<>
-			<main className="cart-page max-w-full mx-[16px] md:max-w-[1120px] md:mx-auto py-4 pb-12">
+			<main className="cart-page max-w-full mx-[16px] md:max-w-[1120px] md:min-h-[90vh] md:mx-auto py-4 pb-12">
 				<div className="page-heading mb-4">
 					<h3 className="font-bold text-headline-sm">Cart</h3>
 				</div>
@@ -41,8 +44,18 @@ const CartPage = () => {
 							</>
 						) : (
 							<>
-								<div>
-									<h1>Cart empty</h1>
+								<div className="empty-cart flex flex-col items-center justify-center py-8">
+									<EmptyCartSVG />
+									<h5 className="text-title-lg font-medium mt-8 mb-6">
+										Oh no, your cart's empty!
+									</h5>
+									<Link to={"/explore"}>
+										<Button color="primary" className="">
+											<span className="font-medium text-black">
+												Explore Products
+											</span>
+										</Button>
+									</Link>
 								</div>
 							</>
 						)}

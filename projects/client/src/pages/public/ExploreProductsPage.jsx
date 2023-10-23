@@ -43,7 +43,7 @@ const ExploreProductsPage = () => {
 		<>
 			<main className="explore-products-page py-6 relative">
 				<ExploreProductsHeader />
-				<div className="result-body my-container md:flex md:py-4">
+				<div className="result-body my-container md:flex md:py-4 md:mb-20">
 					<ExploreProductsFilterMobile
 						categoriesData={categoriesList}
 						brandsData={brandsList}

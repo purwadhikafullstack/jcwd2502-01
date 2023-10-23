@@ -24,8 +24,8 @@ const SwiperBestSellingGears = () => {
 				}}
 				breakpoints={{
 					320: {
-						slidesPerView: 2,
-						centeredSlides: true,
+						slidesPerView: 1.6,
+						// centeredSlides: true,
 						spaceBetween: 10,
 						loop: true,
 					},
