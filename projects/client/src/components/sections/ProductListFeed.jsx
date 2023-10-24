@@ -101,9 +101,10 @@ const ProductListFeed = (props) => {
 						color="secondary"
 						variant="flat"
 						className="z-0"
-						onChange={(e) =>
-							dispatch(setPagination(e, (e - 1) * 12))
-						}
+						onChange={(e) => {
+							dispatch(setPagination(e, (e - 1) * 12));
+							window.scrollTo({ top: 0, behavior: "smooth" });
+						}}
 					/>
 				</div>
 			</div>

@@ -1,10 +1,12 @@
 import { Switch } from "@nextui-org/react";
 import { IoMoon, IoSunny } from "react-icons/io5";
 
-const ThemeToggle = ({ theme, handleToggle }) => {
+const ThemeToggle = ({ theme, handleToggle, display }) => {
 	return (
 		<>
-			<div className="fixed bottom-6 right-4 z-20">
+			<div
+				className={`md:fixed md:bottom-6 md:right-4 md:z-20 ${display}`}
+			>
 				<Switch
 					size="lg"
 					color="default"

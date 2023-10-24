@@ -17,7 +17,7 @@ const ProductCard = (props) => {
 
 	return (
 		<>
-			<div className="product-card bg-background rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer hover:scale-[1.015]">
+			<div className="product-card bg-white dark:bg-[#141414] rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 dark:hover:border-primary-900 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer">
 				<div className="image-wrapper aspect-square w-full">
 					<img
 						src={`http://localhost:8000/static/${data?.product_images[0].image.substring(
