@@ -15,6 +15,7 @@ import ExploreProductsPage from "./pages/public/ExploreProductsPage";
 import CartPage from "./pages/user/CartPage";
 import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import ProductPage from "./pages/public/ProductPage";
 
 function App() {
 	const [theme, setTheme] = useState(
@@ -48,6 +49,8 @@ function App() {
 		"/signup",
 		"/verify",
 		"/reset_password",
+		"/product",
+		"/cart",
 	];
 
 	const isExcludedNavbar = excludedPathsNavbar.some((path) =>
@@ -73,6 +76,7 @@ function App() {
 				<Route path="/signup" element={<SignupPage />} />
 				<Route path="/cart" element={<CartPage />} />
 				<Route path="/explore" element={<ExploreProductsPage />} />
+				<Route path="/product/1" element={<ProductPage />} />
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 			{isExcludedFooter ? null : <Footer />}
@@ -81,4 +85,3 @@ function App() {
 }
 
 export default App;
-

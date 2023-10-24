@@ -13,7 +13,7 @@ const ExploreProductsFilterAside = (props) => {
 	return (
 		<>
 			<div className="filter-aside hidden md:block w-[20%] h-full sticky top-[160px]">
-				<div className="filters-block w-full bg-background rounded-[20px] shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] p-4">
+				<div className="filters-block w-full bg-background rounded-[20px] light:border-1 light:border-primary-100 shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] p-4">
 					<div className="wrapper flex flex-col gap-4">
 						<div className="filter-group">
 							<h5 className="font-medium mb-2">Brand</h5>

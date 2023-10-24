@@ -33,6 +33,9 @@ const ExploreProductsPage = () => {
 	useEffect(() => {
 		fetchCategoriesAsync();
 		fetchBrandsAsync();
+
+		window.scrollTo({ top: 0 });
+
 		return () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));

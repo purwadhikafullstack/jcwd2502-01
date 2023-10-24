@@ -66,7 +66,7 @@ const ProductCartCard = ({ dataProduct }) => {
 				</div>
 				<div>
 					<div className="product-cart-actions">
-						<div className="bottom-right flex items-center justify-end md:justify-end gap-8 mt-2">
+						<div className="bottom-right flex items-center justify-end md:justify-end gap-24 md:gap-8 mt-2">
 							<Button
 								isIconOnly
 								variant="light"
@@ -100,6 +100,7 @@ const ProductCartCard = ({ dataProduct }) => {
 									value={quantity}
 									min={1}
 									max={999999}
+									className="text-text"
 								/>
 								<Button
 									onClick={() => {

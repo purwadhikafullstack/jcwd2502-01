@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --swiper-pagination-color: #101010;
+    --swiper-pagination-color: #fff;
 
     --text: #101010;
 
