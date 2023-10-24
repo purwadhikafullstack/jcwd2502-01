@@ -24,8 +24,8 @@ const SwiperBestSellingGears = () => {
 				}}
 				breakpoints={{
 					320: {
-						slidesPerView: 1.6,
-						// centeredSlides: true,
+						slidesPerView: 1.4,
+						centeredSlides: true,
 						spaceBetween: 10,
 						loop: true,
 					},
@@ -35,7 +35,7 @@ const SwiperBestSellingGears = () => {
 					},
 				}}
 				modules={[Autoplay, Navigation, FreeMode]}
-				className={`mySwiper h-full w-full`}
+				className={`mySwiper w-full`}
 			>
 				<MySwiperButtonPrev />
 				<SwiperSlide className="my-2">
