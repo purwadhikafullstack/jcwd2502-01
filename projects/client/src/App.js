@@ -16,10 +16,14 @@ import CartPage from "./pages/user/CartPage";
 import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import ProductPage from "./pages/public/ProductPage";
+import { useDispatch, useSelector } from "react-redux";
+import { OnCheckIsLogin } from "./redux/features/users";
 
 function App() {
+	const { username, email, role } = useSelector((state) => state.user);
+
 	const [theme, setTheme] = useState(
-		localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
+		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
 	);
 
 	const handleToggle = (e) => {
@@ -35,6 +39,12 @@ function App() {
 		const localTheme = localStorage.getItem("theme");
 		document.querySelector("html").setAttribute("class", localTheme);
 	}, [theme]);
+
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(OnCheckIsLogin());
+	}, [dispatch]);
 
 	const { pathname } = useLocation();
 

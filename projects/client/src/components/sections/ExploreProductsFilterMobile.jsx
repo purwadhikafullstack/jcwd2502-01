@@ -8,8 +8,6 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	Select,
-	SelectItem,
 	useDisclosure,
 } from "@nextui-org/react";
 
@@ -22,6 +20,7 @@ import {
 	onSort,
 } from "../../redux/features/products";
 import { useNavigate } from "react-router-dom";
+import SelectSortBy from "../uis/SelectSortBy/SelectSortBy";
 
 const ExploreProductsFilterMobile = (props) => {
 	const category = useSelector((state) => state.products.category);
@@ -74,70 +73,7 @@ const ExploreProductsFilterMobile = (props) => {
 											<h5 className="font-medium mb-2">
 												Sort by
 											</h5>
-											<Select
-												labelPlacement={"outside-left"}
-												size="md"
-												variant="bordered"
-												className="min-w-[178px]"
-												placeholder="Options"
-											>
-												<SelectItem
-													key={"az"}
-													value={"az"}
-													onClick={() =>
-														dispatch(
-															onSort(
-																"product_name",
-																"asc"
-															)
-														)
-													}
-												>
-													A-Z
-												</SelectItem>
-												<SelectItem
-													key={"za"}
-													value={"za"}
-													onClick={() =>
-														dispatch(
-															onSort(
-																"product_name",
-																"desc"
-															)
-														)
-													}
-												>
-													Z-A
-												</SelectItem>
-												<SelectItem
-													key={"high"}
-													value={"high"}
-													onClick={() =>
-														dispatch(
-															onSort(
-																"product_price",
-																"desc"
-															)
-														)
-													}
-												>
-													Highest price
-												</SelectItem>
-												<SelectItem
-													key={"low"}
-													value={"low"}
-													onClick={() =>
-														dispatch(
-															onSort(
-																"product_price",
-																"asc"
-															)
-														)
-													}
-												>
-													Lowest price
-												</SelectItem>
-											</Select>
+											<SelectSortBy />
 										</div>
 										<div className="filter-group-modal">
 											<h5 className="font-medium mb-2">

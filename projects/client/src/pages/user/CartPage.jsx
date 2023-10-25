@@ -21,7 +21,7 @@ const CartPage = () => {
 
 	return (
 		<>
-			<main className="cart-page max-w-full mx-[16px] md:max-w-[1120px] md:min-h-[90vh] md:mx-auto py-4 pb-44 md:pb-24">
+			<main className="cart-page max-w-full min-h-screen mx-[16px] md:max-w-[1120px] md:min-h-[90vh] md:mx-auto py-4 pb-44 md:pb-24">
 				<div className="page-heading mb-4">
 					<h3 className="font-bold text-headline-sm">Cart</h3>
 				</div>
@@ -47,9 +47,11 @@ const CartPage = () => {
 							<>
 								<div className="empty-cart flex flex-col items-center justify-center py-8">
 									<div className="ml-8">
-										<EmptyCartSVG />
+										<EmptyCartSVG
+											className={"scale-80 md:scale-100"}
+										/>
 									</div>
-									<h5 className="text-title-lg font-medium mt-8 mb-6">
+									<h5 className="text-title-md md:text-title-lg font-medium mt-0 mb-4 md:mt-8 md:mb-6">
 										Oh no, your cart's empty!
 									</h5>
 									<Link to={"/explore"}>

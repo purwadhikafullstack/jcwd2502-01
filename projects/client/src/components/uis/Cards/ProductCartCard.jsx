@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button, Checkbox, Input, cn } from "@nextui-org/react";
+import { Button, Checkbox, Image, Input, cn } from "@nextui-org/react";
 
 import {
 	IoAddCircleOutline,
@@ -38,7 +38,7 @@ const ProductCartCard = ({ dataProduct }) => {
 					</div>
 					<div className="product-cart-card-wrapper w-full flex gap-2 justify-between ml-2">
 						<div className="product-card-img-wrapper">
-							<img
+							<Image
 								src={`http://localhost:8000/static/${product?.product_images[0].image.substring(
 									7
 								)}`}
