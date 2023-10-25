@@ -26,7 +26,6 @@ const NavigationBar = () => {
 	const navigate = useNavigate();
 
 	const search = useSelector((state) => state.products.search);
-
 	const count = useSelector((state) => state.carts.count);
 
 	const formik = useFormik({

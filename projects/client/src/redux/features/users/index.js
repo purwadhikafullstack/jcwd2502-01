@@ -29,6 +29,15 @@ export const userSlice = createSlice({
 		setIsLogin: (initialState, action) => {
 			initialState.isLogin = action.payload;
 		},
+		login: (state, action) => {
+			return (state = {
+				...state,
+				...action.payload,
+			});
+		},
+		logout: (state, action) => {
+			return (state = initialState);
+		},
 	},
 });
 
@@ -66,11 +75,12 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 				"tokenTransaction",
 				checkUser.data.data.tokenTransaction
 			);
-			dispatch(setRole(checkUser.data.data.role));
-			dispatch(setUsername(checkUser.data.data.username));
-			dispatch(setProfileUser(checkUser.data.data.profileUser));
-			dispatch(setEmail(checkUser.data.data.email));
-		}, 1500);
+			// dispatch(setRole(checkUser.data.data.role));
+			// dispatch(setUsername(checkUser.data.data.username));
+			// dispatch(setProfileUser(checkUser.data.data.profileUser));
+			// dispatch(setEmail(checkUser.data.data.email));
+			dispatch(login(checkUser.data.data));
+		}, 1200);
 
 		toast.success(`${checkUser.data.message}`);
 	} catch (error) {
@@ -178,6 +188,12 @@ export const verifyUser = (password, token) => async (dispatch) => {
 	}
 };
 
-export const { setUsername, setProfileUser, setRole, setEmail, setIsLogin } =
-	userSlice.actions;
+export const {
+	setUsername,
+	setProfileUser,
+	setRole,
+	setEmail,
+	setIsLogin,
+	login,
+} = userSlice.actions;
 export default userSlice.reducer;
