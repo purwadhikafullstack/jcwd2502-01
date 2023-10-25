@@ -8,11 +8,16 @@ import { onBrand, onCategory } from "../../redux/features/products";
 const ExploreProductsFilterAside = (props) => {
 	const category = useSelector((state) => state.products.category);
 	const brand = useSelector((state) => state.products.brand);
+	const search = useSelector((state) => state.products.search);
 
 	const dispatch = useDispatch();
 	return (
 		<>
-			<div className="filter-aside hidden md:block w-[20%] h-full sticky top-[160px]">
+			<div
+				className={`filter-aside hidden md:block w-[20%] h-full sticky ${
+					search ? "top-[160px]" : "top-[170px]"
+				} `}
+			>
 				<div className="filters-block w-full bg-background rounded-[20px] light:border-1 light:border-primary-100 shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] p-4">
 					<div className="wrapper flex flex-col gap-4">
 						<div className="filter-group">

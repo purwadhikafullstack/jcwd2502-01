@@ -13,6 +13,7 @@ import MySwiperButtonNext from "../uis/MySwiperButtons/MySwiperButtonNext";
 
 import BannerLogitech1 from "../../assets/images/promotion-banners/banner_logitech.png";
 import BannerRazer1 from "../../assets/images/promotion-banners/banner_razer.png";
+import { Image } from "@nextui-org/react";
 
 const SwiperProductImages = () => {
 	return (
@@ -40,29 +41,29 @@ const SwiperProductImages = () => {
 				<div className="opacity-0 group-hover:opacity-100">
 					<MySwiperButtonPrev />
 				</div>
-				<SwiperSlide className="bg-primary-500 h-full">
-					<img
+				<SwiperSlide className="h-full">
+					<Image
 						src={BannerLogitech1}
 						alt="logitech"
 						className="w-full h-full aspect-square object-cover"
 					/>
 				</SwiperSlide>
-				<SwiperSlide className="bg-primary-500 h-full">
-					<img
+				<SwiperSlide className="h-full">
+					<Image
 						src={BannerRazer1}
 						alt="razer"
 						className="w-full h-full aspect-square object-cover"
 					/>
 				</SwiperSlide>
-				<SwiperSlide className="bg-primary-500 h-full">
-					<img
+				<SwiperSlide className="h-full">
+					<Image
 						src={BannerLogitech1}
 						alt="logitech"
 						className="w-full h-full aspect-square object-cover"
 					/>
 				</SwiperSlide>
-				<SwiperSlide className="bg-primary-500 h-full">
-					<img
+				<SwiperSlide className="h-full">
+					<Image
 						src={BannerRazer1}
 						alt="razer"
 						className="w-full h-full aspect-square object-cover"

@@ -8,8 +8,8 @@ import OrderAction from "../../components/layouts/OrderAction";
 const ProductPage = () => {
 	return (
 		<>
-			<main className="product-page pb-48 md:max-w-[1232px] md:mx-auto md:py-12 md:min-h-screen">
-				<section className="md:grid md:grid-cols-3">
+			<main className="product-page pb-48 md:max-w-[1232px] md:mx-auto md:py-12 md:pb-20 md:min-h-[88vh]">
+				<section className="md:grid md:grid-cols-3 relative">
 					<ProductMediaImage />
 					<ProductDetailContent />
 					<OrderAction />

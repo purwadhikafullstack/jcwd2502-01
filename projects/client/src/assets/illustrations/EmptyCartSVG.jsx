@@ -1,12 +1,13 @@
 import React from "react";
 
-const EmptyCartSVG = () => {
+const EmptyCartSVG = ({ className }) => {
 	return (
 		<>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				width="231"
 				height="221"
+				className={className}
 				fill="none"
 				viewBox="0 0 231 221"
 			>

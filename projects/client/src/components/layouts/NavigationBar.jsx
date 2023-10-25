@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { onSearch, setSearch } from "../../redux/features/products";
 import { fetchCartAsync } from "../../redux/features/carts";
 import NavigationBarMenu from "./NavigationBarMenu";
+import ProfileDropdown from "../uis/Dropdowns/ProfileDropdown";
 
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,6 +27,7 @@ const NavigationBar = () => {
 	const navigate = useNavigate();
 
 	const search = useSelector((state) => state.products.search);
+	const { role } = useSelector((state) => state.user);
 
 	const count = useSelector((state) => state.carts.count);
 
@@ -37,6 +39,12 @@ const NavigationBar = () => {
 			navigate("/explore");
 		},
 	});
+
+	const handleSubmitSearch = (e) => {
+		e.preventDefault();
+		formik.handleSubmit();
+		window.scrollTo({ top: 0 });
+	};
 
 	useEffect(() => {
 		dispatch(fetchCartAsync(1));
@@ -51,10 +59,10 @@ const NavigationBar = () => {
 			<Navbar
 				onMenuOpenChange={setIsMenuOpen}
 				maxWidth="full"
-				className="md:py-2 shadow-sm bg-background border-b-2 dark:border-neutral-800"
+				className="md:py-2 md:px-8 shadow-sm bg-background border-b-2 dark:border-neutral-800"
 				isBlurred={false}
 			>
-				<NavbarContent className="hidden md:flex">
+				<NavbarContent className="hidden md:flex md:pr-2">
 					<NavbarBrand>
 						<Link to={"/"}>
 							<div className="-mb-1.5 w-full">
@@ -79,7 +87,7 @@ const NavigationBar = () => {
 					</NavbarBrand>
 				</NavbarContent>
 				<NavbarContent className="flex gap-4 w-full" justify="center">
-					<form className="w-full" onSubmit={formik.handleSubmit}>
+					<form className="w-full" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
 							placeholder="Search on Nexocomp"
@@ -98,21 +106,18 @@ const NavigationBar = () => {
 						/>
 					</form>
 				</NavbarContent>
-				<NavbarContent justify="end">
+				<NavbarContent justify="end" className="hidden md:flex md:px-2">
 					<Link to={"/cart"}>
 						<Badge
 							disableOutline
 							content={count}
 							shape="circle"
 							size="sm"
-							className="bg-red-500 text-white"
+							className={`${
+								role ? "" : "hidden"
+							} bg-red-500 text-white`}
 						>
-							<Button
-								isIconOnly
-								aria-label="Cart"
-								variant="flat"
-								size="sm"
-							>
+							<Button isIconOnly aria-label="Cart" variant="flat">
 								<IoCartOutline
 									size={22}
 									className="fill-accent"
@@ -121,25 +126,35 @@ const NavigationBar = () => {
 						</Badge>
 					</Link>
 				</NavbarContent>
-				<NavbarContent justify="end" className="gap-2 hidden md:flex">
-					<NavbarItem className="">
-						<Link to={"/login"}>
-							<Button
-								variant="ghost"
-								color="primary"
-								className="font-medium text-text"
-							>
-								Login
-							</Button>
-						</Link>
-					</NavbarItem>
-					<NavbarItem className="">
-						<Link to={"/signup"}>
-							<Button className="bg-primary-500 text-black font-medium">
-								Sign Up
-							</Button>
-						</Link>
-					</NavbarItem>
+				<NavbarContent justify="end" className="gap-2 hidden md:flex ">
+					{role ? (
+						<>
+							<NavbarItem className="flex">
+								<ProfileDropdown />
+							</NavbarItem>
+						</>
+					) : (
+						<>
+							<NavbarItem className="">
+								<Link to={"/login"}>
+									<Button
+										color="secondary"
+										className="font-medium text-white"
+										fullWidth
+									>
+										Login
+									</Button>
+								</Link>
+							</NavbarItem>
+							<NavbarItem className="">
+								<Link to={"/signup"}>
+									<Button className="bg-primary-500 text-black font-medium">
+										Sign Up
+									</Button>
+								</Link>
+							</NavbarItem>
+						</>
+					)}
 				</NavbarContent>
 				<NavbarContent className="sm:hidden">
 					<NavbarMenuToggle

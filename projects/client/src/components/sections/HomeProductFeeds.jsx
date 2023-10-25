@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import ProductCard from "../uis/Cards/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductAsync } from "../../redux/features/products";
+import { Link } from "react-router-dom";
+import { Button } from "@nextui-org/react";
 
 const HomeProductFeeds = () => {
 	const dispatch = useDispatch();
@@ -27,6 +29,15 @@ const HomeProductFeeds = () => {
 						{products?.map((product) => {
 							return <ProductCard data={product} />;
 						})}
+					</div>
+					<div className="text-center py-8">
+						<Link to={"/explore"}>
+							<Button color="primary" size="lg">
+								<span className="font-medium text-black">
+									Explore Products
+								</span>
+							</Button>
+						</Link>
 					</div>
 				</div>
 			</section>
