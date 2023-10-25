@@ -12,22 +12,38 @@ const ProductDetailContent = () => {
 						PRO X SUPERLIGHT 2 LIGHTSPEED Wireless Gaming Mouse
 					</h1>
 					<div className="hidden md:flex gap-1 md:gap-2 my-2">
-						<Chip className="chip md:px-2" size="sm">
-							<p className="text-label-lg">Logitech</p>
+						<Chip
+							className="chip md:px-2"
+							color="secondary"
+							size="sm"
+						>
+							<p className="text-label-lg">{`Logitech`}</p>
 						</Chip>
-						<Chip className="chip md:px-2" size="sm">
-							<p className="text-label-lg">Mouse</p>
+						<Chip
+							className="chip md:px-2"
+							color="secondary"
+							size="sm"
+						>
+							<p className="text-label-lg">{`Mouse`}</p>
 						</Chip>
 					</div>
 					<h2 className="product-price font-bold text-price-md md:text-price-lg mb-2">
 						Rp. 1.990.000
 					</h2>
 					<div className="flex md:hidden gap-1 md:gap-2 my-2">
-						<Chip className="chip md:px-2" size="sm">
-							<p className="text-[12px]">Logitech</p>
+						<Chip
+							className="chip md:px-2"
+							color="secondary"
+							size="sm"
+						>
+							<p className="text-[12px]">{`Logitech`}</p>
 						</Chip>
-						<Chip className="chip md:px-2" size="sm">
-							<p className="text-[12px]">Mouse</p>
+						<Chip
+							className="chip md:px-2"
+							color="secondary"
+							size="sm"
+						>
+							<p className="text-[12px]">{`Mouse`}</p>
 						</Chip>
 					</div>
 					<h1 className="md:hidden product-title font-normal text-body-lg line-clamp-2">

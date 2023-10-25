@@ -11,9 +11,14 @@ import { onClear, setSearch } from "../../redux/features/products";
 const ExploreProductsPage = () => {
 	const [categoriesList, setCategoriesList] = useState([]);
 	const [brandsList, setBrandsList] = useState([]);
+
 	const dispatch = useDispatch();
+
 	const count = useSelector((state) => state.products.count);
+	const search = useSelector((state) => state.products.search);
+
 	const totalPage = Math.ceil(count / 12);
+
 	const fetchCategoriesAsync = async () => {
 		try {
 			const { data } = await axiosInstance().get(`categories/all`);
@@ -44,9 +49,17 @@ const ExploreProductsPage = () => {
 
 	return (
 		<>
-			<main className="explore-products-page py-6 relative">
+			<main
+				className={`explore-products-page ${
+					search ? "py-6" : "py-0"
+				} relative`}
+			>
 				<ExploreProductsHeader />
-				<div className="result-body my-container md:flex md:py-4 md:mb-20">
+				<div
+					className={`result-body my-container md:flex ${
+						search ? "md:pt-4 md:pb-4" : "md:pt-[88px] md:pb-4"
+					} md:mb-10`}
+				>
 					<ExploreProductsFilterMobile
 						categoriesData={categoriesList}
 						brandsData={brandsList}
