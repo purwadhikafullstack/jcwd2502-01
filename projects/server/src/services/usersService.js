@@ -155,4 +155,16 @@ module.exports = {
 			return error;
 		}
 	},
+	changePassword: async () => {
+		try {
+			const { id } = dataToken;
+			// console.log(id);
+			res.send({
+				id: id,
+			});
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
 };
