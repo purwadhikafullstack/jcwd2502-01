@@ -9,4 +9,7 @@ const { warehousesController } = require("../controllers"); // otomatis baca ind
 // const { verify } = require("./../lib/jwt");
 
 Router.get("/all", warehousesController.getAllWarehouses);
+Router.post("/", warehousesController.createWarehouse);
+Router.patch("/:id", warehousesController.editWarehouse);
+Router.delete("/:id", warehousesController.deleteWarehouse);
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js

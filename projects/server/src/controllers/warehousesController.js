@@ -1,7 +1,12 @@
 const { deleteFiles } = require("../helper/deleteFiles");
 const db = require("./../models");
 
-const { findAllWarehouses } = require("./../services/warehousesService");
+const {
+	findAllWarehouses,
+	addWarehouse,
+	updateWarehouse,
+	removeWarehouse,
+} = require("./../services/warehousesService");
 
 const respHandler = require("../utils/respHandler");
 
@@ -15,59 +20,29 @@ module.exports = {
 			next(error);
 		}
 	},
-	createProduct: async (req, res, next) => {
+	createWarehouse: async (req, res, next) => {
 		try {
-			const image = req.files.image;
-			const data = JSON.parse(req.body.data);
-
-			if (image) {
-				data.product_image = image[0].path;
-			}
-
-			const createProduct = await db.product.create(data);
-
-			res.status(201).send({
-				isError: false,
-				message: "Create product success!",
-				data: createProduct,
-			});
+			const { userId } = req.query;
+			const result = await addWarehouse(req.body, userId);
+			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
 		}
 	},
-	updateProduct: async (req, res, next) => {
+	editWarehouse: async (req, res, next) => {
 		try {
-			const { productId } = req.params;
-
-			const image = req.files.image;
-			const data = JSON.parse(req.body.data);
-
-			if (image) {
-				const dataImage = await db.product.findOne({
-					attributes: ["product_image"],
-					where: { id: productId },
-				});
-
-				data.product_image = image[0].path;
-
-				await deleteFiles({
-					image: [
-						{
-							path: dataImage.dataValues.product_image,
-						},
-					],
-				});
-			}
-
-			const updateProduct = await db.product.update(data, {
-				where: { id: productId },
-			});
-
-			res.status(201).send({
-				isError: false,
-				message: "Update product success!",
-				data: updateProduct,
-			});
+			const { warehouseId } = req.params;
+			const result = await updateWarehouse(warehouseId, req.body);
+			respHandler(res, result.message, result.data);
+		} catch (error) {
+			next(error);
+		}
+	},
+	deleteWarehouse: async (req, res, next) => {
+		try {
+			const { id } = req.params;
+			const result = await removeWarehouse(id);
+			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
 		}
