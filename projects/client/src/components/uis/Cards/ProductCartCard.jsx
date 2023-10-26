@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button, Checkbox, Input, cn } from "@nextui-org/react";
+import { Button, Checkbox, Image, Input, cn } from "@nextui-org/react";
 
 import {
 	IoAddCircleOutline,
@@ -38,12 +38,12 @@ const ProductCartCard = ({ dataProduct }) => {
 					</div>
 					<div className="product-cart-card-wrapper w-full flex gap-2 justify-between ml-2">
 						<div className="product-card-img-wrapper">
-							<img
+							<Image
 								src={`http://localhost:8000/static/${product?.product_images[0].image.substring(
 									7
 								)}`}
 								alt=""
-								className="product-image w-20 md:w-28 rounded-t-[20px] object-contain"
+								className="product-image w-20 md:w-28 rounded-lg object-contain"
 							/>
 						</div>
 						<div className="product-cart-info w-full">
@@ -66,7 +66,7 @@ const ProductCartCard = ({ dataProduct }) => {
 				</div>
 				<div>
 					<div className="product-cart-actions">
-						<div className="bottom-right flex items-center justify-end md:justify-end gap-8 mt-2">
+						<div className="bottom-right flex items-center justify-end md:justify-end gap-24 md:gap-8 mt-2">
 							<Button
 								isIconOnly
 								variant="light"
@@ -100,6 +100,7 @@ const ProductCartCard = ({ dataProduct }) => {
 									value={quantity}
 									min={1}
 									max={999999}
+									className="text-text"
 								/>
 								<Button
 									onClick={() => {

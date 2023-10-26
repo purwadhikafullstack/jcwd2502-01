@@ -92,7 +92,7 @@ const ProductListFeed = (props) => {
 						return <ProductCard data={product} />;
 					})}
 				</div>
-				<div className="flex justify-center items-center py-12">
+				<div className="flex justify-center items-center pt-12 pb-12 md:pb-0 ">
 					<Pagination
 						size="md"
 						showControls
@@ -101,9 +101,10 @@ const ProductListFeed = (props) => {
 						color="secondary"
 						variant="flat"
 						className="z-0"
-						onChange={(e) =>
-							dispatch(setPagination(e, (e - 1) * 12))
-						}
+						onChange={(e) => {
+							dispatch(setPagination(e, (e - 1) * 12));
+							window.scrollTo({ top: 0, behavior: "smooth" });
+						}}
 					/>
 				</div>
 			</div>

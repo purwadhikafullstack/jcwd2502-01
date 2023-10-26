@@ -15,10 +15,15 @@ import ExploreProductsPage from "./pages/public/ExploreProductsPage";
 import CartPage from "./pages/user/CartPage";
 import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
+import ProductPage from "./pages/public/ProductPage";
+import { useDispatch, useSelector } from "react-redux";
+import { OnCheckIsLogin } from "./redux/features/users";
 
 function App() {
+	const { username, email, role } = useSelector((state) => state.user);
+
 	const [theme, setTheme] = useState(
-		localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
+		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
 	);
 
 	const handleToggle = (e) => {
@@ -35,6 +40,12 @@ function App() {
 		document.querySelector("html").setAttribute("class", localTheme);
 	}, [theme]);
 
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(OnCheckIsLogin());
+	}, [dispatch]);
+
 	const { pathname } = useLocation();
 
 	const excludedPathsNavbar = [
@@ -48,6 +59,8 @@ function App() {
 		"/signup",
 		"/verify",
 		"/reset_password",
+		"/product",
+		"/cart",
 	];
 
 	const isExcludedNavbar = excludedPathsNavbar.some((path) =>
@@ -61,7 +74,11 @@ function App() {
 		<>
 			<Toaster />
 			{isExcludedNavbar ? null : <NavigationBar />}
-			<ThemeToggle handleToggle={handleToggle} theme={theme} />
+			<ThemeToggle
+				handleToggle={handleToggle}
+				theme={theme}
+				display={"hidden md:flex"}
+			/>
 			<Routes>
 				<Route path="/" element={<HomePage />} />
 				<Route
@@ -73,6 +90,7 @@ function App() {
 				<Route path="/signup" element={<SignupPage />} />
 				<Route path="/cart" element={<CartPage />} />
 				<Route path="/explore" element={<ExploreProductsPage />} />
+				<Route path="/product/1" element={<ProductPage />} />
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 			{isExcludedFooter ? null : <Footer />}
@@ -81,4 +99,3 @@ function App() {
 }
 
 export default App;
-

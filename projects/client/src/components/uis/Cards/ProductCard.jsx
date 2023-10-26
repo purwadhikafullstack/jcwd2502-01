@@ -1,7 +1,5 @@
 import React from "react";
-import { Button, Chip } from "@nextui-org/react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../../../redux/features/carts";
+import { Chip, Image } from "@nextui-org/react";
 
 const ProductCard = (props) => {
 	const data = props.data;
@@ -13,13 +11,11 @@ const ProductCard = (props) => {
 		maximumFractionDigits: 0,
 	});
 
-	const dispatch = useDispatch();
-
 	return (
 		<>
-			<div className="product-card bg-background rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer hover:scale-[1.015]">
+			<div className="product-card bg-white dark:bg-[#141414] rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 dark:hover:border-primary-900 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer">
 				<div className="image-wrapper aspect-square w-full">
-					<img
+					<Image
 						src={`http://localhost:8000/static/${data?.product_images[0].image.substring(
 							7
 						)}`}
@@ -27,7 +23,7 @@ const ProductCard = (props) => {
 						alt={`${data?.product_images[0].image.substring(7)}`}
 					/>
 				</div>
-				<div className="product-content min-w- w-full min-h-[160px] md:min-h-[200px] flex flex-col p-2 md:pt-2 md:px-2 md:pb-4">
+				<div className="product-content min-w- w-full min-h-[128px] md:min-h-[160px] flex flex-col p-2 md:pt-2 md:px-2 md:pb-4">
 					<span className="product-title font-medium text-body-sm md:text-body-lg line-clamp-2">
 						{data?.product_name}
 					</span>
@@ -46,7 +42,7 @@ const ProductCard = (props) => {
 					<p className="price text-price-xs md:text-price-md font-bold">
 						{productPrice}
 					</p>
-					<div className="w-full mt-auto">
+					{/* <div className="w-full mt-auto">
 						<Button
 							fullWidth
 							color="primary"
@@ -57,7 +53,7 @@ const ProductCard = (props) => {
 								cart
 							</span>
 						</Button>
-					</div>
+					</div> */}
 				</div>
 			</div>
 		</>

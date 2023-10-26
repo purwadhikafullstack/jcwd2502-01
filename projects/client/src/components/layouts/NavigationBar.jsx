@@ -1,47 +1,36 @@
+
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-
 import { IoSearch, IoCartOutline } from "react-icons/io5";
-
 import NexocompLogo from "../../assets/logo/NexocompLogo";
-
 import {
 	Navbar,
 	NavbarBrand,
 	NavbarContent,
 	NavbarItem,
 	Button,
-	NavbarMenu,
 	NavbarMenuToggle,
 	Input,
-	NavbarMenuItem,
 	Badge,
 } from "@nextui-org/react";
-
 import NexoLogo from "../../assets/logo/NexoLogo";
 import { useDispatch, useSelector } from "react-redux";
 import { onSearch, setSearch } from "../../redux/features/products";
 import { fetchCartAsync } from "../../redux/features/carts";
+import NavigationBarMenu from "./NavigationBarMenu";
+import ProfileDropdown from "../uis/Dropdowns/ProfileDropdown";
 
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const location = useLocation();
 
 	const search = useSelector((state) => state.products.search);
+	const { role } = useSelector((state) => state.user);
 
 	const count = useSelector((state) => state.carts.count);
-
-	// const takeFromQuery = () => {
-	// 	const queryParams = new URLSearchParams(location.search);
-	// 	const selectedSearch = queryParams.get("search");
-	// 	if (selectedSearch) {
-	// 		dispatch(setSearch(selectedSearch));
-	// 	}
-	// };
 
 	const formik = useFormik({
 		initialValues: { searchQuery: "" },
@@ -52,9 +41,11 @@ const NavigationBar = () => {
 		},
 	});
 
-	// useEffect(() => {
-	// 	takeFromQuery();
-	// }, []);
+	const handleSubmitSearch = (e) => {
+		e.preventDefault();
+		formik.handleSubmit();
+		window.scrollTo({ top: 0 });
+	};
 
 	useEffect(() => {
 		dispatch(fetchCartAsync(1));
@@ -69,10 +60,10 @@ const NavigationBar = () => {
 			<Navbar
 				onMenuOpenChange={setIsMenuOpen}
 				maxWidth="full"
-				className="md:py-2 shadow-sm bg-background border-b-2 dark:border-neutral-800"
+				className="md:py-2 md:px-8 shadow-sm bg-background border-b-2 dark:border-neutral-800"
 				isBlurred={false}
 			>
-				<NavbarContent className="hidden md:flex">
+				<NavbarContent className="hidden md:flex md:pr-2">
 					<NavbarBrand>
 						<Link to={"/"}>
 							<div className="-mb-1.5 w-full">
@@ -87,7 +78,7 @@ const NavigationBar = () => {
 				<NavbarContent className="md:hidden flex">
 					<NavbarBrand>
 						<Link to={"/"}>
-							<div className=" w-full">
+							<div className="w-full">
 								<NexoLogo
 									width={64}
 									fill={"fill-primary-500"}
@@ -97,7 +88,7 @@ const NavigationBar = () => {
 					</NavbarBrand>
 				</NavbarContent>
 				<NavbarContent className="flex gap-4 w-full" justify="center">
-					<form className="w-full" onSubmit={formik.handleSubmit}>
+					<form className="w-full" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
 							placeholder="Search on Nexocomp"
@@ -116,13 +107,16 @@ const NavigationBar = () => {
 						/>
 					</form>
 				</NavbarContent>
-				<NavbarContent justify="end" className="hidden md:flex">
+				<NavbarContent justify="end" className="hidden md:flex md:px-2">
 					<Link to={"/cart"}>
 						<Badge
 							disableOutline
 							content={count}
 							shape="circle"
-							className="bg-red-500 text-white"
+							size="sm"
+							className={`${
+								role ? "" : "hidden"
+							} bg-red-500 text-white`}
 						>
 							<Button isIconOnly aria-label="Cart" variant="flat">
 								<IoCartOutline
@@ -133,56 +127,46 @@ const NavigationBar = () => {
 						</Badge>
 					</Link>
 				</NavbarContent>
-				<NavbarContent justify="end" className="gap-2 hidden md:flex">
-					<NavbarItem className="">
-						<Link to={"/login"}>
-							<Button
-								variant="ghost"
-								color="primary"
-								className="font-medium text-text"
-							>
-								Login
-							</Button>
-						</Link>
-					</NavbarItem>
-					<NavbarItem className="">
-						<Link to={"/signup"}>
-							<Button className="bg-primary-500 text-black font-medium">
-								Sign Up
-							</Button>
-						</Link>
-					</NavbarItem>
+				<NavbarContent justify="end" className="gap-2 hidden md:flex ">
+					{role ? (
+						<>
+							<NavbarItem className="flex">
+								<ProfileDropdown />
+							</NavbarItem>
+						</>
+					) : (
+						<>
+							<NavbarItem className="">
+								<Link to={"/login"}>
+									<Button
+										color="secondary"
+										className="font-medium text-white"
+										fullWidth
+									>
+										Login
+									</Button>
+								</Link>
+							</NavbarItem>
+							<NavbarItem className="">
+								<Link to={"/signup"}>
+									<Button className="bg-primary-500 text-black font-medium">
+										Sign Up
+									</Button>
+								</Link>
+							</NavbarItem>
+						</>
+					)}
 				</NavbarContent>
 				<NavbarContent className="sm:hidden">
 					<NavbarMenuToggle
 						aria-label={isMenuOpen ? "Close menu" : "Open menu"}
 					/>
 				</NavbarContent>
-				<NavbarMenu className="pt-4">
-					<NavbarMenuItem>
-						<div className="flex justify-between gap-2">
-							<Link to={"/login"} className="w-full">
-								<Button
-									className="bg-secondary-500 text-white font-medium"
-									fullWidth
-								>
-									Login
-								</Button>
-							</Link>
-							<Link to={"/signup"} className="w-full">
-								<Button
-									className="bg-primary-500 text-black font-medium"
-									fullWidth
-								>
-									Sign Up
-								</Button>
-							</Link>
-						</div>
-					</NavbarMenuItem>
-				</NavbarMenu>
+				<NavigationBarMenu />
 			</Navbar>
 		</>
 	);
 };
 
 export default NavigationBar;
+
