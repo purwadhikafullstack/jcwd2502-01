@@ -1,6 +1,6 @@
 import React from "react";
 
-import SwiperBestSellingGears from "../layouts/SwiperBestSellingGears";
+import SwiperBestSellingGears from "../uis/MySwiper/SwiperBestSellingGears";
 
 const BestSellingGears = () => {
 	return (

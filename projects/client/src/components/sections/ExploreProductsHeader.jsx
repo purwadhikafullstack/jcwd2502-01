@@ -8,12 +8,15 @@ import SelectSortBy from "../uis/SelectSortBy/SelectSortBy";
 const ExploreProductsHeader = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
 	const search = useSelector((state) => state.products.search);
+
 	const clear = async () => {
 		await dispatch(onClear());
 		navigate(`/explore${search && `?search=${search}`}`);
 		window.location.reload(false);
 	};
+
 	return (
 		<>
 			<div

@@ -43,7 +43,7 @@ const ProductCartCard = ({ dataProduct }) => {
 									7
 								)}`}
 								alt=""
-								className="product-image w-20 md:w-28 rounded-lg object-contain"
+								className="product-image aspect-square w-24 md:w-28 rounded-lg object-contain bg-white"
 							/>
 						</div>
 						<div className="product-cart-info w-full">
@@ -96,6 +96,7 @@ const ProductCartCard = ({ dataProduct }) => {
 								</Button>
 								<Input
 									type="number"
+									name="quantity"
 									size="sm"
 									value={quantity}
 									min={1}

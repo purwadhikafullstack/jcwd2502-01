@@ -42,7 +42,11 @@ const ExploreProductsFilterMobile = (props) => {
 
 	return (
 		<>
-			<div className="subheading-mobile min-h-[70px] flex justify-between items-center md:hidden">
+			<div
+				className={`subheading-mobile md:min-h-[70px] ${
+					search ? "pt-0" : "pt-[70px]"
+				} flex justify-between items-center md:hidden`}
+			>
 				<span className="font-medium text-neutral-400">
 					{count} Results
 				</span>
@@ -79,12 +83,13 @@ const ExploreProductsFilterMobile = (props) => {
 											<h5 className="font-medium mb-2">
 												Brand
 											</h5>
-											<div className="grid">
+											<div className="flex flex-col items-start gap-2">
 												{props.brandsData?.map(
 													(value) => {
 														return (
 															<Checkbox
 																key={value.id}
+																// size="lg"
 																value={String(
 																	value.id
 																)}
@@ -103,9 +108,11 @@ const ExploreProductsFilterMobile = (props) => {
 																	)
 																)}
 															>
-																{
-																	value.brand_name
-																}
+																<span className="text-base">
+																	{
+																		value.brand_name
+																	}
+																</span>
 															</Checkbox>
 														);
 													}
@@ -116,12 +123,13 @@ const ExploreProductsFilterMobile = (props) => {
 											<h5 className="font-medium mb-2">
 												Category
 											</h5>
-											<div className="grid">
+											<div className="flex flex-col items-start gap-2">
 												{props.categoriesData?.map(
 													(value) => {
 														return (
 															<Checkbox
 																key={value.id}
+																// size="lg"
 																value={String(
 																	value.id
 																)}
@@ -140,9 +148,11 @@ const ExploreProductsFilterMobile = (props) => {
 																	)
 																)}
 															>
-																{
-																	value.category_type
-																}
+																<span className="text-base">
+																	{
+																		value.category_type
+																	}
+																</span>
 															</Checkbox>
 														);
 													}

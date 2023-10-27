@@ -8,11 +8,9 @@ import "swiper/css/navigation";
 
 // import required modules
 import { Navigation, Autoplay, Pagination } from "swiper/modules";
-import MySwiperButtonPrev from "../uis/MySwiperButtons/MySwiperButtonPrev";
-import MySwiperButtonNext from "../uis/MySwiperButtons/MySwiperButtonNext";
+import MySwiperButtonPrev from "../MySwiperButtons/MySwiperButtonPrev";
+import MySwiperButtonNext from "../MySwiperButtons/MySwiperButtonNext";
 
-import BannerLogitech1 from "../../assets/images/promotion-banners/banner_logitech.png";
-import BannerRazer1 from "../../assets/images/promotion-banners/banner_razer.png";
 import { Image } from "@nextui-org/react";
 
 const SwiperProductImages = () => {
@@ -43,30 +41,30 @@ const SwiperProductImages = () => {
 				</div>
 				<SwiperSlide className="h-full">
 					<Image
-						src={BannerLogitech1}
+						src={`https://source.unsplash.com/random/300×300`}
 						alt="logitech"
-						className="w-full h-full aspect-square object-cover"
+						className="w-full h-full aspect-square object-cover rounded-none"
 					/>
 				</SwiperSlide>
 				<SwiperSlide className="h-full">
 					<Image
-						src={BannerRazer1}
+						src={`https://source.unsplash.com/random/300×302`}
 						alt="razer"
-						className="w-full h-full aspect-square object-cover"
+						className="w-full h-full aspect-square object-cover rounded-none"
 					/>
 				</SwiperSlide>
 				<SwiperSlide className="h-full">
 					<Image
-						src={BannerLogitech1}
+						src={`https://source.unsplash.com/random/300×303`}
 						alt="logitech"
-						className="w-full h-full aspect-square object-cover"
+						className="w-full h-full aspect-square object-cover rounded-none"
 					/>
 				</SwiperSlide>
 				<SwiperSlide className="h-full">
 					<Image
-						src={BannerRazer1}
+						src={`https://source.unsplash.com/random/300×304`}
 						alt="razer"
-						className="w-full h-full aspect-square object-cover"
+						className="w-full h-full aspect-square object-cover rounded-none"
 					/>
 				</SwiperSlide>
 				<div className="opacity-0 group-hover:opacity-100">

@@ -1,13 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaArrowRight } from "react-icons/fa";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
-import { Input } from "@nextui-org/react";
 import YourPrivacyChoices from "../../assets/logo/YourPrivacyChoices";
 import AppStore from "../../assets/logo/appstore.svg";
 import GooglePlay from "../../assets/logo/googleplay.svg";
+import { axiosInstance } from "../../lib/axios";
 
 const Footer = () => {
+	const [categories, setCategories] = useState([]);
+
+	const fetchCategoriesAsync = async () => {
+		try {
+			const { data } = await axiosInstance().get(`categories/all`);
+
+			setCategories(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		console.log("CATEGORY FOOTER >>>", categories);
+	}, [categories]);
+
+	useEffect(() => {
+		fetchCategoriesAsync();
+	}, []);
+
 	return (
 		<>
 			<footer
@@ -19,28 +38,9 @@ const Footer = () => {
 							<h3 className="font-bold text-lg md:mb-4">
 								Download the app
 							</h3>
-							<div className="download-input w-[400px] hidden items-center justify-between relative md:flex">
-								<form action="" className="w-full">
-									<div>
-										<Input
-											type="email"
-											name="email"
-											id="email"
-											placeholder="Enter email to get an update news"
-											variant="bordered"
-										/>
-									</div>
-								</form>
-								<span className="pr-4 absolute right-0">
-									<FaArrowRight />
-								</span>
-							</div>
-							<p className="text-sm font-medium text-gray-400 mt-4 md:inline hidden">
-								Message and data rates may apply.
-							</p>
-							<div className="download-links flex gap-2 py-2 items-center w-[300px] md:w-[360px] md:mt-6">
+							<div className="download-links flex gap-2 py-2 items-center w-[300px] md:w-[360px] md:mt-2">
 								<div className="app-store">
-									<a href="https://">
+									<a href="">
 										<img
 											alt="Download on the App Store"
 											src={AppStore}
@@ -49,7 +49,7 @@ const Footer = () => {
 									</a>
 								</div>
 								<div className="play-store">
-									<a href="https://">
+									<a href="">
 										<img
 											alt="Get it on Google Play"
 											src={GooglePlay}
@@ -59,10 +59,32 @@ const Footer = () => {
 								</div>
 							</div>
 						</div>
-						<div className="menus-column w-full grid grid-cols-2 gap-y-4 gap-x-6 mb-4 mt-4 md:mt-0 md:flex md:justify-between md:pl-20">
+						<div className="menus-column w-full h-auto grid grid-cols-2 grid-rows-2 gap-x-6 my-4 md:mt-0 md:flex md:justify-between md:pl-20">
+							<div className="footer-developer mt-2 md:mt-0 text-left order-last md:order-first">
+								<h3 className="font-bold mb-2 md:mb-4">
+									Nexocomp
+								</h3>
+								<div className="flex flex-col gap-2">
+									<Link>
+										<span className="hover:underline">
+											About Nexocomp
+										</span>
+									</Link>
+									<Link>
+										<span className="hover:underline">
+											Copyright
+										</span>
+									</Link>
+									<Link>
+										<span className="hover:underline">
+											FAQs
+										</span>
+									</Link>
+								</div>
+							</div>
 							<div className="footer-social text-left">
 								<h3 className="font-bold mb-2 md:mb-4">
-									Social
+									Socials
 								</h3>
 								<div className="flex flex-col gap-2">
 									<Link>
@@ -87,12 +109,22 @@ const Footer = () => {
 									Categories
 								</h3>
 								<div className="flex flex-col gap-2">
-									<Link>
-										<span className="hover:underline">
-											Mouse
-										</span>
-									</Link>
-									<Link>
+									{categories?.map((category) => {
+										return (
+											<>
+												<Link
+													to={`/explore?category=${category?.id}`}
+												>
+													<span className="hover:underline">
+														{
+															category?.category_type
+														}
+													</span>
+												</Link>
+											</>
+										);
+									})}
+									{/* <Link>
 										<span className="hover:underline">
 											Keyboard
 										</span>
@@ -111,39 +143,12 @@ const Footer = () => {
 										<span className="hover:underline">
 											Mousepad
 										</span>
-									</Link>
-								</div>
-							</div>
-							<div className="footer-developer text-left">
-								<h3 className="font-bold mb-2 md:mb-4">
-									Use Nexocomp
-								</h3>
-								<div className="flex flex-col gap-2">
-									<Link>
-										<span className="hover:underline">
-											Create an Event
-										</span>
-									</Link>
-									<Link>
-										<span className="hover:underline">
-											Pricing
-										</span>
-									</Link>
-									<Link>
-										<span className="hover:underline">
-											Content Standards
-										</span>
-									</Link>
-									<Link>
-										<span className="hover:underline">
-											FAQs
-										</span>
-									</Link>
+									</Link> */}
 								</div>
 							</div>
 						</div>
 					</div>
-					<div className="footer-bottom md:pt-10 mt-4 md:mt-14 gap-y-4 grid md:grid-cols-2 grid-cols-1 grid-rows-2 grid-flow-dense pb-12 md:pb-0">
+					<div className="footer-bottom md:pt-4 mt-4 md:mt-14 gap-y-4 grid md:grid-cols-2 grid-cols-1 grid-rows-2 grid-flow-dense pb-12 md:pb-0">
 						<span className="legal-logo flex items-center gap-6 w-full">
 							<a href="/" className="-mb-1.5">
 								<NexocompLogo
@@ -168,13 +173,13 @@ const Footer = () => {
 									</button>
 								</li>
 								<li>
-									<a href="http://">Terms</a>
+									<a href="">Terms</a>
 								</li>
 								<li>
-									<a href="http://">Privacy</a>
+									<a href="">Privacy</a>
 								</li>
 								<li>
-									<a href="http://">Site map</a>
+									<a href="">Site map</a>
 								</li>
 							</ul>
 						</span>

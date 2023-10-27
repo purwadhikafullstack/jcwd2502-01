@@ -49,6 +49,8 @@
     --accent-950: #051f1b;
   }
   .dark {
+    --swiper-pagination-color: #fff;
+
     --text: #ffffff;
 
     --background: #101010;
@@ -91,6 +93,23 @@
   }
 }
 
+::-webkit-scrollbar {
+  width: 0.75vw;
+  height: 0.75vw;
+  background-color: var(--background);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--primary-500);
+  border: 0.2vw solid var(--background);
+  border-radius: 100vw;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-300);
+  border-radius: 100vw;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -102,9 +121,13 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-input[type="number"].font-normal {
+input[type="number"][name="quantity"] {
   font-weight: 700;
   text-align: center;
+}
+
+span.text-primary-foreground {
+  color: var(--secondary-600);
 }
 
 .ff-inter {

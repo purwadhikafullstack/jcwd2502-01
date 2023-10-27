@@ -40,17 +40,6 @@ const GearCategories = () => {
 							categoryId={2}
 						/>
 						<CategorySelection
-							subtitle={"Headset"}
-							image={
-								<img
-									src={HeadphoneCategory}
-									alt=""
-									className="w-20 md:w-24 absolute -top-6 left-2 md:left-3 md:-top-8 group-hover:scale-105 duration-200 group-hover:rotate-2 ease-in-out group-hover:drop-shadow-xl"
-								/>
-							}
-							categoryId={3}
-						/>
-						<CategorySelection
 							subtitle={"Controller"}
 							image={
 								<img
@@ -59,18 +48,18 @@ const GearCategories = () => {
 									className="w-full absolute -top-2 -left-2 md:-top-4 md:-left-4 group-hover:scale-105 group-hover:rotate-2 duration-200 ease-in-out group-hover:drop-shadow-xl"
 								/>
 							}
-							categoryId={4}
+							categoryId={3}
 						/>
 						<CategorySelection
-							subtitle={"Mousepad"}
+							subtitle={"Headset"}
 							image={
 								<img
-									src={MousepadCategory}
+									src={HeadphoneCategory}
 									alt=""
-									className="w-[86px] md:w-full scale-150 absolute top-4 left-2 md:left-0 skew-y-12 -skew-x-12 group-hover:scale-[1.6] group-hover:rotate-2 duration-200 ease-in-out group-hover:drop-shadow-xl"
+									className="w-20 md:w-24 absolute -top-6 left-2 md:left-3 md:-top-8 group-hover:scale-105 duration-200 group-hover:rotate-2 ease-in-out group-hover:drop-shadow-xl"
 								/>
 							}
-							categoryId={6}
+							categoryId={4}
 						/>
 						<CategorySelection
 							subtitle={"Monitor"}
@@ -82,6 +71,17 @@ const GearCategories = () => {
 								/>
 							}
 							categoryId={5}
+						/>
+						<CategorySelection
+							subtitle={"Mousepad"}
+							image={
+								<img
+									src={MousepadCategory}
+									alt=""
+									className="w-[86px] md:w-full scale-150 absolute top-4 left-2 md:left-0 skew-y-12 -skew-x-12 group-hover:scale-[1.6] group-hover:rotate-2 duration-200 ease-in-out group-hover:drop-shadow-xl"
+								/>
+							}
+							categoryId={6}
 						/>
 					</div>
 				</div>
