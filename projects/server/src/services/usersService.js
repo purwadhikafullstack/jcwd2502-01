@@ -167,6 +167,7 @@ module.exports = {
 				{
 					username: checkUser.dataValues.username,
 					apiKey: "Approved",
+					tokentype: "reset",
 				},
 				"1d",
 				"reset"

@@ -14,16 +14,16 @@ const ResetPasswordPage = () => {
 
 	const formik = useFormik({
 		initialValues: {
-			newPassword: "",
-			confirmPassword: "",
+			newpassword: "",
+			confirmpassword: "",
 		},
 		onSubmit: (values) => {
 			console.log(values.newPassword);
 			console.log(values.confirmPassword);
 		},
 		validationSchema: yup.object().shape({
-			newPassword: yup.string().required(),
-			confirmPassword: yup.string().required(),
+			newpassword: yup.string().required(),
+			confirmpassword: yup.string().required(),
 		}),
 	});
 	return (
@@ -49,10 +49,10 @@ const ResetPasswordPage = () => {
 								<div className="form-container">
 									<div className="flex flex-col gap-4">
 										<div className="form-group">
-											{formik.touched.newPassword &&
-											formik.errors.newPassword ? (
+											{formik.touched.newpassword &&
+											formik.errors.newpassword ? (
 												<div className="text-red-600">
-													{formik.errors.newPassword}
+													{formik.errors.newpassword}
 												</div>
 											) : null}
 											<Input
@@ -61,7 +61,7 @@ const ResetPasswordPage = () => {
 														? "text"
 														: "password"
 												}
-												name="newPassword"
+												name="newpassword"
 												id="password"
 												variant="bordered"
 												size="lg"
@@ -88,12 +88,12 @@ const ResetPasswordPage = () => {
 											/>
 										</div>
 										<div className="form-group">
-											{formik.touched.confirmPassword &&
-											formik.errors.confirmPassword ? (
+											{formik.touched.confirmpassword &&
+											formik.errors.confirmpassword ? (
 												<div className="text-red-600">
 													{
 														formik.errors
-															.confirmPassword
+															.confirmpassword
 													}
 												</div>
 											) : null}
@@ -103,7 +103,7 @@ const ResetPasswordPage = () => {
 														? "text"
 														: "password"
 												}
-												name="confirmPassword"
+												name="confirmpassword"
 												id="password"
 												variant="bordered"
 												size="lg"

@@ -43,20 +43,20 @@ export const userSlice = createSlice({
 
 export const onLoginAsync = (email, password) => async (dispatch) => {
 	try {
-		console.log(email);
-		console.log(password);
-		const hasSymbol = email.indexOf("@");
-		const hasDot = email.indexOf(".");
+		// console.log(email);
+		// console.log(password);
+		// const hasSymbol = email.indexOf("@");
+		// const hasDot = email.indexOf(".");
 
-		if (!email || !password) {
-			return toast.error("Please fill out this field.");
-		} else if (hasSymbol === -1 || hasDot === -1) {
-			return toast.error("Please provide a valid email address.");
-		} else if (password.length < 6) {
-			return toast.error(
-				"The Password must be at least 6 characters long"
-			);
-		}
+		// if (!email || !password) {
+		// 	return toast.error("Please fill out this field.");
+		// } else if (hasSymbol === -1 || hasDot === -1) {
+		// 	return toast.error("Please provide a valid email address.");
+		// } else if (password.length < 6) {
+		// 	return toast.error(
+		// 		"The Password must be at least 6 characters long"
+		// 	);
+		// }
 
 		const checkUser = await axiosInstance().post("/users/login", {
 			email: email,
@@ -71,13 +71,12 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 				"accessToken",
 				checkUser.data.data.accessToken
 			);
-			// dispatch(setRole(checkUser.data.data.role));
-			// dispatch(setUsername(checkUser.data.data.username));
-			// dispatch(setProfileUser(checkUser.data.data.profileUser));
-			// dispatch(setEmail(checkUser.data.data.email));
-			dispatch(login(checkUser.data.data));
+			dispatch(setRole(checkUser.data.data.role));
+			dispatch(setUsername(checkUser.data.data.username));
+			dispatch(setProfileUser(checkUser.data.data.profileUser));
+			dispatch(setEmail(checkUser.data.data.email));
+			// dispatch(login(checkUser.data.data));
 		}, 1200);
-
 		toast.success(`${checkUser.data.message}`);
 	} catch (error) {
 		console.log(error);
@@ -131,8 +130,9 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 		const CheckToken = await axiosInstance(accessToken).get(
 			"/users/verifyAccess"
 		);
-
-		dispatch(setUsername(CheckToken.data.data.name));
+		console.log(CheckToken);
+		dispatch(setUsername(CheckToken.data.data.username));
+		dispatch(setEmail(CheckToken.data.data.email));
 		dispatch(setProfileUser(CheckToken.data.data.image));
 		dispatch(setRole(CheckToken.data.data.role));
 	} catch (error) {
@@ -147,7 +147,8 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 
 export const onLogout = () => async (dispatch) => {
 	try {
-		localStorage.removeItem("tokenLogin");
+		localStorage.removeItem("accessToken");
+		dispatch(setProfileUser(""));
 		dispatch(setProfileUser(""));
 		dispatch(setRole(""));
 		dispatch(setUsername(""));
