@@ -22,7 +22,7 @@ const ExploreProductsFilterAside = (props) => {
 					<div className="wrapper flex flex-col gap-4">
 						<div className="filter-group">
 							<h5 className="font-medium mb-2">Brand</h5>
-							<div className="grid">
+							<div className="flex flex-col items-start gap-2">
 								{props.brandsData?.map((value) => {
 									return (
 										<Checkbox
@@ -45,7 +45,7 @@ const ExploreProductsFilterAside = (props) => {
 						</div>
 						<div className="filter-group">
 							<h5 className="font-medium mb-2">Category</h5>
-							<div>
+							<div className="flex flex-col items-start gap-2">
 								{props.categoriesData?.map((value) => {
 									return (
 										<Checkbox

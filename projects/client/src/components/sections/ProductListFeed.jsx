@@ -14,6 +14,7 @@ import {
 	setCategory,
 	setPagination,
 } from "../../redux/features/products";
+import NotFound from "../../assets/illustrations/NotFoundillustration.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ProductListFeed = (props) => {
@@ -60,6 +61,12 @@ const ProductListFeed = (props) => {
 		}
 	};
 
+	const renderProductFeed = () => {
+		return products?.map((product) => {
+			return <ProductCard data={product} />;
+		});
+	};
+
 	useEffect(() => {
 		takeFromQuery();
 	}, []);
@@ -86,12 +93,29 @@ const ProductListFeed = (props) => {
 
 	return (
 		<>
-			<div className="product-list md:w-full md:pl-8">
-				<div className="grid-wrapper grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 py-4 md:py-0">
-					{products?.map((product) => {
-						return <ProductCard data={product} />;
-					})}
-				</div>
+			<div className="product-list md:w-full md:h-full md:pl-8">
+				{console.log("PRODUCTS>>>", products)}
+				{products?.length ? (
+					<>
+						<div className="grid-wrapper grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 py-4 md:py-0">
+							{renderProductFeed()}
+						</div>
+					</>
+				) : (
+					<>
+						<div className="w-full h-[50vh] py-4">
+							<img
+								src={NotFound}
+								alt=""
+								className="w-44 md:w-64 mx-auto mt-8"
+							/>
+
+							<h1 className="font-bold text-title-lg text-center pt-4">
+								Product not found
+							</h1>
+						</div>
+					</>
+				)}
 				<div className="flex justify-center items-center pt-12 pb-12 md:pb-0 ">
 					<Pagination
 						size="md"

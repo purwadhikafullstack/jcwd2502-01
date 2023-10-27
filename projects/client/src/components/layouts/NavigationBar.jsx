@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -60,7 +59,7 @@ const NavigationBar = () => {
 			<Navbar
 				onMenuOpenChange={setIsMenuOpen}
 				maxWidth="full"
-				className="md:py-2 md:px-8 shadow-sm bg-background border-b-2 dark:border-neutral-800"
+				className="md:py-2 md:px-2 shadow-sm bg-background border-b-2 dark:border-neutral-800"
 				isBlurred={false}
 			>
 				<NavbarContent className="hidden md:flex md:pr-2">
@@ -108,7 +107,7 @@ const NavigationBar = () => {
 					</form>
 				</NavbarContent>
 				<NavbarContent justify="end" className="hidden md:flex md:px-2">
-					<Link to={"/cart"}>
+					<Link to={role ? "/cart" : "/login"}>
 						<Badge
 							disableOutline
 							content={count}
@@ -169,4 +168,3 @@ const NavigationBar = () => {
 };
 
 export default NavigationBar;
-

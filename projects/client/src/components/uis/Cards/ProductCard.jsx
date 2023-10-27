@@ -1,5 +1,7 @@
 import React from "react";
-import { Chip, Image } from "@nextui-org/react";
+import { Button, Chip, Image } from "@nextui-org/react";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/features/carts";
 
 const ProductCard = (props) => {
 	const data = props.data;
@@ -11,15 +13,18 @@ const ProductCard = (props) => {
 		maximumFractionDigits: 0,
 	});
 
+	const dispatch = useDispatch();
+
 	return (
 		<>
-			<div className="product-card bg-white dark:bg-[#141414] rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 dark:hover:border-primary-900 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer">
+			<div className="product-card bg-white dark:bg-[#141414] rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 dark:hover:border-primary-900 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer select-none">
 				<div className="image-wrapper aspect-square w-full">
 					<Image
+						radius="none"
 						src={`http://localhost:8000/static/${data?.product_images[0].image.substring(
 							7
 						)}`}
-						className="image aspect-square w-full h-full rounded-t-[20px] object-contain"
+						className="image aspect-square w-full h-full rounded-t-[19px] object-contain"
 						alt={`${data?.product_images[0].image.substring(7)}`}
 					/>
 				</div>
@@ -28,12 +33,20 @@ const ProductCard = (props) => {
 						{data?.product_name}
 					</span>
 					<div className="flex gap-1 md:gap-2 my-2">
-						<Chip className="chip md:px-2" size="sm">
+						<Chip
+							className="chip md:px-2"
+							size="sm"
+							color="secondary"
+						>
 							<p className="text-[10px] md:text-label-lg">
 								{data?.brand.brand_name}
 							</p>
 						</Chip>
-						<Chip className="chip md:px-2" size="sm">
+						<Chip
+							className="chip md:px-2"
+							size="sm"
+							color="secondary"
+						>
 							<p className="text-[10px] md:text-label-lg">
 								{data?.category.category_type}
 							</p>
@@ -42,7 +55,7 @@ const ProductCard = (props) => {
 					<p className="price text-price-xs md:text-price-md font-bold">
 						{productPrice}
 					</p>
-					{/* <div className="w-full mt-auto">
+					<div className="w-full mt-auto">
 						<Button
 							fullWidth
 							color="primary"
@@ -53,7 +66,7 @@ const ProductCard = (props) => {
 								cart
 							</span>
 						</Button>
-					</div> */}
+					</div>
 				</div>
 			</div>
 		</>

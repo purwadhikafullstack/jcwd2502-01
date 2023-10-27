@@ -136,7 +136,8 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 			"/users/verifyAccess"
 		);
 
-		dispatch(setUsername(CheckToken.data.data.name));
+		dispatch(setUsername(CheckToken.data.data.username));
+		dispatch(setEmail(CheckToken.data.data.email));
 		dispatch(setProfileUser(CheckToken.data.data.image));
 		dispatch(setRole(CheckToken.data.data.role));
 	} catch (error) {
@@ -151,8 +152,10 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 
 export const onLogout = () => async (dispatch) => {
 	try {
-		localStorage.removeItem("tokenLogin");
+		localStorage.removeItem("accessToken");
+		localStorage.removeItem("tokenTransaction");
 		dispatch(setProfileUser(""));
+		dispatch(setEmail(""));
 		dispatch(setRole(""));
 		dispatch(setUsername(""));
 	} catch (error) {

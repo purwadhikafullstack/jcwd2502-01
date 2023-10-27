@@ -7,19 +7,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { FcGoogle } from "react-icons/fc";
 import { onLoginAsync } from "../../redux/features/users";
 import { Button, Input } from "@nextui-org/react";
-import { onLoginSync } from "../../redux/features/users";
 import { useFormik } from "formik";
 import { debounce } from "lodash";
 import * as yup from "yup";
 
 const LoginPage = () => {
+	const [showPassword, setShowPassword] = useState(false);
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const [showPassword, setShowPassword] = useState(false);
+
 	const { role } = useSelector((state) => state.user);
+
 	const debouncedSubmit = debounce((email, password) => {
 		dispatch(onLoginAsync(email, password));
 	}, 1500);
+
 	const formik = useFormik({
 		initialValues: {
 			email: "",
@@ -30,7 +33,7 @@ const LoginPage = () => {
 		},
 		validationSchema: yup.object().shape({
 			email: yup.string().required().email(),
-			password: yup.string().required(),
+			password: yup.string().required().min(6),
 		}),
 	});
 
@@ -67,14 +70,11 @@ const LoginPage = () => {
 							</div>
 							<div className="login-form">
 								<div className="form-container">
-									<div className="flex flex-col gap-4">
+									<form
+										className="flex flex-col gap-4"
+										onSubmit={formik.handleSubmit}
+									>
 										<div className="form-group">
-											{formik.touched.email &&
-											formik.errors.email ? (
-												<div className="text-red-600">
-													{formik.errors.email}
-												</div>
-											) : null}
 											<Input
 												type="email"
 												name="email"
@@ -85,14 +85,14 @@ const LoginPage = () => {
 												onChange={formik.handleChange}
 												onBlur={formik.handleBlur}
 											/>
-										</div>
-										<div className="form-group">
-											{formik.touched.password &&
-											formik.errors.password ? (
-												<div className="text-red-600">
-													{formik.errors.password}
+											{formik.touched.email &&
+											formik.errors.email ? (
+												<div className="text-red-600 first-letter:capitalize">
+													{formik.errors.email}
 												</div>
 											) : null}
+										</div>
+										<div className="form-group">
 											<Input
 												type={
 													showPassword
@@ -124,18 +124,24 @@ const LoginPage = () => {
 													</button>
 												}
 											/>
+											{formik.touched.password &&
+											formik.errors.password ? (
+												<div className="text-red-600 first-letter:capitalize">
+													{formik.errors.password}
+												</div>
+											) : null}
 										</div>
 										<div className="form-group">
 											<Button
 												className="bg-primary-500 text-black font-bold hover"
 												fullWidth
 												size="lg"
-												onClick={formik.handleSubmit}
+												type="submit"
 											>
 												Login
 											</Button>
 										</div>
-									</div>
+									</form>
 								</div>
 							</div>
 							<div className="split-form my-6 flex justify-center items-center">
