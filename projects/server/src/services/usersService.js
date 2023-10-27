@@ -7,6 +7,7 @@ const { createJWT } = require("./../lib/jwt");
 const { hash, match } = require("./../helper/hashing");
 const respHandler = require("../utils/respHandler");
 const { check } = require("express-validator");
+const { log } = require("util");
 
 module.exports = {
 	createUser: async (body) => {
@@ -34,14 +35,20 @@ module.exports = {
 					username: registerUser.dataValues.username,
 					apiKey: "Approved",
 				},
-				"1d"
+				"1d",
+				"verified"
 			);
 			const readTemplate = await fs.readFile(
 				path.join(__dirname, "../public/index.html"),
 				"utf-8"
 			);
 			const compiledTemplate = await handlebars.compile(readTemplate);
-			const newTemplate = compiledTemplate({ username, token, email });
+			const newTemplate = compiledTemplate({
+				port: process.env.DB_PORT_index,
+				username,
+				token,
+				email,
+			});
 
 			await transporter.sendMail({
 				from: {
@@ -78,16 +85,9 @@ module.exports = {
 					isError: true,
 					message: "Incorrect password. Please try again.",
 				};
-			const tokenTransaction = await createJWT(
-				{
-					id: checkEmail.dataValues.id,
-					apiKey: "Approved",
-				},
-				"365d"
-			);
 			const accessToken = await createJWT(
 				{
-					username: checkEmail.dataValues.username,
+					id: checkEmail.dataValues.id,
 					apiKey: "Approved",
 				},
 				"365d"
@@ -101,7 +101,6 @@ module.exports = {
 					email: checkEmail.dataValues.email,
 					role: checkEmail.dataValues.role,
 					accessToken: accessToken,
-					tokenTransaction: tokenTransaction,
 				},
 			};
 		} catch (error) {
@@ -110,8 +109,8 @@ module.exports = {
 	},
 	verifyAccessToken: async (dataToken) => {
 		try {
-			const { username } = dataToken;
-			const checkData = await db.user.findOne({ where: { username } });
+			const { id } = dataToken;
+			const checkData = await db.user.findOne({ where: { id } });
 			if (!checkData)
 				throw { isError: true, message: "Account is not exist" };
 
@@ -155,13 +154,48 @@ module.exports = {
 			return error;
 		}
 	},
-	changePassword: async () => {
+	changePassword: async (dataToken) => {
 		try {
 			const { id } = dataToken;
-			// console.log(id);
-			res.send({
-				id: id,
+			console.log(id);
+			const checkUser = await db.user.findOne({ where: { id } });
+			if (!checkUser)
+				throw { isError: true, message: "Account is not found!" };
+			console.log(checkUser.dataValues);
+
+			const token = createJWT(
+				{
+					username: checkUser.dataValues.username,
+					apiKey: "Approved",
+				},
+				"1d",
+				"reset"
+			);
+			const readTemplate = await fs.readFile(
+				path.join(__dirname, "../public/changePass.html"),
+				"utf-8"
+			);
+			const compiledTemplate = await handlebars.compile(readTemplate);
+			const newTemplate = compiledTemplate({
+				port: process.env.DB_PORT_changePass,
+				username: checkUser.dataValues.username,
+				token,
 			});
+
+			await transporter.sendMail({
+				from: {
+					name: "nexocomp",
+					email: "nexocomppurwadhika@gmail.com",
+				},
+				to: checkUser.dataValues.email,
+				subject: "Request Change Password",
+				html: newTemplate,
+			});
+
+			return {
+				isError: false,
+				message: "Request for password change has been sent.",
+			};
 		} catch (error) {
 			console.log(error);
 			return error;

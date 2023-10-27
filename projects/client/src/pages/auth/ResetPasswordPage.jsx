@@ -1,9 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import LoopLogo from "../../assets/images/loop-logo.svg";
 import { Button, Input } from "@nextui-org/react";
+import { useParams } from "react-router-dom";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 const ResetPasswordPage = () => {
+	const [showNewPassword, setShowNewPassword] = useState(false);
+	const [showConPassword, setShowConPassword] = useState(false);
+	const { token } = useParams();
+
+	const formik = useFormik({
+		initialValues: {
+			newPassword: "",
+			confirmPassword: "",
+		},
+		onSubmit: (values) => {
+			console.log(values.newPassword);
+			console.log(values.confirmPassword);
+		},
+		validationSchema: yup.object().shape({
+			newPassword: yup.string().required(),
+			confirmPassword: yup.string().required(),
+		}),
+	});
 	return (
 		<>
 			<main className="account-verification-page w-full h-[100vh]">
@@ -27,23 +49,84 @@ const ResetPasswordPage = () => {
 								<div className="form-container">
 									<div className="flex flex-col gap-4">
 										<div className="form-group">
+											{formik.touched.newPassword &&
+											formik.errors.newPassword ? (
+												<div className="text-red-600">
+													{formik.errors.newPassword}
+												</div>
+											) : null}
 											<Input
-												type="password"
-												name="password"
+												type={
+													showNewPassword
+														? "text"
+														: "password"
+												}
+												name="newPassword"
 												id="password"
 												variant="bordered"
 												size="lg"
 												label="New Password"
+												onChange={formik.handleChange}
+												onBlur={formik.handleBlur}
+												endContent={
+													<button
+														className="focus:outline-none"
+														type="button"
+														onClick={() =>
+															setShowNewPassword(
+																!showNewPassword
+															)
+														}
+													>
+														{showNewPassword ? (
+															<IoEyeOutline className="text-2xl text-default-400 pointer-events-none" />
+														) : (
+															<IoEyeOffOutline className="text-2xl text-default-400 pointer-events-none" />
+														)}
+													</button>
+												}
 											/>
 										</div>
 										<div className="form-group">
+											{formik.touched.confirmPassword &&
+											formik.errors.confirmPassword ? (
+												<div className="text-red-600">
+													{
+														formik.errors
+															.confirmPassword
+													}
+												</div>
+											) : null}
 											<Input
-												type="password"
-												name="password"
+												type={
+													showConPassword
+														? "text"
+														: "password"
+												}
+												name="confirmPassword"
 												id="password"
 												variant="bordered"
 												size="lg"
 												label="Confirm New Password"
+												onChange={formik.handleChange}
+												onBlur={formik.handleBlur}
+												endContent={
+													<button
+														className="focus:outline-none"
+														type="button"
+														onClick={() =>
+															setShowConPassword(
+																!showConPassword
+															)
+														}
+													>
+														{showConPassword ? (
+															<IoEyeOutline className="text-2xl text-default-400 pointer-events-none" />
+														) : (
+															<IoEyeOffOutline className="text-2xl text-default-400 pointer-events-none" />
+														)}
+													</button>
+												}
 											/>
 										</div>
 										<div className="form-group">
@@ -51,6 +134,7 @@ const ResetPasswordPage = () => {
 												className="bg-primary-500 text-black font-bold hover"
 												fullWidth
 												size="lg"
+												onClick={formik.handleSubmit}
 											>
 												Reset Password
 											</Button>

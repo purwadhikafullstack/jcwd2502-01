@@ -61,10 +61,16 @@ module.exports = {
 	},
 	requestChangePassword: async (req, res, next) => {
 		try {
-			console.log(req.dataToken);
 			const reqPass = await changePassword(req.dataToken);
+			respHandler(res, reqPass.message, null, null, reqPass.isError);
 		} catch (error) {
 			console.log(error);
+			next(error);
+		}
+	},
+	changePasswordUser: async (req, res, next) => {
+		try {
+		} catch (error) {
 			next(error);
 		}
 	},

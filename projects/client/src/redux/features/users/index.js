@@ -71,10 +71,6 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 				"accessToken",
 				checkUser.data.data.accessToken
 			);
-			localStorage.setItem(
-				"tokenTransaction",
-				checkUser.data.data.tokenTransaction
-			);
 			// dispatch(setRole(checkUser.data.data.role));
 			// dispatch(setUsername(checkUser.data.data.username));
 			// dispatch(setProfileUser(checkUser.data.data.profileUser));
@@ -170,9 +166,13 @@ export const verifyUser = (password, token) => async (dispatch) => {
 			);
 		}
 
-		const statusUser = await axiosInstance(token, password).patch(
-			"/users/verifyStatus"
-		);
+		const statusUser = await axiosInstance(
+			token,
+			password,
+			null,
+			"verified"
+		).patch("/users/verifyStatus");
+		console.log(statusUser);
 		if (statusUser.data.isError)
 			return toast.error(`${statusUser.data.message}`);
 
