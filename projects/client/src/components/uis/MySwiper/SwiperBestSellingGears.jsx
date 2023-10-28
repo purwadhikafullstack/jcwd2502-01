@@ -10,9 +10,9 @@ import "swiper/css/navigation";
 // import required modules
 import { Navigation, FreeMode, Autoplay } from "swiper/modules";
 
-import ProductCard from "../uis/Cards/ProductCard";
-import MySwiperButtonPrev from "../uis/MySwiperButtons/MySwiperButtonPrev";
-import MySwiperButtonNext from "../uis/MySwiperButtons/MySwiperButtonNext";
+import ProductCard from "../Cards/ProductCard";
+import MySwiperButtonPrev from "../MySwiperButtons/MySwiperButtonPrev";
+import MySwiperButtonNext from "../MySwiperButtons/MySwiperButtonNext";
 
 const SwiperBestSellingGears = () => {
 	return (

@@ -8,16 +8,17 @@ import "swiper/css/navigation";
 
 // import required modules
 import { Navigation, Autoplay, Pagination } from "swiper/modules";
-import MySwiperButtonPrev from "../uis/MySwiperButtons/MySwiperButtonPrev";
-import MySwiperButtonNext from "../uis/MySwiperButtons/MySwiperButtonNext";
+import MySwiperButtonPrev from "../MySwiperButtons/MySwiperButtonPrev";
+import MySwiperButtonNext from "../MySwiperButtons/MySwiperButtonNext";
 
-import BannerLogitech1 from "../../assets/images/promotion-banners/banner_logitech.png";
-import BannerRazer1 from "../../assets/images/promotion-banners/banner_razer.png";
+import BannerLogitech1 from "../../../assets/images/promotion-banners/banner_logitech.png";
+import BannerRazer1 from "../../../assets/images/promotion-banners/banner_razer.png";
 
 const SwiperPromotionBanner = ({ className }) => {
 	return (
 		<Swiper
 			slidesPerView={1}
+			grabCursor={true}
 			loop={true}
 			autoplay={{
 				delay: 4000,
@@ -42,14 +43,14 @@ const SwiperPromotionBanner = ({ className }) => {
 			className={`mySwiper h-[220px] md:h-[80vh] w-full ${className} relative`}
 		>
 			<MySwiperButtonPrev />
-			<SwiperSlide className="bg-primary-500 h-full">
+			<SwiperSlide className="bg-neutral-800 h-full">
 				<img
 					src={BannerLogitech1}
 					alt="logitech"
 					className="w-full h-full object-cover"
 				/>
 			</SwiperSlide>
-			<SwiperSlide className="bg-primary-500 h-full">
+			<SwiperSlide className="bg-neutral-800 h-full">
 				<img
 					src={BannerRazer1}
 					alt="razer"

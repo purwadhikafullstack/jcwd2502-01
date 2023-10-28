@@ -8,13 +8,13 @@ const OrderAction = () => {
 			<section className="order-action">
 				<div className="cart-action-card md:col-span-2 md:ml-12 w-full md:w-[320px] md:fixed">
 					<div className="bg-background md:rounded-lg fixed bottom-0 left-0 right-0 md:sticky md:top-[140px] md:bottom-auto shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)]">
-						<div className="flex flex-col p-6 pb-10 md:p-6 text-neutral-700">
-							<div className="hidden md:block title mb-4">
+						<div className="flex flex-col p-4 pb-10 md:p-6 text-neutral-700">
+							<div className="hidden md:block title mb-2">
 								<h5 className="font-bold text-text">
 									Set the quantity
 								</h5>
 							</div>
-							<div className="quantity-control flex justify-between items-center mb-2">
+							<div className="quantity-control flex justify-between items-center mb-4">
 								<div className="quantity flex">
 									<Button
 										isIconOnly
@@ -30,6 +30,7 @@ const OrderAction = () => {
 									</Button>
 									<Input
 										type="number"
+										name="quantity"
 										size="sm"
 										defaultValue={1}
 										min={1}

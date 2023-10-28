@@ -55,7 +55,10 @@ const CartPage = () => {
 										Oh no, your cart's empty!
 									</h5>
 									<Link to={"/explore"}>
-										<Button color="primary" className="">
+										<Button
+											color="primary"
+											className="animate-pulse"
+										>
 											<span className="font-medium text-black">
 												Explore Products
 											</span>

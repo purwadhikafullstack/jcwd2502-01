@@ -16,12 +16,12 @@ import CartPage from "./pages/user/CartPage";
 import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import ProductPage from "./pages/public/ProductPage";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { OnCheckIsLogin } from "./redux/features/users";
+import CheckoutPage from "./pages/user/CheckoutPage";
+import AdminWarehouseListPage from "./pages/admin/warehouses/AdminWarehouseListPage";
 
 function App() {
-	const { username, email, role } = useSelector((state) => state.user);
-
 	const [theme, setTheme] = useState(
 		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
 	);
@@ -93,8 +93,13 @@ function App() {
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
 				<Route path="/cart" element={<CartPage />} />
+				<Route path="/cart/checkout" element={<CheckoutPage />} />
 				<Route path="/explore" element={<ExploreProductsPage />} />
 				<Route path="/product/1" element={<ProductPage />} />
+				<Route
+					path="/admin/warehouses"
+					element={<AdminWarehouseListPage />}
+				/>
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 			{isExcludedFooter ? null : <Footer />}

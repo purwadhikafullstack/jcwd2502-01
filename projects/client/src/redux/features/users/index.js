@@ -130,7 +130,7 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 		const CheckToken = await axiosInstance(accessToken).get(
 			"/users/verifyAccess"
 		);
-		console.log(CheckToken);
+
 		dispatch(setUsername(CheckToken.data.data.username));
 		dispatch(setEmail(CheckToken.data.data.email));
 		dispatch(setProfileUser(CheckToken.data.data.image));
@@ -149,7 +149,7 @@ export const onLogout = () => async (dispatch) => {
 	try {
 		localStorage.removeItem("accessToken");
 		dispatch(setProfileUser(""));
-		dispatch(setProfileUser(""));
+		dispatch(setEmail(""));
 		dispatch(setRole(""));
 		dispatch(setUsername(""));
 	} catch (error) {

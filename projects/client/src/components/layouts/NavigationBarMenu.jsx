@@ -6,7 +6,7 @@ import {
 	NavbarMenu,
 	NavbarMenuItem,
 } from "@nextui-org/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ThemeToggle from "../uis/Buttons/ThemeToggle";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,13 +16,20 @@ import {
 } from "react-icons/io5";
 import DefaultAvatar from "../../assets/avatars/default_avatar.png";
 import TransactionList from "../../assets/icons/TransactionList";
-import { OnCheckIsLogin } from "../../redux/features/users";
+import { onLogout } from "../../redux/features/users";
 
 const NavigationBarMenu = () => {
-	const { role } = useSelector((state) => state.user);
+	const { username, email, role } = useSelector((state) => state.user);
 	const count = useSelector((state) => state.carts.count);
 
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		dispatch(onLogout());
+		navigate("/");
+		window.location.reload(false);
+	};
 
 	const [theme, setTheme] = useState(
 		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
@@ -42,10 +49,6 @@ const NavigationBarMenu = () => {
 		document.querySelector("html").setAttribute("class", localTheme);
 	}, [theme]);
 
-	useEffect(() => {
-		dispatch(OnCheckIsLogin());
-	}, [dispatch]);
-
 	return (
 		<>
 			<NavbarMenu className="pt-4">
@@ -60,10 +63,10 @@ const NavigationBarMenu = () => {
 								/>
 								<div className="user-id">
 									<h1 className="user-username font-bold text-[18px] leading-3">
-										{`username123`}
+										{username}
 									</h1>
 									<h3 className="user-email text-body-md">
-										{`email123@gmail.com`}
+										{email}
 									</h3>
 									<Chip className="bg-green-600" size="sm">
 										<span className="text-label-md text-white uppercase">{`verified`}</span>
@@ -118,7 +121,7 @@ const NavigationBarMenu = () => {
 					</Link>
 				</NavbarMenuItem>
 				<NavbarMenuItem>
-					<Link to={"/cart"}>
+					<Link to={role ? "/cart" : "/login"}>
 						<Button
 							fullWidth
 							variant="flat"
@@ -126,14 +129,15 @@ const NavigationBarMenu = () => {
 						>
 							<IoCartOutline size={26} className="fill-text" />
 							<h4 className="font-medium text-[20px]">Cart</h4>
-							<Chip
-								size="sm"
-								className={`${role ? "" : "hidden"} bg-red-500`}
-							>
-								<span className="text-label-md text-white">
-									{count}
-								</span>
-							</Chip>
+							{role && (
+								<>
+									<Chip size="sm" className="bg-red-500">
+										<span className="text-label-md text-white">
+											{count}
+										</span>
+									</Chip>
+								</>
+							)}
 						</Button>
 					</Link>
 				</NavbarMenuItem>
@@ -150,7 +154,11 @@ const NavigationBarMenu = () => {
 				{role && (
 					<>
 						<NavbarMenuItem className="mb-8">
-							<Button className="bg-red-500" fullWidth>
+							<Button
+								className="bg-red-500"
+								onClick={handleLogout}
+								fullWidth
+							>
 								<IoLogOutOutline
 									size={20}
 									className="text-white"
