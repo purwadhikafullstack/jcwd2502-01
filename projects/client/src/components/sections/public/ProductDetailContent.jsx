@@ -5,7 +5,9 @@ import { useSelector } from "react-redux";
 const ProductDetailContent = () => {
 	const [readMore, setReadMore] = useState(false);
 	const productDetail = useSelector((state) => state.products.productDetail);
-
+	useEffect(() => {
+		console.log(productDetail.stocks);
+	}, [productDetail]);
 	return (
 		<>
 			<section className="product-detail-content my-container pt-4 md:pt-0">
@@ -121,15 +123,12 @@ const ProductDetailContent = () => {
 													</h4>
 													<div className="list">
 														<div className="sensor">
-															Sensor: {"HERO 2"}
 															{productDetail
 																?.specification
 																.sensor &&
 																`Sensor: ${productDetail?.specification.sensor}`}
 														</div>
 														<div className="resolution">
-															Resolution:{" "}
-															{"100 - 32.000 dpi"}
 															{productDetail
 																?.specification
 																.resolution &&

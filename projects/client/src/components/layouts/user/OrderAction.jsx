@@ -5,6 +5,13 @@ import { useSelector } from "react-redux";
 
 const OrderAction = () => {
 	const productDetail = useSelector((state) => state.products.productDetail);
+	// let productStock = 0;
+	// if (productDetail) {
+	// 	productStock = productDetail?.stocks.reduce((total, stock) => {
+	// 		return total + stock;
+	// 	});
+	// }
+
 	return (
 		<>
 			<section className="order-action">
@@ -53,7 +60,7 @@ const OrderAction = () => {
 									</Button>
 								</div>
 								<div className="stocks text-text">
-									Stocks: {"10"}
+									Stocks: {"isi sini"}
 								</div>
 							</div>
 							<div className="price-bar flex justify-between items-end">
