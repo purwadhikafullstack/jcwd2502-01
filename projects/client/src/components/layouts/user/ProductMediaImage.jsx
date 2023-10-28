@@ -1,5 +1,5 @@
 import React from "react";
-import SwiperProductImages from "../uis/MySwiper/SwiperProductImages";
+import SwiperProductImages from "../../uis/MySwiper/SwiperProductImages";
 
 const ProductMediaImage = () => {
 	return (

@@ -1,10 +1,12 @@
 import React from "react";
 import { Button, Chip, Image } from "@nextui-org/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/features/carts";
 import { useNavigate } from "react-router-dom";
 
 const ProductCard = (props) => {
+	const { role } = useSelector((state) => state.user);
+
 	const data = props.data;
 
 	const productPrice = data?.product_price.toLocaleString("id-ID", {
@@ -69,18 +71,20 @@ const ProductCard = (props) => {
 					<p className="price text-price-xs md:text-price-md font-bold">
 						{productPrice}
 					</p>
-					<div className="w-full mt-auto">
-						<Button
-							fullWidth
-							color="primary"
-							onClick={() => dispatch(addToCart(1, data?.id))}
-						>
-							<span className="text-black font-medium flex items-center gap-2">
-								<span className="text-[24px]">+</span> Add to
-								cart
-							</span>
-						</Button>
-					</div>
+					{role ? (
+						<div className="w-full mt-auto">
+							<Button
+								fullWidth
+								color="primary"
+								onClick={() => dispatch(addToCart(1, data?.id))}
+							>
+								<span className="text-black font-medium flex items-center gap-2">
+									<span className="text-[24px]">+</span> Add
+									to cart
+								</span>
+							</Button>
+						</div>
+					) : null}
 				</div>
 			</div>
 		</>

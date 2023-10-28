@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import ExploreProductsHeader from "../../components/sections/ExploreProductsHeader";
-import ExploreProductsFilterMobile from "../../components/sections/ExploreProductsFilterMobile";
-import ExploreProductsFilterAside from "../../components/sections/ExploreProductsFilterAside";
-import ProductListFeed from "../../components/sections/ProductListFeed";
+import ExploreProductsHeader from "../../components/sections/public/ExploreProductsHeader";
+import ExploreProductsFilterMobile from "../../components/sections/public/ExploreProductsFilterMobile";
+import ExploreProductsFilterAside from "../../components/sections/public/ExploreProductsFilterAside";
+import ProductListFeed from "../../components/sections/public/ProductListFeed";
 import { axiosInstance } from "../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { onClear, setSearch } from "../../redux/features/products";

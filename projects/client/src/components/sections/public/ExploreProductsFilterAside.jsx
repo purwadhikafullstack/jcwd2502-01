@@ -3,7 +3,7 @@ import React from "react";
 import { Checkbox } from "@nextui-org/react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { onBrand, onCategory } from "../../redux/features/products";
+import { onBrand, onCategory } from "../../../redux/features/products";
 
 const ExploreProductsFilterAside = (props) => {
 	const category = useSelector((state) => state.products.category);

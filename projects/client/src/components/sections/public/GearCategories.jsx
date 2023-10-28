@@ -1,12 +1,12 @@
 import React from "react";
 
-import ControllerCategory from "../../assets/images/categories-selection/controller.png";
-import HeadphoneCategory from "../../assets/images/categories-selection/headphone.png";
-import KeyboardCategory from "../../assets/images/categories-selection/keyboard.png";
-import MouseCategory from "../../assets/images/categories-selection/mouse.png";
-import MousepadCategory from "../../assets/images/categories-selection/mousepad.png";
-import MonitorCategory from "../../assets/images/categories-selection/monitor.png";
-import CategorySelection from "../uis/CategorySelection/CategorySelection";
+import ControllerCategory from "../../../assets/images/categories-selection/controller.png";
+import HeadphoneCategory from "../../../assets/images/categories-selection/headphone.png";
+import KeyboardCategory from "../../../assets/images/categories-selection/keyboard.png";
+import MouseCategory from "../../../assets/images/categories-selection/mouse.png";
+import MousepadCategory from "../../../assets/images/categories-selection/mousepad.png";
+import MonitorCategory from "../../../assets/images/categories-selection/monitor.png";
+import CategorySelection from "../../uis/CategorySelection/CategorySelection";
 
 const GearCategories = () => {
 	return (

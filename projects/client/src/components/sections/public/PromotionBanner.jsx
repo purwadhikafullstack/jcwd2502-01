@@ -1,6 +1,6 @@
 import React from "react";
 
-import SwiperPromotionBanner from "../uis/MySwiper/SwiperPromotionBanner";
+import SwiperPromotionBanner from "../../uis/MySwiper/SwiperPromotionBanner";
 
 const PromotionBanner = () => {
 	return (

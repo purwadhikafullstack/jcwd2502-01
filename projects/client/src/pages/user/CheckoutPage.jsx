@@ -1,7 +1,7 @@
 import React from "react";
 
-import Footer from "../../components/layouts/Footer";
-import CheckoutSummaryOrder from "../../components/sections/CheckoutSummaryOrder";
+import Footer from "../../components/layouts/shared/Footer";
+import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
 import CheckoutShipmentMethod from "./CheckoutShipmentMethod";
 import CheckoutOrderList from "./CheckoutOrderList";
 import CheckoutAddress from "./CheckoutAddress";
