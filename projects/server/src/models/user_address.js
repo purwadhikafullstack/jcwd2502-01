@@ -7,18 +7,20 @@ module.exports = (sequelize, DataTypes) => {
 		 * This method is not a part of Sequelize lifecycle.
 		 * The `models/index` file will call this method automatically.
 		 */
-		static associate({ user, order }) {
+		static associate({ user, order, city, province }) {
 			this.belongsTo(user, { foreignKey: "user_id" });
 			this.hasMany(order, { foreignKey: "address_id" });
+			this.belongsTo(city, { foreignKey: "city_id" });
+			this.belongsTo(province, { foreignKey: "province_id" });
 		}
 	}
 	user_address.init(
 		{
 			address_name: DataTypes.STRING,
+			recipient_name: DataTypes.STRING,
 			address: DataTypes.STRING,
-			city: DataTypes.STRING,
-			province: DataTypes.STRING,
 			address_location: DataTypes.STRING,
+			is_default: DataTypes.BOOLEAN,
 			createdAt: {
 				type: DataTypes.DATE,
 				defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),

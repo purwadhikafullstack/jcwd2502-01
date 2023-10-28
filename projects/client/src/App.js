@@ -22,6 +22,7 @@ import CheckoutPage from "./pages/user/CheckoutPage";
 import AdminWarehouseListPage from "./pages/admin/warehouses/AdminWarehouseListPage";
 
 function App() {
+	const location = useLocation();
 	const [theme, setTheme] = useState(
 		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
 	);
@@ -43,8 +44,9 @@ function App() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		// dispatch(OnCheckIsLogin());
-		// console.log(username);
+		if (location.pathname.startsWith("verify/")) return;
+		if (location.pathname === "/login") return;
+		dispatch(OnCheckIsLogin());
 	}, [dispatch]);
 
 	const { pathname } = useLocation();
