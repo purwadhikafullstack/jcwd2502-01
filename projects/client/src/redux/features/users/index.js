@@ -43,20 +43,20 @@ export const userSlice = createSlice({
 
 export const onLoginAsync = (email, password) => async (dispatch) => {
 	try {
-		console.log(email);
-		console.log(password);
-		const hasSymbol = email.indexOf("@");
-		const hasDot = email.indexOf(".");
+		// console.log(email);
+		// console.log(password);
+		// const hasSymbol = email.indexOf("@");
+		// const hasDot = email.indexOf(".");
 
-		if (!email || !password) {
-			return toast.error("Please fill out this field.");
-		} else if (hasSymbol === -1 || hasDot === -1) {
-			return toast.error("Please provide a valid email address.");
-		} else if (password.length < 6) {
-			return toast.error(
-				"The Password must be at least 6 characters long"
-			);
-		}
+		// if (!email || !password) {
+		// 	return toast.error("Please fill out this field.");
+		// } else if (hasSymbol === -1 || hasDot === -1) {
+		// 	return toast.error("Please provide a valid email address.");
+		// } else if (password.length < 6) {
+		// 	return toast.error(
+		// 		"The Password must be at least 6 characters long"
+		// 	);
+		// }
 
 		const checkUser = await axiosInstance().post("/users/login", {
 			email: email,
@@ -71,17 +71,12 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 				"accessToken",
 				checkUser.data.data.accessToken
 			);
-			localStorage.setItem(
-				"tokenTransaction",
-				checkUser.data.data.tokenTransaction
-			);
-			// dispatch(setRole(checkUser.data.data.role));
-			// dispatch(setUsername(checkUser.data.data.username));
-			// dispatch(setProfileUser(checkUser.data.data.profileUser));
-			// dispatch(setEmail(checkUser.data.data.email));
-			dispatch(login(checkUser.data.data));
+			dispatch(setRole(checkUser.data.data.role));
+			dispatch(setUsername(checkUser.data.data.username));
+			dispatch(setProfileUser(checkUser.data.data.profileUser));
+			dispatch(setEmail(checkUser.data.data.email));
+			// dispatch(login(checkUser.data.data));
 		}, 1200);
-
 		toast.success(`${checkUser.data.message}`);
 	} catch (error) {
 		console.log(error);
@@ -153,7 +148,6 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 export const onLogout = () => async (dispatch) => {
 	try {
 		localStorage.removeItem("accessToken");
-		localStorage.removeItem("tokenTransaction");
 		dispatch(setProfileUser(""));
 		dispatch(setEmail(""));
 		dispatch(setRole(""));
@@ -173,9 +167,13 @@ export const verifyUser = (password, token) => async (dispatch) => {
 			);
 		}
 
-		const statusUser = await axiosInstance(token, password).patch(
-			"/users/verifyStatus"
-		);
+		const statusUser = await axiosInstance(
+			token,
+			password,
+			null,
+			"verified"
+		).patch("/users/verifyStatus");
+		console.log(statusUser);
 		if (statusUser.data.isError)
 			return toast.error(`${statusUser.data.message}`);
 

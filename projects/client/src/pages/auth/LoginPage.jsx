@@ -19,9 +19,17 @@ const LoginPage = () => {
 
 	const { role } = useSelector((state) => state.user);
 
-	const debouncedSubmit = debounce((email, password) => {
+	const [click, setClick] = useState(true);
+	const handleLogin = (email, password) => {
+		if (!click) return;
 		dispatch(onLoginAsync(email, password));
-	}, 1500);
+
+		setClick(false);
+		setTimeout(() => setClick(true), 2000);
+	};
+	// const debouncedSubmit = debounce((email, password) => {
+	// 	dispatch(onLoginAsync(email, password));
+	// }, 1500);
 
 	const formik = useFormik({
 		initialValues: {
@@ -29,7 +37,7 @@ const LoginPage = () => {
 			password: "",
 		},
 		onSubmit: (values) => {
-			debouncedSubmit(values.email, values.password);
+			handleLogin(values.email, values.password);
 		},
 		validationSchema: yup.object().shape({
 			email: yup.string().required().email(),

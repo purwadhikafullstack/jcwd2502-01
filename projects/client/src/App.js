@@ -43,7 +43,8 @@ function App() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(OnCheckIsLogin());
+		// dispatch(OnCheckIsLogin());
+		console.log(username);
 	}, [dispatch]);
 
 	const { pathname } = useLocation();
@@ -85,7 +86,10 @@ function App() {
 					path="/verify/:token/:email"
 					element={<AccountVerificationPage />}
 				/>
-				<Route path="/reset_password" element={<ResetPasswordPage />} />
+				<Route
+					path="/reset_password/:token"
+					element={<ResetPasswordPage />}
+				/>
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
 				<Route path="/cart" element={<CartPage />} />
