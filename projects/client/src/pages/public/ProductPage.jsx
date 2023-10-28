@@ -6,10 +6,13 @@ import ProductDetailContent from "../../components/sections/ProductDetailContent
 import OrderAction from "../../components/layouts/OrderAction";
 import { axiosInstance } from "../../lib/axios";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setProductDetail } from "../../redux/features/products";
 
 const ProductPage = () => {
 	const { productName } = useParams();
-	const [productDetail, setProductDetail] = useState([]);
+
+	const dispatch = useDispatch();
 
 	const fetchProduct = async () => {
 		try {
@@ -17,7 +20,8 @@ const ProductPage = () => {
 			const { data } = await axiosInstance().get(
 				`products/${productName}`
 			);
-			setProductDetail(data);
+
+			dispatch(setProductDetail(data.data));
 		} catch (error) {
 			console.log(error);
 		}

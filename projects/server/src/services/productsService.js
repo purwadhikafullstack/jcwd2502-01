@@ -114,6 +114,10 @@ module.exports = {
 						model: db.brand,
 						attributes: ["brand_name", "id"],
 					},
+					// {
+					// 	model: db.stock,
+					// attributes: ["stocks", "id"],
+					// },
 					{
 						model: db.specification,
 						attributes: {

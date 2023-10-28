@@ -26,8 +26,8 @@ module.exports = {
 	getProduct: async (req, res, next) => {
 		try {
 			let { productName } = req.params;
-			productName = productName.replaceAll("-", " ");
-			const result = await findOneProduct(productName);
+			const decodedProductName = decodeURIComponent(productName);
+			const result = await findOneProduct(decodedProductName);
 			respHandler(
 				res,
 				result.message,

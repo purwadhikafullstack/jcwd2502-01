@@ -18,9 +18,9 @@ const ProductCard = (props) => {
 	const navigate = useNavigate();
 
 	const productDetails = (productName) => {
-		let param = productName.replaceAll(" ", "-");
-		if (param) {
-			navigate(`/${param}`);
+		const encodedProductName = encodeURIComponent(productName);
+		if (encodedProductName) {
+			navigate(`/product/${encodedProductName}`);
 		}
 	};
 
