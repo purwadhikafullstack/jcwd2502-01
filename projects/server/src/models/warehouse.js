@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 			});
 			this.hasHooks(order, { foreignKey: "warehouse_id" });
 			this.hasMany(user, {
-				foreignKey: "user_id",
+				foreignKey: "warehouse_id",
 			});
 			this.belongsTo(city, { foreignKey: "city_id" });
 			this.belongsTo(province, { foreignKey: "province_id" });
