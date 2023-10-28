@@ -5,9 +5,7 @@ import { useSelector } from "react-redux";
 const ProductDetailContent = () => {
 	const [readMore, setReadMore] = useState(false);
 	const productDetail = useSelector((state) => state.products.productDetail);
-	useEffect(() => {
-		console.log(productDetail);
-	}, [productDetail]);
+
 	return (
 		<>
 			<section className="product-detail-content my-container pt-4 md:pt-0">
@@ -83,60 +81,77 @@ const ProductDetailContent = () => {
 							<Tab key="specification" title="Specification">
 								<Card>
 									<CardBody className="py-2">
-										<div className="specs-wrapper flex flex-col divide-y-1">
-											<div className="physical-specs py-2">
-												<h4 className="font-medium mb-1">
-													Physical Specification
-												</h4>
-												<div className="list">
-													<div className="height">
-														Height:
-														{/* {productDetail
-															?.specifications[0]
-															.height &&
+										{productDetail.specification && (
+											<div className="specs-wrapper flex flex-col divide-y-1">
+												<div className="physical-specs py-2">
+													<h4 className="font-medium mb-1">
+														Physical Specification
+													</h4>
+													<div className="list">
+														<div className="height">
+															{productDetail
+																?.specification
+																.height &&
+																`Height: ${productDetail?.specification.height}`}
+														</div>
+														<div className="width">
+															{productDetail
+																?.specification
+																.width &&
+																`Width: ${productDetail?.specification.width}`}
+														</div>
+														<div className="thickness">
+															{"40.0 mm"}
+															{productDetail
+																?.specification
+																.thickness &&
+																`Thickness: ${productDetail?.specification.thickness}`}
+														</div>
+														<div className="weight">
+															{productDetail
+																?.specification
+																.weight &&
+																`Weight: ${productDetail?.specification.weight}`}
+														</div>
+													</div>
+												</div>
+												<div className="tracking-specs py-2">
+													<h4 className="font-medium mb-1">
+														Tracking
+													</h4>
+													<div className="list">
+														<div className="sensor">
+															Sensor: {"HERO 2"}
+															{productDetail
+																?.specification
+																.sensor &&
+																`Sensor: ${productDetail?.specification.sensor}`}
+														</div>
+														<div className="resolution">
+															Resolution:{" "}
+															{"100 - 32.000 dpi"}
+															{productDetail
+																?.specification
+																.resolution &&
+																`Resolution: ${productDetail?.specification.resolution}`}
+														</div>
+													</div>
+												</div>
+												<div className="warranty-specs py-2">
+													<h4 className="font-medium mb-1">
+														Warranty
+													</h4>
+													<div className="list">
+														{
 															productDetail
-																?.specifications[0]
-																.height} */}
-													</div>
-													<div className="width">
-														Width: {"63.5 mm"}
-													</div>
-													<div className="thickness">
-														Thickness: {"40.0 mm"}
-													</div>
-													<div className="weight">
-														Weight: {"60.0 g"}
+																?.specification
+																.warranty
+														}
+														-Year(s)
 													</div>
 												</div>
 											</div>
-											<div className="tracking-specs py-2">
-												<h4 className="font-medium mb-1">
-													Tracking
-												</h4>
-												<div className="list">
-													<div className="sensor">
-														Sensor: {"HERO 2"}
-													</div>
-													<div className="resolution">
-														Resolution:{" "}
-														{"100 - 32.000 dpi"}
-													</div>
-												</div>
-											</div>
-											<div className="warranty-specs py-2">
-												<h4 className="font-medium mb-1">
-													Warranty
-												</h4>
-												<div className="list">
-													{/* {
-														productDetail
-															?.specifications[0]
-															.warranty
-													} */}
-													-Year(s)
-												</div>
-											</div>
-										</div>
+										)}
 									</CardBody>
 								</Card>
 							</Tab>

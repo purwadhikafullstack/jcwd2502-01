@@ -21,7 +21,9 @@ const SwiperProductImages = () => {
 	const productDetail = useSelector((state) => state.products.productDetail);
 
 	useEffect(() => {
-		setProductImages(productDetail?.product_images);
+		if (productDetail) {
+			setProductImages(productDetail?.product_images);
+		}
 	}, [productDetail]);
 
 	return (
