@@ -1,16 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 
 const OrderAction = () => {
+	const [stocks, setStocks] = useState(0);
 	const productDetail = useSelector((state) => state.products.productDetail);
 	// let productStock = 0;
 	// if (productDetail) {
-	// 	productStock = productDetail?.stocks.reduce((total, stock) => {
-	// 		return total + stock;
-	// 	});
+	// productStock = productDetail?.stocks.reduce((total, stock) => {
+	// 	return total + stock;
+	// });
 	// }
+	useEffect(() => {
+		if (productDetail?.stocks) {
+			let totalStocks = 0;
+			productDetail?.stocks.map((stock) => {
+				totalStocks += stock.stocks;
+			});
+			setStocks(totalStocks);
+		}
+	}, [productDetail]);
 
 	return (
 		<>
@@ -60,7 +70,7 @@ const OrderAction = () => {
 									</Button>
 								</div>
 								<div className="stocks text-text">
-									Stocks: {"isi sini"}
+									Stocks: {stocks}
 								</div>
 							</div>
 							<div className="price-bar flex justify-between items-end">

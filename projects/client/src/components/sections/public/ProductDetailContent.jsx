@@ -6,7 +6,7 @@ const ProductDetailContent = () => {
 	const [readMore, setReadMore] = useState(false);
 	const productDetail = useSelector((state) => state.products.productDetail);
 	useEffect(() => {
-		console.log(productDetail.stocks);
+		console.log(productDetail?.stocks);
 	}, [productDetail]);
 	return (
 		<>
@@ -83,7 +83,7 @@ const ProductDetailContent = () => {
 							<Tab key="specification" title="Specification">
 								<Card>
 									<CardBody className="py-2">
-										{productDetail.specification && (
+										{productDetail?.specification && (
 											<div className="specs-wrapper flex flex-col divide-y-1">
 												<div className="physical-specs py-2">
 													<h4 className="font-medium mb-1">
