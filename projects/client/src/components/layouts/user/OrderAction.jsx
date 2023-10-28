@@ -33,6 +33,7 @@ const OrderAction = () => {
 				totalStocks += stock.stocks;
 			});
 			setStocks(totalStocks);
+		} else if (productDetail?.product_price) {
 			setProductPrice(productDetail?.product_price);
 		}
 	}, [productDetail]);
@@ -113,7 +114,11 @@ const OrderAction = () => {
 								</span>
 							</div>
 							<div className="mt-4">
-								<Button fullWidth color="primary">
+								<Button
+									fullWidth
+									color="primary"
+									disabled={!stocks}
+								>
 									<span className="text-black font-medium text-body-lg flex items-center">
 										<span className="text-[22px] mr-2">
 											+
