@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 			specification,
 			brand,
 			category,
+			stock,
 			stock_mutation,
 			order_detail,
 			cart,
@@ -20,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 			this.hasMany(specification, { foreignKey: "product_id" });
 			this.belongsTo(brand, { foreignKey: "brand_id" });
 			this.belongsTo(category, { foreignKey: "category_id" });
+			this.hasOne(stock, { foreignKey: "product_id" });
 			this.hasMany(stock_mutation, { foreignKey: "product_id" });
 			this.hasMany(order_detail, { foreignKey: "product_id" });
 			this.hasMany(cart, { foreignKey: "product_id" });
