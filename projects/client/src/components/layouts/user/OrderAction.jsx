@@ -1,10 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import { useSelector } from "react-redux";
 
 const OrderAction = () => {
+	const [stocks, setStocks] = useState(0);
+	const [selectedAmount, setSelectedAmount] = useState(0);
+	const [productPrice, setProductPrice] = useState(0);
+
 	const productDetail = useSelector((state) => state.products.productDetail);
+
+	const onChangeAmount = (operation) => {
+		if (operation === "minus") {
+			if (selectedAmount === 0) {
+				return;
+			} else {
+				setSelectedAmount(selectedAmount - 1);
+			}
+		} else if (operation === "plus") {
+			if (selectedAmount === stocks) {
+				return;
+			} else {
+				setSelectedAmount(selectedAmount + 1);
+			}
+		}
+	};
+
+	useEffect(() => {
+		if (productDetail?.stocks) {
+			let totalStocks = 0;
+			productDetail?.stocks.map((stock) => {
+				totalStocks += stock.stocks;
+			});
+			setStocks(totalStocks);
+		} else if (productDetail?.product_price) {
+			setProductPrice(productDetail?.product_price);
+		}
+	}, [productDetail]);
+
 	return (
 		<>
 			<section className="order-action">
@@ -24,6 +57,9 @@ const OrderAction = () => {
 										size="sm"
 										variant="light"
 										radius="full"
+										onClick={() => {
+											onChangeAmount("minus");
+										}}
 									>
 										<IoRemoveCircleOutline
 											size={26}
@@ -34,7 +70,7 @@ const OrderAction = () => {
 										type="number"
 										name="quantity"
 										size="sm"
-										defaultValue={1}
+										value={selectedAmount}
 										min={1}
 										max={999999}
 										className="text-text"
@@ -45,6 +81,9 @@ const OrderAction = () => {
 										size="sm"
 										variant="light"
 										radius="full"
+										onClick={() => {
+											onChangeAmount("plus");
+										}}
 									>
 										<IoAddCircleOutline
 											size={26}
@@ -53,7 +92,7 @@ const OrderAction = () => {
 									</Button>
 								</div>
 								<div className="stocks text-text">
-									Stocks: {"10"}
+									Stocks: {stocks}
 								</div>
 							</div>
 							<div className="price-bar flex justify-between items-end">
@@ -62,12 +101,24 @@ const OrderAction = () => {
 								</h2>
 								<span className="flex items-end">
 									<h3 className="font-bold text-text">
-										Rp. 1.000.000
+										{productPrice &&
+											(
+												productPrice * selectedAmount
+											).toLocaleString("id-ID", {
+												style: "currency",
+												currency: "IDR",
+												minimumFractionDigits: 0,
+												maximumFractionDigits: 0,
+											})}
 									</h3>
 								</span>
 							</div>
 							<div className="mt-4">
-								<Button fullWidth color="primary">
+								<Button
+									fullWidth
+									color="primary"
+									disabled={!stocks}
+								>
 									<span className="text-black font-medium text-body-lg flex items-center">
 										<span className="text-[22px] mr-2">
 											+

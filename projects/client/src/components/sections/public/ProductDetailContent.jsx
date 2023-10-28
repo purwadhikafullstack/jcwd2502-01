@@ -4,7 +4,13 @@ import { useSelector } from "react-redux";
 
 const ProductDetailContent = () => {
 	const [readMore, setReadMore] = useState(false);
+	const [productPrice, setProductPrice] = useState(0);
 	const productDetail = useSelector((state) => state.products.productDetail);
+	useEffect(() => {
+		if (productDetail) {
+			setProductPrice(productDetail?.product_price);
+		}
+	}, [productDetail]);
 
 	return (
 		<>
@@ -30,7 +36,13 @@ const ProductDetailContent = () => {
 						</Chip>
 					</div>
 					<h2 className="product-price font-bold text-price-md md:text-price-lg mb-2">
-						{productDetail?.product_price}
+						{productPrice &&
+							productPrice.toLocaleString("id-ID", {
+								style: "currency",
+								currency: "IDR",
+								minimumFractionDigits: 0,
+								maximumFractionDigits: 0,
+							})}
 					</h2>
 					<div className="flex md:hidden gap-1 md:gap-2 my-2">
 						<Chip
@@ -81,7 +93,7 @@ const ProductDetailContent = () => {
 							<Tab key="specification" title="Specification">
 								<Card>
 									<CardBody className="py-2">
-										{productDetail.specification && (
+										{productDetail?.specification && (
 											<div className="specs-wrapper flex flex-col divide-y-1">
 												<div className="physical-specs py-2">
 													<h4 className="font-medium mb-1">
@@ -121,15 +133,12 @@ const ProductDetailContent = () => {
 													</h4>
 													<div className="list">
 														<div className="sensor">
-															Sensor: {"HERO 2"}
 															{productDetail
 																?.specification
 																.sensor &&
 																`Sensor: ${productDetail?.specification.sensor}`}
 														</div>
 														<div className="resolution">
-															Resolution:{" "}
-															{"100 - 32.000 dpi"}
 															{productDetail
 																?.specification
 																.resolution &&
