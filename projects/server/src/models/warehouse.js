@@ -7,7 +7,14 @@ module.exports = (sequelize, DataTypes) => {
 		 * This method is not a part of Sequelize lifecycle.
 		 * The `models/index` file will call this method automatically.
 		 */
-		static associate({ stock, stock_mutation, order, user }) {
+		static associate({
+			stock,
+			stock_mutation,
+			order,
+			user,
+			city,
+			province,
+		}) {
 			this.hasMany(stock, { foreignKey: "warehouse_id" });
 			this.hasMany(stock_mutation, {
 				as: "warehouse_to",
@@ -18,16 +25,18 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: "warehouse_id_from",
 			});
 			this.hasHooks(order, { foreignKey: "warehouse_id" });
-			this.belongsToMany(user, {
-				through: "admin",
-				foreignKey: "warehouse_id",
+			this.hasMany(user, {
+				foreignKey: "user_id",
 			});
+			this.belongsTo(city, { foreignKey: "city_id" });
+			this.belongsTo(province, { foreignKey: "province_id" });
 		}
 	}
 	warehouse.init(
 		{
 			warehouse_name: DataTypes.STRING,
 			warehouse_location: DataTypes.STRING,
+			warehouse_address: DataTypes.STRING,
 			createdAt: {
 				type: DataTypes.DATE,
 				defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
