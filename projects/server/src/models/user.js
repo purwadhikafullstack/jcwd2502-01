@@ -27,10 +27,7 @@ module.exports = (sequelize, DataTypes) => {
 			this.hasMany(order, { foreignKey: "user_id" });
 			this.hasMany(cart, { foreignKey: "user_id" });
 			this.hasMany(stock_history, { foreignKey: "user_id" });
-			this.belongsToMany(warehouse, {
-				through: "admin",
-				foreignKey: "user_id",
-			});
+			this.belongsTo(warehouse, { foreignKey: "warehouse_id" });
 		}
 	}
 	user.init(

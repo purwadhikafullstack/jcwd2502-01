@@ -27,7 +27,7 @@ module.exports = {
 				email,
 				password: hashPassword,
 				role: "user",
-				status: "inactive",
+				status: "unverified",
 			});
 
 			const token = createJWT(

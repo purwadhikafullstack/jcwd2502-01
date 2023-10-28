@@ -72,12 +72,6 @@ const SignupPage = () => {
 								<div className="form-container">
 									<div className="flex flex-col gap-4">
 										<div className="form-group">
-											{formik.touched.username &&
-											formik.errors.username ? (
-												<div className="text-red-600">
-													{formik.errors.username}
-												</div>
-											) : null}
 											<Input
 												type="text"
 												name="username"
@@ -88,14 +82,14 @@ const SignupPage = () => {
 												onChange={formik.handleChange}
 												onBlur={formik.handleBlur}
 											/>
-										</div>
-										<div className="form-group">
-											{formik.touched.email &&
-											formik.errors.email ? (
+											{formik.touched.username &&
+											formik.errors.username ? (
 												<div className="text-red-600">
-													{formik.errors.email}
+													{formik.errors.username}
 												</div>
 											) : null}
+										</div>
+										<div className="form-group">
 											<Input
 												type="email"
 												name="email"
@@ -106,14 +100,14 @@ const SignupPage = () => {
 												onChange={formik.handleChange}
 												onBlur={formik.handleBlur}
 											/>
-										</div>
-										<div className="form-group">
-											{formik.touched.password &&
-											formik.errors.password ? (
+											{formik.touched.email &&
+											formik.errors.email ? (
 												<div className="text-red-600">
-													{formik.errors.password}
+													{formik.errors.email}
 												</div>
 											) : null}
+										</div>
+										<div className="form-group">
 											<Input
 												type={
 													showPassword
@@ -145,6 +139,12 @@ const SignupPage = () => {
 													</button>
 												}
 											/>
+											{formik.touched.password &&
+											formik.errors.password ? (
+												<div className="text-red-600">
+													{formik.errors.password}
+												</div>
+											) : null}
 										</div>
 										<div className="form-group">
 											<Button
