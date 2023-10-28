@@ -14,7 +14,7 @@ import {
 import { IoChevronForward, IoSearch } from "react-icons/io5";
 
 import Media from "react-media";
-import AddressCard from "../uis/Cards/AddressCard";
+import AddressCard from "../../uis/Cards/AddressCard";
 import CreateNewAddressModal from "./CreateNewAddressModal";
 
 const ChooseAddressModal = () => {

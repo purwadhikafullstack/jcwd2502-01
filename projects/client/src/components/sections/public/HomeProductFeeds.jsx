@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import ProductCard from "../uis/Cards/ProductCard";
+import ProductCard from "../../uis/Cards/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductAsync } from "../../redux/features/products";
+import { fetchProductAsync } from "../../../redux/features/products";
 import { Link } from "react-router-dom";
 import { Button } from "@nextui-org/react";
 

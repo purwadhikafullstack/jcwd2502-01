@@ -5,8 +5,8 @@ import { Toaster } from "react-hot-toast";
 
 import HomePage from "./pages/public/HomePage";
 import NotFoundPage from "./pages/not-found/NotFoundPage";
-import NavigationBar from "./components/layouts/NavigationBar";
-import Footer from "./components/layouts/Footer";
+import NavigationBar from "./components/layouts/shared/NavigationBar";
+import Footer from "./components/layouts/shared/Footer";
 import ThemeToggle from "./components/uis/Buttons/ThemeToggle";
 import LoginPage from "./pages/auth/LoginPage";
 import { useEffect, useState } from "react";

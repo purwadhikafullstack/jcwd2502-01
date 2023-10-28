@@ -1,9 +1,9 @@
 import React from "react";
 
-import Footer from "../../components/layouts/Footer";
-import ProductMediaImage from "../../components/layouts/ProductMediaImage";
-import ProductDetailContent from "../../components/sections/ProductDetailContent";
-import OrderAction from "../../components/layouts/OrderAction";
+import Footer from "../../components/layouts/shared/Footer";
+import ProductMediaImage from "../../components/layouts/user/ProductMediaImage";
+import ProductDetailContent from "../../components/sections/public/ProductDetailContent";
+import OrderAction from "../../components/layouts/user/OrderAction";
 
 const ProductPage = () => {
 	return (

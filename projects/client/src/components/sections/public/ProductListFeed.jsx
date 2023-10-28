@@ -1,6 +1,6 @@
 import React from "react";
 
-import ProductCard from "../uis/Cards/ProductCard";
+import ProductCard from "../../uis/Cards/ProductCard";
 import { Pagination } from "@nextui-org/react";
 
 import { useEffect } from "react";
@@ -13,8 +13,8 @@ import {
 	setBrand,
 	setCategory,
 	setPagination,
-} from "../../redux/features/products";
-import NotFound from "../../assets/illustrations/NotFoundillustration.png";
+} from "../../../redux/features/products";
+import NotFound from "../../../assets/illustrations/NotFoundillustration.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ProductListFeed = (props) => {
@@ -94,7 +94,6 @@ const ProductListFeed = (props) => {
 	return (
 		<>
 			<div className="product-list md:w-full md:h-full md:pl-8">
-				{console.log("PRODUCTS>>>", products)}
 				{products?.length ? (
 					<>
 						<div className="grid-wrapper grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 py-4 md:py-0">
