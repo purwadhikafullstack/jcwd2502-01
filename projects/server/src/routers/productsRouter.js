@@ -9,7 +9,7 @@ const { productsController } = require("../controllers"); // otomatis baca index
 // const { verify } = require("./../lib/jwt");
 
 Router.get("/all", productsController.getAllProducts);
-Router.get("/:productId", productsController.getProduct);
+Router.get("/:productName", productsController.getProduct);
 Router.post("/", productsController.createProduct);
 Router.patch("/:productId", productsController.updateProduct);
 

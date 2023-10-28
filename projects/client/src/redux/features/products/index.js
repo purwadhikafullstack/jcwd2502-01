@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	products: [],
+	productDetail: [],
 	orderField: "",
 	orderDirection: "",
 	search: "",
@@ -21,6 +22,9 @@ export const productsSlice = createSlice({
 	reducers: {
 		setProducts: (initialState, { payload }) => {
 			initialState.products = payload;
+		},
+		setProductDetail: (initialState, { payload }) => {
+			initialState.productDetail = payload;
 		},
 		setCount: (initialState, { payload }) => {
 			initialState.count = payload;
@@ -206,6 +210,7 @@ export const {
 	setBrand,
 	setCount,
 	setTotalPage,
+	setProductDetail,
 } = productsSlice.actions;
 
 export default productsSlice.reducer;

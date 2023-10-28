@@ -1,8 +1,10 @@
 import React from "react";
 import { Button, Input } from "@nextui-org/react";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
+import { useSelector } from "react-redux";
 
 const OrderAction = () => {
+	const productDetail = useSelector((state) => state.products.productDetail);
 	return (
 		<>
 			<section className="order-action">

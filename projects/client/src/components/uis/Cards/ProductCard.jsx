@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Chip, Image } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/features/carts";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = (props) => {
 	const { role } = useSelector((state) => state.user);
@@ -16,10 +17,23 @@ const ProductCard = (props) => {
 	});
 
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const productDetails = (productName) => {
+		const encodedProductName = encodeURIComponent(productName);
+		if (encodedProductName) {
+			navigate(`/product/${encodedProductName}`);
+		}
+	};
 
 	return (
 		<>
-			<div className="product-card bg-white dark:bg-[#141414] rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 dark:hover:border-primary-900 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer select-none">
+			<div
+				onClick={() => {
+					productDetails(data?.product_name);
+				}}
+				className="product-card bg-white dark:bg-[#141414] rounded-[20px] flex flex-col items-start border-1 border-neutral-200 dark:border-neutral-800 hover:border-primary-100 dark:hover:border-primary-900 hover:shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] duration-200 hover:cursor-pointer select-none"
+			>
 				<div className="image-wrapper aspect-square w-full">
 					<Image
 						radius="none"

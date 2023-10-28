@@ -84,12 +84,15 @@ module.exports = {
 			const dataAllProducts = await db.product.findAll(baseQuery);
 			const count = await db.product.count(baseQuery);
 
-			return { count, products: dataAllProducts };
+			return {
+				message: "Get products data success",
+				data: { count, products: dataAllProducts },
+			};
 		} catch (error) {
 			return error;
 		}
 	},
-	findOneProduct: async (productId) => {
+	findOneProduct: async (productName) => {
 		try {
 			const dataProduct = await db.product.findOne({
 				attributes: [
@@ -112,6 +115,10 @@ module.exports = {
 						attributes: ["brand_name", "id"],
 					},
 					{
+						model: db.stock,
+						attributes: ["stocks", "id", "warehouse_id"],
+					},
+					{
 						model: db.specification,
 						attributes: {
 							exclude: [
@@ -123,9 +130,12 @@ module.exports = {
 						},
 					},
 				],
-				where: { id: productId },
+				where: { product_name: productName },
 			});
-			return dataProduct;
+			if (!dataProduct) {
+				return { isError: true, message: "Product not found" };
+			}
+			return { message: "Get product's data success", data: dataProduct };
 		} catch (error) {
 			return error;
 		}

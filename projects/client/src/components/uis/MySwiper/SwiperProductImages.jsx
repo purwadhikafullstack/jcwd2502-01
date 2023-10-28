@@ -12,8 +12,20 @@ import MySwiperButtonPrev from "../MySwiperButtons/MySwiperButtonPrev";
 import MySwiperButtonNext from "../MySwiperButtons/MySwiperButtonNext";
 
 import { Image } from "@nextui-org/react";
+import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 const SwiperProductImages = () => {
+	const [productImages, setProductImages] = useState([]);
+
+	const productDetail = useSelector((state) => state.products.productDetail);
+
+	useEffect(() => {
+		if (productDetail) {
+			setProductImages(productDetail?.product_images);
+		}
+	}, [productDetail]);
+
 	return (
 		<>
 			<Swiper
@@ -39,34 +51,19 @@ const SwiperProductImages = () => {
 				<div className="opacity-0 group-hover:opacity-100">
 					<MySwiperButtonPrev />
 				</div>
-				<SwiperSlide className="h-full">
-					<Image
-						src={`https://source.unsplash.com/random/300×300`}
-						alt="logitech"
-						className="w-full h-full aspect-square object-cover rounded-none"
-					/>
-				</SwiperSlide>
-				<SwiperSlide className="h-full">
-					<Image
-						src={`https://source.unsplash.com/random/300×302`}
-						alt="razer"
-						className="w-full h-full aspect-square object-cover rounded-none"
-					/>
-				</SwiperSlide>
-				<SwiperSlide className="h-full">
-					<Image
-						src={`https://source.unsplash.com/random/300×303`}
-						alt="logitech"
-						className="w-full h-full aspect-square object-cover rounded-none"
-					/>
-				</SwiperSlide>
-				<SwiperSlide className="h-full">
-					<Image
-						src={`https://source.unsplash.com/random/300×304`}
-						alt="razer"
-						className="w-full h-full aspect-square object-cover rounded-none"
-					/>
-				</SwiperSlide>
+				{productImages?.map((image) => {
+					return (
+						<SwiperSlide className="h-full">
+							<Image
+								src={`http://localhost:8000/static/${image.image.substring(
+									7
+								)}`}
+								alt="logitech"
+								className="w-full h-full aspect-square object-cover rounded-none"
+							/>
+						</SwiperSlide>
+					);
+				})}
 				<div className="opacity-0 group-hover:opacity-100">
 					<MySwiperButtonNext />
 				</div>
