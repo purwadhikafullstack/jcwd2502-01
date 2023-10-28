@@ -5,13 +5,27 @@ import { useSelector } from "react-redux";
 
 const OrderAction = () => {
 	const [stocks, setStocks] = useState(0);
+	const [selectedAmount, setSelectedAmount] = useState(0);
+	const [productPrice, setProductPrice] = useState(0);
+
 	const productDetail = useSelector((state) => state.products.productDetail);
-	// let productStock = 0;
-	// if (productDetail) {
-	// productStock = productDetail?.stocks.reduce((total, stock) => {
-	// 	return total + stock;
-	// });
-	// }
+
+	const onChangeAmount = (operation) => {
+		if (operation === "minus") {
+			if (selectedAmount === 0) {
+				return;
+			} else {
+				setSelectedAmount(selectedAmount - 1);
+			}
+		} else if (operation === "plus") {
+			if (selectedAmount === stocks) {
+				return;
+			} else {
+				setSelectedAmount(selectedAmount + 1);
+			}
+		}
+	};
+
 	useEffect(() => {
 		if (productDetail?.stocks) {
 			let totalStocks = 0;
@@ -19,6 +33,7 @@ const OrderAction = () => {
 				totalStocks += stock.stocks;
 			});
 			setStocks(totalStocks);
+			setProductPrice(productDetail?.product_price);
 		}
 	}, [productDetail]);
 
@@ -41,6 +56,9 @@ const OrderAction = () => {
 										size="sm"
 										variant="light"
 										radius="full"
+										onClick={() => {
+											onChangeAmount("minus");
+										}}
 									>
 										<IoRemoveCircleOutline
 											size={26}
@@ -51,7 +69,7 @@ const OrderAction = () => {
 										type="number"
 										name="quantity"
 										size="sm"
-										defaultValue={1}
+										value={selectedAmount}
 										min={1}
 										max={999999}
 										className="text-text"
@@ -62,6 +80,9 @@ const OrderAction = () => {
 										size="sm"
 										variant="light"
 										radius="full"
+										onClick={() => {
+											onChangeAmount("plus");
+										}}
 									>
 										<IoAddCircleOutline
 											size={26}
@@ -79,7 +100,15 @@ const OrderAction = () => {
 								</h2>
 								<span className="flex items-end">
 									<h3 className="font-bold text-text">
-										Rp. 1.000.000
+										{productPrice &&
+											(
+												productPrice * selectedAmount
+											).toLocaleString("id-ID", {
+												style: "currency",
+												currency: "IDR",
+												minimumFractionDigits: 0,
+												maximumFractionDigits: 0,
+											})}
 									</h3>
 								</span>
 							</div>

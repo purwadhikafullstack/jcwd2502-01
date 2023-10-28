@@ -4,10 +4,14 @@ import { useSelector } from "react-redux";
 
 const ProductDetailContent = () => {
 	const [readMore, setReadMore] = useState(false);
+	const [productPrice, setProductPrice] = useState(0);
 	const productDetail = useSelector((state) => state.products.productDetail);
 	useEffect(() => {
-		console.log(productDetail?.stocks);
+		if (productDetail) {
+			setProductPrice(productDetail?.product_price);
+		}
 	}, [productDetail]);
+
 	return (
 		<>
 			<section className="product-detail-content my-container pt-4 md:pt-0">
@@ -32,7 +36,13 @@ const ProductDetailContent = () => {
 						</Chip>
 					</div>
 					<h2 className="product-price font-bold text-price-md md:text-price-lg mb-2">
-						{productDetail?.product_price}
+						{productPrice &&
+							productPrice.toLocaleString("id-ID", {
+								style: "currency",
+								currency: "IDR",
+								minimumFractionDigits: 0,
+								maximumFractionDigits: 0,
+							})}
 					</h2>
 					<div className="flex md:hidden gap-1 md:gap-2 my-2">
 						<Chip
