@@ -15,6 +15,7 @@ import {
 
 import { IoEyeOutline, IoTrashOutline } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
+import CreateNewWarehouse from "../../../components/layouts/admin/CreateNewWarehouse";
 
 const statusColorMap = {
 	active: "success",
@@ -148,7 +149,7 @@ const AdminWarehouseListPage = () => {
 			<main className="admin-warehouse-list-page my-container min-h-screen py-8">
 				<div className="flex justify-between mb-4">
 					<h1 className="font-bold text-title-lg">Warehouses</h1>
-					<Button className="">Add New Warehouse</Button>
+					<CreateNewWarehouse />
 				</div>
 				<Table aria-label="Example table with custom cells">
 					<TableHeader columns={columns}>
