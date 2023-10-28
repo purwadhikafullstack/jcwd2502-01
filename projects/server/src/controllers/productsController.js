@@ -11,17 +11,30 @@ const respHandler = require("../utils/respHandler");
 module.exports = {
 	getAllProducts: async (req, res, next) => {
 		try {
-			const data = await findAllProducts(req.query);
-			respHandler(res, "Get products data success", data);
+			const result = await findAllProducts(req.query);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
 		} catch (error) {
 			next(error);
 		}
 	},
 	getProduct: async (req, res, next) => {
 		try {
-			const { productId } = req.params;
-			const data = await findOneProduct(productId);
-			respHandler(res, "Get product's data success", data);
+			let { productName } = req.params;
+			productName = productName.replaceAll("-", " ");
+			const result = await findOneProduct(productName);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
 		} catch (error) {
 			next(error);
 		}

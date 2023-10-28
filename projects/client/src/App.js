@@ -44,7 +44,7 @@ function App() {
 
 	useEffect(() => {
 		// dispatch(OnCheckIsLogin());
-		console.log(username);
+		// console.log(username);
 	}, [dispatch]);
 
 	const { pathname } = useLocation();
@@ -95,7 +95,7 @@ function App() {
 				<Route path="/cart" element={<CartPage />} />
 				<Route path="/cart/checkout" element={<CheckoutPage />} />
 				<Route path="/explore" element={<ExploreProductsPage />} />
-				<Route path="/product/1" element={<ProductPage />} />
+				<Route path="/product/:productName" element={<ProductPage />} />
 				<Route
 					path="/admin/warehouses"
 					element={<AdminWarehouseListPage />}
