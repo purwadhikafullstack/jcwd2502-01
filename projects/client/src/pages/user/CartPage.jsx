@@ -8,7 +8,7 @@ import ProductCartCard from "../../components/uis/Cards/ProductCartCard";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCartAsync } from "../../redux/features/carts";
 import EmptyCartSVG from "../../assets/illustrations/EmptyCartSVG";
-import Footer from "../../components/layouts/Footer";
+import Footer from "../../components/layouts/shared/Footer";
 
 const CartPage = () => {
 	const cart = useSelector((state) => state.carts.carts);

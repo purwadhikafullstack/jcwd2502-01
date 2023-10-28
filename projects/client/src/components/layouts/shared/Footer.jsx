@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import NexocompLogo from "../../assets/logo/NexocompLogo";
-import YourPrivacyChoices from "../../assets/logo/YourPrivacyChoices";
-import AppStore from "../../assets/logo/appstore.svg";
-import GooglePlay from "../../assets/logo/googleplay.svg";
-import { axiosInstance } from "../../lib/axios";
+import NexocompLogo from "../../../assets/logo/NexocompLogo";
+import YourPrivacyChoices from "../../../assets/logo/YourPrivacyChoices";
+import AppStore from "../../../assets/logo/appstore.svg";
+import GooglePlay from "../../../assets/logo/googleplay.svg";
+import { axiosInstance } from "../../../lib/axios";
 
 const Footer = () => {
 	const [categories, setCategories] = useState([]);
@@ -18,10 +18,6 @@ const Footer = () => {
 			console.log(error);
 		}
 	};
-
-	useEffect(() => {
-		console.log("CATEGORY FOOTER >>>", categories);
-	}, [categories]);
 
 	useEffect(() => {
 		fetchCategoriesAsync();
@@ -111,39 +107,16 @@ const Footer = () => {
 								<div className="flex flex-col gap-2">
 									{categories?.map((category) => {
 										return (
-											<>
-												<Link
-													to={`/explore?category=${category?.id}`}
-												>
-													<span className="hover:underline">
-														{
-															category?.category_type
-														}
-													</span>
-												</Link>
-											</>
+											<Link
+												to={`/explore?category=${category?.id}`}
+												key={category?.category_type}
+											>
+												<span className="hover:underline">
+													{category?.category_type}
+												</span>
+											</Link>
 										);
 									})}
-									{/* <Link>
-										<span className="hover:underline">
-											Keyboard
-										</span>
-									</Link>
-									<Link>
-										<span className="hover:underline">
-											Headset
-										</span>
-									</Link>
-									<Link>
-										<span className="hover:underline">
-											Controller
-										</span>
-									</Link>
-									<Link>
-										<span className="hover:underline">
-											Mousepad
-										</span>
-									</Link> */}
 								</div>
 							</div>
 						</div>

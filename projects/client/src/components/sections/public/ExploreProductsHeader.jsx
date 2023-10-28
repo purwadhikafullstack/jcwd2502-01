@@ -1,9 +1,9 @@
 import React from "react";
 import { Button } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
-import { onClear } from "../../redux/features/products";
+import { onClear } from "../../../redux/features/products";
 import { useNavigate } from "react-router-dom";
-import SelectSortBy from "../uis/SelectSortBy/SelectSortBy";
+import SelectSortBy from "../../uis/SelectSortBy/SelectSortBy";
 
 const ExploreProductsHeader = () => {
 	const dispatch = useDispatch();

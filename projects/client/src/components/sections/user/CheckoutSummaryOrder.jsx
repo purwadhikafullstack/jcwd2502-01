@@ -23,7 +23,7 @@ const CheckoutSummaryOrder = () => {
 						<span className="font-bold">{`Rp. 5.178.000`}</span>
 					</p>
 				</div>
-				<div className="checkout-pay md:pt-2">
+				<div className="checkout-pay pb-4 md:pt-2 md:pb-0">
 					<Button size="lg" color="primary" fullWidth>
 						<span className="font-bold text-black text-body-lg">
 							Pay

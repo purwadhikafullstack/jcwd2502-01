@@ -18,9 +18,9 @@ import {
 	onCategory,
 	onClear,
 	onSort,
-} from "../../redux/features/products";
+} from "../../../redux/features/products";
 import { useNavigate } from "react-router-dom";
-import SelectSortBy from "../uis/SelectSortBy/SelectSortBy";
+import SelectSortBy from "../../uis/SelectSortBy/SelectSortBy";
 
 const ExploreProductsFilterMobile = (props) => {
 	const category = useSelector((state) => state.products.category);

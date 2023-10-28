@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoSearch, IoCartOutline } from "react-icons/io5";
-import NexocompLogo from "../../assets/logo/NexocompLogo";
+import NexocompLogo from "../../../assets/logo/NexocompLogo";
 import {
 	Navbar,
 	NavbarBrand,
@@ -14,12 +13,12 @@ import {
 	Input,
 	Badge,
 } from "@nextui-org/react";
-import NexoLogo from "../../assets/logo/NexoLogo";
+import NexoLogo from "../../../assets/logo/NexoLogo";
 import { useDispatch, useSelector } from "react-redux";
-import { onSearch, setSearch } from "../../redux/features/products";
-import { fetchCartAsync } from "../../redux/features/carts";
+import { onSearch, setSearch } from "../../../redux/features/products";
+import { fetchCartAsync } from "../../../redux/features/carts";
 import NavigationBarMenu from "./NavigationBarMenu";
-import ProfileDropdown from "../uis/Dropdowns/ProfileDropdown";
+import ProfileDropdown from "../../uis/Dropdowns/ProfileDropdown";
 
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);

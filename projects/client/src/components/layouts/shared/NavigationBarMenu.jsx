@@ -7,16 +7,16 @@ import {
 	NavbarMenuItem,
 } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
-import ThemeToggle from "../uis/Buttons/ThemeToggle";
+import ThemeToggle from "../../uis/Buttons/ThemeToggle";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	IoSettingsOutline,
 	IoLogOutOutline,
 	IoCartOutline,
 } from "react-icons/io5";
-import DefaultAvatar from "../../assets/avatars/default_avatar.png";
-import TransactionList from "../../assets/icons/TransactionList";
-import { onLogout } from "../../redux/features/users";
+import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
+import TransactionList from "../../../assets/icons/TransactionList";
+import { onLogout } from "../../../redux/features/users";
 
 const NavigationBarMenu = () => {
 	const { username, email, role } = useSelector((state) => state.user);
