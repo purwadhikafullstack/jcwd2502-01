@@ -30,6 +30,8 @@ const {
 	usersRouter,
 	cartsRouter,
 	warehousesRouter,
+	provincesRouter,
+	citiesRouter,
 } = require("./routers");
 // ===========================
 // NOTE : Add your routes here
@@ -39,6 +41,8 @@ app.use("/api/brands", brandsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/warehouses", warehousesRouter);
+app.use("/api/provinces", provincesRouter);
+app.use("/api/cities", citiesRouter);
 
 app.get("/api", (req, res) => {
 	res.send(`Hello, this is my API`);

@@ -4,7 +4,7 @@ import Media from "react-media";
 import { Button } from "@nextui-org/react";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
-const AddressCard = ({ selected }) => {
+const CheckoutAddressCard = ({ selected }) => {
 	const [isSelected, setIsSelected] = useState(selected);
 
 	return (
@@ -78,4 +78,4 @@ const AddressCard = ({ selected }) => {
 	);
 };
 
-export default AddressCard;
+export default CheckoutAddressCard;
