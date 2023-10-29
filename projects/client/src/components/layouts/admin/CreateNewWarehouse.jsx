@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
 	Modal,
@@ -15,10 +15,35 @@ import {
 } from "@nextui-org/react";
 
 import Media from "react-media";
+import { axiosInstance } from "../../../lib/axios";
 
 const CreateNewWarehouse = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const [name, setName] = useState("");
+	const [province, setProvince] = useState(0);
+	const [city, setCity] = useState(0);
+	const [address, setAddress] = useState("");
+	const [data, setData] = useState({});
 
+	const onCreate = async (data) => {
+		try {
+			const { name, province, city, address } = data;
+			if (!name || !province || !city || !address) {
+				alert("Please fill out all the form");
+				return;
+			}
+			// const accessToken = localStorage.getItem("accessToken");
+			await axiosInstance().post(`warehouses`, data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		if (name && province && city && address) {
+			setData({ name, province, city, address });
+		}
+	}, [name, province, city, address]);
 	return (
 		<>
 			<Media
@@ -192,6 +217,7 @@ const CreateNewWarehouse = () => {
 												className="text-center mb-4"
 												onPress={onClose}
 												fullWidth
+												onClick={() => onCreate(data)}
 											>
 												<span className="font-bold text-black">
 													Save new warehouse

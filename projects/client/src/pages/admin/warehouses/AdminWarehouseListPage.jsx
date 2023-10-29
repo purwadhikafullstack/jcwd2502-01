@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Table,
 	TableHeader,
@@ -16,6 +16,7 @@ import {
 import { IoEyeOutline, IoTrashOutline } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import CreateNewWarehouse from "../../../components/layouts/admin/CreateNewWarehouse";
+import { axiosInstance } from "../../../lib/axios";
 
 const statusColorMap = {
 	active: "success",
@@ -24,10 +25,13 @@ const statusColorMap = {
 };
 
 const AdminWarehouseListPage = () => {
+	const [warehouses, setWarehouses] = useState([]);
+
 	const columns = [
 		{ name: "NAME", uid: "name" },
-		{ name: "STATUS", uid: "status" },
-		{ name: "ACTIONS", uid: "actions" },
+		{ name: "PROVINCE", uid: "province" },
+		{ name: "CITY", uid: "city" },
+		{ name: "ADMIN", uid: "admin" },
 	];
 
 	const users = [
@@ -83,41 +87,45 @@ const AdminWarehouseListPage = () => {
 		},
 	];
 
-	const renderCell = React.useCallback((user, columnKey) => {
-		const cellValue = user[columnKey];
-
+	const renderCell = React.useCallback((warehouse, columnKey) => {
 		switch (columnKey) {
 			case "name":
 				return (
 					<User
-						avatarProps={{ radius: "lg", src: user.avatar }}
-						description={user.email}
-						name={cellValue}
+						description={warehouse.warehouse_address}
+						name={warehouse.warehouse_name}
 					>
-						{user.email}
+						{warehouse.warehouse_address}
 					</User>
 				);
-			case "role":
+			case "province":
 				return (
 					<div className="flex flex-col">
 						<p className="text-bold text-sm capitalize">
-							{cellValue}
+							{warehouse.province.province}
 						</p>
-						<p className="text-bold text-sm capitalize text-default-400">
+						{/* <p className="text-bold text-sm capitalize text-default-400">
 							{user.team}
-						</p>
+						</p> */}
 					</div>
 				);
-			case "status":
+			case "city":
 				return (
 					<Chip
 						className="capitalize"
-						color={statusColorMap[user.status]}
+						// color={statusColorMap[user.status]}
 						size="sm"
 						variant="flat"
 					>
-						{cellValue}
+						{warehouse.city.city_name}
 					</Chip>
+				);
+			case "admin":
+				return (
+					<User
+						description={warehouse.warehouse_name}
+						name={warehouse.users[0]?.username}
+					></User>
 				);
 			case "actions":
 				return (
@@ -140,8 +148,23 @@ const AdminWarehouseListPage = () => {
 					</div>
 				);
 			default:
-				return cellValue;
+			// return cellValue;
 		}
+	}, []);
+
+	const fetchWarehouses = async () => {
+		try {
+			// const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance().get(`warehouses/all`);
+
+			setWarehouses(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchWarehouses();
 	}, []);
 
 	return (
@@ -159,7 +182,7 @@ const AdminWarehouseListPage = () => {
 							</TableColumn>
 						)}
 					</TableHeader>
-					<TableBody items={users}>
+					<TableBody items={warehouses}>
 						{(item) => (
 							<TableRow key={item.id}>
 								{(columnKey) => (

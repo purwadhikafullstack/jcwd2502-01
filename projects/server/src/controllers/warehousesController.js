@@ -31,8 +31,8 @@ module.exports = {
 	},
 	editWarehouse: async (req, res, next) => {
 		try {
-			const { warehouseId } = req.params;
-			const result = await updateWarehouse(warehouseId, req.body);
+			const { id } = req.params;
+			const result = await updateWarehouse(id, req.body);
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
