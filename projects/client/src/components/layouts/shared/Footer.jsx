@@ -26,7 +26,7 @@ const Footer = () => {
 	return (
 		<>
 			<footer
-				className={`footer border-t-2 dark:border-t-neutral-800 bg-background w-full`}
+				className={`footer border-t-2 dark:border-t-neutral-800 bg-background w-full z-[10]`}
 			>
 				<div className="my-container px-6">
 					<div className="footer-body md:flex block pt-12">

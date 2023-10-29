@@ -17,7 +17,7 @@ import {
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 
-const CreateNewWarehouse = () => {
+const CreateNewWarehouseModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [name, setName] = useState("");
 	const [province, setProvince] = useState(0);
@@ -179,23 +179,9 @@ const CreateNewWarehouse = () => {
 																`Tangerang`,
 															]}
 														>
-															{`Kota`}{" "}
-															{`Tangerang`}
+															Kota Tangerang
 														</SelectItem>
 													</Select>
-												</div>
-												<div className="form-control">
-													<Input
-														type="number"
-														placeholder="16210"
-														name="postal_code"
-														label="Postal Code"
-														labelPlacement="outside"
-														variant="bordered"
-														radius="sm"
-														size="lg"
-														isRequired
-													/>
 												</div>
 												<div className="form-control">
 													<Textarea
@@ -235,4 +221,4 @@ const CreateNewWarehouse = () => {
 	);
 };
 
-export default CreateNewWarehouse;
+export default CreateNewWarehouseModal;

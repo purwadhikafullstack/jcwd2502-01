@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../../redux/features/carts";
 
 const OrderAction = () => {
 	const [stocks, setStocks] = useState(0);
@@ -9,6 +10,8 @@ const OrderAction = () => {
 	const [productPrice, setProductPrice] = useState(0);
 
 	const productDetail = useSelector((state) => state.products.productDetail);
+
+	const dispatch = useDispatch();
 
 	const onChangeAmount = (operation) => {
 		if (operation === "minus") {
@@ -25,6 +28,10 @@ const OrderAction = () => {
 			}
 		}
 	};
+
+	// const handleAddtoCart = () => {
+	// 	if (role)
+	// };
 
 	useEffect(() => {
 		if (productDetail?.stocks) {
@@ -119,11 +126,27 @@ const OrderAction = () => {
 									fullWidth
 									color="primary"
 									disabled={!stocks}
+									onClick={() => {}}
 								>
 									<span className="text-black font-medium text-body-lg flex items-center">
 										<span className="text-[22px] mr-2">
 											+
-										</span>{" "}
+										</span>
+										Add to cart
+									</span>
+								</Button>
+								<Button
+									fullWidth
+									color="primary"
+									disabled={!stocks}
+									onClick={() =>
+										dispatch(
+											addToCart(1, productDetail?.id)
+										)
+									}
+								>
+									<span className="text-black font-medium flex items-center gap-2">
+										<span className="text-[24px]">+</span>{" "}
 										Add to cart
 									</span>
 								</Button>
