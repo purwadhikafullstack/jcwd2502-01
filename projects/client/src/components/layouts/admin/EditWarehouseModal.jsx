@@ -17,36 +17,85 @@ const EditWarehouseModal = ({
 	const [selectedCity, setSelectedCity] = useState([]);
 	const [warehouse, setWarehouse] = useState(null);
 
-	// useEffect(() => {
-	// 	if (warehouse) {
-	// 		formik.setValues({
-	// 			warehouse_name: warehouse.warehouse_name || "",
-	// 			warehouse_location: warehouse.warehouse_location || "",
-	// 			warehouse_address: warehouse.warehouse_address || "",
-	// 			province_id: warehouse.province_id || null,
-	// 			city_id: warehouse.city_id || null,
-	// 		});
-	// 	}
-	// }, [warehouse]);
+	useEffect(() => {
+		if (warehouse) {
+			formik.setValues({
+				warehouse_name: warehouse.warehouse_name || "",
+				warehouse_location: warehouse.warehouse_location || "",
+				warehouse_address: warehouse.warehouse_address || "",
+				province_id: warehouse.province.id || null,
+				city_id: warehouse.city.id || null,
+			});
+		}
+	}, [warehouse]);
 
-	// const formik = useFormik({
-	// 	initialValues: {
-	// 		warehouse_name: ""
-	// 		warehouse_location: ""
-	// 		warehouse_address: ""
-	// 		province_id: null
-	// 		city_id: null
-	// const formik = useFormik({
-	// 	},
-	// 	onSubmit: async (values) => {
-	// 		onEditWarehouse(values);
-	// 	},
-	// });
+	const formik = useFormik({
+		initialValues: {
+			warehouse_name: "",
+			warehouse_location: "",
+			warehouse_address: "",
+			province_id: null,
+			city_id: null,
+		},
+		onSubmit: async (values) => {
+			onSubmitEdit(values);
+		},
+	});
 
-	// const handleFormInput = (event) => {
-	// 	const { target } = event;
-	// 	formik.setFieldValue(target.name, target.value);
-	// };
+	const onSubmitEdit = async (values) => {
+		try {
+			const {
+				warehouse_name,
+				warehouse_location,
+				warehouse_address,
+				province_id,
+				city_id,
+			} = values;
+
+			if (
+				!warehouse_name ||
+				!warehouse_location ||
+				!warehouse_address ||
+				province_id ||
+				city_id
+			) {
+				alert("Please fill in all form fields");
+				return; // Stop further execution
+			}
+
+			const newWarehouseData = {
+				warehouse_name,
+				warehouse_location,
+				warehouse_address,
+				province_id,
+				city_id,
+			};
+			// const accessToken = localStorage.getItem("accessToken");
+
+			const updateWarehouse = await axiosInstance().patch(
+				`warehouses/${warehouseId}`,
+				newWarehouseData
+			);
+
+			// if (updateWarehouse.status === 201) {
+			// 	alert("Warehouse updated successfully");
+
+			// 	setTimeout(() => {
+			// 		window.location.reload(false);
+			// 	}, 1500);
+			// } else {
+			// 	alert("Error updating warehouse");
+			// }
+
+			return;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const handleFormInput = (event) => {
+		const { target } = event;
+		formik.setFieldValue(target.name, target.value);
+	};
 
 	const getProvinces = useCallback(async () => {
 		try {
@@ -62,9 +111,7 @@ const EditWarehouseModal = ({
 	const renderProvincesOption = () => {
 		return provinces?.map((province) => {
 			return (
-				<SelectItem key={[province.id, province.province]}>
-					{province.province}
-				</SelectItem>
+				<SelectItem key={province.id}>{province.province}</SelectItem>
 			);
 		});
 	};
@@ -72,7 +119,7 @@ const EditWarehouseModal = ({
 	const handleProvince = (province) => {
 		const splittedProvince = province?.split(",");
 		setSelectedProvince(splittedProvince);
-		// 	formik.setFieldValue(province_id, splittedProvince[0]);
+		formik.setFieldValue("province_id", splittedProvince[0]);
 	};
 
 	const getCities = useCallback(async () => {
@@ -91,7 +138,7 @@ const EditWarehouseModal = ({
 	const renderCitiesOption = () => {
 		return cities?.map((city) => {
 			return (
-				<SelectItem key={[city.id, city.type, city.city_name]}>
+				<SelectItem key={city.id}>
 					{city.type} {city.city_name}
 				</SelectItem>
 			);
@@ -101,7 +148,7 @@ const EditWarehouseModal = ({
 	const handleCity = (city) => {
 		const splittedCity = city?.split(",");
 		setSelectedProvince(splittedCity);
-		// 	formik.setFieldValue(city_id, splittedCity[0]);
+		formik.setFieldValue("city_id", splittedCity[0]);
 	};
 
 	useEffect(() => {
@@ -119,23 +166,31 @@ const EditWarehouseModal = ({
 		}
 	}, [open]);
 
-	// const fetchWarehouses = async () => { //* Fetch warehouse where selected warehouse id bang
-	// 	try {
-	// 		// const accessToken = localStorage.getItem("accessToken");
-	// 		const { data } = await axiosInstance().get(`warehouses/...`);
+	const fetchWarehouse = async () => {
+		//* Fetch warehouse where selected warehouse id bang
+		try {
+			// const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance().get(
+				`warehouses/${warehouseId}`
+			);
 
-	// 		setWarehouse(data.data);
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
+			setWarehouse(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	// useEffect(() => {
 	// 	fetchWarehouse();
 	// }, []);
+	useEffect(() => {
+		console.log("awawa", warehouse?.province.id);
+		console.log("awawaw", warehouse?.city.id);
+	}, [warehouse]);
 
 	useEffect(() => {
 		console.log(warehouseId);
+		fetchWarehouse();
 	}, [warehouseId]);
 
 	return (
@@ -170,7 +225,10 @@ const EditWarehouseModal = ({
 								</div>
 							</div>
 							<div className="modal-body">
-								<form className="flex flex-col justify-between gap-4 h-full">
+								<form
+									onSubmit={formik.handleSubmit}
+									className="flex flex-col justify-between gap-4 h-full"
+								>
 									<div className="form-control">
 										<Input
 											type="text"
@@ -183,8 +241,8 @@ const EditWarehouseModal = ({
 											placeholder="Warehouse One"
 											defaultValue={"Warehouse 1"}
 											isRequired
-											// value={formik.values.warehouse_name}
-											// onChange={handleFormInput}
+											value={formik.values.warehouse_name}
+											onChange={handleFormInput}
 										/>
 									</div>
 									<div className="form-control">
@@ -200,7 +258,11 @@ const EditWarehouseModal = ({
 											}
 											placeholder="Select a province"
 											isRequired
-											// defaultValue={formik.values.province_id}
+											defaultSelectedKeys={[
+												String(
+													formik.values.province_id
+												),
+											]}
 										>
 											{renderProvincesOption()}
 										</Select>
@@ -218,7 +280,9 @@ const EditWarehouseModal = ({
 											}
 											placeholder="Select a City"
 											isRequired
-											// defaultValue={formik.values.warehouse_name}
+											defaultSelectedKeys={[
+												String(formik.values.city_id),
+											]}
 										>
 											{renderCitiesOption()}
 										</Select>
@@ -233,22 +297,25 @@ const EditWarehouseModal = ({
 											radius="sm"
 											size="lg"
 											isRequired
-											// value={formik.values.warehouse_address}
-											// onChange={handleFormInput}
+											defaultValue={
+												formik.values.warehouse_address
+											}
+											onChange={handleFormInput}
 										/>
 									</div>
+									<div className="modal-footer pt-4">
+										<Button
+											color="primary"
+											className="text-center"
+											fullWidth
+											type="submit"
+										>
+											<span className="font-bold text-black">
+												Save changes
+											</span>
+										</Button>
+									</div>
 								</form>
-							</div>
-							<div className="modal-footer pt-4">
-								<Button
-									color="primary"
-									className="text-center"
-									fullWidth
-								>
-									<span className="font-bold text-black">
-										Save changes
-									</span>
-								</Button>
 							</div>
 						</div>
 					</section>
