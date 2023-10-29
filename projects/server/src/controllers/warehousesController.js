@@ -6,6 +6,7 @@ const {
 	addWarehouse,
 	updateWarehouse,
 	removeWarehouse,
+	findWarehouse,
 } = require("./../services/warehousesService");
 
 const respHandler = require("../utils/respHandler");
@@ -13,9 +14,17 @@ const respHandler = require("../utils/respHandler");
 module.exports = {
 	getAllWarehouses: async (req, res, next) => {
 		try {
-			const { productId } = req.params;
-			const data = await findAllWarehouses(productId);
-			respHandler(res, "Get product's data success", data);
+			const result = await findAllWarehouses();
+			respHandler(res, result.message, result.data);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getWarehouse: async (req, res, next) => {
+		try {
+			const { id } = req.params;
+			const result = await findWarehouse(id);
+			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
 		}

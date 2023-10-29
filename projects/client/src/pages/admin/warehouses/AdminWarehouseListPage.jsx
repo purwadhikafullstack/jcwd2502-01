@@ -36,6 +36,12 @@ const AdminWarehouseListPage = () => {
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
+	const onDelete = async (warehouseId) => {
+		//confirm
+		await axiosInstance().delete(`warehouses/${warehouseId}`);
+		window.location.reload(false);
+	};
+
 	const renderCell = React.useCallback((warehouse, columnKey) => {
 		switch (columnKey) {
 			case "name":
@@ -97,11 +103,14 @@ const AdminWarehouseListPage = () => {
 								<BiEdit size={24} />
 							</Button>
 						</Tooltip>
-						<Tooltip color="danger" content="Delete user">
+						<Tooltip color="danger" content="Remove warehouse">
 							<Button
 								isIconOnly
 								variant="light"
 								className="text-lg text-danger cursor-pointer active:opacity-50"
+								onClick={() => {
+									onDelete(warehouse.id);
+								}}
 							>
 								<IoTrashOutline size={24} />
 							</Button>
