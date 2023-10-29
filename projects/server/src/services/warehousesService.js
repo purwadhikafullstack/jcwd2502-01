@@ -5,19 +5,24 @@ module.exports = {
 	findAllWarehouses: async (productId) => {
 		try {
 			const dataWarehouses = await db.warehouse.findAll({
-				attributes: ["id", "warehouse_name", "warehouse_location"],
+				attributes: [
+					"id",
+					"warehouse_name",
+					"warehouse_location",
+					"warehouse_address",
+				],
 				include: [
 					{
 						model: db.user,
-						attributes: {
-							exclude: [
-								"createdAt",
-								"updatedAt",
-								"deletedAt",
-								"password",
-								"status",
-							],
-						},
+						attributes: ["id", "username"],
+					},
+					{
+						model: db.city,
+						attributes: ["id", "type", "city_name", "postal_code"],
+					},
+					{
+						model: db.province,
+						attributes: ["id", "province"],
 					},
 				],
 			});
@@ -30,15 +35,10 @@ module.exports = {
 		try {
 			const createWarehouse = await db.warehouse.create(data);
 			if (adminId) {
-				const warehouse = await db.warehouse.findByPk(
-					createWarehouse.id
+				await db.user.update(
+					{ warehouse_id: createWarehouse.id },
+					{ where: { id: adminId } }
 				);
-				const user = await db.user.findByPk(adminId);
-
-				if (!user || !warehouse) {
-					return { message: "User or warehouse not found" };
-				}
-				await user.addWarehouse(warehouse);
 			}
 			return { message: "Create warehouse success" };
 		} catch (error) {
@@ -47,12 +47,12 @@ module.exports = {
 	},
 	updateWarehouse: async (warehouseId, data) => {
 		try {
-			const updateWarehouse = await db.warehouse.update(data, {
+			const updatedWarehouse = await db.warehouse.update(data, {
 				where: { id: warehouseId },
 			});
 			return {
 				message: "Update warehouse success",
-				data: updateWarehouse,
+				data: null,
 			};
 		} catch (error) {
 			return error;
@@ -60,17 +60,14 @@ module.exports = {
 	},
 	removeWarehouse: async (warehouseId) => {
 		try {
-			const users = await db.user.findAll({
-				include: [
-					{
-						model: db.warehouse,
-						where: { id: warehouseId },
-					},
-				],
-			});
-			for (const user of users) {
-				await user.removeWarehouse(warehouseId);
-			}
+			// const users = await db.user.findAll({
+			// 	include: [
+			// 		{
+			// 			model: db.warehouse,
+			// 			where: { id: warehouseId },
+			// 		},
+			// 	],
+			// });
 			await db.warehouse.destroy({
 				where: { id: warehouseId },
 			});
@@ -78,64 +75,6 @@ module.exports = {
 				message: "Delete warehouse success",
 				data: null,
 			};
-		} catch (error) {
-			return error;
-		}
-	},
-	getAssociationForUser: async (userId) => {
-		try {
-			const user = await db.user.findByPk(userId);
-
-			if (!user) {
-				console.log("User not found");
-				return;
-			}
-
-			const associations = await user.getWarehouses();
-			return associations;
-		} catch (error) {
-			return error;
-		}
-	},
-	addAssociationForUser: async (userId, warehouseId) => {
-		try {
-			const user = await db.user.findByPk(userId);
-			const warehouse = await db.warehouse.findByPk(warehouseId);
-
-			if (!user || !warehouse) {
-				console.log("User or warehouse not found");
-				return;
-			}
-
-			await user.addWarehouses(warehouse);
-		} catch (error) {
-			return error;
-		}
-	},
-	updateAssociationsForUser: async (userId, newWarehouseIds) => {
-		try {
-			const user = await db.user.findByPk(userId);
-
-			if (!user) {
-				console.log("User not found");
-				return;
-			}
-
-			await user.setWarehouses(newWarehouseIds);
-		} catch (error) {
-			return error;
-		}
-	},
-	removeAssociationsForUser: async (userId, warehouseId) => {
-		try {
-			const user = await db.user.findByPk(userId);
-
-			if (!user) {
-				console.log("User not found");
-				return;
-			}
-
-			await user.removeWarehouses(warehouseId);
 		} catch (error) {
 			return error;
 		}

@@ -33,7 +33,8 @@ const OrderAction = () => {
 				totalStocks += stock.stocks;
 			});
 			setStocks(totalStocks);
-		} else if (productDetail?.product_price) {
+		}
+		if (productDetail?.product_price) {
 			setProductPrice(productDetail?.product_price);
 		}
 	}, [productDetail]);
