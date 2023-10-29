@@ -14,8 +14,8 @@ import {
 import { IoChevronForward, IoSearch } from "react-icons/io5";
 
 import Media from "react-media";
-import AddressCard from "../../uis/Cards/AddressCard";
 import CreateNewAddressModal from "./CreateNewAddressModal";
+import CheckoutAddressCard from "../../uis/Cards/CheckoutAddressCard";
 
 const ChooseAddressModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -69,8 +69,12 @@ const ChooseAddressModal = () => {
 											<CreateNewAddressModal />
 										</ModalHeader>
 										<ModalBody className="p-4">
-											<AddressCard selected={true} />
-											<AddressCard selected={false} />
+											<CheckoutAddressCard
+												selected={true}
+											/>
+											<CheckoutAddressCard
+												selected={false}
+											/>
 										</ModalBody>
 										<ModalFooter>
 											<Button

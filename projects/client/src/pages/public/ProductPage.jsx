@@ -29,6 +29,7 @@ const ProductPage = () => {
 
 	useEffect(() => {
 		fetchProduct();
+		window.scrollTo({ top: 0 });
 	}, []);
 
 	return (

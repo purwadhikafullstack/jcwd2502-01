@@ -59,7 +59,7 @@ const SwiperProductImages = () => {
 									7
 								)}`}
 								alt="logitech"
-								className="w-full h-full aspect-square object-cover rounded-none"
+								className="w-full h-full aspect-square object-contain bg-white rounded-none"
 							/>
 						</SwiperSlide>
 					);

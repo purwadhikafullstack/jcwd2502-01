@@ -91,10 +91,10 @@ const ProductDetailContent = () => {
 								</Card>
 							</Tab>
 							<Tab key="specification" title="Specification">
-								<Card>
-									<CardBody className="py-2">
+								<Card className="w-full">
+									<CardBody className="py-2 w-full">
 										{productDetail?.specification && (
-											<div className="specs-wrapper flex flex-col divide-y-1">
+											<div className="specs-wrapper flex flex-col divide-y-1 w-full">
 												<div className="physical-specs py-2">
 													<h4 className="font-medium mb-1">
 														Physical Specification
@@ -127,25 +127,49 @@ const ProductDetailContent = () => {
 														</div>
 													</div>
 												</div>
-												<div className="tracking-specs py-2">
-													<h4 className="font-medium mb-1">
-														Tracking
-													</h4>
-													<div className="list">
-														<div className="sensor">
-															{productDetail
-																?.specification
-																.sensor &&
-																`Sensor: ${productDetail?.specification.sensor}`}
+												{productDetail?.specification
+													.sensor ||
+													(productDetail
+														?.specification
+														.resolution && (
+														<div className="tracking-specs py-2">
+															<h4 className="font-medium mb-1">
+																Specifications
+															</h4>
+															<div className="list">
+																<div className="sensor">
+																	{productDetail
+																		?.specification
+																		.sensor &&
+																		`Sensor: ${productDetail?.specification.sensor}`}
+																</div>
+																<div className="resolution">
+																	{productDetail
+																		?.specification
+																		.resolution &&
+																		`Resolution: ${productDetail?.specification.resolution}`}
+																</div>
+																<div className="wireless">
+																	{productDetail
+																		?.specification
+																		.wireless &&
+																		`Wireless`}
+																</div>
+																<div className="wired">
+																	{productDetail
+																		?.specification
+																		.wired &&
+																		`Cable length: ${productDetail?.specification.wired}`}
+																</div>
+																<div className="battery">
+																	{productDetail
+																		?.specification
+																		.battery_life &&
+																		`Battery life: ${productDetail?.specification.battery_life}`}
+																</div>
+															</div>
 														</div>
-														<div className="resolution">
-															{productDetail
-																?.specification
-																.resolution &&
-																`Resolution: ${productDetail?.specification.resolution}`}
-														</div>
-													</div>
-												</div>
+													))}
 												<div className="warranty-specs py-2">
 													<h4 className="font-medium mb-1">
 														Warranty
