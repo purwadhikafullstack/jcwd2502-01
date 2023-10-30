@@ -16,9 +16,6 @@ const ProductPage = () => {
 
 	const fetchProduct = async () => {
 		try {
-			// const accessToken = localStorage.getItem("accessToken");
-			// const decodedProductName = decodeURIComponent(productName);
-
 			const { data } = await axiosInstance().get(
 				`products/${productName}`
 			);
