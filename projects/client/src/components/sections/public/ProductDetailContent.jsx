@@ -64,8 +64,8 @@ const ProductDetailContent = () => {
 						{productDetail?.product_name}
 					</h1>
 				</div>
-				<div className="product-detail">
-					<div className="product-detail-container">
+				<div className="product-detail w-full">
+					<div className="product-detail-container w-full">
 						<Tabs aria-label="ProductDetail">
 							<Tab key="description" title="Description">
 								<Card>
@@ -92,10 +92,10 @@ const ProductDetailContent = () => {
 							</Tab>
 							<Tab key="specification" title="Specification">
 								<Card className="w-full">
-									<CardBody className="py-2 w-full">
+									<CardBody className="py-2 w-[400px]">
 										{productDetail?.specification && (
 											<div className="specs-wrapper flex flex-col divide-y-1 w-full">
-												<div className="physical-specs py-2">
+												<div className="physical-specs py-2 w-full">
 													<h4 className="font-medium mb-1">
 														Physical Specification
 													</h4>

@@ -101,24 +101,25 @@ export const deleteOrder = (user_id, id) => async (dispatchEvent) => {
 	}
 };
 
-export const addToCart = (user_id, product_id) => async (dispatchEvent) => {
-	try {
-		const dataToSend = {
-			product_id: Number(product_id),
-			quantity: 1,
-			user_id: user_id,
-		};
+export const addToCart =
+	(user_id, product_id, quantity) => async (dispatchEvent) => {
+		try {
+			const dataToSend = {
+				product_id: Number(product_id),
+				quantity,
+				user_id,
+			};
 
-		await axiosInstance().post(`carts`, dataToSend);
+			await axiosInstance().post(`carts`, dataToSend);
 
-		const { data } = await axiosInstance().get(`carts/${user_id}`);
+			const { data } = await axiosInstance().get(`carts/${user_id}`);
 
-		dispatchEvent(setCarts(data.data.cart));
-		dispatchEvent(setCount(data.data.count));
-	} catch (error) {
-		console.log(error);
-	}
-};
+			dispatchEvent(setCarts(data.data.cart));
+			dispatchEvent(setCount(data.data.count));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 export const {
 	setCarts,

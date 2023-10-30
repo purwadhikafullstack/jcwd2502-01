@@ -59,14 +59,14 @@ const AdminWarehouseListPage = () => {
 				return (
 					<div className="flex flex-col min-w-[200px]">
 						<p className="text-bold text-sm capitalize">
-							{warehouse.province.province}
+							{warehouse.province?.province}
 						</p>
 					</div>
 				);
 			case "city":
 				return (
 					<div className="flex flex-col min-w-[200px]">
-						<p>{warehouse.city.city_name}</p>
+						<p>{warehouse.city?.city_name}</p>
 					</div>
 				);
 
@@ -74,7 +74,7 @@ const AdminWarehouseListPage = () => {
 				return (
 					<div className="min-w-[200px]">
 						<User
-							description={warehouse.warehouse_name}
+							description={warehouse?.warehouse_name}
 							name={warehouse.users[0]?.username}
 						></User>
 					</div>

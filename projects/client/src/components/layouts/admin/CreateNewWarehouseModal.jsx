@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import {
 	Modal,
@@ -19,6 +19,12 @@ import { axiosInstance } from "../../../lib/axios";
 
 const CreateNewWarehouseModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const [isLoading, setIsLoading] = useState(false);
+
+	const [provinces, setProvinces] = useState([]);
+	const [selectedProvince, setSelectedProvince] = useState();
+	const [cities, setCities] = useState([]);
+	const [selectedCity, setSelectedCity] = useState();
 	const [name, setName] = useState("");
 	const [province, setProvince] = useState(0);
 	const [city, setCity] = useState(0);
@@ -27,23 +33,101 @@ const CreateNewWarehouseModal = () => {
 
 	const onCreate = async (data) => {
 		try {
+			setIsLoading(true);
 			const { name, province, city, address } = data;
 			if (!name || !province || !city || !address) {
 				alert("Please fill out all the form");
 				return;
 			}
+
+			const dataToSend = {
+				warehouse_name: name,
+				warehouse_address: address,
+				province_id: province,
+				city_id: city,
+			};
+
 			// const accessToken = localStorage.getItem("accessToken");
-			await axiosInstance().post(`warehouses`, data);
+			await axiosInstance().post(`warehouses`, dataToSend);
+			window.location.reload(false);
+			setIsLoading(false);
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	const getProvinces = useCallback(async () => {
+		try {
+			const { data } = await axiosInstance().get(`provinces`);
+
+			setProvinces(data.data);
 		} catch (error) {
 			console.log(error);
 		}
+	}, [axiosInstance]);
+
+	const renderProvincesOption = () => {
+		return provinces?.map((province) => {
+			return (
+				<SelectItem key={province.id} value={province.province}>
+					{province.province}
+				</SelectItem>
+			);
+		});
 	};
+
+	const handleProvince = (province) => {
+		// const splittedProvince = province?.split(",");
+		setSelectedProvince(province);
+		setProvince(province);
+		// formik.setFieldValue("province_id", province);
+	};
+
+	const getCities = useCallback(async () => {
+		try {
+			const { data } = await axiosInstance().get(
+				`cities/${province ? province : ""}`
+			);
+
+			setCities(data.data);
+			console.log(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	}, [axiosInstance, selectedProvince]);
+
+	const renderCitiesOption = () => {
+		return cities?.map((city) => {
+			return (
+				<SelectItem key={city.id} value={city.id}>
+					{`${city.type} ${city.city_name}`}
+				</SelectItem>
+			);
+		});
+	};
+
+	// const handleCity = (city) => {
+	// 	const splittedCity = city?.split(",");
+	// 	setSelectedCity(city);
+	// 	console.log("CITY>>>", city);
+	// 	formik.setFieldValue("city_id", city);
+	// };
+
+	useEffect(() => {
+		getProvinces();
+		if (selectedProvince) {
+			getCities();
+		}
+	}, [getProvinces, getCities, selectedProvince]);
 
 	useEffect(() => {
 		if (name && province && city && address) {
 			setData({ name, province, city, address });
 		}
 	}, [name, province, city, address]);
+
 	return (
 		<>
 			<Media
@@ -90,97 +174,49 @@ const CreateNewWarehouseModal = () => {
 															"Warehouse 1"
 														}
 														isRequired
+														onChange={(e) =>
+															setName(
+																e.target.value
+															)
+														}
 													/>
 												</div>
 												<div className="form-control">
 													<Select
-														name="province"
+														name="province_id"
 														label="Province"
 														labelPlacement="outside"
 														variant="bordered"
 														radius="sm"
 														size="lg"
 														onChange={(e) =>
-															console.log(
+															handleProvince(
 																e.target.value
 															)
 														}
 														placeholder="Select a province"
 														isRequired
 													>
-														<SelectItem
-															key={[
-																`province.id`,
-																`province.province`,
-															]}
-														>
-															{`province.province`}
-														</SelectItem>
-														<SelectItem
-															key={[1, "Bali"]}
-														>
-															Bali
-														</SelectItem>
-														<SelectItem
-															key={[
-																2,
-																"Bangka Belitung",
-															]}
-														>
-															Bangka Belitung
-														</SelectItem>
-														<SelectItem
-															key={[3, "Banten"]}
-														>
-															Banten
-														</SelectItem>
+														{renderProvincesOption()}
 													</Select>
 												</div>
 												<div className="form-control">
 													<Select
-														name="city"
+														name="city_id"
 														label="City"
 														labelPlacement="outside"
 														variant="bordered"
 														radius="sm"
 														size="lg"
 														onChange={(e) =>
-															console.log(
+															setCity(
 																e.target.value
 															)
 														}
-														placeholder="Select a City"
+														placeholder="Select a city"
 														isRequired
 													>
-														<SelectItem
-															key={[
-																`city.id`,
-																`city.type`,
-																`city.city_name`,
-															]}
-														>
-															{`city.type`}{" "}
-															{`city.city_name`}
-														</SelectItem>
-														<SelectItem
-															key={[
-																455,
-																`Kabupaten`,
-																`Tangerang`,
-															]}
-														>
-															{`Kabupaten`}{" "}
-															{`Tangerang`}
-														</SelectItem>
-														<SelectItem
-															key={[
-																456,
-																`Kota`,
-																`Tangerang`,
-															]}
-														>
-															Kota Tangerang
-														</SelectItem>
+														{renderCitiesOption()}
 													</Select>
 												</div>
 												<div className="form-control">
@@ -193,6 +229,11 @@ const CreateNewWarehouseModal = () => {
 														radius="sm"
 														size="lg"
 														isRequired
+														onChange={(e) =>
+															setAddress(
+																e.target.value
+															)
+														}
 													/>
 												</div>
 											</form>
@@ -201,9 +242,9 @@ const CreateNewWarehouseModal = () => {
 											<Button
 												color="primary"
 												className="text-center mb-4"
-												onPress={onClose}
+												isLoading={isLoading}
 												fullWidth
-												onClick={() => onCreate(data)}
+												onPress={() => onCreate(data)}
 											>
 												<span className="font-bold text-black">
 													Save new warehouse

@@ -20,6 +20,7 @@ import { useDispatch } from "react-redux";
 import { OnCheckIsLogin } from "./redux/features/users";
 import CheckoutPage from "./pages/user/CheckoutPage";
 import AdminWarehouseListPage from "./pages/admin/warehouses/AdminWarehouseListPage";
+import ProfileSettingsPage from "./pages/user/ProfileSettingsPage";
 
 function App() {
 	const location = useLocation();
@@ -98,6 +99,10 @@ function App() {
 				<Route path="/cart/checkout" element={<CheckoutPage />} />
 				<Route path="/explore" element={<ExploreProductsPage />} />
 				<Route path="/product/:productName" element={<ProductPage />} />
+				<Route
+					path="/profile/settings"
+					element={<ProfileSettingsPage />}
+				/>
 				<Route
 					path="/admin/warehouses"
 					element={<AdminWarehouseListPage />}

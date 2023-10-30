@@ -122,7 +122,7 @@ const OrderAction = () => {
 								</span>
 							</div>
 							<div className="mt-4">
-								<Button
+								{/* <Button
 									fullWidth
 									color="primary"
 									disabled={!stocks}
@@ -134,14 +134,18 @@ const OrderAction = () => {
 										</span>
 										Add to cart
 									</span>
-								</Button>
+								</Button> */}
 								<Button
 									fullWidth
 									color="primary"
 									disabled={!stocks}
 									onClick={() =>
 										dispatch(
-											addToCart(1, productDetail?.id)
+											addToCart(
+												1,
+												productDetail?.id,
+												selectedAmount
+											)
 										)
 									}
 								>

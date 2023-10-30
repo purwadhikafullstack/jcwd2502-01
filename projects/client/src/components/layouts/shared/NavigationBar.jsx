@@ -29,6 +29,8 @@ const NavigationBar = () => {
 	const search = useSelector((state) => state.products.search);
 	const { role } = useSelector((state) => state.user);
 
+	const token = localStorage.getItem("accessToken");
+
 	const count = useSelector((state) => state.carts.count);
 
 	const formik = useFormik({
@@ -127,7 +129,7 @@ const NavigationBar = () => {
 					</Link>
 				</NavbarContent>
 				<NavbarContent justify="end" className="gap-2 hidden md:flex ">
-					{role ? (
+					{token ? (
 						<>
 							<NavbarItem className="flex">
 								<ProfileDropdown />

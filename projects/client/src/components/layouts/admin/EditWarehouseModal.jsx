@@ -11,10 +11,12 @@ const EditWarehouseModal = ({
 	warehouseId,
 	open,
 }) => {
+	const [isLoading, setIsLoading] = useState(false);
+
 	const [provinces, setProvinces] = useState([]);
-	const [selectedProvince, setSelectedProvince] = useState([]);
+	const [selectedProvince, setSelectedProvince] = useState();
 	const [cities, setCities] = useState([]);
-	const [selectedCity, setSelectedCity] = useState([]);
+	const [selectedCity, setSelectedCity] = useState();
 	const [warehouse, setWarehouse] = useState(null);
 
 	useEffect(() => {
@@ -26,6 +28,8 @@ const EditWarehouseModal = ({
 				province_id: warehouse.province.id || null,
 				city_id: warehouse.city.id || null,
 			});
+			setSelectedProvince(warehouse.province.id);
+			setSelectedCity(warehouse.city.id);
 		}
 	}, [warehouse]);
 
@@ -44,6 +48,7 @@ const EditWarehouseModal = ({
 
 	const onSubmitEdit = async (values) => {
 		try {
+			setIsLoading(true);
 			const {
 				warehouse_name,
 				warehouse_location,
@@ -56,8 +61,8 @@ const EditWarehouseModal = ({
 				!warehouse_name ||
 				!warehouse_location ||
 				!warehouse_address ||
-				province_id ||
-				city_id
+				!province_id ||
+				!city_id
 			) {
 				alert("Please fill in all form fields");
 				return; // Stop further execution
@@ -70,6 +75,7 @@ const EditWarehouseModal = ({
 				province_id,
 				city_id,
 			};
+
 			// const accessToken = localStorage.getItem("accessToken");
 
 			const updateWarehouse = await axiosInstance().patch(
@@ -87,11 +93,16 @@ const EditWarehouseModal = ({
 			// 	alert("Error updating warehouse");
 			// }
 
+			window.location.reload(false);
+			setIsLoading(false);
 			return;
 		} catch (error) {
 			console.log(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
+
 	const handleFormInput = (event) => {
 		const { target } = event;
 		formik.setFieldValue(target.name, target.value);
@@ -102,7 +113,6 @@ const EditWarehouseModal = ({
 			const { data } = await axiosInstance().get(`provinces`);
 
 			setProvinces(data.data);
-			console.log(data.data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -111,25 +121,27 @@ const EditWarehouseModal = ({
 	const renderProvincesOption = () => {
 		return provinces?.map((province) => {
 			return (
-				<SelectItem key={province.id}>{province.province}</SelectItem>
+				<SelectItem key={province.id} value={province.province}>
+					{province.province}
+				</SelectItem>
 			);
 		});
 	};
 
 	const handleProvince = (province) => {
-		const splittedProvince = province?.split(",");
-		setSelectedProvince(splittedProvince);
-		formik.setFieldValue("province_id", splittedProvince[0]);
+		// const splittedProvince = province?.split(",");
+		setSelectedProvince(province);
+		setSelectedCity(null);
+		formik.setFieldValue("province_id", province);
 	};
 
 	const getCities = useCallback(async () => {
 		try {
 			const { data } = await axiosInstance().get(
-				`cities/${selectedProvince ? selectedProvince[0] : ""}`
+				`cities/${selectedProvince ? selectedProvince : ""}`
 			);
 
 			setCities(data.data);
-			console.log(data.data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -138,17 +150,17 @@ const EditWarehouseModal = ({
 	const renderCitiesOption = () => {
 		return cities?.map((city) => {
 			return (
-				<SelectItem key={city.id}>
-					{city.type} {city.city_name}
+				<SelectItem key={city.id} value={city.id}>
+					{`${city.type} ${city.city_name}`}
 				</SelectItem>
 			);
 		});
 	};
 
 	const handleCity = (city) => {
-		const splittedCity = city?.split(",");
-		setSelectedProvince(splittedCity);
-		formik.setFieldValue("city_id", splittedCity[0]);
+		// const splittedCity = city?.split(",");
+		setSelectedCity(city);
+		formik.setFieldValue("city_id", city);
 	};
 
 	useEffect(() => {
@@ -167,7 +179,6 @@ const EditWarehouseModal = ({
 	}, [open]);
 
 	const fetchWarehouse = async () => {
-		//* Fetch warehouse where selected warehouse id bang
 		try {
 			// const accessToken = localStorage.getItem("accessToken");
 			const { data } = await axiosInstance().get(
@@ -180,16 +191,7 @@ const EditWarehouseModal = ({
 		}
 	};
 
-	// useEffect(() => {
-	// 	fetchWarehouse();
-	// }, []);
 	useEffect(() => {
-		console.log("awawa", warehouse?.province.id);
-		console.log("awawaw", warehouse?.city.id);
-	}, [warehouse]);
-
-	useEffect(() => {
-		console.log(warehouseId);
 		fetchWarehouse();
 	}, [warehouseId]);
 
@@ -203,7 +205,7 @@ const EditWarehouseModal = ({
 				>
 					<section className="admin-edit-warehouse-product w-[820px] h-full m-auto flex justify-center items-center">
 						<div className="admin-create-product-container w-full bg-background p-8 rounded-xl">
-							<div className="modal-header mb-8 flex justify-center relative">
+							<div className="modal-header mb-8 flex justify-center relative w-full">
 								<div className="heading-title">
 									<h1 className="font-bold text-xl">
 										Update Warehouse
@@ -258,10 +260,8 @@ const EditWarehouseModal = ({
 											}
 											placeholder="Select a province"
 											isRequired
-											defaultSelectedKeys={[
-												String(
-													formik.values.province_id
-												),
+											selectedKeys={[
+												String(selectedProvince),
 											]}
 										>
 											{renderProvincesOption()}
@@ -280,9 +280,11 @@ const EditWarehouseModal = ({
 											}
 											placeholder="Select a City"
 											isRequired
-											defaultSelectedKeys={[
-												String(formik.values.city_id),
-											]}
+											selectedKeys={
+												selectedCity
+													? [String(selectedCity)]
+													: ""
+											}
 										>
 											{renderCitiesOption()}
 										</Select>
@@ -290,14 +292,14 @@ const EditWarehouseModal = ({
 									<div className="form-control">
 										<Textarea
 											placeholder="Jl. Street Address"
-											name="full_address"
-											label="Full Address"
+											name="warehouse_address"
+											label="Warehouse Address"
 											labelPlacement="outside"
 											variant="bordered"
 											radius="sm"
 											size="lg"
 											isRequired
-											defaultValue={
+											value={
 												formik.values.warehouse_address
 											}
 											onChange={handleFormInput}
@@ -305,6 +307,7 @@ const EditWarehouseModal = ({
 									</div>
 									<div className="modal-footer pt-4">
 										<Button
+											isLoading={isLoading}
 											color="primary"
 											className="text-center"
 											fullWidth
