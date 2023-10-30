@@ -154,7 +154,7 @@ module.exports = {
 			return error;
 		}
 	},
-	changePassword: async (dataToken) => {
+	requestPassword: async (dataToken) => {
 		try {
 			const { id } = dataToken;
 			console.log(id);
@@ -165,7 +165,7 @@ module.exports = {
 
 			const token = createJWT(
 				{
-					username: checkUser.dataValues.username,
+					id: checkUser.dataValues.id,
 					apiKey: "Approved",
 					tokentype: "reset",
 				},
@@ -199,6 +199,36 @@ module.exports = {
 			};
 		} catch (error) {
 			console.log(error);
+			return error;
+		}
+	},
+	changePassword: async (dataToken, headers) => {
+		try {
+			const { id } = dataToken;
+			console.log(id);
+			const { password, confirmpassword } = headers;
+			if (!(password === confirmpassword))
+				return {
+					isError: true,
+					message: "confirm password is not same",
+				};
+			const checkUser = await db.user.findOne({ where: { id } });
+			console.log(checkUser);
+			if (!checkUser)
+				return { isError: true, message: "Account is not found!" };
+			console.log(password);
+			const hashPassword = await hash(password);
+			console.log(hashPassword);
+			const changePass = await db.user.update(
+				{
+					password: hashPassword,
+				},
+				{
+					where: { id },
+				}
+			);
+			return { isError: false, message: "Change Password is Success!" };
+		} catch (error) {
 			return error;
 		}
 	},
