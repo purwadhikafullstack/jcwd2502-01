@@ -14,7 +14,7 @@ const GearCategories = () => {
 			<section className="gear-categories my-container">
 				<div className="wrapper py-6">
 					<h2 className="font-bold text-headline-sm md:text-headline-lg text-center mb-4">
-						Gear Categories
+						Hottest Gear Categories
 					</h2>
 					<div className="category-selections md:flex md:justify-between pt-6 md:py-10 flex flex-wrap justify-center gap-4">
 						<CategorySelection

@@ -1,4 +1,3 @@
-
 import React from "react";
 
 import {
@@ -15,16 +14,19 @@ import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
 import { IoLogOutOutline, IoSettingsOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout } from "../../../redux/features/users";
+import { Link, useNavigate } from "react-router-dom";
 
 const ProfileDropdown = () => {
-	const dispatch = useDispatch();
 	const { username } = useSelector((state) => state.user);
 	const { email } = useSelector((state) => state.user);
-	console.log(username);
-	console.log(email);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const handleLogout = () => {
 		dispatch(onLogout());
+		navigate("/");
+		window.location.reload(false);
 	};
 
 	return (
@@ -61,16 +63,15 @@ const ProfileDropdown = () => {
 							</div>
 						</div>
 					</DropdownItem>
-					<DropdownItem
-						key="settings"
-						onClick={() => alert("SETTINGS!!!")}
-					>
-						<div className="flex items-center gap-2 p-2">
-							<IoSettingsOutline size={24} />
-							<h4 className="font-medium text-body-lg">
-								Settings
-							</h4>
-						</div>
+					<DropdownItem key="settings">
+						<Link to={"/profile/settings"}>
+							<div className="flex items-center gap-2 p-2">
+								<IoSettingsOutline size={24} />
+								<h4 className="font-medium text-body-lg">
+									Settings
+								</h4>
+							</div>
+						</Link>
 					</DropdownItem>
 					<DropdownItem
 						key="logout"
