@@ -13,7 +13,7 @@ const SignupPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
-	const { role } = useSelector((state) => state.user);
+	const { isLogin } = useSelector((state) => state.user);
 	const [click, setClick] = useState(true);
 	const formik = useFormik({
 		initialValues: {
@@ -40,12 +40,10 @@ const SignupPage = () => {
 	};
 
 	useEffect(() => {
-		if (role === "user") {
-			navigate("/");
-		} else if (role === "admin") {
-			navigate("/admin");
+		if (isLogin) {
+			navigate("/login");
 		}
-	}, [role]);
+	}, [isLogin]);
 
 	return (
 		<>

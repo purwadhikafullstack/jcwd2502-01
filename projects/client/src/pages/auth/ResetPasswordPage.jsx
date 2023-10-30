@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import LoopLogo from "../../assets/images/loop-logo.svg";
 import { Button, Input } from "@nextui-org/react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { resetPassword } from "../../redux/features/users";
+import { useDispatch, useSelector } from "react-redux";
 
 const ResetPasswordPage = () => {
 	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [showConPassword, setShowConPassword] = useState(false);
+	const { isLogin } = useSelector((state) => state.user);
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const { token } = useParams();
 
 	const formik = useFormik({
@@ -18,14 +23,26 @@ const ResetPasswordPage = () => {
 			confirmpassword: "",
 		},
 		onSubmit: (values) => {
-			console.log(values.newPassword);
-			console.log(values.confirmPassword);
+			handleResetPassword(
+				token,
+				values.newpassword,
+				values.confirmpassword
+			);
 		},
 		validationSchema: yup.object().shape({
 			newpassword: yup.string().required(),
 			confirmpassword: yup.string().required(),
 		}),
 	});
+
+	const handleResetPassword = (token, newpassword, confirmpassword) => {
+		dispatch(resetPassword(token, newpassword, confirmpassword));
+	};
+
+	useEffect(() => {
+		if (isLogin) return navigate("/login");
+	}, [isLogin]);
+
 	return (
 		<>
 			<main className="account-verification-page w-full h-[100vh]">

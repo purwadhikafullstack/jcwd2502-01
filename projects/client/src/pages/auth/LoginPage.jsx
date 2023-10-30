@@ -23,7 +23,6 @@ const LoginPage = () => {
 	const handleLogin = (email, password) => {
 		if (!click) return;
 		dispatch(onLoginAsync(email, password));
-
 		setClick(false);
 		setTimeout(() => setClick(true), 2000);
 	};

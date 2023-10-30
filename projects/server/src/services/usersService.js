@@ -227,7 +227,7 @@ module.exports = {
 					where: { id },
 				}
 			);
-			return { isError: false, message: "Change Password is Success!" };
+			return { isError: false, message: "Change Password is Success" };
 		} catch (error) {
 			return error;
 		}
