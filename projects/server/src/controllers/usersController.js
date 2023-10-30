@@ -7,6 +7,7 @@ const {
 	loginUser,
 	verifyAccessToken,
 	verifyStatusUser,
+	requestPassword,
 	changePassword,
 } = require("./../services/usersService");
 const respHandler = require("./../utils/respHandler");
@@ -61,7 +62,7 @@ module.exports = {
 	},
 	requestChangePassword: async (req, res, next) => {
 		try {
-			const reqPass = await changePassword(req.dataToken);
+			const reqPass = await requestPassword(req.dataToken);
 			respHandler(res, reqPass.message, null, null, reqPass.isError);
 		} catch (error) {
 			console.log(error);
@@ -70,6 +71,17 @@ module.exports = {
 	},
 	changePasswordUser: async (req, res, next) => {
 		try {
+			const patchPassword = await changePassword(
+				req.dataToken,
+				req.headers
+			);
+			respHandler(
+				res,
+				patchPassword.message,
+				null,
+				null,
+				patchPassword.isError
+			);
 		} catch (error) {
 			next(error);
 		}

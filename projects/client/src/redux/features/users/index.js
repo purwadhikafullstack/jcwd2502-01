@@ -39,6 +39,9 @@ export const userSlice = createSlice({
 				...action.payload,
 			});
 		},
+		reset: (state, action) => {
+			return initialState;
+		},
 		logout: (state, action) => {
 			return (state = initialState);
 		},
@@ -201,6 +204,28 @@ export const verifyUser = (password, token) => async (dispatch) => {
 	}
 };
 
+export const resetPassword = (token, newpass, conpass) => async (dispatch) => {
+	try {
+		if (newpass !== conpass) return toast.error("password must be same!");
+		const changePass = await axiosInstance(
+			token,
+			newpass,
+			conpass,
+			"reset"
+		).patch("/users/changePass");
+		if (changePass.data.isError)
+			return toast.error("Change password is failed!");
+		setTimeout(() => {
+			localStorage.removeItem("accessToken");
+			dispatch(reset());
+			dispatch(setIsLogin(true));
+		}, 1500);
+		toast.success(`${changePass.data.message}, now login!`);
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 export const {
 	setUsername,
 	setProfileUser,
@@ -209,5 +234,6 @@ export const {
 	setUserAddress,
 	setIsLogin,
 	login,
+	reset,
 } = userSlice.actions;
 export default userSlice.reducer;

@@ -18,16 +18,15 @@ module.exports = {
 	verify: (req, res, next) => {
 		try {
 			const { authorization, tokentype } = req.headers;
-			console.log(tokentype);
 			if (!authorization) throw { message: "token was not found" };
+			const token = authorization && authorization.split(" ")[1];
 			let secret = process.env.access_secret;
 			if (tokentype === "verified") secret = process.env.verified_secret;
 			if (tokentype === "reset") secret = process.env.reset_secret;
-
-			const decodeData = jwt.verify(authorization, secret);
+			const decodeData = jwt.verify(token, secret);
+			console.log(decodeData);
 			req.dataToken = decodeData;
 			if (decodeData.apiKey == "Approved") {
-				console.log("disni");
 				next();
 			} else {
 				throw { message: "User is not approved" };

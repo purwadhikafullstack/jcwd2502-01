@@ -9,7 +9,7 @@ function ApiInstance(
 	return axios.create({
 		baseURL: process.env.REACT_APP_API_BASE_URL,
 		headers: {
-			authorization,
+			authorization: `Bearer ${authorization}`,
 			password,
 			confirmPassword,
 			tokentype,
