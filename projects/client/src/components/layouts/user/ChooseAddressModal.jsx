@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
 	Modal,
@@ -14,11 +14,51 @@ import {
 import { IoChevronForward, IoSearch } from "react-icons/io5";
 
 import Media from "react-media";
-import AddressCard from "../../uis/Cards/AddressCard";
 import CreateNewAddressModal from "./CreateNewAddressModal";
+import CheckoutAddressCard from "../../uis/Cards/CheckoutAddressCard";
+import { axiosInstance } from "../../../lib/axios";
+import { useDispatch } from "react-redux";
+import { onUserAddress } from "../../../redux/features/users";
 
 const ChooseAddressModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+	const dispatch = useDispatch();
+
+	const [userAddresses, setUserAddresses] = useState([]);
+	const [oneTime, setOneTime] = useState(0);
+
+	const renderUserAddresses = () => {
+		return userAddresses?.map((user_address) => {
+			return <CheckoutAddressCard userAddressData={user_address} />;
+		});
+	};
+
+	const fetchUserAddresses = async () => {
+		try {
+			const { data } = await axiosInstance().get(`user-addresses/${1}`);
+
+			setUserAddresses(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchUserAddresses();
+	}, []);
+
+	useEffect(() => {
+		if (oneTime === 0) {
+			userAddresses?.map((address) => {
+				if (address.is_default === true) {
+					dispatch(onUserAddress(address.id));
+					setOneTime(1);
+					return;
+				}
+			});
+		}
+	}, [userAddresses]);
 
 	return (
 		<>
@@ -69,8 +109,7 @@ const ChooseAddressModal = () => {
 											<CreateNewAddressModal />
 										</ModalHeader>
 										<ModalBody className="p-4">
-											<AddressCard selected={true} />
-											<AddressCard selected={false} />
+											{renderUserAddresses()}
 										</ModalBody>
 										<ModalFooter>
 											<Button

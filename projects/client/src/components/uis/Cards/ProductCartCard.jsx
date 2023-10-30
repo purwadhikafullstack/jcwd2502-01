@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Button, Checkbox, Image, Input, cn } from "@nextui-org/react";
 
@@ -10,6 +10,7 @@ import {
 
 import { useDispatch } from "react-redux";
 import { changeQuantity, deleteOrder } from "../../../redux/features/carts";
+import { Link } from "react-router-dom";
 
 const ProductCartCard = ({ dataProduct }) => {
 	const { id, quantity, product } = dataProduct;
@@ -22,6 +23,13 @@ const ProductCartCard = ({ dataProduct }) => {
 	});
 
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		console.log(
+			"🚀 ~ file: ProductCartCard.jsx:16 ~ ProductCartCard ~ dataProduct:",
+			product
+		);
+	}, [dataProduct]);
 
 	return (
 		<>
@@ -38,19 +46,25 @@ const ProductCartCard = ({ dataProduct }) => {
 					</div>
 					<div className="product-cart-card-wrapper w-full flex gap-2 justify-between ml-2">
 						<div className="product-card-img-wrapper">
-							<Image
-								src={`http://localhost:8000/static/${product?.product_images[0].image.substring(
-									7
-								)}`}
-								alt=""
-								className="product-image aspect-square w-24 md:w-28 rounded-lg object-contain bg-white"
-							/>
+							<Link to={`/product/${product?.product_name}`}>
+								<Image
+									src={`${
+										process.env.REACT_APP_IMAGE_API
+									}${product?.product_images[0].image.substring(
+										7
+									)}`}
+									alt=""
+									className="product-image aspect-square w-24 md:w-28 rounded-lg object-contain bg-white"
+								/>
+							</Link>
 						</div>
 						<div className="product-cart-info w-full">
 							<div className="product-detail ml-1">
-								<p className="product-title md:font-medium text-body-md md:text-body-lg line-clamp-1">
-									{product?.product_name}
-								</p>
+								<Link to={`/product/${product?.product_name}`}>
+									<p className="product-title md:font-medium text-body-md md:text-body-lg line-clamp-1">
+										{product?.product_name}
+									</p>
+								</Link>
 								<div className="flex gap-1 md:gap-2">
 									<p className="text-[10px] md:text-label-lg ">
 										{product?.brand.brand_name} •{" "}

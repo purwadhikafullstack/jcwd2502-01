@@ -2,7 +2,7 @@ const db = require("./../models");
 const { Op } = require("sequelize");
 
 module.exports = {
-	findAllWarehouses: async (productId) => {
+	findAllWarehouses: async () => {
 		try {
 			const dataWarehouses = await db.warehouse.findAll({
 				attributes: [
@@ -26,7 +26,40 @@ module.exports = {
 					},
 				],
 			});
-			return dataWarehouses;
+			return {
+				message: "Get product's data success",
+				data: dataWarehouses,
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+	findWarehouse: async (warehouseId) => {
+		try {
+			const dataWarehouse = await db.warehouse.findOne({
+				attributes: [
+					"id",
+					"warehouse_name",
+					"warehouse_location",
+					"warehouse_address",
+				],
+				include: [
+					{
+						model: db.user,
+						attributes: ["id", "username"],
+					},
+					{
+						model: db.city,
+						attributes: ["id", "type", "city_name", "postal_code"],
+					},
+					{
+						model: db.province,
+						attributes: ["id", "province"],
+					},
+				],
+				where: { id: warehouseId },
+			});
+			return { message: "Get warehouse success", data: dataWarehouse };
 		} catch (error) {
 			return error;
 		}
@@ -50,10 +83,7 @@ module.exports = {
 			const updatedWarehouse = await db.warehouse.update(data, {
 				where: { id: warehouseId },
 			});
-			return {
-				message: "Update warehouse success",
-				data: null,
-			};
+			return { message: "Update warehouse success" };
 		} catch (error) {
 			return error;
 		}

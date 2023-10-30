@@ -11,7 +11,7 @@ const CheckoutProductCard = () => {
 					<div className="product-image w-24 h-24 md:w-28 md:h-28 aspect-square">
 						<Image
 							// src="https://source.unsplash.com/random/200x200"
-							src={`http://localhost:8000/static/1.png`}
+							src={`${process.env.REACT_APP_IMAGE_API}1.png`}
 							alt=""
 							className="w-full h-full aspect-square bg-white object-contain"
 						/>

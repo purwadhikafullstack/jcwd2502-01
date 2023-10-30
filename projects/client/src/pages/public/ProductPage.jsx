@@ -16,7 +16,6 @@ const ProductPage = () => {
 
 	const fetchProduct = async () => {
 		try {
-			// const accessToken = localStorage.getItem("accessToken");
 			const { data } = await axiosInstance().get(
 				`products/${productName}`
 			);
@@ -29,6 +28,7 @@ const ProductPage = () => {
 
 	useEffect(() => {
 		fetchProduct();
+		window.scrollTo({ top: 0 });
 	}, []);
 
 	return (

@@ -6,15 +6,17 @@ const ProductDetailContent = () => {
 	const [readMore, setReadMore] = useState(false);
 	const [productPrice, setProductPrice] = useState(0);
 	const productDetail = useSelector((state) => state.products.productDetail);
+
 	useEffect(() => {
 		if (productDetail) {
 			setProductPrice(productDetail?.product_price);
 		}
+		console.log(productDetail);
 	}, [productDetail]);
 
 	return (
 		<>
-			<section className="product-detail-content my-container pt-4 md:pt-0">
+			<section className="product-detail-content my-container w-full pt-4 md:pt-0">
 				<div className="product-content mb-4">
 					<h1 className="hidden md:inline-block product-title font-bold text-title-lg mb-2">
 						{productDetail?.product_name}
@@ -64,9 +66,9 @@ const ProductDetailContent = () => {
 						{productDetail?.product_name}
 					</h1>
 				</div>
-				<div className="product-detail">
-					<div className="product-detail-container">
-						<Tabs aria-label="ProductDetail">
+				<div className="product-detail w-full">
+					<div className="product-detail-container w-full">
+						<Tabs aria-label="ProductDetail" className="w-full">
 							<Tab key="description" title="Description">
 								<Card>
 									<CardBody>
@@ -94,8 +96,8 @@ const ProductDetailContent = () => {
 								<Card>
 									<CardBody className="py-2">
 										{productDetail?.specification && (
-											<div className="specs-wrapper flex flex-col divide-y-1">
-												<div className="physical-specs py-2">
+											<div className="specs-wrapper flex flex-col divide-y-1 w-full">
+												<div className="physical-specs py-2 w-full">
 													<h4 className="font-medium mb-1">
 														Physical Specification
 													</h4>
@@ -127,25 +129,58 @@ const ProductDetailContent = () => {
 														</div>
 													</div>
 												</div>
-												<div className="tracking-specs py-2">
-													<h4 className="font-medium mb-1">
-														Tracking
-													</h4>
-													<div className="list">
-														<div className="sensor">
-															{productDetail
-																?.specification
-																.sensor &&
-																`Sensor: ${productDetail?.specification.sensor}`}
-														</div>
-														<div className="resolution">
-															{productDetail
-																?.specification
-																.resolution &&
-																`Resolution: ${productDetail?.specification.resolution}`}
+												{productDetail?.category
+													?.category_type !==
+													"Mousepad" && (
+													<div className="tracking-specs py-2">
+														<h4 className="font-medium mb-1">
+															Specifications
+														</h4>
+														<div className="list">
+															<div className="sensor">
+																{productDetail
+																	?.specification
+																	.sensor &&
+																	`Sensor: ${productDetail?.specification.sensor}`}
+															</div>
+															<div className="resolution">
+																{productDetail
+																	?.specification
+																	.resolution &&
+																	`Resolution: ${productDetail?.specification.resolution}`}
+															</div>
+															<div className="wireless">
+																{productDetail
+																	?.specification
+																	.wireless &&
+																	`Wireless`}
+															</div>
+															<div className="wired">
+																{productDetail
+																	?.specification
+																	.wired &&
+																	`Cable length: ${productDetail?.specification.wired}`}
+															</div>
+															<div className="battery capitalize">
+																{productDetail
+																	?.specification
+																	.battery_life &&
+																	`Battery life: ${
+																		productDetail
+																			?.specification
+																			.battery_life
+																	} ${
+																		productDetail
+																			?.specification
+																			.battery_life ===
+																		"rechargeable"
+																			? ""
+																			: "hour"
+																	}`}
+															</div>
 														</div>
 													</div>
-												</div>
+												)}
 												<div className="warranty-specs py-2">
 													<h4 className="font-medium mb-1">
 														Warranty

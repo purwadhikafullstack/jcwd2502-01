@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+
+import { axiosInstance } from "../../../lib/axios";
+
+import { useFormik } from "formik";
 
 import Media from "react-media";
 
@@ -19,6 +23,85 @@ import {
 
 const CreateNewAddressModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+	const [provinces, setProvinces] = useState([]);
+	const [selectedProvince, setSelectedProvince] = useState();
+	const [cities, setCities] = useState([]);
+	const [selectedCity, setSelectedCity] = useState();
+
+	// const formik = useFormik({
+	// 	initialValues: {
+	// 		recipient_name: "",
+	// 		address_name: "",
+	// 		address: "",
+	// 		province_id: null,
+	// 		city_id: null,
+	// 	},
+	// 	onSubmit: async (values) => {
+	// 		onCreateNewAddress(values);
+	// 	},
+	// });
+
+	const getProvinces = useCallback(async () => {
+		try {
+			const { data } = await axiosInstance().get(`provinces`);
+
+			setProvinces(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	}, [axiosInstance]);
+
+	const renderProvincesOption = () => {
+		return provinces?.map((province) => {
+			return (
+				<SelectItem key={province.id} value={province.province}>
+					{province.province}
+				</SelectItem>
+			);
+		});
+	};
+
+	const handleProvince = (province) => {
+		// const splittedProvince = province?.split(",");
+		setSelectedProvince(province);
+		// formik.setFieldValue("province_id", province);
+	};
+
+	const getCities = useCallback(async () => {
+		try {
+			const { data } = await axiosInstance().get(
+				`cities/${selectedProvince ? selectedProvince : ""}`
+			);
+
+			setCities(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	}, [axiosInstance, selectedProvince]);
+
+	const renderCitiesOption = () => {
+		return cities?.map((city) => {
+			return (
+				<SelectItem key={city.id} value={city.id}>
+					{`${city.type} ${city.city_name}`}
+				</SelectItem>
+			);
+		});
+	};
+
+	const handleCity = (city) => {
+		// const splittedCity = city?.split(",");
+		setSelectedCity(city);
+		// formik.setFieldValue("city_id", city);
+	};
+
+	useEffect(() => {
+		getProvinces();
+		if (selectedProvince) {
+			getCities();
+		}
+	}, [getProvinces, getCities, selectedProvince]);
 
 	return (
 		<>
@@ -75,109 +158,55 @@ const CreateNewAddressModal = () => {
 													/>
 												</div>
 												<div className="form-control">
+													<Input
+														type="text"
+														name="address_label"
+														label="Address Label"
+														labelPlacement="outside"
+														variant="bordered"
+														radius="sm"
+														size="lg"
+														placeholder="Home"
+														isRequired
+													/>
+												</div>
+												<div className="form-control">
 													<Select
-														name="province"
+														name="province_id"
 														label="Province"
 														labelPlacement="outside"
 														variant="bordered"
 														radius="sm"
 														size="lg"
 														onChange={(e) =>
-															console.log(
+															handleProvince(
 																e.target.value
 															)
 														}
 														placeholder="Select a province"
 														isRequired
 													>
-														<SelectItem
-															key={[
-																`province.id`,
-																`province.province`,
-															]}
-														>
-															{`province.province`}
-														</SelectItem>
-														<SelectItem
-															key={[1, "Bali"]}
-														>
-															Bali
-														</SelectItem>
-														<SelectItem
-															key={[
-																2,
-																"Bangka Belitung",
-															]}
-														>
-															Bangka Belitung
-														</SelectItem>
-														<SelectItem
-															key={[3, "Banten"]}
-														>
-															Banten
-														</SelectItem>
+														{renderProvincesOption()}
 													</Select>
 												</div>
 												<div className="form-control">
 													<Select
-														name="city"
+														name="city_id"
 														label="City"
 														labelPlacement="outside"
 														variant="bordered"
 														radius="sm"
 														size="lg"
 														onChange={(e) =>
-															console.log(
+															handleCity(
 																e.target.value
 															)
 														}
-														placeholder="Select a City"
+														placeholder="Select a city"
 														isRequired
 													>
-														<SelectItem
-															key={[
-																`city.id`,
-																`city.type`,
-																`city.city_name`,
-															]}
-														>
-															{`city.type`}{" "}
-															{`city.city_name`}
-														</SelectItem>
-														<SelectItem
-															key={[
-																455,
-																`Kabupaten`,
-																`Tangerang`,
-															]}
-														>
-															{`Kabupaten`}{" "}
-															{`Tangerang`}
-														</SelectItem>
-														<SelectItem
-															key={[
-																456,
-																`Kota`,
-																`Tangerang`,
-															]}
-														>
-															{`Kota`}{" "}
-															{`Tangerang`}
-														</SelectItem>
+														{renderCitiesOption()}
 													</Select>
-												</div>
-												<div className="form-control">
-													<Input
-														type="number"
-														placeholder="16210"
-														name="postal_code"
-														label="Postal Code"
-														labelPlacement="outside"
-														variant="bordered"
-														radius="sm"
-														size="lg"
-														isRequired
-													/>
 												</div>
 												<div className="form-control">
 													<Textarea

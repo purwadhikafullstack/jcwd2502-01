@@ -55,11 +55,11 @@ const SwiperProductImages = () => {
 					return (
 						<SwiperSlide className="h-full">
 							<Image
-								src={`http://localhost:8000/static/${image.image.substring(
-									7
-								)}`}
+								src={`${
+									process.env.REACT_APP_IMAGE_API
+								}${image.image.substring(7)}`}
 								alt="logitech"
-								className="w-full h-full aspect-square object-cover rounded-none"
+								className="w-full h-full aspect-square object-contain bg-white rounded-none"
 							/>
 						</SwiperSlide>
 					);

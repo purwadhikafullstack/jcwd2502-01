@@ -8,6 +8,7 @@ const initialState = {
 	email: "",
 	role: "",
 	isLogin: false,
+	user_address: "",
 };
 
 export const userSlice = createSlice({
@@ -28,6 +29,9 @@ export const userSlice = createSlice({
 		},
 		setIsLogin: (initialState, action) => {
 			initialState.isLogin = action.payload;
+		},
+		setUserAddress: (initialState, { payload }) => {
+			initialState.user_address = payload;
 		},
 		login: (state, action) => {
 			return (state = {
@@ -148,6 +152,14 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 	}
 };
 
+export const onUserAddress = (address) => async (dispatch) => {
+	try {
+		dispatch(setUserAddress(address));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 export const onLogout = () => async (dispatch) => {
 	try {
 		localStorage.removeItem("accessToken");
@@ -219,6 +231,7 @@ export const {
 	setProfileUser,
 	setRole,
 	setEmail,
+	setUserAddress,
 	setIsLogin,
 	login,
 	reset,

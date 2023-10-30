@@ -5,7 +5,7 @@ const ProductMediaImage = () => {
 	return (
 		<>
 			<div className="product-media">
-				<div className="product-images-wrapper md:max-w-[348px] rounded-2xl md:fixed">
+				<div className="product-images-wrapper md:max-w-[348px] rounded-2xl">
 					<SwiperProductImages />
 				</div>
 			</div>
