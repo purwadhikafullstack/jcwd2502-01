@@ -9,6 +9,7 @@ const initialState = {
 	role: "",
 	isLogin: false,
 	user_address: "",
+	status: "unverified",
 };
 
 export const userSlice = createSlice({
@@ -78,11 +79,11 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 				"accessToken",
 				checkUser.data.data.accessToken
 			);
-			dispatch(setRole(checkUser.data.data.role));
-			dispatch(setUsername(checkUser.data.data.username));
-			dispatch(setProfileUser(checkUser.data.data.profileUser));
-			dispatch(setEmail(checkUser.data.data.email));
-			// dispatch(login(checkUser.data.data));
+			// dispatch(setRole(checkUser.data.data.role));
+			// dispatch(setUsername(checkUser.data.data.username));
+			// dispatch(setProfileUser(checkUser.data.data.profileUser));
+			// dispatch(setEmail(checkUser.data.data.email));
+			dispatch(login(checkUser.data.data));
 		}, 1200);
 		toast.success(`${checkUser.data.message}`);
 	} catch (error) {
@@ -138,10 +139,11 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 			"/users/verifyAccess"
 		);
 
-		dispatch(setUsername(CheckToken.data.data.username));
-		dispatch(setEmail(CheckToken.data.data.email));
-		dispatch(setProfileUser(CheckToken.data.data.image));
-		dispatch(setRole(CheckToken.data.data.role));
+		// dispatch(setUsername(CheckToken.data.data.username));
+		// dispatch(setEmail(CheckToken.data.data.email));
+		// dispatch(setProfileUser(CheckToken.data.data.image));
+		// dispatch(setRole(CheckToken.data.data.role));
+		dispatch(login(CheckToken.data.data));
 	} catch (error) {
 		if (error.response.data.isError && localStorage.getItem("tokenLogin")) {
 			localStorage.removeItem("tokenLogin");

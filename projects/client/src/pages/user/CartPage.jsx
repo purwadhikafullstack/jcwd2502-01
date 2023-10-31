@@ -12,11 +12,11 @@ import Footer from "../../components/layouts/shared/Footer";
 
 const CartPage = () => {
 	const cart = useSelector((state) => state.carts.carts);
-
+	const token = localStorage.getItem("accessToken");
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchCartAsync(1));
+		dispatch(fetchCartAsync(token));
 	}, []);
 
 	return (

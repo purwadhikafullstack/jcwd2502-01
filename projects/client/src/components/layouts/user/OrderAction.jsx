@@ -3,15 +3,35 @@ import { Button, Input } from "@nextui-org/react";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/features/carts";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
 
 const OrderAction = () => {
 	const [stocks, setStocks] = useState(0);
-	const [selectedAmount, setSelectedAmount] = useState(0);
+	const [selectedAmount, setSelectedAmount] = useState(1);
 	const [productPrice, setProductPrice] = useState(0);
-
+	const token = localStorage.getItem("accessToken");
+	const navigate = useNavigate();
+	const [click, setClick] = useState(true);
+	const { status, role } = useSelector((state) => state.user);
 	const productDetail = useSelector((state) => state.products.productDetail);
 
 	const dispatch = useDispatch();
+
+	const handleOrder = () => {
+		if (!click) return;
+
+		if (role === "") {
+			navigate("/login");
+		} else if (status === "unverified") {
+			toast.error("Must verify your email first!");
+		} else {
+			toast.success("Success get product in cart!");
+			dispatch(addToCart(token, productDetail?.id, selectedAmount));
+		}
+		setClick(false);
+		setTimeout(() => setClick(true), 1000);
+	};
 
 	const onChangeAmount = (operation) => {
 		if (operation === "minus") {
@@ -139,15 +159,7 @@ const OrderAction = () => {
 									fullWidth
 									color="primary"
 									disabled={!stocks}
-									onClick={() =>
-										dispatch(
-											addToCart(
-												1,
-												productDetail?.id,
-												selectedAmount
-											)
-										)
-									}
+									onClick={() => handleOrder()}
 								>
 									<span className="text-black font-medium flex items-center gap-2">
 										<span className="text-[24px]">+</span>{" "}

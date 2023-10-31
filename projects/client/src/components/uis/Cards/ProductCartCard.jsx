@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 
 const ProductCartCard = ({ dataProduct }) => {
 	const { id, quantity, product } = dataProduct;
+	const token = localStorage.getItem("accessToken");
 
 	const productPrice = product?.product_price.toLocaleString("id-ID", {
 		style: "currency",
@@ -86,7 +87,7 @@ const ProductCartCard = ({ dataProduct }) => {
 								variant="light"
 								size="sm"
 								radius="full"
-								onClick={() => dispatch(deleteOrder(1, id))}
+								onClick={() => dispatch(deleteOrder(token, id))}
 							>
 								<IoTrashOutline size={24} color="#f00" />
 							</Button>
@@ -94,7 +95,11 @@ const ProductCartCard = ({ dataProduct }) => {
 								<Button
 									onClick={() =>
 										dispatch(
-											changeQuantity(1, id, "subtract")
+											changeQuantity(
+												token,
+												id,
+												"subtract"
+											)
 										)
 									}
 									isIconOnly
@@ -119,7 +124,9 @@ const ProductCartCard = ({ dataProduct }) => {
 								/>
 								<Button
 									onClick={() => {
-										dispatch(changeQuantity(1, id, "add"));
+										dispatch(
+											changeQuantity(token, id, "add")
+										);
 									}}
 									isIconOnly
 									color="primary"
