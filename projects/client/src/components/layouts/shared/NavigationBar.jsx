@@ -124,12 +124,11 @@ const NavigationBar = () => {
 					</form>
 				</NavbarContent>
 				<NavbarContent justify="end" className="hidden md:flex md:px-2">
-					{/* <Link to={role ? "/cart" : "/login"}> */}
 					<Badge
 						disableOutline
 						content={count}
 						shape="circle"
-						size="sm"
+						size="md"
 						className={`${
 							role ? "" : "hidden"
 						} bg-red-500 text-white`}
@@ -143,7 +142,6 @@ const NavigationBar = () => {
 							<IoCartOutline size={22} className="fill-accent" />
 						</Button>
 					</Badge>
-					{/* </Link> */}
 				</NavbarContent>
 				<NavbarContent justify="end" className="gap-2 hidden md:flex ">
 					{token ? (

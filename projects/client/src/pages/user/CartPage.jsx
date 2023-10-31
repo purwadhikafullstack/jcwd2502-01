@@ -17,6 +17,7 @@ const CartPage = () => {
 
 	useEffect(() => {
 		dispatch(fetchCartAsync(token));
+		window.scrollTo({ top: 0 });
 	}, []);
 
 	return (
