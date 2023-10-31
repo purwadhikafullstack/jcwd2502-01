@@ -24,7 +24,12 @@ module.exports = {
 						},
 						{
 							model: db.city,
-							attributes: ["type", "city_name", "postal_code"],
+							attributes: [
+								"id",
+								"type",
+								"city_name",
+								"postal_code",
+							],
 						},
 					],
 					where: { user_id },
@@ -51,7 +56,12 @@ module.exports = {
 						},
 						{
 							model: db.city,
-							attributes: ["type", "city_name", "postal_code"],
+							attributes: [
+								"id",
+								"type",
+								"city_name",
+								"postal_code",
+							],
 						},
 					],
 					where: { user_id, id: address_id },
