@@ -48,14 +48,23 @@ const CheckoutShipmentMethod = ({ selectedUserAddress }) => {
 								size={matches.medium ? "lg" : "md"}
 								placeholder="Select duration"
 								className="border-2 border-neutral-400 dark:border-none rounded-xl md:rounded-2xl"
-								onChange={(e) => console.log(e.target.value)}
 							>
 								{shipmentServices?.map((service) => {
 									return (
 										<SelectItem
 											key={service?.cost[0]?.value}
 										>
-											{`${service?.cost[0]?.value} (estimasi tiba ${service?.cost[0]?.etd} hari) (${service?.service})`}
+											{`${service?.cost[0]?.value.toLocaleString(
+												"id-ID",
+												{
+													style: "currency",
+													currency: "IDR",
+													minimumFractionDigits: 0,
+													maximumFractionDigits: 0,
+												}
+											)} (estimasi tiba ${
+												service?.cost[0]?.etd
+											} hari) (${service?.service})`}
 										</SelectItem>
 									);
 								})}
