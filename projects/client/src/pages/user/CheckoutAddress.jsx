@@ -1,33 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 
 import { IoLocationSharp } from "react-icons/io5";
 import ChooseAddressModal from "../../components/layouts/user/ChooseAddressModal";
-import { useSelector } from "react-redux";
-import { axiosInstance } from "../../lib/axios";
 
-const CheckoutAddress = () => {
-	const [selectedUserAddress, setSelectedUserAddress] = useState();
-
-	const { user_address } = useSelector((state) => state.user);
-
-	const fetchSelectedUserAddress = useCallback(async () => {
-		try {
-			const { data } = await axiosInstance().get(
-				`user-addresses/${1}?address_id=${user_address}`
-			);
-
-			setSelectedUserAddress(data.data);
-		} catch (error) {
-			console.log(error);
-		}
-	}, [user_address]);
-
-	useEffect(() => {
-		if (user_address) {
-			fetchSelectedUserAddress();
-		}
-	}, [user_address]);
-
+const CheckoutAddress = ({ selectedUserAddress }) => {
 	return (
 		<>
 			<section className="checkout-address p-4 mb-4 md:p-6 bg-neutral-100 dark:bg-neutral-900 md:rounded-xl">
