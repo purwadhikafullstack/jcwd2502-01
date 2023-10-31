@@ -1,9 +1,36 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { Select, SelectItem } from "@nextui-org/react";
 import Media from "react-media";
+import { axiosInstance } from "../../lib/axios";
 
-const CheckoutShipmentMethod = () => {
+const CheckoutShipmentMethod = ({ selectedUserAddress }) => {
+	const [shipmentServices, setShipmentServices] = useState([]);
+
+	const getShipmentCost = useCallback(async () => {
+		try {
+			const rajaOngkirQuery = {
+				origin: "152",
+				destination: selectedUserAddress?.city?.id,
+				weight: 1200,
+				courier: "jne",
+			};
+
+			const resultRajaOngkirCost = await axiosInstance().post(
+				"checkouts/cost",
+				rajaOngkirQuery
+			);
+
+			setShipmentServices(resultRajaOngkirCost.data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	}, [selectedUserAddress]);
+
+	useEffect(() => {
+		getShipmentCost();
+	}, [selectedUserAddress, getShipmentCost]);
+
 	return (
 		<>
 			<section className="checkout-shipment-method p-4 my-4 md:bg-neutral-100 md:dark:bg-neutral-900 md:rounded-xl">
@@ -21,16 +48,17 @@ const CheckoutShipmentMethod = () => {
 								size={matches.medium ? "lg" : "md"}
 								placeholder="Select duration"
 								className="border-2 border-neutral-400 dark:border-none rounded-xl md:rounded-2xl"
+								onChange={(e) => console.log(e.target.value)}
 							>
-								<SelectItem key={1} value={"OKE"}>
-									{`Rp. 18.000 (estimasi tiba 2-3 hari) (OKE)`}
-								</SelectItem>
-								<SelectItem key={2} value={"REG"}>
-									{`Rp. 26.000 (estimasi tiba 2-3 hari) (REG)`}
-								</SelectItem>
-								<SelectItem key={3} value={"YES"}>
-									{`Rp. 37.000 (estimasi tiba 2-3 hari) (YES)`}
-								</SelectItem>
+								{shipmentServices?.map((service) => {
+									return (
+										<SelectItem
+											key={service?.cost[0]?.value}
+										>
+											{`${service?.cost[0]?.value} (estimasi tiba ${service?.cost[0]?.etd} hari) (${service?.service})`}
+										</SelectItem>
+									);
+								})}
 							</Select>
 						)}
 					</Media>
