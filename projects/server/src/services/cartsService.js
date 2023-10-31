@@ -2,9 +2,9 @@ const db = require("./../models");
 const { Op } = require("sequelize");
 
 module.exports = {
-	findAllProductsInCart: async (params) => {
+	findAllProductsInCart: async (dataToken) => {
 		try {
-			const { user_id } = params;
+			const { id } = dataToken;
 
 			const categoryInclude = {
 				model: db.category,
@@ -39,7 +39,7 @@ module.exports = {
 						],
 					},
 				],
-				where: { user_id },
+				where: { user_id: id },
 			};
 
 			const dataProductsInCart = await db.cart.findAll(baseQuery);

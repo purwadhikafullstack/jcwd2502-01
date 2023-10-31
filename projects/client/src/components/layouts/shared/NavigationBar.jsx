@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoSearch, IoCartOutline } from "react-icons/io5";
 import NexocompLogo from "../../../assets/logo/NexocompLogo";
+import { toast } from "react-hot-toast";
 import {
 	Navbar,
 	NavbarBrand,
@@ -22,16 +23,30 @@ import ProfileDropdown from "../../uis/Dropdowns/ProfileDropdown";
 
 const NavigationBar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+	const [click, setClick] = useState(true);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const search = useSelector((state) => state.products.search);
-	const { role } = useSelector((state) => state.user);
+	const { role, status } = useSelector((state) => state.user);
 
 	const token = localStorage.getItem("accessToken");
 
 	const count = useSelector((state) => state.carts.count);
+
+	const handleDirect = () => {
+		if (!click) return;
+
+		if (role === "") {
+			navigate("/login");
+		} else if (status === "unverified") {
+			toast.error("Must verify your email first!");
+		} else {
+			navigate("/cart");
+		}
+		setClick(false);
+		setTimeout(() => setClick(true), 2000);
+	};
 
 	const formik = useFormik({
 		initialValues: { searchQuery: "" },
@@ -49,7 +64,7 @@ const NavigationBar = () => {
 	};
 
 	useEffect(() => {
-		dispatch(fetchCartAsync(1));
+		dispatch(fetchCartAsync(token));
 	}, []);
 
 	useEffect(() => {
@@ -109,24 +124,26 @@ const NavigationBar = () => {
 					</form>
 				</NavbarContent>
 				<NavbarContent justify="end" className="hidden md:flex md:px-2">
-					<Link to={role ? "/cart" : "/login"}>
-						<Badge
-							disableOutline
-							content={count}
-							shape="circle"
-							size="sm"
-							className={`${
-								role ? "" : "hidden"
-							} bg-red-500 text-white`}
+					{/* <Link to={role ? "/cart" : "/login"}> */}
+					<Badge
+						disableOutline
+						content={count}
+						shape="circle"
+						size="sm"
+						className={`${
+							role ? "" : "hidden"
+						} bg-red-500 text-white`}
+					>
+						<Button
+							isIconOnly
+							aria-label="Cart"
+							variant="flat"
+							onClick={() => handleDirect()}
 						>
-							<Button isIconOnly aria-label="Cart" variant="flat">
-								<IoCartOutline
-									size={22}
-									className="fill-accent"
-								/>
-							</Button>
-						</Badge>
-					</Link>
+							<IoCartOutline size={22} className="fill-accent" />
+						</Button>
+					</Badge>
+					{/* </Link> */}
 				</NavbarContent>
 				<NavbarContent justify="end" className="gap-2 hidden md:flex ">
 					{token ? (

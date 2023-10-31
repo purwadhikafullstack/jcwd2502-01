@@ -100,6 +100,7 @@ module.exports = {
 					profileUser: checkEmail.dataValues.profile_picture,
 					email: checkEmail.dataValues.email,
 					role: checkEmail.dataValues.role,
+					status: checkEmail.dataValues.status,
 					accessToken: accessToken,
 				},
 			};
@@ -122,6 +123,7 @@ module.exports = {
 					profileUser: checkData.dataValues.profile_picture,
 					email: checkData.dataValues.email,
 					role: checkData.dataValues.role,
+					status: checkData.dataValues.status,
 				},
 			};
 		} catch (error) {
