@@ -36,10 +36,10 @@ export const cartsSlice = createSlice({
 	},
 });
 
-export const fetchCartAsync = (user_id) => async (dispatchEvent) => {
+export const fetchCartAsync = (token) => async (dispatchEvent) => {
 	try {
-		const { data } = await axiosInstance().get(`carts/${user_id}`);
-
+		const { data } = await axiosInstance(token).get(`/carts/getCart`);
+		console.log(data);
 		dispatchEvent(setCarts(data.data.cart));
 		dispatchEvent(setCount(data.data.count));
 	} catch (error) {
@@ -77,48 +77,49 @@ export const setOrderSummary = (user_id) => async (dispatchEvent) => {
 	}
 };
 
-export const changeQuantity =
-	(user_id, id, change) => async (dispatchEvent) => {
+export const changeQuantity = (token, id, change) => async (dispatchEvent) => {
+	try {
+		await axiosInstance().patch(`carts/${id}?change=${change}`);
+		const { data } = await axiosInstance(token).get(`carts/getCart`);
+
+		dispatchEvent(setCarts(data.data.cart));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const deleteOrder = (token, id) => async (dispatchEvent) => {
+	try {
+		await axiosInstance().delete(`carts/${id}`);
+		const { data } = await axiosInstance(token).get(`carts/getCart`);
+
+		dispatchEvent(setCarts(data.data.cart));
+		dispatchEvent(setCount(data.data.count));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const addToCart =
+	(token, product_id, quantity) => async (dispatchEvent) => {
 		try {
-			await axiosInstance().patch(`carts/${id}?change=${change}`);
-			const { data } = await axiosInstance().get(`carts/${user_id}`);
+			const dataToSend = {
+				product_id: Number(product_id),
+				quantity,
+			};
+
+			await axiosInstance(token).post(`carts`, dataToSend);
+
+			const { data } = await axiosInstance(token).get(`carts/getCart`);
+
+			console.log(data);
 
 			dispatchEvent(setCarts(data.data.cart));
+			dispatchEvent(setCount(data.data.count));
 		} catch (error) {
 			console.log(error);
 		}
 	};
-
-export const deleteOrder = (user_id, id) => async (dispatchEvent) => {
-	try {
-		await axiosInstance().delete(`carts/${id}`);
-		const { data } = await axiosInstance().get(`carts/${user_id}`);
-
-		dispatchEvent(setCarts(data.data.cart));
-		dispatchEvent(setCount(data.data.count));
-	} catch (error) {
-		console.log(error);
-	}
-};
-
-export const addToCart = (user_id, product_id) => async (dispatchEvent) => {
-	try {
-		const dataToSend = {
-			product_id: Number(product_id),
-			quantity: 1,
-			user_id: user_id,
-		};
-
-		await axiosInstance().post(`carts`, dataToSend);
-
-		const { data } = await axiosInstance().get(`carts/${user_id}`);
-
-		dispatchEvent(setCarts(data.data.cart));
-		dispatchEvent(setCount(data.data.count));
-	} catch (error) {
-		console.log(error);
-	}
-};
 
 export const {
 	setCarts,

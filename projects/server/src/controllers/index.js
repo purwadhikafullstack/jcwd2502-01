@@ -3,6 +3,11 @@ const categoriesController = require("./categoriesController");
 const brandsController = require("./brandsController");
 const usersController = require("./usersController");
 const cartsController = require("./cartsController");
+const warehousesController = require("./warehousesController");
+const provincesController = require("./provincesController");
+const citiesController = require("./citiesController");
+const userAddressesController = require("./userAddressesController");
+const checkoutsController = require("./checkoutsController");
 
 module.exports = {
 	productsController,
@@ -10,4 +15,9 @@ module.exports = {
 	brandsController,
 	usersController,
 	cartsController,
+	provincesController,
+	warehousesController,
+	citiesController,
+	userAddressesController,
+	checkoutsController,
 };

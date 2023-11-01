@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import NexocompLogo from "../../assets/logo/NexocompLogo";
@@ -7,6 +6,8 @@ import { Button, Input } from "@nextui-org/react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { onRegisterAsync } from "../../redux/features/users";
 import { useDispatch, useSelector } from "react-redux";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 const SignupPage = () => {
 	const dispatch = useDispatch();
@@ -14,20 +15,21 @@ const SignupPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
 	const { isLogin } = useSelector((state) => state.user);
 	const [click, setClick] = useState(true);
-	const [state, setState] = useState({
-		username: "",
-		email: "",
-		password: "",
+	const formik = useFormik({
+		initialValues: {
+			username: "",
+			email: "",
+			password: "",
+		},
+		onSubmit: (values) => {
+			handleRegister(values.username, values.email, values.password);
+		},
+		validationSchema: yup.object().shape({
+			username: yup.string().required(),
+			email: yup.string().required().email(),
+			password: yup.string().required(),
+		}),
 	});
-
-	const handleChange = (e) => {
-		console.log(e.target.value);
-		const value = e.target.value;
-		setState({
-			...state,
-			[e.target.name]: value,
-		});
-	};
 
 	const handleRegister = (username, email, password) => {
 		if (!click) return;
@@ -39,7 +41,7 @@ const SignupPage = () => {
 
 	useEffect(() => {
 		if (isLogin) {
-			navigate("/");
+			navigate("/login");
 		}
 	}, [isLogin]);
 
@@ -75,9 +77,15 @@ const SignupPage = () => {
 												variant="bordered"
 												size="lg"
 												label="Fullname"
-												value={state.username}
-												onChange={handleChange}
+												onChange={formik.handleChange}
+												onBlur={formik.handleBlur}
 											/>
+											{formik.touched.username &&
+											formik.errors.username ? (
+												<div className="text-red-600">
+													{formik.errors.username}
+												</div>
+											) : null}
 										</div>
 										<div className="form-group">
 											<Input
@@ -87,9 +95,15 @@ const SignupPage = () => {
 												variant="bordered"
 												size="lg"
 												label="Email Address"
-												value={state.email}
-												onChange={handleChange}
+												onChange={formik.handleChange}
+												onBlur={formik.handleBlur}
 											/>
+											{formik.touched.email &&
+											formik.errors.email ? (
+												<div className="text-red-600">
+													{formik.errors.email}
+												</div>
+											) : null}
 										</div>
 										<div className="form-group">
 											<Input
@@ -103,8 +117,8 @@ const SignupPage = () => {
 												variant="bordered"
 												size="lg"
 												label="Password"
-												value={state.password}
-												onChange={handleChange}
+												onChange={formik.handleChange}
+												onBlur={formik.handleBlur}
 												endContent={
 													<button
 														className="focus:outline-none"
@@ -123,19 +137,19 @@ const SignupPage = () => {
 													</button>
 												}
 											/>
+											{formik.touched.password &&
+											formik.errors.password ? (
+												<div className="text-red-600">
+													{formik.errors.password}
+												</div>
+											) : null}
 										</div>
 										<div className="form-group">
 											<Button
 												className="bg-primary-500 text-black font-bold hover"
 												fullWidth
 												size="lg"
-												onClick={() =>
-													handleRegister(
-														state.username,
-														state.email,
-														state.password
-													)
-												}
+												onClick={formik.handleSubmit}
 											>
 												Create Account
 											</Button>

@@ -10,5 +10,7 @@ Router.post("/register", checkRegister, usersController.register);
 Router.post("/login", checkLogin, usersController.login);
 Router.get("/verifyAccess", verify, usersController.verifyAccess);
 Router.patch("/verifyStatus", verify, usersController.verifyStatus);
+Router.get("/reqPass", verify, usersController.requestChangePassword);
+Router.patch("/changePass", verify, usersController.changePasswordUser);
 
 module.exports = Router;

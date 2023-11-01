@@ -7,10 +7,13 @@ const MySwiperButtonPrev = () => {
 	return (
 		<>
 			<button
-				className={`my-swiper-button-next hidden bg-white/20 hover:bg-white/40 dark:bg-neutral-800/20 dark:hover:bg-neutral-800/40 rounded-full w-10 h-10 absolute top-[45%] left-4 z-10 duration-100 justify-center items-center md:flex`}
+				className={`my-swiper-button-next hidden bg-neutral-300/50 hover:bg-neutral-300/40 dark:bg-neutral-500/20 dark:hover:bg-neutral-500/40 rounded-full w-10 h-10 absolute top-[45%] left-4 z-10 duration-100 justify-center items-center md:flex`}
 				onClick={() => swiper.slidePrev()}
 			>
-				<PiCaretLeftBold fill="white" size={20} />
+				<PiCaretLeftBold
+					className="fill-black dark:fill-white"
+					size={20}
+				/>
 			</button>
 		</>
 	);

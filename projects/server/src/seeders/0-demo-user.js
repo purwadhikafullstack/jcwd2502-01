@@ -42,6 +42,15 @@ module.exports = {
 					role: "admin",
 					status: "verified",
 				},
+				{
+					id: 5,
+					username: "admin",
+					email: "admin@gmail.com",
+					password:
+						"$2b$10$/kW7aDmE2BlhG3IZ6K8RCetwYKlNHg/QLkdGut7uDfdKWtbGENTQa",
+					role: "super",
+					status: "verified",
+				},
 			],
 			{}
 		);

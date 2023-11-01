@@ -7,7 +7,7 @@ const respHandler = require("../utils/respHandler");
 module.exports = {
 	getCart: async (req, res, next) => {
 		try {
-			const data = await findAllProductsInCart(req.params);
+			const data = await findAllProductsInCart(req.dataToken);
 
 			respHandler(res, "Get products in cart success", data);
 		} catch (error) {
@@ -16,13 +16,16 @@ module.exports = {
 	},
 	addToCart: async (req, res, next) => {
 		try {
-			const { product_id, quantity, user_id } = req.body;
-
+			const { product_id, quantity } = req.body;
+			const { id } = req.dataToken;
+			console.log(product_id, quantity);
 			const [cart, created] = await db.cart.findOrCreate({
-				where: { product_id, user_id },
+				where: { product_id, user_id: id },
 				defaults: { quantity },
 			});
-
+			console.log("disini");
+			console.log(cart);
+			console.log(created);
 			if (!created) {
 				const updatedQuantity = cart.quantity + quantity;
 				await cart.update({ quantity: updatedQuantity });

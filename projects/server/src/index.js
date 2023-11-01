@@ -1,4 +1,5 @@
-require("dotenv/config");
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
 const db = require("./models");
 const express = require("express");
 const cors = require("cors");
@@ -29,6 +30,11 @@ const {
 	brandsRouter,
 	usersRouter,
 	cartsRouter,
+	warehousesRouter,
+	provincesRouter,
+	citiesRouter,
+	userAddressesRouter,
+	checkoutsRouter,
 } = require("./routers");
 // ===========================
 // NOTE : Add your routes here
@@ -37,6 +43,11 @@ app.use("/api/categories", categoriesRouter);
 app.use("/api/brands", brandsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/carts", cartsRouter);
+app.use("/api/warehouses", warehousesRouter);
+app.use("/api/provinces", provincesRouter);
+app.use("/api/cities", citiesRouter);
+app.use("/api/user-addresses", userAddressesRouter);
+app.use("/api/checkouts", checkoutsRouter);
 
 app.get("/api", (req, res) => {
 	res.send(`Hello, this is my API`);

@@ -8,11 +8,13 @@ module.exports = {
 			[
 				{
 					id: 1,
-					address_name: "Rumah",
+					address_name: "rumah",
+					is_default: true,
+					recipient_name: "andrean",
 					user_id: 1,
 					address: "Jalan something",
-					city: "Jakarta",
-					province: "Jawa Barat",
+					province_id: "6",
+					city_id: "151",
 					address_location: "coordinate",
 				},
 			],
