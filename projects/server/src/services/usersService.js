@@ -234,4 +234,34 @@ module.exports = {
 			return error;
 		}
 	},
+	updateData: async (dataToken, body) => {
+		try {
+			const { id } = dataToken;
+			const { username, email, birth_date, gender, phone } = body;
+			// console.log(id);
+			const checkUser = await db.user.findByPk(id);
+			console.log(username);
+
+			dataSend = {
+				username: username || checkUser.dataValues.username,
+				email: email || checkUser.dataValues.email,
+				birth_date: birth_date || checkUser.dataValues.birth_date,
+				gender: gender || checkUser.dataValues.gender,
+				phone: phone || checkUser.dataValues.phone,
+			};
+
+			const updateDataUser = await db.user.update(dataSend, {
+				where: { id },
+			});
+			console.log(updateDataUser);
+			if (!updateDataUser) {
+				return { isError: true, message: "Update Data is Failed!" };
+			} else {
+				return { isError: false, message: "Update Data is Success!" };
+			}
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
 };
