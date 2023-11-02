@@ -6,10 +6,9 @@ import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 
-const EditWarehouseModal = ({
+const AdminEditWarehouseModal = ({
 	handleOpenEditWarehouseModal,
 	warehouseId,
-	open,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -170,14 +169,6 @@ const EditWarehouseModal = ({
 		}
 	}, [getProvinces, getCities, selectedProvince]);
 
-	useEffect(() => {
-		if (open) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "scroll";
-		}
-	}, [open]);
-
 	const fetchWarehouse = async () => {
 		try {
 			// const accessToken = localStorage.getItem("accessToken");
@@ -196,139 +187,135 @@ const EditWarehouseModal = ({
 	}, [warehouseId]);
 
 	return (
-		<>
+		<div className={`edit-product z-[9999] block`}>
 			<div
-				className={`edit-product z-[9999] ${open ? "block" : "hidden"}`}
+				className={`z-[999] absolute top-0 right-0 bottom-0 left-0 h-full`}
 			>
-				<div
-					className={`z-[999] absolute top-0 right-0 bottom-0 left-0 h-full`}
-				>
-					<section className="admin-edit-warehouse-product w-[820px] h-full m-auto flex justify-center items-center">
-						<div className="admin-create-product-container w-full bg-background p-8 rounded-xl">
-							<div className="modal-header mb-8 flex justify-center relative w-full">
-								<div className="heading-title">
-									<h1 className="font-bold text-xl">
-										Update Warehouse
-									</h1>
-								</div>
-								<div className="close-button absolute top-0 right-0">
-									<Button
-										onClick={handleOpenEditWarehouseModal}
-										isIconOnly
-										variant="light"
-										radius="full"
-										size="sm"
-									>
-										<IoClose
-											size={20}
-											className="fill-neutral-500"
-										/>
-									</Button>
-								</div>
+				<section className="admin-edit-warehouse-product w-[820px] h-full m-auto flex justify-center items-center">
+					<div className="admin-create-product-container w-full bg-background p-8 rounded-xl">
+						<div className="modal-header mb-8 flex justify-center relative w-full">
+							<div className="heading-title">
+								<h1 className="font-bold text-xl">
+									Update Warehouse
+								</h1>
 							</div>
-							<div className="modal-body">
-								<form
-									onSubmit={formik.handleSubmit}
-									className="flex flex-col justify-between gap-4 h-full"
+							<div className="close-button absolute top-0 right-0">
+								<Button
+									onClick={() => {
+										handleOpenEditWarehouseModal();
+									}}
+									isIconOnly
+									variant="light"
+									radius="full"
+									size="sm"
 								>
-									<div className="form-control">
-										<Input
-											type="text"
-											name="warehouse_name"
-											label="Warehouse's Name"
-											labelPlacement="outside"
-											variant="bordered"
-											radius="sm"
-											size="lg"
-											placeholder="Warehouse One"
-											defaultValue={"Warehouse 1"}
-											isRequired
-											value={formik.values.warehouse_name}
-											onChange={handleFormInput}
-										/>
-									</div>
-									<div className="form-control">
-										<Select
-											name="province_id"
-											label="Province"
-											labelPlacement="outside"
-											variant="bordered"
-											radius="sm"
-											size="lg"
-											onChange={(e) =>
-												handleProvince(e.target.value)
-											}
-											placeholder="Select a province"
-											isRequired
-											selectedKeys={[
-												String(selectedProvince),
-											]}
-										>
-											{renderProvincesOption()}
-										</Select>
-									</div>
-									<div className="form-control">
-										<Select
-											name="city_id"
-											label="City"
-											labelPlacement="outside"
-											variant="bordered"
-											radius="sm"
-											size="lg"
-											onChange={(e) =>
-												handleCity(e.target.value)
-											}
-											placeholder="Select a City"
-											isRequired
-											selectedKeys={
-												selectedCity
-													? [String(selectedCity)]
-													: ""
-											}
-										>
-											{renderCitiesOption()}
-										</Select>
-									</div>
-									<div className="form-control">
-										<Textarea
-											placeholder="Jl. Street Address"
-											name="warehouse_address"
-											label="Warehouse Address"
-											labelPlacement="outside"
-											variant="bordered"
-											radius="sm"
-											size="lg"
-											isRequired
-											value={
-												formik.values.warehouse_address
-											}
-											onChange={handleFormInput}
-										/>
-									</div>
-									<div className="modal-footer pt-4">
-										<Button
-											isLoading={isLoading}
-											color="primary"
-											className="text-center"
-											fullWidth
-											type="submit"
-										>
-											<span className="font-bold text-black">
-												Save changes
-											</span>
-										</Button>
-									</div>
-								</form>
+									<IoClose
+										size={20}
+										className="fill-neutral-500"
+									/>
+								</Button>
 							</div>
 						</div>
-					</section>
-				</div>
-				<div
-					className={`z-[99] absolute top-0 right-0 left-0 bottom-0 bg-neutral-700 bg-opacity-70 flex justify-center items-center`}
-				></div>
+						<div className="modal-body">
+							<form
+								onSubmit={formik.handleSubmit}
+								className="flex flex-col justify-between gap-4 h-full"
+							>
+								<div className="form-control">
+									<Input
+										type="text"
+										name="warehouse_name"
+										label="Warehouse's Name"
+										labelPlacement="outside"
+										variant="bordered"
+										radius="sm"
+										size="lg"
+										placeholder="Warehouse One"
+										defaultValue={"Warehouse 1"}
+										isRequired
+										value={formik.values.warehouse_name}
+										onChange={handleFormInput}
+									/>
+								</div>
+								<div className="form-control">
+									<Select
+										name="province_id"
+										label="Province"
+										labelPlacement="outside"
+										variant="bordered"
+										radius="sm"
+										size="lg"
+										onChange={(e) =>
+											handleProvince(e.target.value)
+										}
+										placeholder="Select a province"
+										isRequired
+										selectedKeys={[
+											String(selectedProvince),
+										]}
+									>
+										{renderProvincesOption()}
+									</Select>
+								</div>
+								<div className="form-control">
+									<Select
+										name="city_id"
+										label="City"
+										labelPlacement="outside"
+										variant="bordered"
+										radius="sm"
+										size="lg"
+										onChange={(e) =>
+											handleCity(e.target.value)
+										}
+										placeholder="Select a City"
+										isRequired
+										selectedKeys={
+											selectedCity
+												? [String(selectedCity)]
+												: ""
+										}
+									>
+										{renderCitiesOption()}
+									</Select>
+								</div>
+								<div className="form-control">
+									<Textarea
+										placeholder="Jl. Street Address"
+										name="warehouse_address"
+										label="Warehouse Address"
+										labelPlacement="outside"
+										variant="bordered"
+										radius="sm"
+										size="lg"
+										isRequired
+										value={formik.values.warehouse_address}
+										onChange={handleFormInput}
+									/>
+								</div>
+								<div className="modal-footer pt-4">
+									<Button
+										isLoading={isLoading}
+										color="primary"
+										className="text-center"
+										fullWidth
+										type="submit"
+									>
+										<span className="font-bold text-black">
+											Save changes
+										</span>
+									</Button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</section>
 			</div>
-		</>
+			<div
+				className={`z-[99] absolute top-0 right-0 left-0 bottom-0 bg-black/50 flex justify-center items-center`}
+			></div>
+		</div>
 	);
 };
 
-export default EditWarehouseModal;
+export default AdminEditWarehouseModal;

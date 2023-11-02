@@ -1,5 +1,5 @@
 import React from "react";
-import CheckoutProductCard from "../../components/uis/Cards/CheckoutProductCard";
+import CheckoutProductCard from "../../uis/Cards/CheckoutProductCard";
 
 const CheckoutOrderList = () => {
 	return (

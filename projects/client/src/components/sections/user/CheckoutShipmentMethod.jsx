@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { Select, SelectItem } from "@nextui-org/react";
 import Media from "react-media";
-import { axiosInstance } from "../../lib/axios";
+import { axiosInstance } from "../../../lib/axios";
 
 const CheckoutShipmentMethod = ({ selectedUserAddress }) => {
 	const [shipmentServices, setShipmentServices] = useState([]);

@@ -163,3 +163,22 @@ code {
     margin: 0 auto;
   }
 }
+
+.my-admin-container-active {
+  padding: 24px 16px;
+}
+
+.my-admin-container {
+  padding: 24px 16px;
+}
+
+@media (min-width: 768px) {
+  .my-admin-container-active {
+    padding: 24px 48px;
+    margin-left: 288px;
+  }
+
+  .my-admin-container {
+    padding: 24px 48px;
+  }
+}

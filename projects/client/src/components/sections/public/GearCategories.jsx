@@ -34,7 +34,7 @@ const GearCategories = () => {
 								<img
 									src={KeyboardCategory}
 									alt=""
-									className="w-20 md:w-full scale-[1.4] md:scale-[1.35] -rotate-[10deg] absolute top-6 left-2 md:left-0 md:top-6 group-hover:scale-[1.45] group-hover:-rotate-[6deg] duration-200 ease-in-out group-hover:drop-shadow-xl"
+									className="w-20 md:w-full scale-[1.44] md:scale-[1.35] -rotate-[10deg] absolute top-6 left-[8.6px] md:left-0 md:top-6 group-hover:scale-[1.45] group-hover:-rotate-[6deg] duration-200 ease-in-out group-hover:drop-shadow-xl"
 								/>
 							}
 							categoryId={2}
