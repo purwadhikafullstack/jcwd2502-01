@@ -72,115 +72,103 @@ const NavigationBar = () => {
 	}, [search]);
 
 	return (
-		<>
-			<Navbar
-				onMenuOpenChange={setIsMenuOpen}
-				maxWidth="full"
-				className="md:py-2 md:px-2 shadow-sm bg-background border-b-2 dark:border-neutral-800"
-				isBlurred={false}
-			>
-				<NavbarContent className="hidden md:flex md:pr-2">
-					<NavbarBrand>
-						<Link to={"/"}>
-							<div className="-mb-1.5 w-full">
-								<NexocompLogo
-									width={160}
-									fill={"fill-primary-500"}
-								/>
-							</div>
-						</Link>
-					</NavbarBrand>
-				</NavbarContent>
-				<NavbarContent className="md:hidden flex">
-					<NavbarBrand>
-						<Link to={"/"}>
-							<div className="w-full">
-								<NexoLogo
-									width={64}
-									fill={"fill-primary-500"}
-								/>
-							</div>
-						</Link>
-					</NavbarBrand>
-				</NavbarContent>
-				<NavbarContent className="flex gap-4 w-full" justify="center">
-					<form className="w-full" onSubmit={handleSubmitSearch}>
-						<Input
-							type="text"
-							placeholder="Search on Nexocomp"
-							isClearable
-							onClear={() => dispatch(setSearch(""))}
-							startContent={<IoSearch opacity={".5"} />}
-							variant="bordered"
-							fullWidth
-							onChange={(e) =>
-								formik.setFieldValue(
-									"searchQuery",
-									e.target.value
-								)
-							}
-							value={formik.values.searchQuery}
-						/>
-					</form>
-				</NavbarContent>
-				<NavbarContent justify="end" className="hidden md:flex md:px-2">
-					<Badge
-						disableOutline
-						content={count}
-						shape="circle"
-						size="md"
-						className={`${
-							role ? "" : "hidden"
-						} bg-red-500 text-white`}
-					>
-						<Button
-							isIconOnly
-							aria-label="Cart"
-							variant="flat"
-							onClick={() => handleDirect()}
-						>
-							<IoCartOutline size={22} className="fill-accent" />
-						</Button>
-					</Badge>
-				</NavbarContent>
-				<NavbarContent justify="end" className="gap-2 hidden md:flex ">
-					{token ? (
-						<>
-							<NavbarItem className="flex">
-								<ProfileDropdown />
-							</NavbarItem>
-						</>
-					) : (
-						<>
-							<NavbarItem className="">
-								<Link to={"/login"}>
-									<Button
-										color="secondary"
-										className="font-medium text-white"
-										fullWidth
-									>
-										Login
-									</Button>
-								</Link>
-							</NavbarItem>
-							<NavbarItem className="">
-								<Link to={"/signup"}>
-									<Button className="bg-primary-500 text-black font-medium">
-										Sign Up
-									</Button>
-								</Link>
-							</NavbarItem>
-						</>
-					)}
-				</NavbarContent>
-				<NavbarContent className="sm:hidden">
-					<NavbarMenuToggle
-						aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+		<Navbar
+			onMenuOpenChange={setIsMenuOpen}
+			maxWidth="full"
+			className="md:py-2 md:px-2 shadow-sm bg-background border-b-2 dark:border-neutral-800"
+			isBlurred={false}
+		>
+			<NavbarContent className="hidden md:flex md:pr-2">
+				<NavbarBrand>
+					<Link to={"/"}>
+						<div className="-mb-1.5 w-full">
+							<NexocompLogo
+								width={160}
+								fill={"fill-primary-500"}
+							/>
+						</div>
+					</Link>
+				</NavbarBrand>
+			</NavbarContent>
+			<NavbarContent className="md:hidden flex">
+				<NavbarBrand>
+					<Link to={"/"}>
+						<div className="w-full">
+							<NexoLogo width={64} fill={"fill-primary-500"} />
+						</div>
+					</Link>
+				</NavbarBrand>
+			</NavbarContent>
+			<NavbarContent className="flex gap-4 w-full" justify="center">
+				<form className="w-full" onSubmit={handleSubmitSearch}>
+					<Input
+						type="text"
+						placeholder="Search on Nexocomp"
+						isClearable
+						onClear={() => dispatch(setSearch(""))}
+						startContent={<IoSearch opacity={".5"} />}
+						variant="bordered"
+						fullWidth
+						onChange={(e) =>
+							formik.setFieldValue("searchQuery", e.target.value)
+						}
+						value={formik.values.searchQuery}
 					/>
-				</NavbarContent>
-				<NavigationBarMenu />
-			</Navbar>
-		</>
+				</form>
+			</NavbarContent>
+			<NavbarContent justify="end" className="hidden md:flex md:px-2">
+				<Badge
+					disableOutline
+					content={count}
+					shape="circle"
+					size="md"
+					className={`${role ? "" : "hidden"} bg-red-500 text-white`}
+				>
+					<Button
+						isIconOnly
+						aria-label="Cart"
+						variant="flat"
+						onClick={() => handleDirect()}
+					>
+						<IoCartOutline size={22} className="fill-accent" />
+					</Button>
+				</Badge>
+			</NavbarContent>
+			<NavbarContent justify="end" className="gap-2 hidden md:flex ">
+				{token ? (
+					<NavbarItem className="flex">
+							<ProfileDropdown />
+						</NavbarItem>
+				) : (
+					<>
+						<NavbarItem className="">
+							<Link to={"/login"}>
+								<Button
+									color="secondary"
+									className="font-medium text-white"
+									fullWidth
+								>
+									Login
+								</Button>
+							</Link>
+						</NavbarItem>
+						<NavbarItem className="">
+							<Link to={"/signup"}>
+								<Button className="bg-primary-500 text-black font-medium">
+									Sign Up
+								</Button>
+							</Link>
+						</NavbarItem>
+					</>
+				)}
+			</NavbarContent>
+			<NavbarContent className="sm:hidden">
+				<NavbarMenuToggle
+					aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+				/>
+			</NavbarContent>
+			<NavigationBarMenu />
+		</Navbar>
 	);
 };
 

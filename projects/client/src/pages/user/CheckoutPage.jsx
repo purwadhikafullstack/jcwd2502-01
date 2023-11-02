@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
-
-import Footer from "../../components/layouts/shared/Footer";
-import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
-import CheckoutShipmentMethod from "./CheckoutShipmentMethod";
-import CheckoutOrderList from "./CheckoutOrderList";
-import CheckoutAddress from "./CheckoutAddress";
 import { useSelector } from "react-redux";
 import { axiosInstance } from "../../lib/axios";
+
+import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
+import CheckoutOrderList from "../../components/sections/user/CheckoutOrderList";
+import CheckoutAddress from "../../components/sections/user/CheckoutAddress";
+import CheckoutShipmentMethod from "../../components/sections/user/CheckoutShipmentMethod";
+import Footer from "../../components/layouts/shared/Footer";
 
 const CheckoutPage = () => {
 	const [selectedUserAddress, setSelectedUserAddress] = useState();

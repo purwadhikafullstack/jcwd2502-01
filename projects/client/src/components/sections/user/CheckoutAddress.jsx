@@ -1,7 +1,7 @@
 import React from "react";
 
 import { IoLocationSharp } from "react-icons/io5";
-import ChooseAddressModal from "../../components/layouts/user/ChooseAddressModal";
+import ChooseAddressModal from "../../layouts/user/ChooseAddressModal";
 
 const CheckoutAddress = ({ selectedUserAddress }) => {
 	return (
