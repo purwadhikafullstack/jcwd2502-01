@@ -1,6 +1,18 @@
 import React from "react";
 
-import { Button, Checkbox, Image, Input, cn } from "@nextui-org/react";
+import {
+	Button,
+	Checkbox,
+	Image,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	cn,
+	useDisclosure,
+} from "@nextui-org/react";
 
 import {
 	IoAddCircleOutline,
@@ -9,12 +21,19 @@ import {
 } from "react-icons/io5";
 
 import { useDispatch } from "react-redux";
-import { changeQuantity, deleteOrder } from "../../../redux/features/carts";
+import {
+	changeQuantity,
+	deleteOrder,
+	selectProductCart,
+} from "../../../redux/features/carts";
 import { Link } from "react-router-dom";
 
-const ProductCartCard = ({ dataProduct }) => {
-	const { id, quantity, product } = dataProduct;
+const ProductCartCard = ({ dataCart }) => {
+	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
 	const token = localStorage.getItem("accessToken");
+
+	const { id, status, quantity, product, total_stocks } = dataCart;
 
 	const productPrice = product?.product_price.toLocaleString("id-ID", {
 		style: "currency",
@@ -22,6 +41,14 @@ const ProductCartCard = ({ dataProduct }) => {
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	});
+
+	const handleSelectProductCart = (cartStatus) => {
+		if (cartStatus === "checked") {
+			dispatch(selectProductCart(token, id, "unchecked"));
+		} else {
+			dispatch(selectProductCart(token, id, "checked"));
+		}
+	};
 
 	const dispatch = useDispatch();
 
@@ -34,7 +61,9 @@ const ProductCartCard = ({ dataProduct }) => {
 							base: cn("max-w-full w-full"),
 							label: "w-full",
 						}}
+						defaultSelected={status === "checked" ? true : false}
 						value={product?.product_name}
+						onChange={() => handleSelectProductCart(status)}
 					></Checkbox>
 				</div>
 				<div className="product-cart-card-wrapper w-full flex gap-2 justify-between ml-2">
@@ -79,10 +108,43 @@ const ProductCartCard = ({ dataProduct }) => {
 							variant="light"
 							size="sm"
 							radius="full"
-							onClick={() => dispatch(deleteOrder(token, id))}
+							onPress={onOpen}
 						>
 							<IoTrashOutline size={24} color="#f00" />
 						</Button>
+						<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+							<ModalContent>
+								{(onClose) => (
+									<>
+										<ModalHeader className="flex flex-col gap-1">
+											Warning
+										</ModalHeader>
+										<ModalBody>
+											<p>Delete this from your cart?</p>
+										</ModalBody>
+										<ModalFooter>
+											<Button
+												variant="ghost"
+												onPress={onClose}
+											>
+												<p>Close</p>
+											</Button>
+											<Button
+												className="bg-red-600"
+												onPress={onClose}
+												onClick={() =>
+													dispatch(
+														deleteOrder(token, id)
+													)
+												}
+											>
+												Delete
+											</Button>
+										</ModalFooter>
+									</>
+								)}
+							</ModalContent>
+						</Modal>
 						<div className="quantity-controller flex items-center w-[120px]">
 							<Button
 								onClick={() =>
@@ -90,6 +152,7 @@ const ProductCartCard = ({ dataProduct }) => {
 										changeQuantity(token, id, "subtract")
 									)
 								}
+								isDisabled={quantity <= 1 ? true : false}
 								isIconOnly
 								color="primary"
 								size="sm"
@@ -115,6 +178,9 @@ const ProductCartCard = ({ dataProduct }) => {
 									dispatch(changeQuantity(token, id, "add"));
 								}}
 								isIconOnly
+								isDisabled={
+									quantity >= total_stocks ? true : false
+								}
 								color="primary"
 								size="sm"
 								variant="light"
