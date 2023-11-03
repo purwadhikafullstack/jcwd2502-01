@@ -292,11 +292,11 @@ const AdminCreateNewProductPage = () => {
 							</div>
 							<div className="form-control">
 								<Input
-									type="text"
+									type="number"
 									name="weight"
 									size="lg"
-									placeholder="Ex: 68 g"
-									label="Weight (g/kg)"
+									placeholder="Ex: 1200"
+									label="Weight (in gram)"
 									labelPlacement="outside"
 								/>
 							</div>
