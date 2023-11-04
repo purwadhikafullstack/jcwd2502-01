@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
 	cart.init(
 		{
 			quantity: DataTypes.INTEGER,
-			status: DataTypes.ENUM("checked", "unchecked"),
+			status: DataTypes.BOOLEAN,
 			createdAt: {
 				type: DataTypes.DATE,
 				defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),

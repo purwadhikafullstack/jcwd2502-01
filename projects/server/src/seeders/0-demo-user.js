@@ -12,6 +12,9 @@ module.exports = {
 					email: "andrean923@gmail.com",
 					password:
 						"$2b$10$Tqg5AajUhh9mBmWr0Ik7eOg2gAzU3r6Dalmo1sHGlxHWt61PoHfnO",
+					birth_date: null,
+					gender: null,
+					phone: null,
 					role: "user",
 					status: "verified",
 				},
@@ -21,6 +24,9 @@ module.exports = {
 					email: "adidu@gmail.com",
 					password:
 						"$2b$10$A889twpbSM4/aLgWuRlkXOjby3.G0wsQRhjzw4LulfPCgWx22TN32",
+					birth_date: null,
+					gender: null,
+					phone: null,
 					role: "admin",
 					status: "verified",
 				},
@@ -30,6 +36,9 @@ module.exports = {
 					email: "rafael@gmail.com",
 					password:
 						"$2b$10$x1URhTbSNJk1DHk.fUzNeecIewi3vhfkwdjFH8zQL/pFJRNx0nAxa",
+					birth_date: null,
+					gender: null,
+					phone: null,
 					role: "admin",
 					status: "verified",
 				},
@@ -39,6 +48,9 @@ module.exports = {
 					email: "albert@gmail.com",
 					password:
 						"$2b$10$/kW7aDmE2BlhG3IZ6K8RCetwYKlNHg/QLkdGut7uDfdKWtbGENTQa",
+					birth_date: null,
+					gender: null,
+					phone: null,
 					role: "admin",
 					status: "verified",
 				},
@@ -48,8 +60,23 @@ module.exports = {
 					email: "admin@gmail.com",
 					password:
 						"$2b$10$/kW7aDmE2BlhG3IZ6K8RCetwYKlNHg/QLkdGut7uDfdKWtbGENTQa",
+					birth_date: null,
+					gender: null,
+					phone: null,
 					role: "super",
 					status: "verified",
+				},
+				{
+					id: 6,
+					username: "adudaa",
+					email: "noobman514@gmail.com",
+					password:
+						"$2b$10$/kW7aDmE2BlhG3IZ6K8RCetwYKlNHg/QLkdGut7uDfdKWtbGENTQa",
+					birth_date: null,
+					gender: null,
+					phone: null,
+					role: "user",
+					status: "unverified",
 				},
 			],
 			{}

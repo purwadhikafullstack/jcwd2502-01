@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
 			product_name: DataTypes.STRING,
 			product_desc: DataTypes.TEXT,
 			product_price: DataTypes.INTEGER,
+			weight: DataTypes.INTEGER,
 			createdAt: {
 				type: DataTypes.DATE,
 				defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),

@@ -9,6 +9,7 @@ const {
 	verifyStatusUser,
 	requestPassword,
 	changePassword,
+	updateData,
 } = require("./../services/usersService");
 const respHandler = require("./../utils/respHandler");
 const e = require("express");
@@ -81,6 +82,20 @@ module.exports = {
 				null,
 				null,
 				patchPassword.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	updatePersonalData: async (req, res, next) => {
+		try {
+			const updateUser = await updateData(req.dataToken, req.body);
+			respHandler(
+				res,
+				updateUser.message,
+				null,
+				null,
+				updateUser.isError
 			);
 		} catch (error) {
 			next(error);
