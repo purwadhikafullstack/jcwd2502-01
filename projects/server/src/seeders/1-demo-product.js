@@ -15,6 +15,7 @@ module.exports = {
 					product_price: "2399000",
 					brand_id: 1,
 					category_id: 1,
+					weight: 60,
 				},
 				{
 					id: 2,
@@ -24,6 +25,7 @@ module.exports = {
 					product_price: "309000",
 					brand_id: 1,
 					category_id: 1,
+					weight: 85,
 				},
 				{
 					id: 3,
@@ -33,6 +35,7 @@ module.exports = {
 					product_price: "599000",
 					brand_id: 1,
 					category_id: 1,
+					weight: 99,
 				},
 				{
 					id: 4,
@@ -42,6 +45,7 @@ module.exports = {
 					product_price: "3299000",
 					brand_id: 1,
 					category_id: 2,
+					weight: 600,
 				},
 				{
 					id: 5,
@@ -51,6 +55,7 @@ module.exports = {
 					product_price: "729000",
 					brand_id: 1,
 					category_id: 2,
+					weight: 1000,
 				},
 				{
 					id: 6,
@@ -60,6 +65,7 @@ module.exports = {
 					product_price: "949000",
 					brand_id: 1,
 					category_id: 2,
+					weight: 1105,
 				},
 				{
 					id: 7,
@@ -70,6 +76,7 @@ module.exports = {
 					product_price: "3999000",
 					brand_id: 1,
 					category_id: 4,
+					weight: 345,
 				},
 				{
 					id: 8,
@@ -79,6 +86,7 @@ module.exports = {
 					product_price: "3399000",
 					brand_id: 1,
 					category_id: 4,
+					weight: 273,
 				},
 				{
 					id: 9,
@@ -89,6 +97,7 @@ module.exports = {
 					product_price: "2930000",
 					brand_id: 1,
 					category_id: 4,
+					weight: 380,
 				},
 				{
 					id: 10,
@@ -98,6 +107,7 @@ module.exports = {
 					product_price: "339000",
 					brand_id: 1,
 					category_id: 4,
+					weight: 380,
 				},
 				{
 					id: 11,
@@ -107,6 +117,7 @@ module.exports = {
 					product_price: "749000",
 					brand_id: 1,
 					category_id: 4,
+					weight: 380,
 				},
 				{
 					id: 12,
@@ -116,6 +127,7 @@ module.exports = {
 					product_price: "329000",
 					brand_id: 1,
 					category_id: 6,
+					weight: 229,
 				},
 				{
 					id: 13,
@@ -125,6 +137,7 @@ module.exports = {
 					product_price: "469000",
 					brand_id: 1,
 					category_id: 6,
+					weight: 352,
 				},
 				{
 					id: 14,
@@ -134,6 +147,7 @@ module.exports = {
 					product_price: "629000",
 					brand_id: 1,
 					category_id: 6,
+					weight: 550,
 				},
 				{
 					id: 15,
@@ -143,6 +157,7 @@ module.exports = {
 					product_price: "2350000",
 					brand_id: 2,
 					category_id: 1,
+					weight: 58,
 				},
 				{
 					id: 16,
@@ -152,6 +167,7 @@ module.exports = {
 					product_price: "1500000",
 					brand_id: 2,
 					category_id: 1,
+					weight: 95,
 				},
 				{
 					id: 17,
@@ -161,6 +177,7 @@ module.exports = {
 					product_price: "1100000",
 					brand_id: 2,
 					category_id: 1,
+					weight: 59,
 				},
 				{
 					id: 18,
@@ -170,6 +187,7 @@ module.exports = {
 					product_price: "3000000",
 					brand_id: 2,
 					category_id: 2,
+					weight: 747,
 				},
 				{
 					id: 19,
@@ -179,6 +197,7 @@ module.exports = {
 					product_price: "2500000",
 					brand_id: 2,
 					category_id: 2,
+					weight: 747,
 				},
 				{
 					id: 20,
@@ -188,6 +207,7 @@ module.exports = {
 					product_price: "1000000",
 					brand_id: 2,
 					category_id: 2,
+					weight: 822,
 				},
 				{
 					id: 21,
@@ -197,6 +217,7 @@ module.exports = {
 					product_price: "1000000",
 					brand_id: 2,
 					category_id: 4,
+					weight: 320,
 				},
 				{
 					id: 22,
@@ -207,6 +228,7 @@ module.exports = {
 					product_price: "3100000",
 					brand_id: 2,
 					category_id: 4,
+					weight: 320,
 				},
 				{
 					id: 23,
@@ -216,6 +238,7 @@ module.exports = {
 					product_price: "900000",
 					brand_id: 2,
 					category_id: 4,
+					weight: 285,
 				},
 				{
 					id: 24,
@@ -225,6 +248,7 @@ module.exports = {
 					product_price: "4000000",
 					brand_id: 2,
 					category_id: 3,
+					weight: 279,
 				},
 				{
 					id: 25,
@@ -235,6 +259,7 @@ module.exports = {
 					product_price: "2500000",
 					brand_id: 2,
 					category_id: 3,
+					weight: 1005,
 				},
 				{
 					id: 26,
@@ -245,6 +270,7 @@ module.exports = {
 					product_price: "700000",
 					brand_id: 2,
 					category_id: 3,
+					weight: 805,
 				},
 				{
 					id: 27,
@@ -254,6 +280,7 @@ module.exports = {
 					product_price: "600000",
 					brand_id: 3,
 					category_id: 1,
+					weight: 88,
 				},
 				{
 					id: 28,
@@ -263,6 +290,7 @@ module.exports = {
 					product_price: "1100000",
 					brand_id: 3,
 					category_id: 1,
+					weight: 85,
 				},
 				{
 					id: 29,
@@ -272,6 +300,7 @@ module.exports = {
 					product_price: "1000000",
 					brand_id: 3,
 					category_id: 1,
+					weight: 61,
 				},
 				{
 					id: 30,
@@ -281,6 +310,7 @@ module.exports = {
 					product_price: "4500000",
 					brand_id: 3,
 					category_id: 2,
+					weight: 1070,
 				},
 				{
 					id: 31,
@@ -290,6 +320,7 @@ module.exports = {
 					product_price: "2800000",
 					brand_id: 3,
 					category_id: 2,
+					weight: 780,
 				},
 				{
 					id: 32,
@@ -299,6 +330,7 @@ module.exports = {
 					product_price: "2200000",
 					brand_id: 3,
 					category_id: 2,
+					weight: 780,
 				},
 				{
 					id: 33,
@@ -308,6 +340,7 @@ module.exports = {
 					product_price: "3450000",
 					brand_id: 3,
 					category_id: 4,
+					weight: 379,
 				},
 				{
 					id: 34,
@@ -317,6 +350,7 @@ module.exports = {
 					product_price: "1100000",
 					brand_id: 3,
 					category_id: 4,
+					weight: 236,
 				},
 				{
 					id: 35,
@@ -326,6 +360,8 @@ module.exports = {
 					product_price: "3400000",
 					brand_id: 3,
 					category_id: 4,
+					weight: 60,
+					weight: 370,
 				},
 				{
 					id: 36,
@@ -335,6 +371,7 @@ module.exports = {
 					product_price: "1100000",
 					brand_id: 3,
 					category_id: 3,
+					weight: 244,
 				},
 				{
 					id: 37,
@@ -344,6 +381,7 @@ module.exports = {
 					product_price: "1250000",
 					brand_id: 3,
 					category_id: 3,
+					weight: 243,
 				},
 				{
 					id: 38,
@@ -353,6 +391,7 @@ module.exports = {
 					product_price: "1150000",
 					brand_id: 3,
 					category_id: 3,
+					weight: 245,
 				},
 				{
 					id: 39,
@@ -362,15 +401,17 @@ module.exports = {
 					product_price: "700000",
 					brand_id: 3,
 					category_id: 6,
+					weight: 300,
 				},
 				{
 					id: 40,
-					product_name: "QCK HEAVY XXL: DIABLO® IV EDITION",
+					product_name: "QCK HEAVY XXL",
 					product_desc:
 						"The QCK is a low-profile mousepad designed with an easily portable micro-woven surface. Made from the exclusive QcK micro-woven cloth, it offers optimal control, tailored for both low and high CPI movements. It's durable, washable, and has been the preferred choice of esports professionals for over 15 years. Its dimensions are 1600 mm x 800 mm x 3 mm.",
 					product_price: "1400000",
 					brand_id: 3,
 					category_id: 6,
+					weight: 500,
 				},
 				{
 					id: 41,
@@ -380,6 +421,7 @@ module.exports = {
 					product_price: "300000",
 					brand_id: 3,
 					category_id: 6,
+					weight: 100,
 				},
 				{
 					id: 42,
@@ -389,6 +431,7 @@ module.exports = {
 					product_price: "1100000",
 					brand_id: 4,
 					category_id: 1,
+					weight: 69,
 				},
 				{
 					id: 43,
@@ -398,6 +441,7 @@ module.exports = {
 					product_price: "2600000",
 					brand_id: 4,
 					category_id: 1,
+					weight: 99,
 				},
 				{
 					id: 44,
@@ -407,6 +451,7 @@ module.exports = {
 					product_price: "2600000",
 					brand_id: 4,
 					category_id: 1,
+					weight: 80,
 				},
 				{
 					id: 45,
@@ -417,6 +462,7 @@ module.exports = {
 					product_price: "2000000",
 					brand_id: 4,
 					category_id: 2,
+					weight: 600,
 				},
 				{
 					id: 46,
@@ -427,6 +473,7 @@ module.exports = {
 					product_price: "1500000",
 					brand_id: 4,
 					category_id: 2,
+					weight: 600,
 				},
 				{
 					id: 47,
@@ -436,6 +483,7 @@ module.exports = {
 					product_price: "900000",
 					brand_id: 4,
 					category_id: 2,
+					weight: 750,
 				},
 				{
 					id: 48,
@@ -445,6 +493,7 @@ module.exports = {
 					product_price: "3000000",
 					brand_id: 4,
 					category_id: 4,
+					weight: 300,
 				},
 				{
 					id: 49,
@@ -454,6 +503,7 @@ module.exports = {
 					product_price: "2800000",
 					brand_id: 4,
 					category_id: 4,
+					weight: 310,
 				},
 				{
 					id: 50,
@@ -463,6 +513,7 @@ module.exports = {
 					product_price: "1200000",
 					brand_id: 4,
 					category_id: 4,
+					weight: 350,
 				},
 				{
 					id: 51,
@@ -473,6 +524,7 @@ module.exports = {
 					product_price: "500000",
 					brand_id: 4,
 					category_id: 6,
+					weight: 100,
 				},
 				{
 					id: 52,
@@ -483,6 +535,7 @@ module.exports = {
 					product_price: "800000",
 					brand_id: 4,
 					category_id: 6,
+					weight: 100,
 				},
 				{
 					id: 53,
@@ -492,6 +545,7 @@ module.exports = {
 					product_price: "850000",
 					brand_id: 4,
 					category_id: 6,
+					weight: 100,
 				},
 				{
 					id: 54,
@@ -501,6 +555,7 @@ module.exports = {
 					product_price: "99000",
 					brand_id: 5,
 					category_id: 1,
+					weight: 281,
 				},
 				{
 					id: 55,
@@ -510,6 +565,7 @@ module.exports = {
 					product_price: "89000",
 					brand_id: 5,
 					category_id: 1,
+					weight: 200,
 				},
 				{
 					id: 56,
@@ -519,6 +575,7 @@ module.exports = {
 					product_price: "150000",
 					brand_id: 5,
 					category_id: 1,
+					weight: 69,
 				},
 				{
 					id: 57,
@@ -528,6 +585,7 @@ module.exports = {
 					product_price: "999000",
 					brand_id: 5,
 					category_id: 2,
+					weight: 700,
 				},
 				{
 					id: 58,
@@ -537,6 +595,7 @@ module.exports = {
 					product_price: "49000",
 					brand_id: 5,
 					category_id: 2,
+					weight: 100,
 				},
 				{
 					id: 59,
@@ -547,6 +606,7 @@ module.exports = {
 					product_price: "279000",
 					brand_id: 5,
 					category_id: 2,
+					weight: 720,
 				},
 				{
 					id: 60,
@@ -557,6 +617,7 @@ module.exports = {
 					product_price: "279000",
 					brand_id: 5,
 					category_id: 3,
+					weight: 253,
 				},
 				{
 					id: 61,
@@ -567,6 +628,7 @@ module.exports = {
 					product_price: "165000",
 					brand_id: 5,
 					category_id: 3,
+					weight: 170,
 				},
 				{
 					id: 62,
@@ -576,6 +638,7 @@ module.exports = {
 					product_price: "350000",
 					brand_id: 5,
 					category_id: 3,
+					weight: 280,
 				},
 				{
 					id: 63,
@@ -585,6 +648,7 @@ module.exports = {
 					product_price: "350000",
 					brand_id: 5,
 					category_id: 3,
+					weight: 600,
 				},
 				{
 					id: 64,
@@ -594,6 +658,7 @@ module.exports = {
 					product_price: "270000",
 					brand_id: 5,
 					category_id: 6,
+					weight: 600,
 				},
 				{
 					id: 65,
@@ -603,6 +668,7 @@ module.exports = {
 					product_price: "180000",
 					brand_id: 5,
 					category_id: 6,
+					weight: 600,
 				},
 				{
 					id: 66,
@@ -613,6 +679,7 @@ module.exports = {
 					product_price: "270000",
 					brand_id: 5,
 					category_id: 6,
+					weight: 600,
 				},
 				{
 					id: 67,
@@ -623,6 +690,7 @@ module.exports = {
 					product_price: "3600000",
 					brand_id: 6,
 					category_id: 5,
+					weight: 5000,
 				},
 				{
 					id: 68,
@@ -633,6 +701,7 @@ module.exports = {
 					product_price: "1800000",
 					brand_id: 6,
 					category_id: 5,
+					weight: 5000,
 				},
 			],
 			{}

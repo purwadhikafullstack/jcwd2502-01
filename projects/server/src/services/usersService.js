@@ -18,8 +18,8 @@ module.exports = {
 			});
 			if (checkUsername)
 				throw { isError: true, message: "username already used" };
-			// const checkEmail = await db.user.findOne({ where: { email } });
-			// if (checkEmail) throw { message: "email already used" };
+			const checkEmail = await db.user.findOne({ where: { email } });
+			if (checkEmail) throw { message: "email already used" };
 			const hashPassword = await hash(password);
 			console.log(hashPassword);
 			const registerUser = await db.user.create({
@@ -28,6 +28,9 @@ module.exports = {
 				password: hashPassword,
 				role: "user",
 				status: "unverified",
+				birth_date: null,
+				phone: null,
+				gender: null,
 			});
 
 			const token = createJWT(
@@ -55,7 +58,7 @@ module.exports = {
 					name: "nexocomp",
 					email: "nexocomppurwadhika@gmail.com",
 				},
-				to: email,
+				to: "andrean923@gmail.com",
 				subject: "Register New Account",
 				html: newTemplate,
 			});
@@ -101,6 +104,9 @@ module.exports = {
 					email: checkEmail.dataValues.email,
 					role: checkEmail.dataValues.role,
 					status: checkEmail.dataValues.status,
+					birth_date: checkEmail.dataValues.birth_date,
+					phone: checkEmail.dataValues.phone,
+					gender: checkEmail.dataValues.gender,
 					accessToken: accessToken,
 				},
 			};
@@ -124,6 +130,9 @@ module.exports = {
 					email: checkData.dataValues.email,
 					role: checkData.dataValues.role,
 					status: checkData.dataValues.status,
+					birth_date: checkData.dataValues.birth_date,
+					phone: checkData.dataValues.phone,
+					gender: checkData.dataValues.gender,
 				},
 			};
 		} catch (error) {
@@ -231,6 +240,36 @@ module.exports = {
 			);
 			return { isError: false, message: "Change Password is Success" };
 		} catch (error) {
+			return error;
+		}
+	},
+	updateData: async (dataToken, body) => {
+		try {
+			const { id } = dataToken;
+			const { username, email, birth_date, gender, phone } = body;
+			// console.log(id);
+			const checkUser = await db.user.findByPk(id);
+			console.log(username);
+
+			dataSend = {
+				username: username || checkUser.dataValues.username,
+				email: email || checkUser.dataValues.email,
+				birth_date: birth_date || checkUser.dataValues.birth_date,
+				gender: gender || checkUser.dataValues.gender,
+				phone: phone || checkUser.dataValues.phone,
+			};
+
+			const updateDataUser = await db.user.update(dataSend, {
+				where: { id },
+			});
+			console.log(updateDataUser);
+			if (!updateDataUser) {
+				return { isError: true, message: "Update Data is Failed!" };
+			} else {
+				return { isError: false, message: "Update Data is Success!" };
+			}
+		} catch (error) {
+			console.log(error);
 			return error;
 		}
 	},

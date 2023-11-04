@@ -9,7 +9,7 @@ module.exports = {
 				{
 					id: 1,
 					quantity: 5,
-					status: "unchecked",
+					status: false,
 					user_id: 1,
 					product_id: 1,
 				},

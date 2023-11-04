@@ -18,7 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const ProfileDropdown = () => {
 	const { username } = useSelector((state) => state.user);
-	const { email } = useSelector((state) => state.user);
+	const { email, status } = useSelector((state) => state.user);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -56,9 +56,15 @@ const ProfileDropdown = () => {
 							<h3 className="user-email text-body-md mb-2">
 								{`${email}`}
 							</h3>
-							<Chip className="bg-green-600" size="sm">
-								<span className="text-label-md text-white uppercase">{`verified`}</span>
-							</Chip>
+							{status === "unverified" ? (
+								<Chip className="bg-red-600" size="sm">
+									<span className="text-label-md text-white uppercase">{`unverified`}</span>
+								</Chip>
+							) : (
+								<Chip className="bg-green-600" size="sm">
+									<span className="text-label-md text-white uppercase">{`verified`}</span>
+								</Chip>
+							)}
 						</div>
 					</div>
 				</DropdownItem>
@@ -80,7 +86,7 @@ const ProfileDropdown = () => {
 					<div className="flex items-center gap-2 p-2">
 						<IoLogOutOutline size={24} />
 						<h4 className="font-medium text-body-lg">Logout</h4>
-					</div>
+					</div>{" "}
 				</DropdownItem>
 			</DropdownMenu>
 		</Dropdown>
