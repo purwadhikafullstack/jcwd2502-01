@@ -9,6 +9,8 @@ const initialState = {
 	tax: 0,
 	totalAmount: 0,
 	count: 0,
+	selectedItems: 0,
+	totalPrice: 0,
 };
 
 export const cartsSlice = createSlice({
@@ -20,6 +22,12 @@ export const cartsSlice = createSlice({
 		},
 		setCount: (initialState, { payload }) => {
 			initialState.count = payload;
+		},
+		setSelectedItems: (initialState, { payload }) => {
+			initialState.selectedItems = payload;
+		},
+		setTotalPrice: (initialState, { payload }) => {
+			initialState.totalPrice = payload;
 		},
 		setTotalItems: (initialState, { payload }) => {
 			initialState.totalItems = payload;
@@ -38,10 +46,12 @@ export const cartsSlice = createSlice({
 
 export const fetchCartAsync = (token) => async (dispatchEvent) => {
 	try {
-		const { data } = await axiosInstance(token).get(`/carts/getCart`);
-		console.log(data);
+		const { data } = await axiosInstance(token).get(`carts`);
+
 		dispatchEvent(setCarts(data.data.cart));
 		dispatchEvent(setCount(data.data.count));
+		dispatchEvent(setSelectedItems(data.data.selectedItems));
+		dispatchEvent(setTotalPrice(data.data.totalPrice));
 	} catch (error) {
 		console.log(error);
 	}
@@ -79,10 +89,13 @@ export const setOrderSummary = (user_id) => async (dispatchEvent) => {
 
 export const changeQuantity = (token, id, change) => async (dispatchEvent) => {
 	try {
-		await axiosInstance().patch(`carts/${id}?change=${change}`);
-		const { data } = await axiosInstance(token).get(`carts/getCart`);
+		await axiosInstance(token).patch(`carts/${id}?change=${change}`);
+
+		const { data } = await axiosInstance(token).get(`carts`);
 
 		dispatchEvent(setCarts(data.data.cart));
+		dispatchEvent(setSelectedItems(data.data.selectedItems));
+		dispatchEvent(setTotalPrice(data.data.totalPrice));
 	} catch (error) {
 		console.log(error);
 	}
@@ -90,11 +103,13 @@ export const changeQuantity = (token, id, change) => async (dispatchEvent) => {
 
 export const deleteOrder = (token, id) => async (dispatchEvent) => {
 	try {
-		await axiosInstance().delete(`carts/${id}`);
-		const { data } = await axiosInstance(token).get(`carts/getCart`);
+		await axiosInstance(token).delete(`carts/${id}`);
+		const { data } = await axiosInstance(token).get(`carts`);
 
 		dispatchEvent(setCarts(data.data.cart));
 		dispatchEvent(setCount(data.data.count));
+		dispatchEvent(setSelectedItems(data.data.selectedItems));
+		dispatchEvent(setTotalPrice(data.data.totalPrice));
 	} catch (error) {
 		console.log(error);
 	}
@@ -110,12 +125,32 @@ export const addToCart =
 
 			await axiosInstance(token).post(`carts`, dataToSend);
 
-			const { data } = await axiosInstance(token).get(`carts/getCart`);
+			const { data } = await axiosInstance(token).get(`carts`);
 
 			console.log(data);
 
 			dispatchEvent(setCarts(data.data.cart));
 			dispatchEvent(setCount(data.data.count));
+			dispatchEvent(setSelectedItems(data.data.selectedItems));
+			dispatchEvent(setTotalPrice(data.data.totalPrice));
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+export const selectProductCart =
+	(token, cart_id, type) => async (dispatchEvent) => {
+		try {
+			await axiosInstance(token).patch(`carts/select/${cart_id}`, {
+				type,
+			});
+
+			const { data } = await axiosInstance(token).get(`carts`);
+
+			dispatchEvent(setCarts(data.data.cart));
+			dispatchEvent(setCount(data.data.count));
+			dispatchEvent(setSelectedItems(data.data.selectedItems));
+			dispatchEvent(setTotalPrice(data.data.totalPrice));
 		} catch (error) {
 			console.log(error);
 		}
@@ -128,6 +163,8 @@ export const {
 	setSubtotal,
 	setTax,
 	setTotalAmount,
+	setSelectedItems,
+	setTotalPrice,
 } = cartsSlice.actions;
 
 export default cartsSlice.reducer;

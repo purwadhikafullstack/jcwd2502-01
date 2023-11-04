@@ -1,5 +1,5 @@
 const db = require("./../models");
-const { Op } = require("sequelize");
+const Sequelize = require("sequelize");
 
 module.exports = {
 	findAllProductsInCart: async (dataToken) => {
@@ -17,7 +17,16 @@ module.exports = {
 			};
 
 			const baseQuery = {
-				attributes: ["id", "quantity", "product_id"],
+				attributes: [
+					"id",
+					"status",
+					"quantity",
+					"product_id",
+					[
+						Sequelize.fn("SUM", Sequelize.col("stocks")),
+						"total_stocks",
+					],
+				],
 				include: [
 					{
 						model: db.product,
@@ -34,18 +43,39 @@ module.exports = {
 								attributes: ["image", "id"],
 								limit: 1,
 							},
+							{
+								model: db.stock,
+								attributes: ["stocks", "id", "warehouse_id"],
+							},
 							categoryInclude,
 							brandInclude,
 						],
 					},
 				],
 				where: { user_id: id },
+				group: ["id"],
 			};
 
 			const dataProductsInCart = await db.cart.findAll(baseQuery);
-			const count = await db.cart.count(baseQuery);
 
-			return { count, cart: dataProductsInCart };
+			const count = dataProductsInCart.length;
+
+			const selectedItems = dataProductsInCart
+				.filter((cart) => cart.status === "checked")
+				.map((cart) => cart.quantity)
+				.reduce((a, b) => a + b, 0);
+
+			const totalPrice = dataProductsInCart
+				.filter((cart) => cart.status === "checked")
+				.map((cart) => cart.product.product_price * cart.quantity)
+				.reduce((a, b) => a + b, 0);
+
+			return {
+				count,
+				cart: dataProductsInCart,
+				selectedItems,
+				totalPrice,
+			};
 		} catch (error) {
 			return error;
 		}

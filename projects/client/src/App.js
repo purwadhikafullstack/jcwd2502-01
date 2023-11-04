@@ -1,18 +1,25 @@
 import "./App.css";
-
+import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { OnCheckIsLogin } from "./redux/features/users";
 
-import HomePage from "./pages/public/HomePage";
-import NotFoundPage from "./pages/not-found/NotFoundPage";
+//! Components
+import { Toaster } from "react-hot-toast";
 import NavigationBar from "./components/layouts/shared/NavigationBar";
 import Footer from "./components/layouts/shared/Footer";
+import AdminSidebarMenu from "./components/layouts/admin/AdminSidebarMenu";
 import ThemeToggle from "./components/uis/Buttons/ThemeToggle";
-import LoginPage from "./pages/auth/LoginPage";
-import { useEffect, useState } from "react";
-import SignupPage from "./pages/auth/SignUpPage";
+
+//! Pages
+import HomePage from "./pages/public/HomePage";
 import ExploreProductsPage from "./pages/public/ExploreProductsPage";
+import ProductPage from "./pages/public/ProductPage";
 import CartPage from "./pages/user/CartPage";
+import CheckoutPage from "./pages/user/CheckoutPage";
+import ProfileSettingsPage from "./pages/user/ProfileSettingsPage";
+import LoginPage from "./pages/auth/LoginPage";
+import SignupPage from "./pages/auth/SignUpPage";
 import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import ProductPage from "./pages/public/ProductPage";
@@ -20,10 +27,16 @@ import { useDispatch } from "react-redux";
 import { OnCheckIsLogin, setThemeUser } from "./redux/features/users";
 import CheckoutPage from "./pages/user/CheckoutPage";
 import AdminWarehouseListPage from "./pages/admin/warehouses/AdminWarehouseListPage";
-import ProfileSettingsPage from "./pages/user/ProfileSettingsPage";
+import NotFoundPage from "./pages/not-found/NotFoundPage";
+import AdminNavigationBar from "./components/layouts/admin/AdminNavigationBar";
+import AdminProductListPage from "./pages/admin/products/AdminProductListPage";
+import AdminCategoriesPage from "./pages/admin/categories/AdminCategoriesPage";
+import AdminCreateNewProductPage from "./pages/admin/products/AdminCreateNewProductPage";
+import AdminEditProductPage from "./pages/admin/products/AdminEditProductPage";
 
 function App() {
 	const location = useLocation();
+
 	const [theme, setTheme] = useState(
 		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
 	);
@@ -58,6 +71,7 @@ function App() {
 		"/signup",
 		"/verify",
 		"/reset_password",
+		"/admin",
 	];
 	const excludedPathsFooter = [
 		"/login",
@@ -66,7 +80,9 @@ function App() {
 		"/reset_password",
 		"/product",
 		"/cart",
+		"/admin",
 	];
+	const includedAdminNavigation = ["/admin"];
 
 	const isExcludedNavbar = excludedPathsNavbar.some((path) =>
 		pathname.startsWith(path)
@@ -74,18 +90,28 @@ function App() {
 	const isExcludedFooter = excludedPathsFooter.some((path) =>
 		pathname.startsWith(path)
 	);
+	const isIncludedAdminNavigation = includedAdminNavigation.some((path) =>
+		pathname.startsWith(path)
+	);
 
 	return (
 		<>
 			<Toaster />
 			{isExcludedNavbar ? null : <NavigationBar />}
+			{isIncludedAdminNavigation ? <AdminSidebarMenu /> : null}
+			{isIncludedAdminNavigation ? <AdminNavigationBar /> : null}
 			<ThemeToggle
 				handleToggle={handleToggle}
 				theme={theme}
 				display={"hidden md:flex"}
 			/>
 			<Routes>
+				{/* //* PUBLIC */}
 				<Route path="/" element={<HomePage />} />
+				<Route path="/explore" element={<ExploreProductsPage />} />
+				<Route path="/product/:productName" element={<ProductPage />} />
+
+				{/* //* AUTH */}
 				<Route
 					path="/verify/:token/:email"
 					element={<AccountVerificationPage />}
@@ -96,18 +122,37 @@ function App() {
 				/>
 				<Route path="/login" element={<LoginPage />} />
 				<Route path="/signup" element={<SignupPage />} />
-				<Route path="/cart" element={<CartPage />} />
-				<Route path="/cart/checkout" element={<CheckoutPage />} />
-				<Route path="/explore" element={<ExploreProductsPage />} />
-				<Route path="/product/:productName" element={<ProductPage />} />
+
+				{/* //* USER */}
 				<Route
 					path="/profile/settings"
 					element={<ProfileSettingsPage />}
 				/>
+				<Route path="/cart" element={<CartPage />} />
+				<Route path="/cart/checkout" element={<CheckoutPage />} />
+
+				{/* //* ADMIN */}
 				<Route
 					path="/admin/warehouses"
 					element={<AdminWarehouseListPage />}
 				/>
+				<Route
+					path="/admin/products"
+					element={<AdminProductListPage />}
+				/>
+				<Route
+					path="/admin/add-product"
+					element={<AdminCreateNewProductPage />}
+				/>
+				<Route
+					path="/admin/edit-product"
+					element={<AdminEditProductPage />}
+				/>
+				<Route
+					path="/admin/categories"
+					element={<AdminCategoriesPage />}
+				/>
+
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 			{isExcludedFooter ? null : <Footer />}
