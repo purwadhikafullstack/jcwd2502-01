@@ -1,24 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { IoAddCircleOutline, IoRemoveCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../../redux/features/carts";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import SuccessAddToCartModal from "./SuccessAddToCartModal";
 
 const OrderAction = () => {
+	const token = localStorage.getItem("accessToken");
 	const [stocks, setStocks] = useState(0);
 	const [selectedAmount, setSelectedAmount] = useState(1);
 	const [productPrice, setProductPrice] = useState(0);
-	const token = localStorage.getItem("accessToken");
-	const navigate = useNavigate();
+	const [success, setSuccess] = useState(false);
 	const [click, setClick] = useState(true);
 	const { status, role } = useSelector((state) => state.user);
 	const productDetail = useSelector((state) => state.products.productDetail);
 
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const handleOrder = () => {
+	const renderSuccessAddToCartModal = useCallback(() => {
+		return success ? (
+			<SuccessAddToCartModal
+				productDetailData={productDetail}
+				success={success}
+			/>
+		) : null;
+	}, [success]);
+
+	const handleOrder = async () => {
 		if (!click) return;
 
 		if (role === "") {
@@ -26,16 +37,22 @@ const OrderAction = () => {
 		} else if (status === "unverified") {
 			toast.error("Must verify your email first!");
 		} else {
-			toast.success("Success get product in cart!");
-			dispatch(addToCart(token, productDetail?.id, selectedAmount));
+			try {
+				const result = await dispatch(
+					addToCart(token, productDetail?.id, selectedAmount, stocks)
+				);
+
+				setSuccess(result);
+			} catch (error) {}
 		}
+
 		setClick(false);
 		setTimeout(() => setClick(true), 1000);
 	};
 
 	const onChangeAmount = (operation) => {
 		if (operation === "minus") {
-			if (selectedAmount === 0) {
+			if (selectedAmount === 1) {
 				return;
 			} else {
 				setSelectedAmount(selectedAmount - 1);
@@ -48,10 +65,6 @@ const OrderAction = () => {
 			}
 		}
 	};
-
-	// const handleAddtoCart = () => {
-	// 	if (role)
-	// };
 
 	useEffect(() => {
 		if (productDetail?.stocks) {
@@ -85,6 +98,9 @@ const OrderAction = () => {
 										size="sm"
 										variant="light"
 										radius="full"
+										isDisabled={
+											selectedAmount <= 1 ? true : false
+										}
 										onClick={() => {
 											onChangeAmount("minus");
 										}}
@@ -100,14 +116,19 @@ const OrderAction = () => {
 										size="sm"
 										value={selectedAmount}
 										min={1}
-										max={999999}
-										className="text-text"
+										max={99999}
+										className="text-text w-full"
 									/>
 									<Button
 										isIconOnly
 										color="primary"
 										size="sm"
 										variant="light"
+										isDisabled={
+											selectedAmount >= stocks
+												? true
+												: false
+										}
 										radius="full"
 										onClick={() => {
 											onChangeAmount("plus");
@@ -142,19 +163,6 @@ const OrderAction = () => {
 								</span>
 							</div>
 							<div className="mt-4">
-								{/* <Button
-									fullWidth
-									color="primary"
-									disabled={!stocks}
-									onClick={() => {}}
-								>
-									<span className="text-black font-medium text-body-lg flex items-center">
-										<span className="text-[22px] mr-2">
-											+
-										</span>
-										Add to cart
-									</span>
-								</Button> */}
 								<Button
 									fullWidth
 									color="primary"
@@ -171,6 +179,7 @@ const OrderAction = () => {
 					</div>
 				</div>
 			</section>
+			{renderSuccessAddToCartModal()}
 		</>
 	);
 };

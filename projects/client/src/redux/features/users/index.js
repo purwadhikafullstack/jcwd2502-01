@@ -10,6 +10,7 @@ const initialState = {
 	isLogin: false,
 	user_address: "",
 	status: "unverified",
+	theme: "",
 };
 
 export const userSlice = createSlice({
@@ -33,6 +34,9 @@ export const userSlice = createSlice({
 		},
 		setUserAddress: (initialState, { payload }) => {
 			initialState.user_address = payload;
+		},
+		setThemeUser: (initialState, { payload }) => {
+			initialState.theme = payload;
 		},
 		login: (state, action) => {
 			return (state = {
@@ -99,8 +103,9 @@ export const onRegisterAsync =
 			console.log(password);
 			const hasSymbol = email.indexOf("@");
 			const hasDot = email.indexOf(".");
-
-			if (!email || !password || !username) {
+			if (username < 6) {
+				return;
+			} else if (!email || !password || !username) {
 				return toast.error("Please fill out this field.");
 			} else if (hasSymbol === -1 || hasDot === -1) {
 				return toast.error("Please provide a valid email address.");
@@ -127,7 +132,11 @@ export const onRegisterAsync =
 				}, 2500);
 			}
 		} catch (error) {
-			console.log(error);
+			if (error.response.data.isError) {
+				return toast.error(`${error.response.data.message}`);
+			} else {
+				console.log(error);
+			}
 		}
 	};
 
@@ -237,5 +246,6 @@ export const {
 	setIsLogin,
 	login,
 	reset,
+	setThemeUser,
 } = userSlice.actions;
 export default userSlice.reducer;

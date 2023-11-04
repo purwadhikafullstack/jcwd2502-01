@@ -2,7 +2,7 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { OnCheckIsLogin } from "./redux/features/users";
+import { OnCheckIsLogin, setThemeUser } from "./redux/features/users";
 
 //! Components
 import { Toaster } from "react-hot-toast";
@@ -49,6 +49,7 @@ function App() {
 		localStorage.setItem("theme", theme);
 		const localTheme = localStorage.getItem("theme");
 		document.querySelector("html").setAttribute("class", localTheme);
+		dispatch(setThemeUser(localTheme));
 	}, [theme]);
 
 	const dispatch = useDispatch();

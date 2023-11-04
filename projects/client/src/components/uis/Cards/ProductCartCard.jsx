@@ -43,7 +43,7 @@ const ProductCartCard = ({ dataCart }) => {
 	});
 
 	const handleSelectProductCart = (cartStatus) => {
-		if (cartStatus === "checked") {
+		if (cartStatus) {
 			dispatch(selectProductCart(token, id, "unchecked"));
 		} else {
 			dispatch(selectProductCart(token, id, "checked"));
@@ -61,7 +61,7 @@ const ProductCartCard = ({ dataCart }) => {
 							base: cn("max-w-full w-full"),
 							label: "w-full",
 						}}
-						defaultSelected={status === "checked" ? true : false}
+						defaultSelected={status ? true : false}
 						value={product?.product_name}
 						onChange={() => handleSelectProductCart(status)}
 					></Checkbox>
