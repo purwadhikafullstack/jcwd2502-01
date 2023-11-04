@@ -18,8 +18,8 @@ module.exports = {
 			});
 			if (checkUsername)
 				throw { isError: true, message: "username already used" };
-			// const checkEmail = await db.user.findOne({ where: { email } });
-			// if (checkEmail) throw { message: "email already used" };
+			const checkEmail = await db.user.findOne({ where: { email } });
+			if (checkEmail) throw { message: "email already used" };
 			const hashPassword = await hash(password);
 			console.log(hashPassword);
 			const registerUser = await db.user.create({
@@ -28,6 +28,9 @@ module.exports = {
 				password: hashPassword,
 				role: "user",
 				status: "unverified",
+				birth_date: null,
+				phone: null,
+				gender: null,
 			});
 
 			const token = createJWT(
@@ -55,7 +58,7 @@ module.exports = {
 					name: "nexocomp",
 					email: "nexocomppurwadhika@gmail.com",
 				},
-				to: email,
+				to: "andrean923@gmail.com",
 				subject: "Register New Account",
 				html: newTemplate,
 			});
@@ -101,6 +104,9 @@ module.exports = {
 					email: checkEmail.dataValues.email,
 					role: checkEmail.dataValues.role,
 					status: checkEmail.dataValues.status,
+					birth_date: checkEmail.dataValues.birth_date,
+					phone: checkEmail.dataValues.phone,
+					gender: checkEmail.dataValues.gender,
 					accessToken: accessToken,
 				},
 			};
@@ -124,6 +130,9 @@ module.exports = {
 					email: checkData.dataValues.email,
 					role: checkData.dataValues.role,
 					status: checkData.dataValues.status,
+					birth_date: checkData.dataValues.birth_date,
+					phone: checkData.dataValues.phone,
+					gender: checkData.dataValues.gender,
 				},
 			};
 		} catch (error) {

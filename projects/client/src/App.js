@@ -17,7 +17,7 @@ import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import ProductPage from "./pages/public/ProductPage";
 import { useDispatch } from "react-redux";
-import { OnCheckIsLogin } from "./redux/features/users";
+import { OnCheckIsLogin, setThemeUser } from "./redux/features/users";
 import CheckoutPage from "./pages/user/CheckoutPage";
 import AdminWarehouseListPage from "./pages/admin/warehouses/AdminWarehouseListPage";
 import ProfileSettingsPage from "./pages/user/ProfileSettingsPage";
@@ -40,6 +40,7 @@ function App() {
 		localStorage.setItem("theme", theme);
 		const localTheme = localStorage.getItem("theme");
 		document.querySelector("html").setAttribute("class", localTheme);
+		dispatch(setThemeUser(localTheme));
 	}, [theme]);
 
 	const dispatch = useDispatch();

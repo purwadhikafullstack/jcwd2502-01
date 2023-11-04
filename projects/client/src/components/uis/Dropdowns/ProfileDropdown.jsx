@@ -18,7 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const ProfileDropdown = () => {
 	const { username } = useSelector((state) => state.user);
-	const { email } = useSelector((state) => state.user);
+	const { email, status } = useSelector((state) => state.user);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -57,9 +57,15 @@ const ProfileDropdown = () => {
 								<h3 className="user-email text-body-md mb-2">
 									{`${email}`}
 								</h3>
-								<Chip className="bg-green-600" size="sm">
-									<span className="text-label-md text-white uppercase">{`verified`}</span>
-								</Chip>
+								{status === "unverified" ? (
+									<Chip className="bg-red-600" size="sm">
+										<span className="text-label-md text-white uppercase">{`unverified`}</span>
+									</Chip>
+								) : (
+									<Chip className="bg-green-600" size="sm">
+										<span className="text-label-md text-white uppercase">{`verified`}</span>
+									</Chip>
+								)}
 							</div>
 						</div>
 					</DropdownItem>
