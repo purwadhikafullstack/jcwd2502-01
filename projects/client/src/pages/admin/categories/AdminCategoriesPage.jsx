@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AdminPageMainContainer from "../../../components/layouts/admin/AdminPageMainContainer";
 import AdminCreateNewCategoryModal from "../../../components/layouts/admin/AdminCreateNewCategoryModal";
 import {
@@ -16,44 +16,47 @@ import { IoTrashOutline, IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import { useStateContext } from "../../../contexts/ContextProvider";
 import AdminEditCategoryModal from "../../../components/layouts/admin/AdminEditCategoryModal";
+import { axiosInstance } from "../../../lib/axios";
 
 const AdminCategoriesPage = () => {
 	const { openEditCategoryModal, setOpenEditCategoryModal } =
 		useStateContext();
 	const [selectedCategoryId, setSelectedCategoryId] = useState(null);
+	const [selectedCategoryType, setSelectedCategoryType] = useState(null);
+	const [categories, setCategories] = useState([]);
 
-	const onOpenEditCategoryModal = (category_id) => {
+	const onOpenEditCategoryModal = (category_id, category_type) => {
 		setOpenEditCategoryModal(!openEditCategoryModal);
 		setSelectedCategoryId(category_id);
+		setSelectedCategoryType(category_type);
 	};
 
-	const dummyCategories = [
-		{
-			id: 1,
-			category_type: "Mouse",
-			total_products: 100,
-		},
-		{
-			id: 2,
-			category_type: "Keyboard",
-			total_products: 34,
-		},
-		{
-			id: 3,
-			category_type: "Controller",
-			total_products: 40,
-		},
-		{
-			id: 4,
-			category_type: "Headset",
-			total_products: 72,
-		},
-		{
-			id: 5,
-			category_type: "Monitor",
-			total_products: 12,
-		},
-	];
+	const fetchCategories = async () => {
+		try {
+			// const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance().get(`categories/all`);
+
+			setCategories(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	const onDelete = async (categoryId) => {
+		try {
+			// const accessToken = localStorage.getItem("accessToken");
+
+			//confirm
+
+			await axiosInstance().delete(`categories/${categoryId}`);
+			window.location.reload(false);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchCategories();
+	}, []);
 
 	const columns = [
 		{ name: "CATEGORY NAME", uid: "category_name" },
@@ -66,7 +69,7 @@ const AdminCategoriesPage = () => {
 			case "category_name":
 				return <p>{category.category_type}</p>;
 			case "total_products":
-				return <p>{category.total_products}</p>;
+				return <p>{category.products[0]?.total_products || "-"}</p>;
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
@@ -76,7 +79,10 @@ const AdminCategoriesPage = () => {
 								variant="light"
 								className="text-lg text-default-400 cursor-pointer active:opacity-50"
 								onPress={() => {
-									onOpenEditCategoryModal(category.id);
+									onOpenEditCategoryModal(
+										category.id,
+										category.category_type
+									);
 								}}
 							>
 								<BiEdit size={24} />
@@ -87,9 +93,9 @@ const AdminCategoriesPage = () => {
 								isIconOnly
 								variant="light"
 								className="text-lg text-danger cursor-pointer active:opacity-50"
-								// onClick={() => {
-								// 	onDelete(warehouse.id);
-								// }}
+								onClick={() => {
+									onDelete(category.id);
+								}}
 							>
 								<IoTrashOutline size={24} />
 							</Button>
@@ -133,7 +139,7 @@ const AdminCategoriesPage = () => {
 							</TableColumn>
 						)}
 					</TableHeader>
-					<TableBody items={dummyCategories}>
+					<TableBody items={categories}>
 						{(item) => (
 							<TableRow key={item.id}>
 								{(columnKey) => (
@@ -151,6 +157,7 @@ const AdminCategoriesPage = () => {
 				<AdminEditCategoryModal
 					handleOpenEditCategoryModal={onOpenEditCategoryModal}
 					categoryId={selectedCategoryId}
+					categoryType={selectedCategoryType}
 				/>
 			) : null}
 		</>
