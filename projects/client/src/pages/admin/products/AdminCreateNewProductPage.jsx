@@ -259,12 +259,13 @@ const AdminCreateNewProductPage = () => {
 						<div className="form-control">
 							<Input
 								type="number"
+								min={1}
 								name="product_price"
 								size="lg"
-								placeholder="1.990.000"
-								label="Product Price"
+								placeholder="1990000"
+								label="Product Price (in Rp)"
 								labelPlacement="outside"
-								startContent={<span>Rp</span>}
+								// startContent={<span>Rp</span>}
 							/>
 						</div>
 					</section>

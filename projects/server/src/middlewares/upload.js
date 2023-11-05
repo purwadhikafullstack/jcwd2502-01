@@ -2,14 +2,14 @@ const { multerUpload } = require("./../lib/multer");
 const { deleteFiles } = require("./../helper/deleteFiles");
 
 const upload = async (req, res, next) => {
-	const result = multerUpload.fields([{ name: "image", maxCount: 1 }]);
+	const result = multerUpload.fields([{ name: "images", maxCount: 3 }]);
 	result(req, res, function (err) {
 		try {
 			if (err) throw err;
 
-			if (!req.files.image) return next();
+			if (!req.files.images) return next();
 
-			req.files.image.forEach((v) => {
+			req.files.images.forEach((v) => {
 				if (v.size > 1000000) {
 					throw {
 						message: `${v.originalname} is too large`,
