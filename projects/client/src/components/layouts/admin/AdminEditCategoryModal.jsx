@@ -9,6 +9,7 @@ import { axiosInstance } from "../../../lib/axios";
 const AdminEditCategoryModal = ({
 	handleOpenEditCategoryModal,
 	categoryId,
+	categoryType,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -28,7 +29,7 @@ const AdminEditCategoryModal = ({
 
 	const formik = useFormik({
 		initialValues: {
-			category_type: "",
+			category_type: categoryType,
 		},
 		onSubmit: async (values) => {
 			onSubmitEditCategory(values);
@@ -42,21 +43,28 @@ const AdminEditCategoryModal = ({
 
 			if (!category_type) {
 				alert("Please fill in all form fields");
+				setIsLoading(false);
 				return; // Stop further execution
 			}
 
-			const newWarehouseData = {
+			const newCategoryData = {
 				category_type,
 			};
 
 			// const accessToken = localStorage.getItem("accessToken");
 
-			const updateWarehouse = await axiosInstance().patch(
-				`warehouses/${categoryId}`,
-				newWarehouseData
+			const updateCategory = await axiosInstance().patch(
+				`categories/${categoryId}`,
+				newCategoryData
 			);
 
-			// if (updateWarehouse.status === 201) {
+			if (updateCategory.data.isError) {
+				alert(updateCategory.data.message);
+				setIsLoading(false);
+				return;
+			}
+
+			// if (updateCategory.status === 201) {
 			// 	alert("Warehouse updated successfully");
 
 			// 	setTimeout(() => {

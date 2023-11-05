@@ -141,4 +141,20 @@ module.exports = {
 			return error;
 		}
 	},
+	removeProduct: async (productName) => {
+		try {
+			const dataProduct = await db.product.findOne({
+				where: { product_name: productName },
+			});
+			if (!dataProduct) {
+				return { isError: true, message: "Product not found" };
+			}
+			await db.product.destroy({
+				where: { product_name: productName },
+			});
+			return { message: "Get product's data success", data: dataProduct };
+		} catch (error) {
+			return error;
+		}
+	},
 };

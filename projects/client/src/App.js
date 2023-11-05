@@ -2,7 +2,7 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { OnCheckIsLogin } from "./redux/features/users";
+import { OnCheckIsLogin, setThemeUser } from "./redux/features/users";
 
 //! Components
 import { Toaster } from "react-hot-toast";
@@ -22,10 +22,6 @@ import LoginPage from "./pages/auth/LoginPage";
 import SignupPage from "./pages/auth/SignUpPage";
 import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
-import ProductPage from "./pages/public/ProductPage";
-import { useDispatch } from "react-redux";
-import { OnCheckIsLogin, setThemeUser } from "./redux/features/users";
-import CheckoutPage from "./pages/user/CheckoutPage";
 import AdminWarehouseListPage from "./pages/admin/warehouses/AdminWarehouseListPage";
 import NotFoundPage from "./pages/not-found/NotFoundPage";
 import AdminNavigationBar from "./components/layouts/admin/AdminNavigationBar";
