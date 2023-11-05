@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	Button,
 	Input,
@@ -12,9 +12,41 @@ import {
 	useDisclosure,
 } from "@nextui-org/react";
 import Media from "react-media";
+import { axiosInstance } from "../../../lib/axios";
 
 const AdminCreateNewCategoryModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const [categoryType, setCategoryType] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+	const onSubmit = async (categoryType) => {
+		try {
+			setIsLoading(true);
+
+			if (!categoryType) {
+				alert("Please fill in all form fields");
+				setIsLoading(false);
+				return; // Stop further execution
+			}
+
+			// const accessToken = localStorage.getItem("accessToken");
+
+			const addCategory = await axiosInstance().post(`categories`, {
+				category_type: categoryType,
+			});
+
+			if (addCategory.data.isError) {
+				alert(addCategory.data.message);
+				setIsLoading(false);
+				return;
+			}
+
+			window.location.reload(false);
+			setIsLoading(false);
+			return;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	return (
 		<Media
@@ -58,9 +90,11 @@ const AdminCreateNewCategoryModal = () => {
 													size="lg"
 													placeholder="Laptop"
 													isRequired
-													// onChange={(e) =>
-													// 	setName(e.target.value)
-													// }
+													onChange={(e) =>
+														setCategoryType(
+															e.target.value
+														)
+													}
 												/>
 											</div>
 										</form>
@@ -69,12 +103,14 @@ const AdminCreateNewCategoryModal = () => {
 										<Button
 											color="primary"
 											className="text-center mb-4"
-											// isLoading={isLoading}
+											isLoading={isLoading}
 											fullWidth
-											// onPress={() => onCreate(data)}
+											onPress={() =>
+												onSubmit(categoryType)
+											}
 										>
 											<span className="font-bold text-black">
-												Save new warehouse
+												Add new category
 											</span>
 										</Button>
 									</ModalFooter>
