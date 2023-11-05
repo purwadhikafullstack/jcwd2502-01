@@ -46,7 +46,7 @@ const AdminCreateNewProductPage = () => {
 		fetchCategoriesAsync();
 		fetchBrandsAsync();
 
-		// window.scrollTo({ top: 0 });
+		window.scrollTo({ top: 0 });
 
 		return () => {
 			dispatch(onClear());
@@ -128,7 +128,23 @@ const AdminCreateNewProductPage = () => {
 							<div className="product-images-inputs w-full ml-12">
 								<div className="images-inputs flex gap-4">
 									<input
-										id="productImgInput"
+										id="productImgInput0"
+										accept="image/jpeg, image/jpg, image/x-png, image/png"
+										multiple
+										type="file"
+										// onChange={getFileImage0}
+										className="hidden"
+									/>
+									<input
+										id="productImgInput1"
+										accept="image/jpeg, image/jpg, image/x-png, image/png"
+										multiple
+										type="file"
+										// onChange={getFileImage0}
+										className="hidden"
+									/>
+									<input
+										id="productImgInput2"
 										accept="image/jpeg, image/jpg, image/x-png, image/png"
 										multiple
 										type="file"
@@ -151,7 +167,7 @@ const AdminCreateNewProductPage = () => {
 												onClick={() =>
 													document
 														.querySelector(
-															"#productImgInput"
+															"#productImgInput0"
 														)
 														.click()
 												}
@@ -182,7 +198,7 @@ const AdminCreateNewProductPage = () => {
 												onClick={() =>
 													document
 														.querySelector(
-															"#productImgInput"
+															"#productImgInput1"
 														)
 														.click()
 												}
@@ -213,7 +229,7 @@ const AdminCreateNewProductPage = () => {
 												onClick={() =>
 													document
 														.querySelector(
-															"#productImgInput"
+															"#productImgInput2"
 														)
 														.click()
 												}

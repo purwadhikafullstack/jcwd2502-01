@@ -41,148 +41,136 @@ const ExploreProductsFilterMobile = (props) => {
 	};
 
 	return (
-		<>
-			<div
-				className={`subheading-mobile md:min-h-[70px] ${
-					search ? "pt-0" : "pt-[70px]"
-				} flex justify-between items-center md:hidden`}
-			>
-				<span className="font-medium text-neutral-400">
-					{count} Results
-				</span>
-				<div className="filter-mobile">
-					<Button
-						onPress={onOpen}
-						variant="bordered"
-						endContent={<IoOptionsOutline size={22} />}
-					>
-						<span className="font-medium text-body-md">Filter</span>
-					</Button>
-					<Modal
-						isOpen={isOpen}
-						onOpenChange={onOpenChange}
-						className="m-0 rounded-none"
-						placement="bottom"
-						scrollBehavior="inside"
-						size="full"
-					>
-						<ModalContent>
-							{(onClose) => (
-								<>
-									<ModalHeader className="flex flex-col gap-1">
-										<h2 className="font-bold">Filter</h2>
-									</ModalHeader>
-									<ModalBody>
-										<div className="filter-group-modal">
-											<h5 className="font-medium mb-2">
-												Sort by
-											</h5>
-											<SelectSortBy />
-										</div>
-										<div className="filter-group-modal">
-											<h5 className="font-medium mb-2">
-												Brand
-											</h5>
-											<div className="flex flex-col items-start gap-2">
-												{props.brandsData?.map(
-													(value) => {
-														return (
-															<Checkbox
-																key={value.id}
-																// size="lg"
-																value={String(
-																	value.id
-																)}
-																onClick={() =>
-																	dispatch(
-																		onBrand(
-																			String(
-																				value.id
-																			)
-																		)
-																	)
-																}
-																defaultSelected={brand.includes(
+		<div
+			className={`subheading-mobile md:min-h-[70px] ${
+				search ? "pt-0" : "pt-[70px]"
+			} flex justify-between items-center md:hidden`}
+		>
+			<span className="font-medium text-neutral-400">
+				{count} Results
+			</span>
+			<div className="filter-mobile">
+				<Button
+					onPress={onOpen}
+					variant="bordered"
+					endContent={<IoOptionsOutline size={22} />}
+				>
+					<span className="font-medium text-body-md">Filter</span>
+				</Button>
+				<Modal
+					isOpen={isOpen}
+					onOpenChange={onOpenChange}
+					className="m-0 rounded-none"
+					placement="bottom"
+					scrollBehavior="inside"
+					size="full"
+				>
+					<ModalContent>
+						{(onClose) => (
+							<>
+								<ModalHeader className="flex flex-col gap-1">
+									<h2 className="font-bold">Filter</h2>
+								</ModalHeader>
+								<ModalBody>
+									<div className="filter-group-modal">
+										<h5 className="font-medium mb-2">
+											Sort by
+										</h5>
+										<SelectSortBy />
+									</div>
+									<div className="filter-group-modal">
+										<h5 className="font-medium mb-2">
+											Brand
+										</h5>
+										<div className="flex flex-col items-start gap-2">
+											{props.brandsData?.map((value) => {
+												return (
+													<Checkbox
+														key={value.id}
+														// size="lg"
+														value={String(value.id)}
+														onClick={() =>
+															dispatch(
+																onBrand(
 																	String(
 																		value.id
 																	)
-																)}
-															>
-																<span className="text-base">
-																	{
-																		value.brand_name
-																	}
-																</span>
-															</Checkbox>
-														);
-													}
-												)}
-											</div>
+																)
+															)
+														}
+														defaultSelected={brand.includes(
+															String(value.id)
+														)}
+													>
+														<span className="text-base">
+															{value.brand_name}
+														</span>
+													</Checkbox>
+												);
+											})}
 										</div>
-										<div className="filter-group-modal">
-											<h5 className="font-medium mb-2">
-												Category
-											</h5>
-											<div className="flex flex-col items-start gap-2">
-												{props.categoriesData?.map(
-													(value) => {
-														return (
-															<Checkbox
-																key={value.id}
-																// size="lg"
-																value={String(
-																	value.id
-																)}
-																onClick={() =>
-																	dispatch(
-																		onCategory(
-																			String(
-																				value.id
-																			)
+									</div>
+									<div className="filter-group-modal">
+										<h5 className="font-medium mb-2">
+											Category
+										</h5>
+										<div className="flex flex-col items-start gap-2">
+											{props.categoriesData?.map(
+												(value) => {
+													return (
+														<Checkbox
+															key={value.id}
+															// size="lg"
+															value={String(
+																value.id
+															)}
+															onClick={() =>
+																dispatch(
+																	onCategory(
+																		String(
+																			value.id
 																		)
 																	)
+																)
+															}
+															defaultSelected={category.includes(
+																String(value.id)
+															)}
+														>
+															<span className="text-base">
+																{
+																	value.category_type
 																}
-																defaultSelected={category.includes(
-																	String(
-																		value.id
-																	)
-																)}
-															>
-																<span className="text-base">
-																	{
-																		value.category_type
-																	}
-																</span>
-															</Checkbox>
-														);
-													}
-												)}
-											</div>
+															</span>
+														</Checkbox>
+													);
+												}
+											)}
 										</div>
-									</ModalBody>
-									<ModalFooter className="justify-between">
-										<Button
-											onPress={() => clear()}
-											variant="bordered"
-											fullWidth
-										>
-											{`Clear Filter(s)`}
-										</Button>
-										<Button
-											className="bg-primary-500 text-black font-medium"
-											onPress={onClose}
-											fullWidth
-										>
-											Apply
-										</Button>
-									</ModalFooter>
-								</>
-							)}
-						</ModalContent>
-					</Modal>
-				</div>
+									</div>
+								</ModalBody>
+								<ModalFooter className="justify-between">
+									<Button
+										onPress={() => clear()}
+										variant="bordered"
+										fullWidth
+									>
+										{`Clear Filter(s)`}
+									</Button>
+									<Button
+										className="bg-primary-500 text-black font-medium"
+										onPress={onClose}
+										fullWidth
+									>
+										Apply
+									</Button>
+								</ModalFooter>
+							</>
+						)}
+					</ModalContent>
+				</Modal>
 			</div>
-		</>
+		</div>
 	);
 };
 

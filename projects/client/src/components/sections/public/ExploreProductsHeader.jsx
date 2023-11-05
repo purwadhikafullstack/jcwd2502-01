@@ -19,20 +19,20 @@ const ExploreProductsHeader = () => {
 
 	return (
 		<div
-			class={`header-position ${
+			className={`header-position ${
 				search ? "sticky top-[54px] md:top-[70px]" : "fixed"
 			}  z-20 bg-background w-full`}
 		>
-			<header class="wall-header flex items-center min-h-[52px] my-container">
-				<div class="wall-header__content flex items-center p-0 w-full justify-between">
+			<header className="wall-header flex items-center min-h-[52px] my-container">
+				<div className="wall-header__content flex items-center p-0 w-full justify-between">
 					<h1
-						class={`wall-header__title css-69xvwy m-0 ${
+						className={`wall-header__title css-69xvwy m-0 ${
 							search ? "pt-6" : "pt-4"
 						}  pb-4 px-0`}
 					>
 						{search && (
 							<>
-								<span class="title_prefix absolute top-[-6px]">
+								<span className="title_prefix absolute top-[-6px]">
 									Search results for
 									<br />
 								</span>
@@ -42,7 +42,7 @@ const ExploreProductsHeader = () => {
 							{search || "Explore"}
 						</span>
 					</h1>
-					<nav class="wall-header__nav mt-2 hidden md:flex md:gap-4 md:py-4">
+					<nav className="wall-header__nav mt-2 hidden md:flex md:gap-4 md:py-4">
 						<div className="sort-by flex items-center">
 							<div className="w-full mr-2 font-medium">
 								Sort by:

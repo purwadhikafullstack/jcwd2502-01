@@ -59,10 +59,7 @@ const CheckoutPage = () => {
 			setTotalPrice(sumTotalPrice);
 
 			const sumTotalWeight = data.data
-				?.map(
-					(item) =>
-						item?.quantity * item?.product?.specification.weight
-				)
+				?.map((item) => item?.quantity * item?.product?.weight)
 				.reduce((a, b) => a + b, 0);
 
 			setTotalWeight(sumTotalWeight);
@@ -100,6 +97,7 @@ const CheckoutPage = () => {
 					selectedCheckoutProducts={selectedCheckoutProducts}
 				/>
 				<CheckoutShipmentMethod
+					totalWeight={totalWeight}
 					handleSelectedShippingCost={handleSelectedShippingCost}
 					selectedUserAddress={selectedUserAddress}
 				/>
