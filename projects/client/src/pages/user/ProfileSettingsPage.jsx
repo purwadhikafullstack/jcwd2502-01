@@ -1,27 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DefaultAvatar from "../../assets/avatars/default_avatar.png";
-import { Image } from "@nextui-org/react";
+import { Input, Image, Button } from "@nextui-org/react";
+// import { MailIcon } from "./MailIcon";
+import { IoSearch } from "react-icons/io5";
 import UpdateProfilePictureModal from "../../components/layouts/user/UpdateProfilePictureModal";
 
 const ProfileSettingsPage = () => {
 	const [openModal, setOpenModal] = useState(false);
 	let localTheme = localStorage.getItem("theme");
-	// const [theme, setTheme] = useState(null);
 	const { username, email, role, status, phone, gender, birth_date, theme } =
 		useSelector((state) => state.user);
 	const onOpenModal = () => {
 		setOpenModal(!openModal);
 	};
-	// console.log(theme);
 	useEffect(() => {
 		console.log(theme);
-		// if (localTheme === "dark") {
-		// 	setTheme("dark");
-		// } else {
-		// 	setTheme("light");
-		// }
-		// console.log(theme);
 	}, [theme]);
 
 	useEffect(() => {
@@ -72,7 +66,7 @@ const ProfileSettingsPage = () => {
 								<h4 className="text-xl font-bold mb-4">
 									Personal Information
 								</h4>
-								<h4>Username: {username}</h4>
+								<h4>Username: {`${username}`}</h4>
 								<h4>
 									Birth of Date:{" "}
 									{birth_date ? birth_date : "-"}
@@ -97,6 +91,38 @@ const ProfileSettingsPage = () => {
 								<h4>Phone: {phone ? phone : "-"}</h4>
 							</div>
 						</section>
+					</section>
+					<section className="w-full mt-10">
+						<h1 className="uppercase text-headline-md font-bold">
+							Address
+						</h1>
+						<div
+							className={`md:px-5 px-3 md:py-7 py-5 mt-5 border-2 
+							${theme === "light" ? "border-2 border-gray-300" : "border-2 border-white"} 
+							`}
+						>
+							{/* <button className="">+ Add Address</button> */}
+							<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+								<Input
+									type="text"
+									placeholder="Search Address"
+									className="md:w-96"
+									isClearable
+									size="lg"
+									// onClear={}
+									startContent={<IoSearch opacity={".5"} />}
+									variant="bordered"
+								/>
+								<Button
+									className="bg-primary-500 text-black font-bold hover"
+									// fullWidth
+									size="lg"
+									type="submit"
+								>
+									+ Add Address
+								</Button>
+							</div>
+						</div>
 					</section>
 				</div>
 			</main>
