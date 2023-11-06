@@ -22,7 +22,7 @@ const AdminSidebarMenu = () => {
 
 	return (
 		<nav
-			className={`admin-sidebar-menu w-72 p-4 py-8 h-full fixed bg-background border-r-2 border-primary-100 dark:border-primary-900 duration-300 z-[99999] ${
+			className={`admin-sidebar-menu w-72 p-4 py-8 h-full fixed bg-background border-r-2 border-primary-100 dark:border-primary-900 duration-300 z-[9999] ${
 				activeMenu ? "left-0" : "-left-[320px]"
 			}`}
 		>

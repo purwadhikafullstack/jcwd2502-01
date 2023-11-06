@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import AdminPageMainContainer from "../../../components/layouts/admin/AdminPageMainContainer";
-import AdminCreateNewCategoryModal from "../../../components/layouts/admin/AdminCreateNewCategoryModal";
 import {
 	Table,
 	TableHeader,
@@ -15,69 +14,76 @@ import {
 import { IoTrashOutline, IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import { useStateContext } from "../../../contexts/ContextProvider";
-import AdminEditCategoryModal from "../../../components/layouts/admin/AdminEditCategoryModal";
 import { axiosInstance } from "../../../lib/axios";
+import AdminEditBrandModal from "../../../components/layouts/admin/AdminEditBrandModal";
+import AdminCreateNewBrandModal from "../../../components/layouts/admin/AdminCreateNewBrandModal";
 
-const AdminCategoriesPage = () => {
-	const { openEditCategoryModal, setOpenEditCategoryModal } =
-		useStateContext();
-	const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-	const [selectedCategoryType, setSelectedCategoryType] = useState(null);
-	const [categories, setCategories] = useState([]);
+const AdminBrandsPage = () => {
+	const { openEditBrandModal, setOpenEditBrandModal } = useStateContext();
+	const [selectedBrandId, setSelectedBrandId] = useState(null);
+	const [selectedBrandName, setSelectedBrandName] = useState(null);
+	// const [brands, setBrands] = useState([]);
 
-	const onOpenEditCategoryModal = (category_id, category_type) => {
-		setOpenEditCategoryModal(!openEditCategoryModal);
-		setSelectedCategoryId(category_id);
-		setSelectedCategoryType(category_type);
+	const onOpenEditBrandModal = (brand_id, brand_name) => {
+		setOpenEditBrandModal(!openEditBrandModal);
+		setSelectedBrandId(brand_id);
+		setSelectedBrandName(brand_name);
 	};
 
-	const fetchCategories = async () => {
-		try {
-			// const accessToken = localStorage.getItem("accessToken");
-			const { data } = await axiosInstance().get(`categories/all`);
+	// const fetchBrands = async () => {
+	// 	try {
+	// 		// const accessToken = localStorage.getItem("accessToken");
+	// 		const { data } = await axiosInstance().get(`brands/all`);
 
-			setCategories(data.data);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-	const onDelete = async (categoryId) => {
+	// 		setBrands(data.data);
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// };
+	const onDelete = async (brandId) => {
 		try {
 			// const accessToken = localStorage.getItem("accessToken");
 
 			//confirm
 
-			await axiosInstance().delete(`categories/${categoryId}`);
+			await axiosInstance().delete(`brands/${brandId}`);
 			window.location.reload(false);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	useEffect(() => {
-		fetchCategories();
-	}, []);
+	// useEffect(() => {
+	// 	fetchBrands();
+	// }, []);
 
 	useEffect(() => {
-		if (openEditCategoryModal) {
+		if (openEditBrandModal) {
 			document.body.style.overflow = "hidden";
 		} else {
 			document.body.style.overflow = "scroll";
 		}
-	}, [openEditCategoryModal]);
+	}, [openEditBrandModal]);
+
+	const brands = [
+		{ brand_name: "Razer", id: 1 },
+		{ brand_name: "Logitech", id: 2 },
+		{ brand_name: "Fantech", id: 3 },
+	];
 
 	const columns = [
-		{ name: "CATEGORY NAME", uid: "category_name" },
+		{ name: "BRAND NAME", uid: "brand_name" },
 		{ name: "TOTAL PRODUCTS", uid: "total_products" },
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
-	const renderCell = React.useCallback((category, columnKey) => {
+	const renderCell = React.useCallback((brand, columnKey) => {
 		switch (columnKey) {
-			case "category_name":
-				return <p>{category.category_type}</p>;
+			case "brand_name":
+				return <p>{brand.brand_name}</p>;
 			case "total_products":
-				return <p>{category.products[0]?.total_products || "-"}</p>;
+				// return <p>{brand.products[0]?.total_products || "-"}</p>;
+				return <p>-</p>;
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
@@ -87,9 +93,9 @@ const AdminCategoriesPage = () => {
 								variant="light"
 								className="text-lg text-default-400 cursor-pointer active:opacity-50"
 								onPress={() => {
-									onOpenEditCategoryModal(
-										category.id,
-										category.category_type
+									onOpenEditBrandModal(
+										brand.id,
+										brand.brand_name
 									);
 								}}
 							>
@@ -102,7 +108,7 @@ const AdminCategoriesPage = () => {
 								variant="light"
 								className="text-lg text-danger cursor-pointer active:opacity-50"
 								onClick={() => {
-									onDelete(category.id);
+									onDelete(brand.id);
 								}}
 							>
 								<IoTrashOutline size={24} />
@@ -118,8 +124,8 @@ const AdminCategoriesPage = () => {
 		<>
 			<AdminPageMainContainer>
 				<div className="admin-page-header flex justify-between gap-4 mb-6">
-					<h1 className="font-bold text-title-lg">Categories</h1>
-					<AdminCreateNewCategoryModal />
+					<h1 className="font-bold text-title-lg">Brands</h1>
+					<AdminCreateNewBrandModal />
 				</div>
 				<Table aria-label="Example table with custom cells">
 					<TableHeader columns={columns}>
@@ -134,7 +140,7 @@ const AdminCategoriesPage = () => {
 							</TableColumn>
 						)}
 					</TableHeader>
-					<TableBody items={categories}>
+					<TableBody items={brands}>
 						{(item) => (
 							<TableRow key={item.id}>
 								{(columnKey) => (
@@ -148,15 +154,15 @@ const AdminCategoriesPage = () => {
 				</Table>{" "}
 			</AdminPageMainContainer>
 
-			{openEditCategoryModal ? (
-				<AdminEditCategoryModal
-					handleOpenEditCategoryModal={onOpenEditCategoryModal}
-					categoryId={selectedCategoryId}
-					categoryType={selectedCategoryType}
+			{openEditBrandModal ? (
+				<AdminEditBrandModal
+					handleOpenEditBrandModal={onOpenEditBrandModal}
+					brandId={selectedBrandId}
+					brandType={selectedBrandName}
 				/>
 			) : null}
 		</>
 	);
 };
 
-export default AdminCategoriesPage;
+export default AdminBrandsPage;
