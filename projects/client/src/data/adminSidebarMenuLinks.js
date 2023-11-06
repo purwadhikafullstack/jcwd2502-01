@@ -1,8 +1,15 @@
 import { GoHome } from "react-icons/go";
-import { TbBuildingWarehouse, TbCategory2, TbReceipt } from "react-icons/tb";
+import {
+	TbBuildingWarehouse,
+	TbCategory2,
+	TbReceipt,
+	TbStars,
+} from "react-icons/tb";
 import { FiUsers } from "react-icons/fi";
-import { IoAppsOutline, IoCartOutline } from "react-icons/io5";
+import { IoAppsOutline } from "react-icons/io5";
 import { MdQueryStats } from "react-icons/md";
+import { BiHash } from "react-icons/bi";
+import { PiShoppingCartBold } from "react-icons/pi";
 
 export const adminSidebarMenuLinks = (role) => {
 	if (role === "super") {
@@ -24,7 +31,7 @@ export const adminSidebarMenuLinks = (role) => {
 			},
 			{
 				name: "Orders",
-				icon: <IoCartOutline size={24} />,
+				icon: <PiShoppingCartBold size={24} />,
 				path: "/admin/orders",
 			},
 			{
@@ -36,6 +43,16 @@ export const adminSidebarMenuLinks = (role) => {
 				name: "Categories",
 				icon: <TbCategory2 size={24} />,
 				path: "/admin/categories",
+			},
+			{
+				name: "Brands",
+				icon: <TbStars size={24} />,
+				path: "/admin/brands",
+			},
+			{
+				name: "Stocks",
+				icon: <BiHash size={24} />,
+				path: "/admin/stocks",
 			},
 			{
 				name: "Mutations",
@@ -57,7 +74,7 @@ export const adminSidebarMenuLinks = (role) => {
 			},
 			{
 				name: "Orders",
-				icon: <IoCartOutline size={24} />,
+				icon: <PiShoppingCartBold size={24} />,
 				path: "/admin/orders",
 			},
 			{

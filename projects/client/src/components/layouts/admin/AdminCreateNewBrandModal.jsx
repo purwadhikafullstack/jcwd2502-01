@@ -14,15 +14,16 @@ import {
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 
-const AdminCreateNewCategoryModal = () => {
+const AdminCreateNewBrandModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
-	const [categoryType, setCategoryType] = useState("");
+	const [brandName, setBrandName] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const onSubmit = async (categoryType) => {
+
+	const onSubmit = async (brandName) => {
 		try {
 			setIsLoading(true);
 
-			if (!categoryType) {
+			if (!brandName) {
 				alert("Please fill in all form fields");
 				setIsLoading(false);
 				return; // Stop further execution
@@ -30,12 +31,12 @@ const AdminCreateNewCategoryModal = () => {
 
 			// const accessToken = localStorage.getItem("accessToken");
 
-			const addCategory = await axiosInstance().post(`categories`, {
-				category_type: categoryType,
+			const addBrand = await axiosInstance().post(`brands`, {
+				brand_name: brandName,
 			});
 
-			if (addCategory.data.isError) {
-				alert(addCategory.data.message);
+			if (addBrand.data.isError) {
+				alert(addBrand.data.message);
 				setIsLoading(false);
 				return;
 			}
@@ -59,7 +60,7 @@ const AdminCreateNewCategoryModal = () => {
 					<Button color="primary" size="md" onPress={onOpen}>
 						<p className="font-medium text-black flex items-center gap-1">
 							<span className="text-[20px]">+</span>
-							<span>Add New Category</span>
+							<span>Add New Brand</span>
 						</p>
 					</Button>
 					<Modal
@@ -74,7 +75,7 @@ const AdminCreateNewCategoryModal = () => {
 								<>
 									<ModalHeader className="flex justify-center">
 										<h2 className="text-xl font-bold mb-2">
-											Add New Category
+											Add New Brand
 										</h2>
 									</ModalHeader>
 									<ModalBody>
@@ -82,16 +83,16 @@ const AdminCreateNewCategoryModal = () => {
 											<div className="form-control">
 												<Input
 													type="text"
-													name="category_type"
-													label="Category Name"
+													name="brand_name"
+													label="Brand's Name"
 													labelPlacement="outside"
 													variant="bordered"
 													radius="sm"
 													size="lg"
-													placeholder="Laptop"
+													placeholder="Razer"
 													isRequired
 													onChange={(e) =>
-														setCategoryType(
+														setBrandName(
 															e.target.value
 														)
 													}
@@ -105,12 +106,10 @@ const AdminCreateNewCategoryModal = () => {
 											className="text-center mb-4"
 											isLoading={isLoading}
 											fullWidth
-											onPress={() =>
-												onSubmit(categoryType)
-											}
+											onPress={() => onSubmit(brandName)}
 										>
 											<span className="font-bold text-black">
-												Add new category
+												Add new brand
 											</span>
 										</Button>
 									</ModalFooter>
@@ -124,4 +123,4 @@ const AdminCreateNewCategoryModal = () => {
 	);
 };
 
-export default AdminCreateNewCategoryModal;
+export default AdminCreateNewBrandModal;
