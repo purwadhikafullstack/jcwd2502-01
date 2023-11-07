@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DefaultAvatar from "../../assets/avatars/default_avatar.png";
 import { Input, Image, Button } from "@nextui-org/react";
-// import { MailIcon } from "./MailIcon";
 import { IoSearch } from "react-icons/io5";
 import UpdateProfilePictureModal from "../../components/layouts/user/UpdateProfilePictureModal";
+import CheckoutAddressCard from "../../components/uis/Cards/CheckoutAddressCard";
+import { axiosInstance } from "../../lib/axios";
+import CreateNewAddressModal from "../../components/layouts/user/CreateNewAddressModal";
 
 const ProfileSettingsPage = () => {
 	const [openModal, setOpenModal] = useState(false);
@@ -14,23 +16,42 @@ const ProfileSettingsPage = () => {
 	const onOpenModal = () => {
 		setOpenModal(!openModal);
 	};
+
+	const [userAddresses, setUserAddresses] = useState([]);
+	const [oneTime, setOneTime] = useState(0);
+
+	const renderUserAddresses = () => {
+		return userAddresses?.map((user_address) => {
+			return <CheckoutAddressCard userAddressData={user_address} />;
+		});
+	};
+
+	const fetchUserAddresses = async () => {
+		try {
+			const { data } = await axiosInstance().get(`user-addresses/${1}`);
+
+			setUserAddresses(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
-		console.log(theme);
-	}, [theme]);
+		fetchUserAddresses();
+	}, []);
 
 	useEffect(() => {
 		window.scrollTo({ top: 0 });
 	}, []);
 
 	return (
-		<>
+		<div className="bg-background">
 			<main className="profile-settings-page min-h-screen my-container py-4 ">
 				<div
-					className={`${
-						theme === "light"
-							? "border-2 border-gray-300"
-							: "border-2 border-white"
-					} md:p-10 p-5`}
+					className={`
+					border-2 border-gray-300
+				dark:border-white
+					md:p-10 p-5`}
 				>
 					<div className="page-heading mb-4">
 						<h3 className="font-bold text-headline-md">
@@ -40,11 +61,8 @@ const ProfileSettingsPage = () => {
 					<section className="grid md:grid-cols-2">
 						<section className="profile-picture-section md:w-1/2">
 							<div
-								className={`md:left-side md:w-full flex flex-col items-center md:mr-10 p-3 rounded-md  ${
-									theme === "light"
-										? "shadow-xl bg-white"
-										: " bg-neutral-800"
-								}`}
+								className={`md:left-side md:w-full flex flex-col items-center md:mr-10 p-3 rounded-md bg-neutral-100 dark:bg-black
+								`}
 							>
 								<div className="profile-picture min-w-[200px] mb-3">
 									<Image
@@ -113,15 +131,18 @@ const ProfileSettingsPage = () => {
 									startContent={<IoSearch opacity={".5"} />}
 									variant="bordered"
 								/>
-								<Button
+								{/* <Button
 									className="bg-primary-500 text-black font-bold hover"
 									// fullWidth
 									size="lg"
 									type="submit"
+
 								>
 									+ Add Address
-								</Button>
+								</Button> */}
+								<CreateNewAddressModal />
 							</div>
+							<div className="mt-5">{renderUserAddresses()}</div>
 						</div>
 					</section>
 				</div>
@@ -130,7 +151,7 @@ const ProfileSettingsPage = () => {
 				open={openModal}
 				handleOpenUpdateProfilePictureModal={onOpenModal}
 			/>
-		</>
+		</div>
 	);
 };
 

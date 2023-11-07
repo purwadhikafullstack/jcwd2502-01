@@ -1,6 +1,7 @@
 const db = require("./../models");
 
 const respHandler = require("../utils/respHandler");
+const { createAddress } = require("../services/userAddressService");
 
 module.exports = {
 	getUserAddresses: async (req, res, next) => {
@@ -75,6 +76,13 @@ module.exports = {
 			}
 		} catch (error) {
 			console.log(error);
+		}
+	},
+	createNewAddress: async (req, res, next) => {
+		try {
+			const result = await createAddress(req.body, req.dataToken);
+		} catch (error) {
+			next(error);
 		}
 	},
 };

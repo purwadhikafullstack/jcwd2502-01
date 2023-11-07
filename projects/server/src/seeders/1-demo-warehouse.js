@@ -9,7 +9,8 @@ module.exports = {
 				{
 					id: 1,
 					warehouse_name: "Bandung",
-					warehouse_location: "coordinate",
+					latitude: null,
+					longitude: null,
 					warehouse_address: "jl.jalan something 1",
 					province_id: "9",
 					city_id: "23",
@@ -17,7 +18,8 @@ module.exports = {
 				{
 					id: 2,
 					warehouse_name: "Tangerang",
-					warehouse_location: "coordinate",
+					latitude: null,
+					longitude: null,
 					warehouse_address: "jl.jalan something 1",
 					province_id: "3",
 					city_id: "457",
@@ -25,7 +27,8 @@ module.exports = {
 				{
 					id: 3,
 					warehouse_name: "Jakarta",
-					warehouse_location: "coordinate",
+					latitude: "-6.161569",
+					longitude: "106.7438905",
 					warehouse_address: "jl.jalan something 1",
 					province_id: "6",
 					city_id: "151",

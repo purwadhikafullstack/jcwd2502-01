@@ -5,11 +5,20 @@ import { Button } from "@nextui-org/react";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { onUserAddress } from "../../../redux/features/users";
+import { useLocation } from "react-router-dom";
 
 const CheckoutAddressCard = ({ userAddressData }) => {
 	const dispatch = useDispatch();
+	const location = useLocation();
 
 	const { user_address } = useSelector((state) => state.user);
+	const handleAddressButton = (addressId) => {
+		if (location.pathname === "/profile/settings") {
+			// fungsi ganti is_default
+		} else {
+			dispatch(onUserAddress(addressId));
+		}
+	};
 
 	const {
 		id,
@@ -24,7 +33,7 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 	return (
 		<>
 			<div
-				className={`address-card flex justify-between items-center border-2 ${
+				className={`mb-3 address-card flex justify-between items-center border-2 ${
 					user_address === id
 						? "border-primary-500"
 						: "border-neutral-300 dark:border-neutral-700"
@@ -54,6 +63,17 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 						{address}, {city?.type} {city?.city_name},{" "}
 						{province?.province}, {city?.postal_code}
 					</div>
+					{/* untuk crud address */}
+					{location.pathname === "/profile/settings" ? (
+						<div className="flex divide-x-1">
+							<button className="pr-2 text-green-500 font-medium">
+								ubah
+							</button>
+							<button className="px-2 text-green-500 font-medium">
+								hapus
+							</button>
+						</div>
+					) : null}
 				</section>
 				<section className="actions">
 					{user_address === id ? (

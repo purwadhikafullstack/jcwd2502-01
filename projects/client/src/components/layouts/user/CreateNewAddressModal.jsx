@@ -20,6 +20,7 @@ import {
 	Textarea,
 	Checkbox,
 } from "@nextui-org/react";
+import axios from "axios";
 
 const CreateNewAddressModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -27,6 +28,7 @@ const CreateNewAddressModal = () => {
 	const [provinces, setProvinces] = useState([]);
 	const [selectedProvince, setSelectedProvince] = useState();
 	const [cities, setCities] = useState([]);
+	const [citiesName, setCitiesName] = useState("");
 	const [selectedCity, setSelectedCity] = useState();
 
 	// const formik = useFormik({
@@ -41,7 +43,14 @@ const CreateNewAddressModal = () => {
 	// 		onCreateNewAddress(values);
 	// 	},
 	// });
+	const handleSubmit = async () => {
+		// const getCoordinate = await axios.get(
+		// 	`${process.env.OPENCAGE_URL}/q=${cities},indonesia&key=${process.env.OPENCAGE_KEY}`
+		// );
 
+		// console.log(getCoordinate);
+		console.log(citiesName);
+	};
 	const getProvinces = useCallback(async () => {
 		try {
 			const { data } = await axiosInstance().get(`provinces`);
@@ -83,7 +92,7 @@ const CreateNewAddressModal = () => {
 	const renderCitiesOption = () => {
 		return cities?.map((city) => {
 			return (
-				<SelectItem key={city.id} value={city.id}>
+				<SelectItem key={city.id} value={city}>
 					{`${city.type} ${city.city_name}`}
 				</SelectItem>
 			);
@@ -92,7 +101,9 @@ const CreateNewAddressModal = () => {
 
 	const handleCity = (city) => {
 		// const splittedCity = city?.split(",");
-		setSelectedCity(city);
+		// console.log(city);
+		setSelectedCity(city.id);
+		setCitiesName(city.city_name);
 		// formik.setFieldValue("city_id", city);
 	};
 
@@ -178,11 +189,14 @@ const CreateNewAddressModal = () => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
-														onChange={(e) =>
+														onChange={(e) => {
 															handleProvince(
 																e.target.value
-															)
-														}
+															);
+															console.log(
+																e.target.value
+															);
+														}}
 														placeholder="Select a province"
 														isRequired
 													>
@@ -197,11 +211,12 @@ const CreateNewAddressModal = () => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
-														onChange={(e) =>
-															handleCity(
+														onChange={(e) => {
+															// handleCity(e.target.value)
+															console.log(
 																e.target.value
-															)
-														}
+															);
+														}}
 														placeholder="Select a city"
 														isRequired
 													>
@@ -234,7 +249,7 @@ const CreateNewAddressModal = () => {
 											<Button
 												color="primary"
 												className="text-center mb-4"
-												onPress={onClose}
+												onPress={() => handleSubmit()}
 												fullWidth
 											>
 												<span className="font-bold text-black">
