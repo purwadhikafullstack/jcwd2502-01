@@ -19,7 +19,8 @@ module.exports = (sequelize, DataTypes) => {
 			address_name: DataTypes.STRING,
 			recipient_name: DataTypes.STRING,
 			address: DataTypes.STRING,
-			address_location: DataTypes.STRING,
+			latitude: DataTypes.STRING,
+			longitude: DataTypes.STRING,
 			is_default: DataTypes.BOOLEAN,
 			createdAt: {
 				type: DataTypes.DATE,

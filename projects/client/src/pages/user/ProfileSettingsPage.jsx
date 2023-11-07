@@ -1,42 +1,57 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DefaultAvatar from "../../assets/avatars/default_avatar.png";
-import { Image } from "@nextui-org/react";
+import { Input, Image, Button } from "@nextui-org/react";
+import { IoSearch } from "react-icons/io5";
 import UpdateProfilePictureModal from "../../components/layouts/user/UpdateProfilePictureModal";
+import CheckoutAddressCard from "../../components/uis/Cards/CheckoutAddressCard";
+import { axiosInstance } from "../../lib/axios";
+import CreateNewAddressModal from "../../components/layouts/user/CreateNewAddressModal";
 
 const ProfileSettingsPage = () => {
 	const [openModal, setOpenModal] = useState(false);
 	let localTheme = localStorage.getItem("theme");
-	// const [theme, setTheme] = useState(null);
 	const { username, email, role, status, phone, gender, birth_date, theme } =
 		useSelector((state) => state.user);
 	const onOpenModal = () => {
 		setOpenModal(!openModal);
 	};
-	// console.log(theme);
+
+	const [userAddresses, setUserAddresses] = useState([]);
+	const [oneTime, setOneTime] = useState(0);
+
+	const renderUserAddresses = () => {
+		return userAddresses?.map((user_address) => {
+			return <CheckoutAddressCard userAddressData={user_address} />;
+		});
+	};
+
+	const fetchUserAddresses = async () => {
+		try {
+			const { data } = await axiosInstance().get(`user-addresses/${1}`);
+
+			setUserAddresses(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
-		console.log(theme);
-		// if (localTheme === "dark") {
-		// 	setTheme("dark");
-		// } else {
-		// 	setTheme("light");
-		// }
-		// console.log(theme);
-	}, [theme]);
+		fetchUserAddresses();
+	}, []);
 
 	useEffect(() => {
 		window.scrollTo({ top: 0 });
 	}, []);
 
 	return (
-		<>
+		<div className="bg-background">
 			<main className="profile-settings-page min-h-screen my-container py-4 ">
 				<div
-					className={`${
-						theme === "light"
-							? "border-2 border-gray-300"
-							: "border-2 border-white"
-					} md:p-10 p-5`}
+					className={`
+					border-2 border-gray-300
+				dark:border-white
+					md:p-10 p-5`}
 				>
 					<div className="page-heading mb-4">
 						<h3 className="font-bold text-headline-md">
@@ -46,11 +61,8 @@ const ProfileSettingsPage = () => {
 					<section className="grid md:grid-cols-2">
 						<section className="profile-picture-section md:w-1/2">
 							<div
-								className={`md:left-side md:w-full flex flex-col items-center md:mr-10 p-3 rounded-md  ${
-									theme === "light"
-										? "shadow-xl bg-white"
-										: " bg-neutral-800"
-								}`}
+								className={`md:left-side md:w-full flex flex-col items-center md:mr-10 p-3 rounded-md bg-neutral-100 dark:bg-black
+								`}
 							>
 								<div className="profile-picture min-w-[200px] mb-3">
 									<Image
@@ -72,7 +84,7 @@ const ProfileSettingsPage = () => {
 								<h4 className="text-xl font-bold mb-4">
 									Personal Information
 								</h4>
-								<h4>Username: {username}</h4>
+								<h4>Username: {`${username}`}</h4>
 								<h4>
 									Birth of Date:{" "}
 									{birth_date ? birth_date : "-"}
@@ -98,13 +110,48 @@ const ProfileSettingsPage = () => {
 							</div>
 						</section>
 					</section>
+					<section className="w-full mt-10">
+						<h1 className="uppercase text-headline-md font-bold">
+							Address
+						</h1>
+						<div
+							className={`md:px-5 px-3 md:py-7 py-5 mt-5 border-2 
+							${theme === "light" ? "border-2 border-gray-300" : "border-2 border-white"} 
+							`}
+						>
+							{/* <button className="">+ Add Address</button> */}
+							<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+								<Input
+									type="text"
+									placeholder="Search Address"
+									className="md:w-96"
+									isClearable
+									size="lg"
+									// onClear={}
+									startContent={<IoSearch opacity={".5"} />}
+									variant="bordered"
+								/>
+								{/* <Button
+									className="bg-primary-500 text-black font-bold hover"
+									// fullWidth
+									size="lg"
+									type="submit"
+
+								>
+									+ Add Address
+								</Button> */}
+								<CreateNewAddressModal />
+							</div>
+							<div className="mt-5">{renderUserAddresses()}</div>
+						</div>
+					</section>
 				</div>
 			</main>
 			<UpdateProfilePictureModal
 				open={openModal}
 				handleOpenUpdateProfilePictureModal={onOpenModal}
 			/>
-		</>
+		</div>
 	);
 };
 

@@ -14,5 +14,6 @@ Router.get(
 	verify,
 	userAddressesController.getSelectedUserAddress
 );
+Router.post("/newAddress", verify, userAddressesController.createNewAddress);
 
-module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js
+module.exports = Router;
