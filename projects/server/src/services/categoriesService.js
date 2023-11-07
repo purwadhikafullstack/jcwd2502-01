@@ -6,38 +6,38 @@ module.exports = {
 		try {
 			const dataAllCategories = await db.category.findAll({
 				attributes: ["id", "category_type"],
-				order: [["updatedAt", "DESC"]],
 			});
 
-			const orderedCategories = await db.category.findAll({
-				attributes: ["id"],
-				order: [["updatedAt", "DESC"]],
-			});
-
-			const categoryIds = orderedCategories.map(
-				(category) => category.id
-			);
-
-			// const dataCategoriesWithProducts = await db.product.findAll({
-			// 	attributes: [
-			// 		[
-			// 			Sequelize.fn("COUNT", Sequelize.col("product.id")),
-			// 			"total_products",
-			// 		],
-			// 	],
+			// const dataCategoriesWithProducts = await db.category.findAll({
+			// 	attributes: ["id", "category_type"],
 			// 	include: [
 			// 		{
-			// 			model: db.category,
-			// 			attributes: ["id", "category_type", "updatedAt"],
-			// 			order: [["updatedAt", "DESC"]],
+			// 			model: db.product,
+			// 			attributes: [
+			// 				[
+			// 					Sequelize.fn(
+			// 						"COUNT",
+			// 						Sequelize.col("product_name")
+			// 					),
+			// 					"total_products",
+			// 				],
+			// 			],
 			// 		},
 			// 	],
-			// 	where: {
-			// 		category_id: categoryIds,
-			// 	},
-			// 	group: ["category_type"],
+			// 	order: [["updatedAt", "DESC"]],
+			// 	group: ["category.id"],
 			// });
 
+			return {
+				message: "Get categories success",
+				data: dataAllCategories,
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+	findAllCategoriesWithProducts: async () => {
+		try {
 			const dataCategoriesWithProducts = await db.category.findAll({
 				attributes: ["id", "category_type"],
 				include: [
@@ -57,14 +57,7 @@ module.exports = {
 				order: [["updatedAt", "DESC"]],
 				group: ["category.id"],
 			});
-			// const dataToSend = [];
-			// for (const i in dataAllCategories) {
-			// 	dataToSend.push({
-			// 		id: dataAllCategories[i].id,
-			// 		category_type: dataAllCategories[i].category_type,
-			// 		total_product: dataCategoriesWithProducts[i].dataValues.products,
-			// 	});
-			// }
+
 			return {
 				message: "Get categories success",
 				data: dataCategoriesWithProducts,
@@ -75,6 +68,13 @@ module.exports = {
 	},
 	createCategory: async (categoryType) => {
 		try {
+			if (!categoryType) {
+				return {
+					isError: true,
+					message: `Data is not complete`,
+					data: null,
+				};
+			}
 			const checkCategory = await db.category.findOne({
 				where: { category_type: categoryType },
 			});
@@ -88,9 +88,11 @@ module.exports = {
 			const addCategory = await db.category.create({
 				category_type: categoryType,
 			});
-			return { message: "Add category success", data: addCategory };
+			return {
+				message: "Add category success",
+			};
 		} catch (error) {
-			next(error);
+			return error;
 		}
 	},
 	removeCategory: async (categoryId) => {
@@ -105,11 +107,18 @@ module.exports = {
 
 			return { message: "Delete category success", data: null };
 		} catch (error) {
-			next(error);
+			return error;
 		}
 	},
 	editCategory: async (categoryId, categoryType) => {
 		try {
+			if (!categoryType) {
+				return {
+					isError: true,
+					message: `Data is not complete`,
+					data: null,
+				};
+			}
 			const checkCategory = await db.category.findByPk(categoryId);
 			if (!checkCategory) {
 				return { message: "Category not found", data: null };
@@ -130,7 +139,7 @@ module.exports = {
 			);
 			return { message: "Update category success", data: null };
 		} catch (error) {
-			next(error);
+			return error;
 		}
 	},
 };

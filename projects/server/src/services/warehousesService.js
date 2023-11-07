@@ -107,6 +107,13 @@ module.exports = {
 	},
 	updateWarehouse: async (warehouseId, data) => {
 		try {
+			const { city_id } = data;
+			const cityName = await db.city.findOne({ where: { id: city_id } });
+			const { latitude, longitude } = await getLatitudeLongitude(
+				cityName.dataValues.city_name
+			);
+			data.latitude = latitude;
+			data.longitude = longitude;
 			const updatedWarehouse = await db.warehouse.update(data, {
 				where: { id: warehouseId },
 			});

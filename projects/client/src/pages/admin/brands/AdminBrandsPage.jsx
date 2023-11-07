@@ -22,7 +22,7 @@ const AdminBrandsPage = () => {
 	const { openEditBrandModal, setOpenEditBrandModal } = useStateContext();
 	const [selectedBrandId, setSelectedBrandId] = useState(null);
 	const [selectedBrandName, setSelectedBrandName] = useState(null);
-	// const [brands, setBrands] = useState([]);
+	const [brands, setBrands] = useState([]);
 
 	const onOpenEditBrandModal = (brand_id, brand_name) => {
 		setOpenEditBrandModal(!openEditBrandModal);
@@ -30,16 +30,16 @@ const AdminBrandsPage = () => {
 		setSelectedBrandName(brand_name);
 	};
 
-	// const fetchBrands = async () => {
-	// 	try {
-	// 		// const accessToken = localStorage.getItem("accessToken");
-	// 		const { data } = await axiosInstance().get(`brands/all`);
+	const fetchBrands = async () => {
+		try {
+			// const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance().get(`brands/all-products`);
 
-	// 		setBrands(data.data);
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
+			setBrands(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const onDelete = async (brandId) => {
 		try {
 			// const accessToken = localStorage.getItem("accessToken");
@@ -53,9 +53,9 @@ const AdminBrandsPage = () => {
 		}
 	};
 
-	// useEffect(() => {
-	// 	fetchBrands();
-	// }, []);
+	useEffect(() => {
+		fetchBrands();
+	}, []);
 
 	useEffect(() => {
 		if (openEditBrandModal) {
@@ -65,11 +65,11 @@ const AdminBrandsPage = () => {
 		}
 	}, [openEditBrandModal]);
 
-	const brands = [
-		{ brand_name: "Razer", id: 1 },
-		{ brand_name: "Logitech", id: 2 },
-		{ brand_name: "Fantech", id: 3 },
-	];
+	// const brands = [
+	// 	{ brand_name: "Razer", id: 1 },
+	// 	{ brand_name: "Logitech", id: 2 },
+	// 	{ brand_name: "Fantech", id: 3 },
+	// ];
 
 	const columns = [
 		{ name: "BRAND NAME", uid: "brand_name" },
@@ -82,8 +82,7 @@ const AdminBrandsPage = () => {
 			case "brand_name":
 				return <p>{brand.brand_name}</p>;
 			case "total_products":
-				// return <p>{brand.products[0]?.total_products || "-"}</p>;
-				return <p>-</p>;
+				return <p>{brand.products[0]?.total_products || "-"}</p>;
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
@@ -158,7 +157,7 @@ const AdminBrandsPage = () => {
 				<AdminEditBrandModal
 					handleOpenEditBrandModal={onOpenEditBrandModal}
 					brandId={selectedBrandId}
-					brandType={selectedBrandName}
+					brandName={selectedBrandName}
 				/>
 			) : null}
 		</>
