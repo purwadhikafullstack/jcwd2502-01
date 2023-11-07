@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "../../lib/axios";
 
 import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
@@ -8,12 +8,15 @@ import CheckoutAddress from "../../components/sections/user/CheckoutAddress";
 import CheckoutShipmentMethod from "../../components/sections/user/CheckoutShipmentMethod";
 import Footer from "../../components/layouts/shared/Footer";
 import { useNavigate } from "react-router-dom";
+import { onSetUserAddresses } from "../../redux/features/users";
 
 const CheckoutPage = () => {
 	const token = localStorage.getItem("accessToken");
-	const { selectedItems } = useSelector((state) => state.carts);
 
-	const [selectedUserAddress, setSelectedUserAddress] = useState();
+	const { selectedItems } = useSelector((state) => state.carts);
+	const { selectedUserAddressId } = useSelector((state) => state.user);
+
+	const [selectedUserAddressData, setSelectedUserAddressData] = useState();
 	const [selectedCheckoutProducts, setSelectedCheckoutProducts] = useState(
 		[]
 	);
@@ -22,21 +25,20 @@ const CheckoutPage = () => {
 	const [totalWeight, setTotalWeight] = useState(0);
 	const [shippingCost, setShippingCost] = useState(0);
 
-	const { user_address } = useSelector((state) => state.user);
-
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const fetchSelectedUserAddress = useCallback(async () => {
+	const fetchSelectedUserAddressData = useCallback(async () => {
 		try {
-			const { data } = await axiosInstance().get(
-				`user-addresses/${1}?address_id=${user_address}`
+			const { data } = await axiosInstance(token).get(
+				`user-addresses/${selectedUserAddressId}`
 			);
 
-			setSelectedUserAddress(data.data);
+			setSelectedUserAddressData(data.data);
 		} catch (error) {
 			console.log(error);
 		}
-	}, [user_address]);
+	}, [selectedUserAddressId]);
 
 	const getCheckoutDetail = useCallback(async () => {
 		try {
@@ -73,10 +75,10 @@ const CheckoutPage = () => {
 	};
 
 	useEffect(() => {
-		if (user_address) {
-			fetchSelectedUserAddress();
+		if (selectedUserAddressId) {
+			fetchSelectedUserAddressData();
 		}
-	}, [user_address, fetchSelectedUserAddress]);
+	}, [selectedUserAddressId, fetchSelectedUserAddressData]);
 
 	useEffect(() => {
 		if (!selectedItems) {
@@ -86,20 +88,26 @@ const CheckoutPage = () => {
 		}
 	}, [selectedItems]);
 
+	useEffect(() => {
+		dispatch(onSetUserAddresses(token));
+	}, []);
+
 	return (
 		<>
 			<main className="checkout-page h-full pt-4 md:pb-20 md:max-w-[720px] md:mx-auto">
 				<div className="page-heading mb-4 mx-4 md:mx-0">
 					<h3 className="font-bold text-headline-sm">Checkout</h3>
 				</div>
-				<CheckoutAddress selectedUserAddress={selectedUserAddress} />
+				<CheckoutAddress
+					selectedUserAddressData={selectedUserAddressData}
+				/>
 				<CheckoutOrderList
 					selectedCheckoutProducts={selectedCheckoutProducts}
 				/>
 				<CheckoutShipmentMethod
 					totalWeight={totalWeight}
 					handleSelectedShippingCost={handleSelectedShippingCost}
-					selectedUserAddress={selectedUserAddress}
+					selectedUserAddressData={selectedUserAddressData}
 				/>
 				<CheckoutSummaryOrder
 					totalPrice={totalPrice}

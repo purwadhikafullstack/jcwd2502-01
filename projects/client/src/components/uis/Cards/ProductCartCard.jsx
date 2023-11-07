@@ -127,7 +127,9 @@ const ProductCartCard = ({ dataCart }) => {
 												variant="ghost"
 												onPress={onClose}
 											>
-												<p>Close</p>
+												<p className="font-medium">
+													Cancel
+												</p>
 											</Button>
 											<Button
 												className="bg-red-600"
@@ -138,7 +140,9 @@ const ProductCartCard = ({ dataCart }) => {
 													)
 												}
 											>
-												Delete
+												<p className="font-medium text-white">
+													Delete
+												</p>
 											</Button>
 										</ModalFooter>
 									</>

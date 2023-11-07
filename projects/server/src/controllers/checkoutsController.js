@@ -50,6 +50,87 @@ module.exports = {
 			next(error);
 		}
 	},
+	getNearestWarehouse: async (req, res, next) => {
+		try {
+			const { userLat, userLon } = req.body; // Assuming you get user's coordinates from the request body
+
+			const warehouses = [
+				{
+					id: 1,
+					name: "Warehouse Kota Bandung",
+					lat: -6.914744,
+					lon: 107.60981,
+				},
+				{
+					id: 2,
+					name: "Warehouse Kota Jakarta Pusat",
+					lat: -6.2088,
+					lon: 106.8456,
+				},
+				{
+					id: 3,
+					name: "Warehouse Kota Tangerang Selatan",
+					lat: -6.2088,
+					lon: 106.717,
+				},
+			];
+
+			function calculateDistance(lat1, lon1, lat2, lon2) {
+				const R = 6371; // Earth's radius in kilometers
+				const dLat = (lat2 - lat1) * (Math.PI / 180);
+				const dLon = (lon2 - lon1) * (Math.PI / 180);
+				const a =
+					Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+					Math.cos(lat1 * (Math.PI / 180)) *
+						Math.cos(lat2 * (Math.PI / 180)) *
+						Math.sin(dLon / 2) *
+						Math.sin(dLon / 2);
+				const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+				const distance = R * c; // Distance in kilometers
+				return distance;
+			}
+
+			// Find the nearest warehouse
+			function findNearestWarehouse(userLat, userLon, warehouses) {
+				let nearestWarehouse = null;
+				let minDistance = Number.MAX_VALUE;
+
+				for (const warehouse of warehouses) {
+					const distance = calculateDistance(
+						userLat,
+						userLon,
+						warehouse.lat,
+						warehouse.lon
+					);
+					if (distance < minDistance) {
+						minDistance = distance;
+						nearestWarehouse = warehouse;
+					}
+				}
+
+				return nearestWarehouse;
+			}
+
+			const nearestWarehouse = findNearestWarehouse(
+				userLat,
+				userLon,
+				warehouses
+			);
+
+			if (nearestWarehouse) {
+				respHandler(
+					res,
+					"Get nearest warehouse success",
+					nearestWarehouse,
+					200
+				);
+			} else {
+				throw { message: "Get nearest warehouse fail" };
+			}
+		} catch (error) {
+			next(error);
+		}
+	},
 	getShipmentCost: async (req, res, next) => {
 		try {
 			const { origin, destination, weight, courier } = req.body;

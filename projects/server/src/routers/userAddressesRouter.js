@@ -8,8 +8,12 @@ const { userAddressesController } = require("../controllers"); // otomatis baca 
 // const upload = require("./../middlewares/upload");
 const { verify } = require("./../lib/jwt");
 
-Router.get("/:user_id", userAddressesController.getUserAddresses);
+Router.get("/", verify, userAddressesController.getUserAddresses);
+Router.get(
+	"/:address_id",
+	verify,
+	userAddressesController.getSelectedUserAddress
+);
 Router.post("/newAddress", verify, userAddressesController.createNewAddress);
-// Router.patch();
 
-module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js
+module.exports = Router;
