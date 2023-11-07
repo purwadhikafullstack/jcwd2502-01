@@ -58,20 +58,26 @@ module.exports = {
 				{
 					id: 1,
 					name: "Warehouse Kota Bandung",
-					lat: -6.914744,
-					lon: 107.60981,
+					lat: "-6.914744",
+					lon: "107.60981",
 				},
 				{
 					id: 2,
 					name: "Warehouse Kota Jakarta Pusat",
-					lat: -6.2088,
-					lon: 106.8456,
+					lat: "-6.2088",
+					lon: "106.8456",
 				},
 				{
 					id: 3,
 					name: "Warehouse Kota Tangerang Selatan",
-					lat: -6.2088,
-					lon: 106.717,
+					lat: "-6.2088",
+					lon: "106.717",
+				},
+				{
+					id: 4,
+					name: "Warehouse Kota Tangerang Utara",
+					lat: "-6.136197",
+					lon: "106.9006902",
 				},
 			];
 
@@ -94,20 +100,18 @@ module.exports = {
 			function findNearestWarehouse(userLat, userLon, warehouses) {
 				let nearestWarehouse = null;
 				let minDistance = Number.MAX_VALUE;
-
 				for (const warehouse of warehouses) {
 					const distance = calculateDistance(
-						userLat,
-						userLon,
-						warehouse.lat,
-						warehouse.lon
+						Number(userLat),
+						Number(userLon),
+						Number(warehouse.lat),
+						Number(warehouse.lon)
 					);
 					if (distance < minDistance) {
 						minDistance = distance;
 						nearestWarehouse = warehouse;
 					}
 				}
-
 				return nearestWarehouse;
 			}
 
