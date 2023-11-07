@@ -4,12 +4,12 @@ import Media from "react-media";
 import { Button } from "@nextui-org/react";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { onUserAddress } from "../../../redux/features/users";
+import { onSetSelectedUserAddressId } from "../../../redux/features/users";
 
 const CheckoutAddressCard = ({ userAddressData }) => {
 	const dispatch = useDispatch();
 
-	const { user_address } = useSelector((state) => state.user);
+	const { selectedUserAddressId } = useSelector((state) => state.user);
 
 	const {
 		id,
@@ -24,7 +24,7 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 	return (
 		<div
 			className={`address-card flex justify-between items-center border-2 ${
-				user_address === id
+				selectedUserAddressId === id
 					? "border-primary-500"
 					: "border-neutral-300 dark:border-neutral-700"
 			}  rounded-xl p-4`}
@@ -53,7 +53,7 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 				</div>
 			</section>
 			<section className="actions">
-				{user_address === id ? (
+				{selectedUserAddressId === id ? (
 					<IoCheckmarkCircleOutline
 						size={28}
 						className="text-primary-500"
@@ -68,7 +68,9 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 							<Button
 								color="primary"
 								size={matches.medium ? "md" : "sm"}
-								onPress={() => dispatch(onUserAddress(id))}
+								onPress={() =>
+									dispatch(onSetSelectedUserAddressId(id))
+								}
 							>
 								<span className="font-bold text-label-lg text-black">
 									Select

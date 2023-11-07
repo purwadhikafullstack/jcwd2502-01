@@ -16,49 +16,18 @@ import { IoChevronForward, IoSearch } from "react-icons/io5";
 import Media from "react-media";
 import CreateNewAddressModal from "./CreateNewAddressModal";
 import CheckoutAddressCard from "../../uis/Cards/CheckoutAddressCard";
-import { axiosInstance } from "../../../lib/axios";
-import { useDispatch } from "react-redux";
-import { onUserAddress } from "../../../redux/features/users";
+import { useSelector } from "react-redux";
 
 const ChooseAddressModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-	const dispatch = useDispatch();
-
-	const [userAddresses, setUserAddresses] = useState([]);
-	const [oneTime, setOneTime] = useState(0);
+	const { userAddresses } = useSelector((state) => state.user);
 
 	const renderUserAddresses = () => {
 		return userAddresses?.map((user_address) => {
 			return <CheckoutAddressCard userAddressData={user_address} />;
 		});
 	};
-
-	const fetchUserAddresses = async () => {
-		try {
-			const { data } = await axiosInstance().get(`user-addresses/${1}`);
-
-			setUserAddresses(data.data);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	useEffect(() => {
-		fetchUserAddresses();
-	}, []);
-
-	useEffect(() => {
-		if (oneTime === 0) {
-			userAddresses?.map((address) => {
-				if (address.is_default === true) {
-					dispatch(onUserAddress(address.id));
-					setOneTime(1);
-					return;
-				}
-			});
-		}
-	}, [userAddresses]);
 
 	return (
 		<div className="choose-address-modal">

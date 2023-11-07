@@ -31,12 +31,10 @@ const ExploreProductsHeader = () => {
 						}  pb-4 px-0`}
 					>
 						{search && (
-							<>
-								<span className="title_prefix absolute top-[-6px]">
-									Search results for
-									<br />
-								</span>
-							</>
+							<span className="title_prefix absolute top-[-6px]">
+								Search results for
+								<br />
+							</span>
 						)}
 						<span className="font-bold text-title-lg">
 							{search || "Explore"}

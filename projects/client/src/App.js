@@ -1,8 +1,8 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { OnCheckIsLogin, setThemeUser } from "./redux/features/users";
+import { OnCheckIsLogin } from "./redux/features/users";
 
 //! Components
 import { Toaster } from "react-hot-toast";
@@ -30,6 +30,7 @@ import AdminCategoriesPage from "./pages/admin/categories/AdminCategoriesPage";
 import AdminCreateNewProductPage from "./pages/admin/products/AdminCreateNewProductPage";
 import AdminEditProductPage from "./pages/admin/products/AdminEditProductPage";
 import AdminBrandsPage from "./pages/admin/brands/AdminBrandsPage";
+import AdminOverviewDashboardPage from "./pages/admin/home/AdminOverviewDashboardPage";
 
 function App() {
 	const location = useLocation();
@@ -50,7 +51,6 @@ function App() {
 		localStorage.setItem("theme", theme);
 		const localTheme = localStorage.getItem("theme");
 		document.querySelector("html").setAttribute("class", localTheme);
-		dispatch(setThemeUser(localTheme));
 	}, [theme]);
 
 	const dispatch = useDispatch();
@@ -129,6 +129,11 @@ function App() {
 				<Route path="/cart/checkout" element={<CheckoutPage />} />
 
 				{/* //* ADMIN */}
+				<Route path="/admin" element={<Navigate to="/admin/home" />} />
+				<Route
+					path="/admin/home"
+					element={<AdminOverviewDashboardPage />}
+				/>
 				<Route
 					path="/admin/warehouses"
 					element={<AdminWarehouseListPage />}
