@@ -29,6 +29,7 @@ import AdminProductListPage from "./pages/admin/products/AdminProductListPage";
 import AdminCategoriesPage from "./pages/admin/categories/AdminCategoriesPage";
 import AdminCreateNewProductPage from "./pages/admin/products/AdminCreateNewProductPage";
 import AdminEditProductPage from "./pages/admin/products/AdminEditProductPage";
+import AdminBrandsPage from "./pages/admin/brands/AdminBrandsPage";
 
 function App() {
 	const location = useLocation();
@@ -148,6 +149,7 @@ function App() {
 					path="/admin/categories"
 					element={<AdminCategoriesPage />}
 				/>
+				<Route path="/admin/brands" element={<AdminBrandsPage />} />
 
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>

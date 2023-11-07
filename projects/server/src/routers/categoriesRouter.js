@@ -7,5 +7,8 @@ const { categoriesController } = require("../controllers"); // otomatis baca ind
 //* Import Middleware
 
 Router.get("/all", categoriesController.getAllCategories);
+Router.post("/", categoriesController.addCategory);
+Router.delete("/:id", categoriesController.deleteCategory);
+Router.patch("/:id", categoriesController.updateCategory);
 
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js

@@ -4,6 +4,7 @@ const db = require("./../models");
 const {
 	findAllProducts,
 	findOneProduct,
+	addProduct,
 } = require("./../services/productsService");
 
 const respHandler = require("../utils/respHandler");
@@ -41,20 +42,17 @@ module.exports = {
 	},
 	createProduct: async (req, res, next) => {
 		try {
-			const image = req.files.image;
-			const data = JSON.parse(req.body.data);
-
-			if (image) {
-				data.product_image = image[0].path;
-			}
-
-			const createProduct = await db.product.create(data);
-
-			res.status(201).send({
-				isError: false,
-				message: "Create product success!",
-				data: createProduct,
-			});
+			const images = req.files.images;
+			const dataProduct = JSON.parse(req.body.dataProduct);
+			const dataSpec = JSON.parse(req.body.dataSpec);
+			const result = await addProduct(images, dataProduct, dataSpec);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
 		} catch (error) {
 			next(error);
 		}

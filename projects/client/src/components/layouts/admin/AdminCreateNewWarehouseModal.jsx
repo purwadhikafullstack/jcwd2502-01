@@ -137,16 +137,10 @@ const AdminCreateNewWarehouseModal = () => {
 		>
 			{(matches) => (
 				<>
-					<Button
-						color="primary"
-						size="md"
-						onPress={onOpen}
-						startContent={
-							<IoAdd size={24} className="text-black" />
-						}
-					>
+					<Button color="primary" size="md" onPress={onOpen}>
 						<p className="font-medium text-black flex items-center gap-1">
-							Add New Warehouse
+							<span className="text-[20px]">+</span>
+							<span>Add New Warehouse</span>
 						</p>
 					</Button>
 					<Modal

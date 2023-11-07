@@ -6,65 +6,51 @@ import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 
-const AdminEditCategoryModal = ({
-	handleOpenEditCategoryModal,
-	categoryId,
-	categoryType,
+const AdminEditBrandModal = ({
+	handleOpenEditBrandModal,
+	brandId,
+	brandName,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
-	// useEffect(() => {
-	// 	if (warehouse) {
-	// 		formik.setValues({
-	// 			warehouse_name: warehouse.warehouse_name || "",
-	// 			warehouse_location: warehouse.warehouse_location || "",
-	// 			warehouse_address: warehouse.warehouse_address || "",
-	// 			province_id: warehouse.province.id || null,
-	// 			city_id: warehouse.city.id || null,
-	// 		});
-	// 		setSelectedProvince(warehouse.province.id);
-	// 		setSelectedCity(warehouse.city.id);
-	// 	}
-	// }, [warehouse]);
-
 	const formik = useFormik({
 		initialValues: {
-			category_type: categoryType,
+			brand_name: brandName,
 		},
 		onSubmit: async (values) => {
-			onSubmitEditCategory(values);
+			onSubmitEditBrand(values);
 		},
 	});
 
-	const onSubmitEditCategory = async (values) => {
+	const onSubmitEditBrand = async (values) => {
 		try {
 			setIsLoading(true);
-			const { category_type } = values;
+			const { brand_name } = values;
 
-			if (!category_type) {
+			if (!brand_name) {
 				alert("Please fill in all form fields");
 				setIsLoading(false);
 				return; // Stop further execution
 			}
 
-			const newCategoryData = {
-				category_type,
+			const newBrandData = {
+				brand_name,
 			};
 
 			// const accessToken = localStorage.getItem("accessToken");
 
-			const updateCategory = await axiosInstance().patch(
-				`categories/${categoryId}`,
-				newCategoryData
+			const updateBrand = await axiosInstance().patch(
+				`categories/${brandId}`,
+				newBrandData
 			);
 
-			if (updateCategory.data.isError) {
-				alert(updateCategory.data.message);
+			if (updateBrand.data.isError) {
+				alert(updateBrand.data.message);
 				setIsLoading(false);
 				return;
 			}
 
-			// if (updateCategory.status === 201) {
+			// if (updateBrand.status === 201) {
 			// 	alert("Warehouse updated successfully");
 
 			// 	setTimeout(() => {
@@ -99,13 +85,13 @@ const AdminEditCategoryModal = ({
 						<div className="modal-header mb-8 flex justify-center relative w-full">
 							<div className="heading-title">
 								<h1 className="font-bold text-xl">
-									Update Category
+									Update Brand
 								</h1>
 							</div>
 							<div className="close-button absolute top-0 right-0">
 								<Button
 									onClick={() => {
-										handleOpenEditCategoryModal();
+										handleOpenEditBrandModal();
 									}}
 									isIconOnly
 									variant="light"
@@ -127,15 +113,15 @@ const AdminEditCategoryModal = ({
 								<div className="form-control">
 									<Input
 										type="text"
-										name="category_type"
-										label="Category Name"
+										name="brand_name"
+										label="Brand's Name"
 										labelPlacement="outside"
 										variant="bordered"
 										radius="sm"
 										size="lg"
-										placeholder="Laptop"
+										placeholder="Razer"
 										isRequired
-										value={formik.values.category_type}
+										value={formik.values.brand_name}
 										onChange={handleFormInput}
 									/>
 								</div>
@@ -164,4 +150,4 @@ const AdminEditCategoryModal = ({
 	);
 };
 
-export default AdminEditCategoryModal;
+export default AdminEditBrandModal;

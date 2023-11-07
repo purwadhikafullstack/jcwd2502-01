@@ -11,7 +11,6 @@ const ProductDetailContent = () => {
 		if (productDetail) {
 			setProductPrice(productDetail?.product_price);
 		}
-		console.log(productDetail);
 	}, [productDetail]);
 
 	return (

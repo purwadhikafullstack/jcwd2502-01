@@ -1,6 +1,6 @@
 import { axiosInstance } from "../../../lib/axios";
-
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-hot-toast";
 
 const initialState = {
 	carts: [],
@@ -116,25 +116,27 @@ export const deleteOrder = (token, id) => async (dispatchEvent) => {
 };
 
 export const addToCart =
-	(token, product_id, quantity) => async (dispatchEvent) => {
+	(token, product_id, quantity, total_stocks) => async (dispatchEvent) => {
 		try {
 			const dataToSend = {
 				product_id: Number(product_id),
 				quantity,
+				total_stocks,
 			};
 
 			await axiosInstance(token).post(`carts`, dataToSend);
 
 			const { data } = await axiosInstance(token).get(`carts`);
 
-			console.log(data);
-
 			dispatchEvent(setCarts(data.data.cart));
 			dispatchEvent(setCount(data.data.count));
 			dispatchEvent(setSelectedItems(data.data.selectedItems));
 			dispatchEvent(setTotalPrice(data.data.totalPrice));
+
+			return true;
 		} catch (error) {
 			console.log(error);
+			toast.error(error.response.data.message);
 		}
 	};
 

@@ -12,7 +12,7 @@ const CheckoutProductCard = ({ checkedoutProductData }) => {
 		maximumFractionDigits: 0,
 	});
 
-	const subtotalProductPrice = (
+	const subtotalProductPrice = Number(
 		product?.product_price * quantity
 	).toLocaleString("id-ID", {
 		style: "currency",
@@ -21,20 +21,12 @@ const CheckoutProductCard = ({ checkedoutProductData }) => {
 		maximumFractionDigits: 0,
 	});
 
-	useEffect(() => {
-		console.log(
-			"🚀 ~ file: CheckoutProductCard.jsx:6 ~ CheckoutProductCard ~ checkedoutProductData:",
-			checkedoutProductData
-		);
-	}, []);
-
 	return (
 		<div className="checkout-product-card p-4 md:p-6 bg-neutral-100 md:bg-secondary-50 dark:bg-neutral-900 md:dark:bg-secondary-800 border-2 border-neutral-200 dark:border-neutral-800 rounded-xl">
 			<p className="font-bold mb-2 -mt-2">Order 1</p>
 			<div className="checkout-product-card-content flex gap-4 w-full h-full">
 				<div className="product-image w-24 h-24 md:w-28 md:h-28 aspect-square">
 					<Image
-						// src="https://source.unsplash.com/random/200x200"
 						src={`${
 							process.env.REACT_APP_IMAGE_API
 						}${product?.product_images[0].image.substring(7)}`}

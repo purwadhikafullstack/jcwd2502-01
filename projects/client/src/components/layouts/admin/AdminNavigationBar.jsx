@@ -32,6 +32,10 @@ const AdminNavigationBar = () => {
 		}
 	}, [screenSize]);
 
+	useEffect(() => {
+		console.log("PATHNAME", location.pathname);
+	}, []);
+
 	return (
 		<Navbar
 			isBlurred={false}
@@ -40,7 +44,7 @@ const AdminNavigationBar = () => {
 		>
 			<NavbarBrand>
 				{location.pathname === "/admin/add-product" ||
-				"/admin/edit-product" ? (
+				location.pathname === "/admin/edit-product" ? (
 					<Link to={"/admin/home"}>
 						<div className="-mb-1.5 w-full">
 							<NexocompLogo

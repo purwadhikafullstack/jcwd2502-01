@@ -50,7 +50,7 @@ const AdminEditWarehouseModal = ({
 			setIsLoading(true);
 			const {
 				warehouse_name,
-				warehouse_location,
+				// warehouse_location,
 				warehouse_address,
 				province_id,
 				city_id,
@@ -58,7 +58,7 @@ const AdminEditWarehouseModal = ({
 
 			if (
 				!warehouse_name ||
-				!warehouse_location ||
+				// !warehouse_location ||
 				!warehouse_address ||
 				!province_id ||
 				!city_id
@@ -69,7 +69,7 @@ const AdminEditWarehouseModal = ({
 
 			const newWarehouseData = {
 				warehouse_name,
-				warehouse_location,
+				// warehouse_location,
 				warehouse_address,
 				province_id,
 				city_id,

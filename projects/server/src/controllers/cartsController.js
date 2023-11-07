@@ -16,17 +16,27 @@ module.exports = {
 	},
 	addToCart: async (req, res, next) => {
 		try {
-			const { product_id, quantity } = req.body;
+			const { product_id, quantity, total_stocks } = req.body;
 			const { id } = req.dataToken;
 
 			const [cart, created] = await db.cart.findOrCreate({
 				where: { product_id, user_id: id },
-				defaults: { quantity },
+				defaults: { quantity, product_id, user_id: id },
 			});
 
 			if (!created) {
 				const updatedQuantity = cart.quantity + quantity;
-				await cart.update({ quantity: updatedQuantity });
+
+				if (updatedQuantity > total_stocks) {
+					throw {
+						message: `Purchase Allowance: Up to ${total_stocks} Items`,
+					};
+				}
+
+				await cart.update(
+					{ quantity: updatedQuantity },
+					{ where: { user_id: id, product_id } }
+				);
 			}
 
 			respHandler(res, "Post product to cart success", cart);
@@ -90,7 +100,7 @@ module.exports = {
 
 			if (type === "checked") {
 				await db.cart.update(
-					{ status: "checked" },
+					{ status: true },
 					{
 						where: {
 							id: cart_id,
@@ -104,7 +114,7 @@ module.exports = {
 
 			if (type === "unchecked") {
 				await db.cart.update(
-					{ status: "unchecked" },
+					{ status: false },
 					{
 						where: {
 							id: cart_id,

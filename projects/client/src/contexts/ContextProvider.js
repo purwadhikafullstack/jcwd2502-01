@@ -6,6 +6,7 @@ export const ContextProvider = ({ children }) => {
 	const [activeMenu, setActiveMenu] = useState(true);
 	const [openEditWarehouseModal, setOpenEditWarehouseModal] = useState(false);
 	const [openEditCategoryModal, setOpenEditCategoryModal] = useState(false);
+	const [openEditBrandModal, setOpenEditBrandModal] = useState(false);
 	const [screenSize, setScreenSize] = useState(undefined);
 
 	return (
@@ -19,6 +20,8 @@ export const ContextProvider = ({ children }) => {
 				setOpenEditWarehouseModal,
 				openEditCategoryModal,
 				setOpenEditCategoryModal,
+				openEditBrandModal,
+				setOpenEditBrandModal,
 			}}
 		>
 			{children}

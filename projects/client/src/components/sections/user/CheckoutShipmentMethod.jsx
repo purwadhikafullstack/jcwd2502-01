@@ -6,6 +6,7 @@ import { axiosInstance } from "../../../lib/axios";
 
 const CheckoutShipmentMethod = ({
 	selectedUserAddress,
+	totalWeight,
 	handleSelectedShippingCost,
 }) => {
 	const [shipmentServices, setShipmentServices] = useState([]);
@@ -15,25 +16,22 @@ const CheckoutShipmentMethod = ({
 			const rajaOngkirQuery = {
 				origin: "152",
 				destination: selectedUserAddress?.city?.id,
-				weight: 1200,
+				weight: totalWeight,
 				courier: "jne",
 			};
 
-			const resultRajaOngkirCost = await axiosInstance().post(
-				"checkouts/cost",
-				rajaOngkirQuery
-			);
+			if (totalWeight <= 30000) {
+				const resultRajaOngkirCost = await axiosInstance().post(
+					"checkouts/cost",
+					rajaOngkirQuery
+				);
 
-			console.log(
-				"🚀 ~ file: CheckoutShipmentMethod.jsx:23 ~ getShipmentCost ~ resultRajaOngkirCost:",
-				resultRajaOngkirCost
-			);
-
-			setShipmentServices(resultRajaOngkirCost.data.data);
+				setShipmentServices(resultRajaOngkirCost.data.data);
+			}
 		} catch (error) {
 			console.log(error);
 		}
-	}, [selectedUserAddress]);
+	}, [selectedUserAddress, totalWeight]);
 
 	useEffect(() => {
 		getShipmentCost();

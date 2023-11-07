@@ -61,12 +61,12 @@ module.exports = {
 			const count = dataProductsInCart.length;
 
 			const selectedItems = dataProductsInCart
-				.filter((cart) => cart.status === "checked")
+				.filter((cart) => cart.status === true)
 				.map((cart) => cart.quantity)
 				.reduce((a, b) => a + b, 0);
 
 			const totalPrice = dataProductsInCart
-				.filter((cart) => cart.status === "checked")
+				.filter((cart) => cart.status === true)
 				.map((cart) => cart.product.product_price * cart.quantity)
 				.reduce((a, b) => a + b, 0);
 

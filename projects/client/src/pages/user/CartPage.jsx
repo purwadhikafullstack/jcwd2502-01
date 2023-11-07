@@ -17,7 +17,7 @@ const CartPage = () => {
 		(state) => state.carts
 	);
 
-	const idrTotalPrice = totalPrice?.toLocaleString("id-ID", {
+	const idrTotalPrice = Number(totalPrice)?.toLocaleString("id-ID", {
 		style: "currency",
 		currency: "IDR",
 		minimumFractionDigits: 0,

@@ -12,7 +12,7 @@ module.exports = {
 			const selectedCheckoutProducts = await db.cart.findAll({
 				where: {
 					user_id: id,
-					status: "checked",
+					status: true,
 				},
 				attributes: {
 					exclude: ["createdAt", "updatedAt", "deletedAt"],
@@ -20,7 +20,12 @@ module.exports = {
 				include: [
 					{
 						model: db.product,
-						attributes: ["id", "product_name", "product_price"],
+						attributes: [
+							"id",
+							"weight",
+							"product_name",
+							"product_price",
+						],
 						include: [
 							{
 								model: db.product_image,
