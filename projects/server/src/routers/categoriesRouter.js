@@ -7,6 +7,7 @@ const { categoriesController } = require("../controllers"); // otomatis baca ind
 //* Import Middleware
 
 Router.get("/all", categoriesController.getAllCategories);
+Router.get("/all-products", categoriesController.getAllCategoriesWithProducts);
 Router.post("/", categoriesController.addCategory);
 Router.delete("/:id", categoriesController.deleteCategory);
 Router.patch("/:id", categoriesController.updateCategory);

@@ -40,7 +40,7 @@ const AdminEditBrandModal = ({
 			// const accessToken = localStorage.getItem("accessToken");
 
 			const updateBrand = await axiosInstance().patch(
-				`categories/${brandId}`,
+				`brands/${brandId}`,
 				newBrandData
 			);
 
@@ -74,7 +74,9 @@ const AdminEditBrandModal = ({
 		const { target } = event;
 		formik.setFieldValue(target.name, target.value);
 	};
-
+	useEffect(() => {
+		console.log(">>>>>>>>>>>>>>>", brandName);
+	}, []);
 	return (
 		<div className={`edit-product z-[999999] block`}>
 			<div

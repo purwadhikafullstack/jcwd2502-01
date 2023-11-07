@@ -5,6 +5,8 @@ const {
 	findAllProducts,
 	findOneProduct,
 	addProduct,
+	editProduct,
+	removeProduct,
 } = require("./../services/productsService");
 
 const respHandler = require("../utils/respHandler");
@@ -60,36 +62,40 @@ module.exports = {
 	updateProduct: async (req, res, next) => {
 		try {
 			const { productId } = req.params;
+			const images = req.files.images;
+			const dataImages = JSON.parse(req.body.dataImages);
+			const dataProduct = JSON.parse(req.body.dataProduct);
+			const dataSpec = JSON.parse(req.body.dataSpec);
+			const result = await editProduct(
+				productId,
+				images,
+				dataImages,
+				dataProduct,
+				dataSpec
+			);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	deleteProduct: async (req, res, next) => {
+		try {
+			const { productId } = req.params;
 
-			const image = req.files.image;
-			const data = JSON.parse(req.body.data);
-
-			if (image) {
-				const dataImage = await db.product.findOne({
-					attributes: ["product_image"],
-					where: { id: productId },
-				});
-
-				data.product_image = image[0].path;
-
-				await deleteFiles({
-					image: [
-						{
-							path: dataImage.dataValues.product_image,
-						},
-					],
-				});
-			}
-
-			const updateProduct = await db.product.update(data, {
-				where: { id: productId },
-			});
-
-			res.status(201).send({
-				isError: false,
-				message: "Update product success!",
-				data: updateProduct,
-			});
+			const result = await removeProduct(productId);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
 		} catch (error) {
 			next(error);
 		}

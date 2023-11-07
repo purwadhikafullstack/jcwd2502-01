@@ -5,12 +5,21 @@ const {
 	createCategory,
 	removeCategory,
 	editCategory,
+	findAllCategoriesWithProducts,
 } = require("./../services/categoriesService");
 
 module.exports = {
 	getAllCategories: async (req, res, next) => {
 		try {
 			const result = await findAllCategories();
+			respHandler(res, result.message, result.data);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getAllCategoriesWithProducts: async (req, res, next) => {
+		try {
+			const result = await findAllCategoriesWithProducts();
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);

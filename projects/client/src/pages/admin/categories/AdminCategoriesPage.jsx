@@ -34,7 +34,9 @@ const AdminCategoriesPage = () => {
 	const fetchCategories = async () => {
 		try {
 			// const accessToken = localStorage.getItem("accessToken");
-			const { data } = await axiosInstance().get(`categories/all`);
+			const { data } = await axiosInstance().get(
+				`categories/all-products`
+			);
 
 			setCategories(data.data);
 		} catch (error) {
