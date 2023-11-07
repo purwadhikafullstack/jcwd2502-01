@@ -101,6 +101,7 @@ module.exports = {
 					"product_name",
 					"product_desc",
 					"product_price",
+					"weight",
 				],
 				include: [
 					{

@@ -47,7 +47,7 @@ const SelectSortBy = ({ admin }) => {
 				<SelectItem
 					key={"last_updated"}
 					value={"last_updated"}
-					// onClick={() => dispatch(onSort("product_price", "asc"))}
+					onClick={() => dispatch(onSort("updatedAt", "desc"))}
 				>
 					Last Updated
 				</SelectItem>

@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { onClear, setSearch } from "../../../redux/features/products";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
+import { useParams } from "react-router-dom";
 
 const AdminEditProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
@@ -22,6 +23,7 @@ const AdminEditProductPage = () => {
 	const [productData, setProductData] = useState();
 
 	const [previewImages, setPreviewImages] = useState([]);
+	const { productName } = useParams();
 
 	const getFileImages = (event) => {
 		const selectedImages = event.target.files;
@@ -149,7 +151,7 @@ const AdminEditProductPage = () => {
 	const fetchProductAsync = async () => {
 		try {
 			const { data } = await axiosInstance().get(
-				`products/G102%20LIGHTSYNC`
+				`products/${productName}`
 			);
 			setProductData(data.data);
 		} catch (error) {
@@ -189,7 +191,6 @@ const AdminEditProductPage = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(productData);
 		if (productData?.product_images.length) {
 			setOldImages(productData?.product_images);
 		}
@@ -233,6 +234,9 @@ const AdminEditProductPage = () => {
 								labelPlacement="outside"
 								placeholder="Select a category"
 								onChange={handleFormInput}
+								selectedKeys={[
+									String(productData?.category?.id),
+								]}
 							>
 								{categories.map((category) => (
 									<SelectItem
@@ -252,6 +256,7 @@ const AdminEditProductPage = () => {
 								labelPlacement="outside"
 								placeholder="Select a brand"
 								onChange={handleFormInput}
+								selectedKeys={[String(productData?.brand?.id)]}
 							>
 								{brands.map((brand) => (
 									<SelectItem key={brand.id} value={brand.id}>
@@ -431,6 +436,7 @@ const AdminEditProductPage = () => {
 								size="lg"
 								name="product_desc"
 								label="Product Description"
+								value={productData?.product_desc}
 								labelPlacement="outside"
 								placeholder="Enter your product description"
 								onChange={handleFormInput}
@@ -444,6 +450,7 @@ const AdminEditProductPage = () => {
 								placeholder="Ex: 1990000"
 								min={1}
 								label="Product Price (in Rp)"
+								value={productData?.product_price}
 								labelPlacement="outside"
 								onChange={handleFormInput}
 							/>
@@ -464,6 +471,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 120 mm"
 									label="Height (mm/cm)"
+									value={productData?.specification?.height}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -475,6 +483,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 64 mm"
 									label="Width (mm/cm)"
+									value={productData?.specification?.width}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -486,6 +495,9 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 40 mm"
 									label="Thickness (mm/cm)"
+									value={
+										productData?.specification?.thickness
+									}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -497,6 +509,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 1200"
 									label="Weight (in gram)"
+									value={productData?.weight}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -505,7 +518,12 @@ const AdminEditProductPage = () => {
 						<section className="physical-specifications flex flex-col gap-4">
 							<h3 className="font-bold">Specifications</h3>
 							<div className="form-control">
-								<Checkbox name="wireless">{`Wireless (check it if this product is wireless.)`}</Checkbox>
+								<Checkbox
+									isSelected={
+										productData?.specification?.wireless
+									}
+									name="wireless"
+								>{`Wireless (check it if this product is wireless.)`}</Checkbox>
 							</div>
 							<div className="form-control">
 								<Input
@@ -514,6 +532,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 1.5 m"
 									label="Cable length (cm/m)"
+									value={productData?.specification?.wired}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -525,6 +544,9 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 250 hours or rechargeable"
 									label="Battery life (hour/rechargeable)"
+									value={
+										productData?.specification?.battery_life
+									}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -536,6 +558,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: HERO 2"
 									label="Sensor"
+									value={productData?.specification?.sensor}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -547,6 +570,9 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 100 - 32.000 dpi (mouse) or 100 - 32.000 dpi (monitor)"
 									label="Resolution"
+									value={
+										productData?.specification?.resolution
+									}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -558,6 +584,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 1"
 									label="Warranty (year)"
+									value={productData?.specification?.warranty}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>

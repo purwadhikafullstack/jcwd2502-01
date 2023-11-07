@@ -17,7 +17,12 @@ import { IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import {
+	fetchProductAsync,
 	onClear,
+	onSearch,
+	onSort,
+	setBrand,
+	setCategory,
 	setPagination,
 	setSearch,
 } from "../../../redux/features/products";
@@ -25,40 +30,80 @@ import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
 import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
 
-const AdminProductListTable = ({ products }) => {
-	const [categoriesList, setCategoriesList] = useState([]);
-	const [brandsList, setBrandsList] = useState([]);
-
+const AdminProductListTable = ({ props }) => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
 
+	const products = useSelector((state) => state.products.products);
 	const count = useSelector((state) => state.products.count);
+	const totalPage = useSelector((state) => state.products.totalPage);
+	const orderField = useSelector((state) => state.products.orderField);
+	const orderDirection = useSelector(
+		(state) => state.products.orderDirection
+	);
 	const search = useSelector((state) => state.products.search);
+	const page = useSelector((state) => state.products.page);
+	const offset = useSelector((state) => state.products.offset);
+	const category = useSelector((state) => state.products.category);
+	const brand = useSelector((state) => state.products.brand);
 
-	const totalPage = Math.ceil(count / 12);
-
-	const fetchCategoriesAsync = async () => {
-		try {
-			const { data } = await axiosInstance().get(`categories/all`);
-			setCategoriesList(data.data);
-		} catch (error) {
-			console.log(error);
+	const takeFromQuery = () => {
+		const queryParams = new URLSearchParams(location.search);
+		const selectedSearch = queryParams.get("search");
+		const selectedCategory = queryParams.get("category");
+		const selectedBrand = queryParams.get("brand");
+		const selectedOrderField = queryParams.get("orderField");
+		const selectedOrderDirection = queryParams.get("orderDirection");
+		const selectedOffset = queryParams.get("offset");
+		if (selectedSearch) {
+			dispatch(onSearch(selectedSearch));
+		}
+		if (selectedCategory) {
+			dispatch(setCategory(selectedCategory));
+		}
+		if (selectedBrand) {
+			dispatch(setBrand(selectedBrand));
+		}
+		if (selectedOrderDirection && selectedOrderField) {
+			dispatch(onSort(selectedOrderField, selectedOrderDirection));
+		}
+		if (selectedOffset) {
+			const selectedPage = Number(selectedOffset) / 12 + 1;
+			dispatch(setPagination(selectedPage, Number(selectedOffset)));
 		}
 	};
 
-	const fetchBrandsAsync = async () => {
-		try {
-			const { data } = await axiosInstance().get(`brands/all`);
-			setBrandsList(data.data);
-		} catch (error) {
-			console.log(error);
-		}
+	const formik = useFormik({
+		initialValues: { searchQuery: "" },
+		onSubmit: (values) => {
+			// Handle the search query submission here
+			dispatch(onSearch(values.searchQuery));
+			navigate("/admin/products");
+		},
+	});
+
+	const handleSubmitSearch = (e) => {
+		e.preventDefault();
+		formik.handleSubmit();
+		window.scrollTo({ top: 0 });
 	};
 
 	useEffect(() => {
-		fetchCategoriesAsync();
-		fetchBrandsAsync();
+		formik.setFieldValue("searchQuery", search);
+	}, [search]);
+
+	const clear = async () => {
+		await dispatch(onClear());
+		navigate(`/admin/products${search && `?search=${search}`}`);
+		window.location.reload(false);
+	};
+
+	useEffect(() => {
+		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
 
@@ -67,6 +112,26 @@ const AdminProductListTable = ({ products }) => {
 			dispatch(setSearch(""));
 		};
 	}, []);
+
+	useEffect(() => {
+		navigate(
+			`/admin/products?search=${search}&brand=${brand.join(
+				""
+			)}&category=${category.join(
+				""
+			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+		);
+
+		dispatch(
+			fetchProductAsync(
+				`?&search=${search}&brand=${brand.join(
+					""
+				)}&category=${category.join(
+					""
+				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			)
+		);
+	}, [orderField, orderDirection, search, page, category, brand]);
 
 	const columns = [
 		{ name: "PRODUCT INFO", uid: "product_info" },
@@ -84,6 +149,7 @@ const AdminProductListTable = ({ products }) => {
 			minimumFractionDigits: 0,
 			maximumFractionDigits: 0,
 		});
+		const encodedProductName = encodeURIComponent(product?.product_name);
 
 		switch (columnKey) {
 			case "product_info":
@@ -126,7 +192,7 @@ const AdminProductListTable = ({ products }) => {
 			case "actions":
 				return (
 					<div className="relative flex justify-start items-center gap-2">
-						<Link to={`/admin/edit-product`}>
+						<Link to={`/admin/edit-product/${encodedProductName}`}>
 							<Tooltip content="Edit product">
 								<Button
 									variant="light"
@@ -154,14 +220,35 @@ const AdminProductListTable = ({ products }) => {
 						placeholder="Search by product name"
 						startContent={<IoSearch />}
 					/>
+					{/* <form className="w-full" onSubmit={handleSubmitSearch}>
+						<Input
+							type="text"
+							placeholder="Search on Nexocomp"
+							isClearable
+							onClear={() => dispatch(setSearch(""))}
+							startContent={<IoSearch opacity={".5"} />}
+							variant="bordered"
+							fullWidth
+							onChange={(e) =>
+								formik.setFieldValue(
+									"searchQuery",
+									e.target.value
+								)
+							}
+							value={formik.values.searchQuery}
+						/>
+					</form> */}
 					<div className="flex gap-3">
+						<Button
+							variant="bordered"
+							className="border-neutral-200 dark:border-neutral-700"
+							onClick={() => clear()}
+						>{`Clear Filter(s)`}</Button>
 						<div className="select-brands">
-							<SelectProductBrands brands={brandsList} />
+							<SelectProductBrands />
 						</div>
 						<div className="select-categories">
-							<SelectProductCategories
-								categories={categoriesList}
-							/>
+							<SelectProductCategories />
 						</div>
 						<div className="sort-by flex items-center">
 							<div className="w-full mr-2 font-medium">
@@ -187,18 +274,18 @@ const AdminProductListTable = ({ products }) => {
 					size="md"
 					showControls
 					total={totalPage ? totalPage : 1}
-					// page={page ? page : 0}
+					page={page ? page : 0}
 					color="secondary"
 					variant="flat"
 					className="z-0"
-					// onChange={(e) => {
-					// 	dispatch(setPagination(e, (e - 1) * 12));
-					// 	window.scrollTo({ top: 0, behavior: "smooth" });
-					// }}
+					onChange={(e) => {
+						dispatch(setPagination(e, (e - 1) * 12));
+						window.scrollTo({ top: 0, behavior: "smooth" });
+					}}
 				/>
 			</div>
 		);
-	}, []);
+	}, [totalPage, page]);
 
 	useEffect(() => {
 		console.log(">>>>>", products);
