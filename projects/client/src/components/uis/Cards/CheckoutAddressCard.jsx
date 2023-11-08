@@ -1,15 +1,46 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Media from "react-media";
 import { Button } from "@nextui-org/react";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { onSetSelectedUserAddressId } from "../../../redux/features/users";
+import {
+	onSetSelectedUserAddressId,
+	onSetUserAddresses,
+	setSelectedUserAddressIdMain,
+} from "../../../redux/features/users";
+import { useLocation } from "react-router-dom";
+import EditAddressModal from "../../layouts/user/EditAddressModal";
+import { useStateContext } from "../../../contexts/ContextProvider";
+import { axiosInstance } from "../../../lib/axios";
 
 const CheckoutAddressCard = ({ userAddressData }) => {
 	const dispatch = useDispatch();
+	const location = useLocation();
+	const accessToken = localStorage.getItem("accessToken");
+	const { openEditAddressModal, setOpenEditAddressModal } = useStateContext();
+	const [selectedAddress, setSelectedAddress] = useState(null);
+	const { user_address, selected } = useSelector((state) => state.user);
 
-	const { selectedUserAddressId } = useSelector((state) => state.user);
+	const selectedUserAddressIdMain = useSelector(
+		(state) => state.user.selectedUserAddressIdMain
+	);
+	const [userAddresses, setUserAddresses] = useState([userAddressData]);
+
+	const handleAddressButton = async (addressId) => {
+		if (location.pathname === "/profile/settings") {
+			const changeMain = await axiosInstance(accessToken).patch(
+				"user-addresses/mainAddress",
+				{ id: userAddressData.id }
+			);
+			console.log(changeMain);
+			dispatch(onSetUserAddresses(accessToken));
+			console.log("titit>>>>", addressId);
+			dispatch(setSelectedUserAddressIdMain(addressId));
+		} else {
+			dispatch(onSetSelectedUserAddressId(addressId));
+		}
+	};
 
 	const {
 		id,
@@ -21,10 +52,13 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 		city,
 	} = userAddressData;
 
+	useEffect(() => {
+		console.log(selectedUserAddressIdMain);
+	}, [selectedUserAddressIdMain]);
 	return (
 		<div
-			className={`address-card flex justify-between items-center border-2 ${
-				selectedUserAddressId === id
+			className={`mb-3 address-card flex justify-between items-center border-2 ${
+				user_address === id
 					? "border-primary-500"
 					: "border-neutral-300 dark:border-neutral-700"
 			}  rounded-xl p-4`}
@@ -51,9 +85,21 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 					{address}, {city?.type} {city?.city_name},{" "}
 					{province?.province}, {city?.postal_code}
 				</div>
+				{/* untuk crud address */}
+				{location.pathname === "/profile/settings" ? (
+					<div className="flex divide-x-1">
+						{/* <button className="pr-2 text-green-500 font-medium">
+								ubah
+							</button> */}
+						<EditAddressModal data={userAddressData} />
+						<button className="px-2 text-green-500 font-medium">
+							hapus
+						</button>
+					</div>
+				) : null}
 			</section>
 			<section className="actions">
-				{selectedUserAddressId === id ? (
+				{user_address === id ? (
 					<IoCheckmarkCircleOutline
 						size={28}
 						className="text-primary-500"
@@ -68,12 +114,15 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 							<Button
 								color="primary"
 								size={matches.medium ? "md" : "sm"}
-								onPress={() =>
-									dispatch(onSetSelectedUserAddressId(id))
-								}
+								onPress={() => handleAddressButton(id)}
+								className={`${
+									id === selectedUserAddressIdMain && "hidden"
+								}`}
 							>
 								<span className="font-bold text-label-lg text-black">
-									Select
+									{location.pathname === "/profile/settings"
+										? "Set as main"
+										: "Select"}
 								</span>
 							</Button>
 						)}
