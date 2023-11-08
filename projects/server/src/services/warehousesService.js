@@ -1,3 +1,4 @@
+
 const db = require("./../models");
 const { Op } = require("sequelize");
 const fetch = require("node-fetch");
@@ -59,7 +60,7 @@ module.exports = {
 				attributes: [
 					"id",
 					"warehouse_name",
-					"warehouse_location",
+					// "warehouse_location",
 					"warehouse_address",
 				],
 				include: [
@@ -144,3 +145,4 @@ module.exports = {
 		}
 	},
 };
+

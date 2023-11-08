@@ -14,8 +14,8 @@ const AdminEditWarehouseModal = ({
 
 	const [provinces, setProvinces] = useState([]);
 	const [selectedProvince, setSelectedProvince] = useState();
-	const [cities, setCities] = useState([]);
 	const [selectedCity, setSelectedCity] = useState();
+	const [cities, setCities] = useState([]);
 	const [warehouse, setWarehouse] = useState(null);
 
 	useEffect(() => {

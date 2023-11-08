@@ -1,7 +1,12 @@
 const db = require("./../models");
 
 const respHandler = require("../utils/respHandler");
-const { createAddress } = require("../services/userAddressService");
+const {
+	createAddress,
+	updateAddress,
+	deleteAddress,
+	changeMainAddress,
+} = require("../services/userAddressService");
 
 module.exports = {
 	getUserAddresses: async (req, res, next) => {
@@ -68,6 +73,30 @@ module.exports = {
 	createNewAddress: async (req, res, next) => {
 		try {
 			const result = await createAddress(req.body, req.dataToken);
+			respHandler(res, result.message, null, null, result.isError);
+		} catch (error) {
+			next(error);
+		}
+	},
+	updateUserAddress: async (req, res, next) => {
+		try {
+			const result = await updateAddress(req.body, req.dataToken);
+			respHandler(res, result.message, null, null, result.isError);
+		} catch (error) {
+			next(error);
+		}
+	},
+	deleteUserAddress: async (req, res, next) => {
+		try {
+			const result = await deleteAddress(req.body);
+			// respHandler(res, result.message, null, null, result.isError);
+		} catch (error) {
+			next(error);
+		}
+	},
+	mainAddress: async (req, res, next) => {
+		try {
+			const result = await changeMainAddress(req.body, req.dataToken);
 		} catch (error) {
 			next(error);
 		}

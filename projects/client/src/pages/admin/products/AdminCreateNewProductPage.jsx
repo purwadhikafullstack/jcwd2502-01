@@ -13,11 +13,15 @@ import { useDispatch } from "react-redux";
 import { onClear, setSearch } from "../../../redux/features/products";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 
 const AdminCreateNewProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
 
 	const [productImages, setProductImages] = useState([]);
+	const [imagesToSend, setImagesToSend] = useState([]);
+
+	const navigate = useNavigate();
 
 	const getFileImages = (event) => {
 		const selectedImages = event.target.files;
@@ -30,8 +34,13 @@ const AdminCreateNewProductPage = () => {
 			const imagesArray = selectedImagesArray.map((image) => {
 				return URL.createObjectURL(image);
 			});
+			setImagesToSend(selectedImages);
 			setProductImages(imagesArray);
 		}
+	};
+	const handleRemovePreview = () => {
+		setProductImages([]);
+		setImagesToSend([]);
 	};
 
 	//! FORMIK
@@ -42,71 +51,101 @@ const AdminCreateNewProductPage = () => {
 			product_price: 0,
 			category_id: null,
 			brand_id: null,
+			height: "",
+			width: "",
+			thickness: "",
 			weight: 0,
+			wireless: 0,
+			wired: "",
+			battery_life: "",
+			sensor: "",
+			resolution: "",
+			warranty: "",
 		},
 		onSubmit: async (values) => {
-			// onCreateProduct(values);
+			onCreateProduct(values);
 		},
 	});
 
-	// const onCreateProduct = async (values) => {
-	// 	try {
-	// 		const {
-	// 			product_name,
-	// 			product_desc,
-	// 			product_price,
-	// 			category_id,
-	// 			brand_id,
-	// 			weight,
-	// 		} = values;
+	const onCreateProduct = async (values) => {
+		try {
+			const {
+				product_name,
+				product_desc,
+				product_price,
+				category_id,
+				brand_id,
+				height,
+				width,
+				thickness,
+				weight,
+				wireless,
+				wired,
+				battery_life,
+				sensor,
+				resolution,
+				warranty,
+			} = values;
 
-	// 		// if (!product_name || !product_desc || !product_price) {
-	// 		// 	toast.error("Please fill in all form fields");
-	// 		// 	return; // Stop further execution
-	// 		// }
+			// if (!product_name || !product_desc || !product_price) {
+			// 	toast.error("Please fill in all form fields");
+			// 	return; // Stop further execution
+			// }
 
-	// 		const newProductData = {
-	// 			product_name,
-	// 			product_desc,
-	// 			product_price,
-	// 			category_id,
-	// 			brand_id,
-	// 			weight,
-	// 		};
+			const newProductData = {
+				product_name,
+				product_desc,
+				product_price,
+				category_id,
+				brand_id,
+				weight,
+			};
+			const newSpecData = {
+				height,
+				width,
+				thickness,
+				weight: `${weight} g`,
+				wireless: wireless && 1,
+				wired,
+				battery_life,
+				sensor,
+				resolution,
+				warranty,
+			};
 
-	// 		const newProductDataJSON = JSON.stringify(newProductData);
+			const newProductDataJSON = JSON.stringify(newProductData);
+			const newSpecDataJSON = JSON.stringify(newSpecData);
 
-	// 		const fd = new FormData();
-	// 		fd.append("data", newProductDataJSON);
+			const fd = new FormData();
+			fd.append("dataProduct", newProductDataJSON);
+			fd.append("dataSpec", newSpecDataJSON);
 
-	// 		if (!previewImages) {
-	// 			fd.append("image", null);
-	// 		} else {
-	// 			fd.append("image", productImage);
-	// 		}
+			console.log(imagesToSend);
+			if (imagesToSend) {
+				for (const image of imagesToSend) {
+					fd.append("images", image);
+				}
+			}
 
-	// 		const accessToken = localStorage.getItem("accessToken");
+			// const accessToken = localStorage.getItem("accessToken");
 
-	// 		const createProduct = await Instance(accessToken).post(
-	// 			"products",
-	// 			fd
-	// 		);
+			const createProduct = await axiosInstance().post("products", fd);
+			console.log(createProduct.data);
 
-	// 		if (createProduct.status === 201) {
-	// 			toast.success("Product created successfully");
+			if (createProduct.data.isError) {
+				alert(createProduct.data.message);
+				return;
+			}
 
-	// 			setTimeout(() => {
-	// 				window.location.reload(false);
-	// 			}, 1500);
-	// 		} else {
-	// 			toast.error("Error creating product");
-	// 		}
+			setTimeout(() => {
+				navigate("/admin/products");
+			}, 1500);
 
-	// 		return createProduct;
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
+			return;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	const handleFormInput = (event) => {
 		const { target } = event;
@@ -274,7 +313,7 @@ const AdminCreateNewProductPage = () => {
 											<div
 												className="mt-4"
 												onClick={() =>
-													setProductImages([])
+													handleRemovePreview()
 												}
 											>
 												<p className="text-primary-600 font-medium">
@@ -397,7 +436,10 @@ const AdminCreateNewProductPage = () => {
 								<Checkbox
 									name="wireless"
 									onChange={(e) =>
-										console.log(e.target.checked)
+										formik.setFieldValue(
+											"wireless",
+											e.target.checked
+										)
 									}
 								>{`Wireless (check it if this product is wireless.)`}</Checkbox>
 							</div>

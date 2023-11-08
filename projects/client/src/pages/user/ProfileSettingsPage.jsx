@@ -20,9 +20,16 @@ const ProfileSettingsPage = () => {
 	const [userAddresses, setUserAddresses] = useState([]);
 	const [oneTime, setOneTime] = useState(0);
 
+	const handleEdit = () => {};
+
 	const renderUserAddresses = () => {
 		return userAddresses?.map((user_address) => {
-			return <CheckoutAddressCard userAddressData={user_address} />;
+			return (
+				<CheckoutAddressCard
+					userAddressData={user_address}
+					editButton={handleEdit}
+				/>
+			);
 		});
 	};
 

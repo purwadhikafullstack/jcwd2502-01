@@ -45,6 +45,7 @@ module.exports = {
 	createProduct: async (req, res, next) => {
 		try {
 			const images = req.files.images;
+			console.log("images", images);
 			const dataProduct = JSON.parse(req.body.dataProduct);
 			const dataSpec = JSON.parse(req.body.dataSpec);
 			const result = await addProduct(images, dataProduct, dataSpec);
@@ -63,9 +64,18 @@ module.exports = {
 		try {
 			const { productId } = req.params;
 			const images = req.files.images;
+			console.log("images", images);
 			const dataImages = JSON.parse(req.body.dataImages);
 			const dataProduct = JSON.parse(req.body.dataProduct);
 			const dataSpec = JSON.parse(req.body.dataSpec);
+			// console.log(
+			// 	"masuk",
+			// 	productId,
+			// 	images,
+			// 	dataImages,
+			// 	dataProduct,
+			// 	dataSpec
+			// );
 			const result = await editProduct(
 				productId,
 				images,

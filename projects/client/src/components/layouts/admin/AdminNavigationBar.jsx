@@ -32,10 +32,6 @@ const AdminNavigationBar = () => {
 		}
 	}, [screenSize]);
 
-	useEffect(() => {
-		console.log("PATHNAME", location.pathname);
-	}, []);
-
 	return (
 		<Navbar
 			isBlurred={false}

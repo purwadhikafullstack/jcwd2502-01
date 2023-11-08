@@ -12,6 +12,6 @@ Router.get("/all", productsController.getAllProducts);
 Router.get("/:productName", productsController.getProduct);
 Router.post("/", upload, productsController.createProduct);
 Router.patch("/:productId", upload, productsController.updateProduct);
-Router.patch("/:productId", productsController.deleteProduct);
+Router.delete("/:productId", productsController.deleteProduct);
 
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js
