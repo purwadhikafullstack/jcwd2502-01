@@ -159,7 +159,7 @@ const AdminProductListTable = ({ props }) => {
 							<Image
 								src={`${
 									process.env.REACT_APP_IMAGE_API
-								}${product?.product_images[0].image.substring(
+								}${product?.product_images[0]?.image.substring(
 									7
 								)}`}
 								alt=""
@@ -209,63 +209,63 @@ const AdminProductListTable = ({ props }) => {
 		}
 	}, []);
 
-	const topContent = React.useMemo(() => {
-		return (
-			<div className="flex flex-col gap-4">
-				<div className="flex justify-between gap-3 items-end">
-					<Input
-						isClearable
-						variant="bordered"
-						className="w-full sm:max-w-[44%]"
-						placeholder="Search by product name"
-						startContent={<IoSearch />}
-					/>
-					{/* <form className="w-full" onSubmit={handleSubmitSearch}>
-						<Input
-							type="text"
-							placeholder="Search on Nexocomp"
-							isClearable
-							onClear={() => dispatch(setSearch(""))}
-							startContent={<IoSearch opacity={".5"} />}
-							variant="bordered"
-							fullWidth
-							onChange={(e) =>
-								formik.setFieldValue(
-									"searchQuery",
-									e.target.value
-								)
-							}
-							value={formik.values.searchQuery}
-						/>
-					</form> */}
-					<div className="flex gap-3">
-						<Button
-							variant="bordered"
-							className="border-neutral-200 dark:border-neutral-700"
-							onClick={() => clear()}
-						>{`Clear Filter(s)`}</Button>
-						<div className="select-brands">
-							<SelectProductBrands />
-						</div>
-						<div className="select-categories">
-							<SelectProductCategories />
-						</div>
-						<div className="sort-by flex items-center">
-							<div className="w-full mr-2 font-medium">
-								Sort by:
-							</div>
-							<SelectSortBy admin={true} />
-						</div>
-					</div>
-				</div>
-				<div className="flex justify-between items-center">
-					<span className="text-default-400 text-small">
-						Total {products?.length} products
-					</span>
-				</div>
-			</div>
-		);
-	}, [products?.length]);
+	// const topContent = React.useMemo(() => {
+	// 	return (
+	// 		<div className="flex flex-col gap-4">
+	// 			<div className="flex justify-between gap-3 items-end">
+	// 				{/* <Input
+	// 					isClearable
+	// 					variant="bordered"
+	// 					className="w-full sm:max-w-[44%]"
+	// 					placeholder="Search by product name"
+	// 					startContent={<IoSearch />}
+	// 				/> */}
+	// 				{/* <form className="w-full" onSubmit={handleSubmitSearch}>
+	// 					<Input
+	// 						type="text"
+	// 						placeholder="Search on Nexocomp"
+	// 						isClearable
+	// 						onClear={() => dispatch(setSearch(""))}
+	// 						startContent={<IoSearch opacity={".5"} />}
+	// 						variant="bordered"
+	// 						fullWidth
+	// 						onChange={(e) =>
+	// 							formik.setFieldValue(
+	// 								"searchQuery",
+	// 								e.target.value
+	// 							)
+	// 						}
+	// 						value={formik.values.searchQuery}
+	// 					/>
+	// 				</form> */}
+	// 				<div className="flex gap-3">
+	// 					<Button
+	// 						variant="bordered"
+	// 						className="border-neutral-200 dark:border-neutral-700"
+	// 						onClick={() => clear()}
+	// 					>{`Clear Filter(s)`}</Button>
+	// 					<div className="select-brands">
+	// 						<SelectProductBrands />
+	// 					</div>
+	// 					<div className="select-categories">
+	// 						<SelectProductCategories />
+	// 					</div>
+	// 					<div className="sort-by flex items-center">
+	// 						<div className="w-full mr-2 font-medium">
+	// 							Sort by:
+	// 						</div>
+	// 						<SelectSortBy admin={true} />
+	// 					</div>
+	// 				</div>
+	// 			</div>
+	// 			<div className="flex justify-between items-center">
+	// 				<span className="text-default-400 text-small">
+	// 					Total {products?.length} products
+	// 				</span>
+	// 			</div>
+	// 		</div>
+	// 	);
+	// }, [products?.length]);
 
 	const bottomContent = React.useMemo(() => {
 		return (
@@ -292,38 +292,89 @@ const AdminProductListTable = ({ props }) => {
 	}, [products]);
 
 	return (
-		<Table
-			aria-label="Example table with custom cells, pagination and sorting"
-			isHeaderSticky
-			bottomContent={bottomContent}
-			bottomContentPlacement="outside"
-			fullWidth
-			topContent={topContent}
-			topContentPlacement="outside"
-		>
-			<TableHeader columns={columns}>
-				{(column) => (
-					<TableColumn
-						key={column.uid}
-						className={
-							column.uid === "product_info" && "w-full md:w-[40%]"
-						}
-						allowsSorting={column.sortable}
-					>
-						{column.name}
-					</TableColumn>
-				)}
-			</TableHeader>
-			<TableBody emptyContent={"No products found"} items={products}>
-				{(item) => (
-					<TableRow key={item.id}>
-						{(columnKey) => (
-							<TableCell>{renderCell(item, columnKey)}</TableCell>
-						)}
-					</TableRow>
-				)}
-			</TableBody>
-		</Table>
+		<>
+			<div className="flex flex-col gap-4">
+				<div className="flex justify-between gap-3 items-center">
+					<form className="w-[50%]" onSubmit={handleSubmitSearch}>
+						<Input
+							type="text"
+							placeholder="Search for product by name"
+							isClearable
+							onClear={() => dispatch(setSearch(""))}
+							startContent={<IoSearch opacity={".5"} />}
+							variant="bordered"
+							fullWidth
+							onChange={(e) =>
+								formik.setFieldValue(
+									"searchQuery",
+									e.target.value
+								)
+							}
+							value={formik.values.searchQuery}
+						/>
+					</form>
+					<div className="flex gap-3">
+						<Button
+							variant="bordered"
+							className="border-neutral-200 dark:border-neutral-700"
+							onClick={() => clear()}
+						>{`Clear Filter(s)`}</Button>
+						<div className="select-brands">
+							<SelectProductBrands />
+						</div>
+						<div className="select-categories">
+							<SelectProductCategories />
+						</div>
+						<div className="sort-by flex items-center">
+							<div className="w-full mr-2 font-medium">
+								Sort by:
+							</div>
+							<SelectSortBy admin={true} />
+						</div>
+					</div>
+				</div>
+				<div className="flex justify-between items-center">
+					<span className="text-default-400 text-small">
+						Total {products?.length} products
+					</span>
+				</div>
+			</div>
+			<Table
+				aria-label="Example table with custom cells, pagination and sorting"
+				isHeaderSticky
+				bottomContent={bottomContent}
+				bottomContentPlacement="outside"
+				fullWidth
+				// topContent={topContent}
+				topContentPlacement="outside"
+			>
+				<TableHeader columns={columns}>
+					{(column) => (
+						<TableColumn
+							key={column.uid}
+							className={
+								column.uid === "product_info" &&
+								"w-full md:w-[40%]"
+							}
+							allowsSorting={column.sortable}
+						>
+							{column.name}
+						</TableColumn>
+					)}
+				</TableHeader>
+				<TableBody emptyContent={"No products found"} items={products}>
+					{(item) => (
+						<TableRow key={item.id}>
+							{(columnKey) => (
+								<TableCell>
+									{renderCell(item, columnKey)}
+								</TableCell>
+							)}
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+		</>
 	);
 };
 

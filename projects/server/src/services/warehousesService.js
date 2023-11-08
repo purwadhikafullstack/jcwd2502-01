@@ -59,7 +59,7 @@ module.exports = {
 				attributes: [
 					"id",
 					"warehouse_name",
-					"warehouse_location",
+					// "warehouse_location",
 					"warehouse_address",
 				],
 				include: [

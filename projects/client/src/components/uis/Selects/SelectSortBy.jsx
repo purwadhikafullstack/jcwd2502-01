@@ -1,11 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Select, SelectItem } from "@nextui-org/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { onSort } from "../../../redux/features/products";
 
 const SelectSortBy = ({ admin }) => {
 	const dispatch = useDispatch();
+	const [keyOrder, setKeyOrder] = useState(null);
+	const orderField = useSelector((state) => state.products.orderField);
+	const orderDirection = useSelector(
+		(state) => state.products.orderDirection
+	);
+
+	useEffect(() => {
+		if (orderField === "product_name" && orderDirection === "asc") {
+			setKeyOrder("az");
+		} else if (orderField === "product_name" && orderDirection === "desc") {
+			setKeyOrder("za");
+		} else if (
+			orderField === "product_price" &&
+			orderDirection === "desc"
+		) {
+			setKeyOrder("high");
+		} else if (orderField === "product_price" && orderDirection === "asc") {
+			setKeyOrder("low");
+		} else if (orderField === "updatedAt" && orderDirection === "desc") {
+			setKeyOrder("last_updated");
+		}
+	}, [orderField, orderDirection]);
 
 	return (
 		<Select
@@ -14,6 +36,7 @@ const SelectSortBy = ({ admin }) => {
 			size="md"
 			variant="bordered"
 			className="min-w-[178px]"
+			selectedKeys={keyOrder ? [String(keyOrder)] : null}
 		>
 			<SelectItem
 				key={"az"}
