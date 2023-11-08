@@ -9,7 +9,7 @@ const upload = async (req, res, next) => {
 
 			if (!req.files.images) return next();
 
-			req.files.images.forEach((v) => {
+			req.files?.images?.forEach((v) => {
 				if (v.size > 1000000) {
 					throw {
 						message: `${v.originalname} is too large`,
@@ -17,6 +17,7 @@ const upload = async (req, res, next) => {
 					};
 				}
 			});
+			console.log("mulupload>>>>", req.files);
 			next();
 		} catch (error) {
 			deleteFiles(error.files);

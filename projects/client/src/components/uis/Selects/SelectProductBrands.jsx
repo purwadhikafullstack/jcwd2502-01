@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Dropdown,
 	DropdownTrigger,
@@ -8,11 +8,28 @@ import {
 	Checkbox,
 	User,
 } from "@nextui-org/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { onBrand } from "../../../redux/features/products";
+import { axiosInstance } from "../../../lib/axios";
 
-const SelectProductBrands = ({ brands }) => {
+const SelectProductBrands = (props) => {
+	const [brandsList, setBrandsList] = useState([]);
+	const brand = useSelector((state) => state.products.brand);
+
 	const dispatch = useDispatch();
+
+	const fetchBrandsAsync = async () => {
+		try {
+			const { data } = await axiosInstance().get(`brands/all`);
+			setBrandsList(data.data);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	useEffect(() => {
+		fetchBrandsAsync();
+	}, []);
 
 	return (
 		<Dropdown placement="bottom-end">
@@ -24,18 +41,18 @@ const SelectProductBrands = ({ brands }) => {
 				variant="flat"
 				closeOnSelect={false}
 			>
-				{brands?.map((value) => {
+				{brandsList?.map((value) => {
 					return (
 						<DropdownItem key={value?.brand_name}>
 							<Checkbox
 								key={value?.id}
 								value={String(value?.id)}
-								// onClick={() =>
-								// 	dispatch(onBrand(String(value?.id)))
-								// }
-								// defaultSelected={value?.includes(
-								// 	String(value?.id)
-								// )}
+								onClick={() =>
+									dispatch(onBrand(String(value?.id)))
+								}
+								defaultSelected={brand?.includes(
+									String(value?.id)
+								)}
 							>
 								{value?.brand_name}
 							</Checkbox>
