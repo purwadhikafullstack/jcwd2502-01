@@ -1,11 +1,14 @@
-
 import React, { useEffect, useState } from "react";
 
 import Media from "react-media";
 import { Button } from "@nextui-org/react";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { onUserAddress } from "../../../redux/features/users";
+import {
+	onSetSelectedUserAddressId,
+	onSetUserAddresses,
+	setSelectedUserAddressIdMain,
+} from "../../../redux/features/users";
 import { useLocation } from "react-router-dom";
 import EditAddressModal from "../../layouts/user/EditAddressModal";
 import { useStateContext } from "../../../contexts/ContextProvider";
@@ -14,33 +17,28 @@ import { axiosInstance } from "../../../lib/axios";
 const CheckoutAddressCard = ({ userAddressData }) => {
 	const dispatch = useDispatch();
 	const location = useLocation();
-	const acessToken = localStorage.getItem("accessToken");
+	const accessToken = localStorage.getItem("accessToken");
 	const { openEditAddressModal, setOpenEditAddressModal } = useStateContext();
 	const [selectedAddress, setSelectedAddress] = useState(null);
-	const { user_address } = useSelector((state) => state.user);
+	const { user_address, selected } = useSelector((state) => state.user);
+
+	const selectedUserAddressIdMain = useSelector(
+		(state) => state.user.selectedUserAddressIdMain
+	);
 	const [userAddresses, setUserAddresses] = useState([userAddressData]);
+
 	const handleAddressButton = async (addressId) => {
 		if (location.pathname === "/profile/settings") {
-			// fungsi ganti is_default
-			const changeMain = await axiosInstance(acessToken).patch(
-				"/user-addresses/mainAddress",
+			const changeMain = await axiosInstance(accessToken).patch(
+				"user-addresses/mainAddress",
 				{ id: userAddressData.id }
 			);
 			console.log(changeMain);
-			fetchUserAddresses();
-			dispatch(onUserAddress(id));
+			dispatch(onSetUserAddresses(accessToken));
+			console.log("titit>>>>", addressId);
+			dispatch(setSelectedUserAddressIdMain(addressId));
 		} else {
-			dispatch(onUserAddress(addressId));
-		}
-	};
-
-	const fetchUserAddresses = async () => {
-		try {
-			const { data } = await axiosInstance().get(`user-addresses/${1}`);
-
-			setUserAddresses(data.data);
-		} catch (error) {
-			console.log(error);
+			dispatch(onSetSelectedUserAddressId(addressId));
 		}
 	};
 
@@ -55,8 +53,8 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 	} = userAddressData;
 
 	useEffect(() => {
-		fetchUserAddresses();
-	}, [userAddresses]);
+		console.log(selectedUserAddressIdMain);
+	}, [selectedUserAddressIdMain]);
 	return (
 		<>
 			<div
@@ -122,10 +120,17 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 									<Button
 										color="primary"
 										size={matches.medium ? "md" : "sm"}
-										onPress={() => handleAddressButton()}
+										onPress={() => handleAddressButton(id)}
+										className={`${
+											id === selectedUserAddressIdMain &&
+											"hidden"
+										}`}
 									>
 										<span className="font-bold text-label-lg text-black">
-											Select
+											{location.pathname ===
+											"/profile/settings"
+												? "Set as main"
+												: "Select"}
 										</span>
 									</Button>
 								)}
