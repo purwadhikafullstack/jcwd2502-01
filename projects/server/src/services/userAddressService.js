@@ -26,7 +26,7 @@ module.exports = {
 			const {
 				recipient_name,
 				address,
-				addres_name,
+				address_name,
 				city_id,
 				province_id,
 			} = body;
@@ -54,10 +54,124 @@ module.exports = {
 				latitude: latitude,
 				longitude: longitude,
 			});
+
+			return {
+				isError: false,
+				message: "Success Added New Address!",
+			};
 		} catch (error) {
 			console.log(error);
 			return error;
 		}
 	},
-	getLatitudeLongitude: async () => {},
+	updateAddress: async (body, dataToken) => {
+		try {
+			const { id } = dataToken;
+			const {
+				id: address_id,
+				recipient_name,
+				address,
+				address_name,
+				city_id,
+				province_id,
+			} = body;
+			const checkAddress = await db.user_address.findByPk(address_id);
+			if (!checkAddress)
+				return { isError: true, message: "Address not found!" };
+			console.log(checkAddress.dataValues);
+
+			if (city_id === checkAddress.dataValues.city_id) {
+				data = {
+					...checkAddress.dataValues,
+					...body,
+				};
+				const updateData = await db.user_address.update(data, {
+					where: { id: address_id },
+				});
+				console.log(updateData);
+				if (!updateData)
+					return { isError: true, message: "Failed Update Address!" };
+			} else {
+				const checkIdCity = await db.city.findOne({
+					where: { id: city_id },
+				});
+				const { latitude, longitude } = await getLatitudeLongitude(
+					checkIdCity.dataValues.city_name
+				);
+				body.user_id = id;
+				body.latitude = latitude;
+				body.longitude = longitude;
+
+				const updateData = await db.user_address.update(body, {
+					where: { id: address_id },
+				});
+				console.log(updateData);
+
+				if (!updateData)
+					return { isError: true, message: "Failed Update Address!" };
+			}
+			return {
+				isError: false,
+				message: "Success Update Address!",
+			};
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
+	deleteAddress: async (body) => {
+		try {
+			const { id } = body;
+			console.log(id);
+			const deleteData = await db.user_address.destroy({ where: { id } });
+			if (!deleteData)
+				return { isError: true, message: "Failed Delete Address!" };
+			return { isError: false, message: "Success Delete Address!" };
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
+	changeMainAddress: async (body, dataToken) => {
+		try {
+			const { id } = dataToken;
+			const { id: address_id } = body;
+			// console.log(id);
+			const setAllFalse = await db.user_address.update(
+				{
+					is_default: false,
+				},
+				{
+					where: {
+						user_id: id,
+					},
+				}
+			);
+			console.log(setAllFalse);
+
+			const setMainAddress = await db.user_address.update(
+				{
+					is_default: true,
+				},
+				{
+					where: {
+						id: address_id,
+						user_id: id,
+					},
+				}
+			);
+			if (!setMainAddress)
+				return {
+					isError: true,
+					message: "Change main address is failed!",
+				};
+			return {
+				isError: false,
+				message: "Change main address is success!",
+			};
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
 };

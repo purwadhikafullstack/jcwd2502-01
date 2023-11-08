@@ -9,8 +9,8 @@ module.exports = {
 				{
 					id: 1,
 					warehouse_name: "Bandung",
-					latitude: null,
-					longitude: null,
+					latitude: "-6.9215529",
+					longitude: "107.6110212",
 					warehouse_address: "jl.jalan something 1",
 					province_id: "9",
 					city_id: "23",
@@ -18,8 +18,8 @@ module.exports = {
 				{
 					id: 2,
 					warehouse_name: "Tangerang",
-					latitude: null,
-					longitude: null,
+					latitude: "-6.3227016",
+					longitude: "106.7085737",
 					warehouse_address: "jl.jalan something 1",
 					province_id: "3",
 					city_id: "457",
