@@ -1,4 +1,3 @@
-
 const db = require("./../models");
 
 const respHandler = require("../utils/respHandler");
@@ -70,7 +69,7 @@ module.exports = {
 		} catch (error) {
 			console.log(error);
 		}
-	},,
+	},
 	createNewAddress: async (req, res, next) => {
 		try {
 			const result = await createAddress(req.body, req.dataToken);
@@ -103,4 +102,3 @@ module.exports = {
 		}
 	},
 };
-
