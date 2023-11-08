@@ -8,6 +8,7 @@ const initialState = {
 	email: "",
 	role: "",
 	isLogin: false,
+	selectedUserAddressIdMain: null,
 	selectedUserAddressId: null,
 	userAddresses: [],
 	status: "unverified",
@@ -35,6 +36,9 @@ export const userSlice = createSlice({
 		},
 		setSelectedUserAddressId: (initialState, { payload }) => {
 			initialState.selectedUserAddressId = payload;
+		},
+		setSelectedUserAddressIdMain: (initialState, { payload }) => {
+			initialState.selectedUserAddressIdMain = payload;
 		},
 		setUserAddresses: (initialState, { payload }) => {
 			initialState.userAddresses = payload;
@@ -173,7 +177,9 @@ export const onSetUserAddresses = (token) => async (dispatch) => {
 
 		data.data?.map((address) => {
 			if (address.is_default === true) {
-				return dispatch(onSetSelectedUserAddressId(address.id));
+				dispatch(setSelectedUserAddressIdMain(address.id));
+				dispatch(onSetSelectedUserAddressId(address.id));
+				return;
 			}
 		});
 
@@ -268,5 +274,6 @@ export const {
 	login,
 	reset,
 	setThemeUser,
+	setSelectedUserAddressIdMain,
 } = userSlice.actions;
 export default userSlice.reducer;

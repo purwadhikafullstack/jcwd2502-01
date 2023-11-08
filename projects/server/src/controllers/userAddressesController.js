@@ -89,7 +89,7 @@ module.exports = {
 	deleteUserAddress: async (req, res, next) => {
 		try {
 			const result = await deleteAddress(req.body);
-			// respHandler(res, result.message, null, null, result.isError);
+			respHandler(res, result.message, null, null, result.isError);
 		} catch (error) {
 			next(error);
 		}
@@ -97,8 +97,10 @@ module.exports = {
 	mainAddress: async (req, res, next) => {
 		try {
 			const result = await changeMainAddress(req.body, req.dataToken);
+			respHandler(res, result.message, null, null, result.isError);
 		} catch (error) {
 			next(error);
 		}
 	},
 };
+
