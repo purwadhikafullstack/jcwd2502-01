@@ -11,6 +11,7 @@ const initialState = {
 	count: 0,
 	selectedItems: 0,
 	totalPrice: 0,
+	totalWeight: 0,
 };
 
 export const cartsSlice = createSlice({
@@ -29,6 +30,9 @@ export const cartsSlice = createSlice({
 		setTotalPrice: (initialState, { payload }) => {
 			initialState.totalPrice = payload;
 		},
+		setTotalWeight: (initialState, { payload }) => {
+			initialState.totalWeight = payload;
+		},
 		setTotalItems: (initialState, { payload }) => {
 			initialState.totalItems = payload;
 		},
@@ -46,12 +50,21 @@ export const cartsSlice = createSlice({
 
 export const fetchCartAsync = (token) => async (dispatchEvent) => {
 	try {
+		const selectedProducts = await axiosInstance(token).get(
+			`checkouts/selected-products`
+		);
+
+		const sumWeight = selectedProducts?.data?.data
+			?.map((item) => item?.quantity * item?.product?.weight)
+			.reduce((a, b) => a + b, 0);
+
 		const { data } = await axiosInstance(token).get(`carts`);
 
 		dispatchEvent(setCarts(data.data.cart));
 		dispatchEvent(setCount(data.data.count));
 		dispatchEvent(setSelectedItems(data.data.selectedItems));
 		dispatchEvent(setTotalPrice(data.data.totalPrice));
+		dispatchEvent(setTotalWeight(sumWeight));
 	} catch (error) {
 		console.log(error);
 	}
@@ -147,12 +160,21 @@ export const selectProductCart =
 				type,
 			});
 
+			const selectedProducts = await axiosInstance(token).get(
+				`checkouts/selected-products`
+			);
+
+			const sumWeight = selectedProducts?.data?.data
+				?.map((item) => item?.quantity * item?.product?.weight)
+				.reduce((a, b) => a + b, 0);
+
 			const { data } = await axiosInstance(token).get(`carts`);
 
 			dispatchEvent(setCarts(data.data.cart));
 			dispatchEvent(setCount(data.data.count));
 			dispatchEvent(setSelectedItems(data.data.selectedItems));
 			dispatchEvent(setTotalPrice(data.data.totalPrice));
+			dispatchEvent(setTotalWeight(sumWeight));
 		} catch (error) {
 			console.log(error);
 		}
@@ -167,6 +189,7 @@ export const {
 	setTotalAmount,
 	setSelectedItems,
 	setTotalPrice,
+	setTotalWeight,
 } = cartsSlice.actions;
 
 export default cartsSlice.reducer;
