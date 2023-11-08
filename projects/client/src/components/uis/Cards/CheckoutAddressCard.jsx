@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import Media from "react-media";
 import { Button } from "@nextui-org/react";
@@ -11,21 +11,17 @@ import {
 } from "../../../redux/features/users";
 import { useLocation } from "react-router-dom";
 import EditAddressModal from "../../layouts/user/EditAddressModal";
-import { useStateContext } from "../../../contexts/ContextProvider";
 import { axiosInstance } from "../../../lib/axios";
 
 const CheckoutAddressCard = ({ userAddressData }) => {
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const accessToken = localStorage.getItem("accessToken");
-	const { openEditAddressModal, setOpenEditAddressModal } = useStateContext();
-	const [selectedAddress, setSelectedAddress] = useState(null);
-	const { user_address, selected } = useSelector((state) => state.user);
+	const { selectedUserAddressId } = useSelector((state) => state.user);
 
 	const selectedUserAddressIdMain = useSelector(
 		(state) => state.user.selectedUserAddressIdMain
 	);
-	const [userAddresses, setUserAddresses] = useState([userAddressData]);
 
 	const handleAddressButton = async (addressId) => {
 		if (location.pathname === "/profile/settings") {
@@ -55,10 +51,11 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 	useEffect(() => {
 		console.log(selectedUserAddressIdMain);
 	}, [selectedUserAddressIdMain]);
+
 	return (
 		<div
 			className={`mb-3 address-card flex justify-between items-center border-2 ${
-				user_address === id
+				selectedUserAddressId === id
 					? "border-primary-500"
 					: "border-neutral-300 dark:border-neutral-700"
 			}  rounded-xl p-4`}
@@ -99,7 +96,7 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 				) : null}
 			</section>
 			<section className="actions">
-				{user_address === id ? (
+				{selectedUserAddressId === id ? (
 					<IoCheckmarkCircleOutline
 						size={28}
 						className="text-primary-500"
@@ -116,7 +113,9 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 								size={matches.medium ? "md" : "sm"}
 								onPress={() => handleAddressButton(id)}
 								className={`${
-									id === selectedUserAddressIdMain && "hidden"
+									id === selectedUserAddressIdMain &&
+									location.pathname === "/profile/settings" &&
+									"hidden"
 								}`}
 							>
 								<span className="font-bold text-label-lg text-black">
