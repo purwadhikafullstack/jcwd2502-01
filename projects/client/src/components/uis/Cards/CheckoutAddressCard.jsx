@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Media from "react-media";
 import { Button } from "@nextui-org/react";
@@ -6,17 +6,40 @@ import { IoCheckmarkCircleOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { onUserAddress } from "../../../redux/features/users";
 import { useLocation } from "react-router-dom";
+import EditAddressModal from "../../layouts/user/EditAddressModal";
+import { useStateContext } from "../../../contexts/ContextProvider";
+import { axiosInstance } from "../../../lib/axios";
 
 const CheckoutAddressCard = ({ userAddressData }) => {
 	const dispatch = useDispatch();
 	const location = useLocation();
-
+	const acessToken = localStorage.getItem("accessToken");
+	const { openEditAddressModal, setOpenEditAddressModal } = useStateContext();
+	const [selectedAddress, setSelectedAddress] = useState(null);
 	const { user_address } = useSelector((state) => state.user);
-	const handleAddressButton = (addressId) => {
+	const [userAddresses, setUserAddresses] = useState([userAddressData]);
+	const handleAddressButton = async (addressId) => {
 		if (location.pathname === "/profile/settings") {
 			// fungsi ganti is_default
+			const changeMain = await axiosInstance(acessToken).patch(
+				"/user-addresses/mainAddress",
+				{ id: userAddressData.id }
+			);
+			console.log(changeMain);
+			fetchUserAddresses();
+			dispatch(onUserAddress(id));
 		} else {
 			dispatch(onUserAddress(addressId));
+		}
+	};
+
+	const fetchUserAddresses = async () => {
+		try {
+			const { data } = await axiosInstance().get(`user-addresses/${1}`);
+
+			setUserAddresses(data.data);
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
@@ -30,6 +53,9 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 		city,
 	} = userAddressData;
 
+	useEffect(() => {
+		fetchUserAddresses();
+	}, [userAddresses]);
 	return (
 		<>
 			<div
@@ -66,9 +92,10 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 					{/* untuk crud address */}
 					{location.pathname === "/profile/settings" ? (
 						<div className="flex divide-x-1">
-							<button className="pr-2 text-green-500 font-medium">
+							{/* <button className="pr-2 text-green-500 font-medium">
 								ubah
-							</button>
+							</button> */}
+							<EditAddressModal data={userAddressData} />
 							<button className="px-2 text-green-500 font-medium">
 								hapus
 							</button>
@@ -94,9 +121,7 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 									<Button
 										color="primary"
 										size={matches.medium ? "md" : "sm"}
-										onPress={() =>
-											dispatch(onUserAddress(id))
-										}
+										onPress={() => handleAddressButton()}
 									>
 										<span className="font-bold text-label-lg text-black">
 											Select

@@ -1,4 +1,3 @@
-
 import React, { useCallback, useEffect, useState } from "react";
 
 import { axiosInstance } from "../../../lib/axios";
@@ -22,10 +21,11 @@ import {
 	Checkbox,
 } from "@nextui-org/react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const CreateNewAddressModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+	const location = useLocation();
 	const [provinces, setProvinces] = useState([]);
 	const [selectedProvince, setSelectedProvince] = useState();
 	const [cities, setCities] = useState([]);
@@ -213,7 +213,9 @@ const CreateNewAddressModal = () => {
 														radius="sm"
 														size="lg"
 														onChange={(e) => {
-															// handleCity(e.target.value)
+															handleCity(
+																e.target.value
+															);
 															console.log(
 																e.target.value
 															);
@@ -236,14 +238,17 @@ const CreateNewAddressModal = () => {
 														isRequired
 													/>
 												</div>
-												<div className="form-control">
-													<Checkbox>
-														<span className="font-medium">
-															Set this as the main
-															address
-														</span>
-													</Checkbox>
-												</div>
+												{location.pathname ===
+												"/profile/settings" ? null : (
+													<div className="form-control">
+														<Checkbox>
+															<span className="font-medium">
+																Set this as the
+																main address
+															</span>
+														</Checkbox>
+													</div>
+												)}
 											</form>
 										</ModalBody>
 										<ModalFooter className="justify-center">
