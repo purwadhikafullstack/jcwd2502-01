@@ -22,9 +22,9 @@ const ProductCard = (props) => {
 						radius="none"
 						src={`${
 							process.env.REACT_APP_IMAGE_API
-						}${data?.product_images[0].image.substring(7)}`}
+						}${data?.product_images[0]?.image.substring(7)}`}
 						className="image aspect-square w-full h-full rounded-t-[19px] object-contain"
-						alt={`${data?.product_images[0].image.substring(7)}`}
+						alt={`${data?.product_images[0]?.image.substring(7)}`}
 					/>
 				</div>
 				<div className="product-content min-w- w-full min-h-[128px] md:min-h-[160px] flex flex-col p-2 md:pt-2 md:px-2 md:pb-4">

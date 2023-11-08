@@ -147,7 +147,7 @@ function App() {
 					element={<AdminCreateNewProductPage />}
 				/>
 				<Route
-					path="/admin/edit-product"
+					path="/admin/edit-product/:productName"
 					element={<AdminEditProductPage />}
 				/>
 				<Route

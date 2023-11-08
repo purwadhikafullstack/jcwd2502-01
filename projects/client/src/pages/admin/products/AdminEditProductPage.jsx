@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { onClear, setSearch } from "../../../redux/features/products";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AdminEditProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
@@ -22,6 +23,10 @@ const AdminEditProductPage = () => {
 	const [productData, setProductData] = useState();
 
 	const [previewImages, setPreviewImages] = useState([]);
+	const [imagesToSend, setImagesToSend] = useState([]);
+	const { productName } = useParams();
+
+	const navigate = useNavigate();
 
 	const getFileImages = (event) => {
 		const selectedImages = event.target.files;
@@ -34,6 +39,7 @@ const AdminEditProductPage = () => {
 			const imagesArray = selectedImagesArray.map((image) => {
 				return URL.createObjectURL(image);
 			});
+			setImagesToSend(selectedImages);
 			setPreviewImages(imagesArray);
 		}
 	};
@@ -44,19 +50,37 @@ const AdminEditProductPage = () => {
 		}
 
 		setPreviewImages([]);
+		setImagesToSend([]);
+	};
+	const handleRemovePreview = () => {
+		setPreviewImages([]);
+		setImagesToSend([]);
 	};
 
 	//! FORMIK
 	useEffect(() => {
-		// Initialize the form's initial values based on the fetched data
+		if (productData?.product_images.length) {
+			setOldImages(productData?.product_images);
+		}
+		console.log("prod", productData);
 		if (productData) {
+			console.log("masuk");
 			formik.setValues({
-				product_name: productData.product_name,
-				product_desc: productData.product_desc,
-				product_price: productData.product_price,
-				category_id: productData.category.id,
-				brand_id: productData.brand.id,
-				weight: productData.weight,
+				product_name: productData?.product_name,
+				product_desc: productData?.product_desc,
+				product_price: productData?.product_price,
+				category_id: productData?.category?.id,
+				brand_id: productData?.brand?.id,
+				height: productData?.specification?.height,
+				width: productData?.specification?.width,
+				thickness: productData?.specification?.thickness,
+				weight: productData?.weight,
+				wireless: productData?.specification?.wireless,
+				wired: productData?.specification?.wired,
+				battery_life: productData?.specification?.battery_life,
+				sensor: productData?.specification?.sensor,
+				resolution: productData?.specification?.resolution,
+				warranty: productData?.specification?.warranty,
 			});
 		}
 	}, [productData]);
@@ -68,71 +92,126 @@ const AdminEditProductPage = () => {
 			product_price: 0,
 			category_id: null,
 			brand_id: null,
+			height: "",
+			width: "",
+			thickness: "",
 			weight: 0,
+			wireless: 0,
+			wired: "",
+			battery_life: "",
+			sensor: "",
+			resolution: "",
+			warranty: "",
 		},
 		onSubmit: async (values) => {
-			// onCreateProduct(values);
+			onSaveChanges(values);
 		},
 	});
 
-	// const onCreateProduct = async (values) => {
-	// 	try {
-	// 		const {
-	// 			product_name,
-	// 			product_desc,
-	// 			product_price,
-	// 			category_id,
-	// 			brand_id,
-	// 			weight,
-	// 		} = values;
+	const onSaveChanges = async (values) => {
+		try {
+			const {
+				product_name,
+				product_desc,
+				product_price,
+				category_id,
+				brand_id,
+				height,
+				width,
+				thickness,
+				weight,
+				wireless,
+				wired,
+				battery_life,
+				sensor,
+				resolution,
+				warranty,
+			} = values;
 
-	// 		// if (!product_name || !product_desc || !product_price) {
-	// 		// 	toast.error("Please fill in all form fields");
-	// 		// 	return; // Stop further execution
-	// 		// }
+			// if (!product_name || !product_desc || !product_price) {
+			// 	toast.error("Please fill in all form fields");
+			// 	return; // Stop further execution
+			// }
 
-	// 		const newProductData = {
-	// 			product_name,
-	// 			product_desc,
-	// 			product_price,
-	// 			category_id,
-	// 			brand_id,
-	// 			weight,
-	// 		};
+			const newProductData = {
+				product_name,
+				product_desc,
+				product_price,
+				category_id,
+				brand_id,
+				weight,
+			};
+			const newSpecData = {
+				height,
+				width,
+				thickness,
+				weight: `${weight} g`,
+				wireless: wireless && 1,
+				wired,
+				battery_life,
+				sensor,
+				resolution,
+				warranty,
+			};
 
-	// 		const newProductDataJSON = JSON.stringify(newProductData);
+			const newProductDataJSON = JSON.stringify(newProductData);
+			const newSpecDataJSON = JSON.stringify(newSpecData);
 
-	// 		const fd = new FormData();
-	// 		fd.append("data", newProductDataJSON);
+			const fd = new FormData();
+			fd.append("dataProduct", newProductDataJSON);
+			fd.append("dataSpec", newSpecDataJSON);
 
-	// 		if (!previewImages) {
-	// 			fd.append("image", null);
-	// 		} else {
-	// 			fd.append("image", productImage);
-	// 		}
+			// if (!imagesToSend) {
+			// 	fd.append("images", null);
+			// } else {
+			// 	fd.append("images", imagesToSend);
+			// }
 
-	// 		const accessToken = localStorage.getItem("accessToken");
+			const dataImages = {
+				action: "new",
+			};
+			if (!imagesToSend.length) {
+				if (oldImages.length) {
+					dataImages.action = "keep";
+				} else {
+					dataImages.action = "remove";
+				}
+			}
+			const dataImagesJSON = JSON.stringify(dataImages);
+			fd.append("dataImages", dataImagesJSON);
 
-	// 		const createProduct = await Instance(accessToken).post(
-	// 			"products",
-	// 			fd
-	// 		);
+			console.log(fd);
 
-	// 		if (createProduct.status === 201) {
-	// 			toast.success("Product created successfully");
+			if (imagesToSend) {
+				for (const image of imagesToSend) {
+					console.log("sblm append", image);
+					fd.append("images", image);
+					console.log("sesudah append");
+				}
+			}
+			console.log(imagesToSend);
+			// const accessToken = localStorage.getItem("accessToken");
 
-	// 			setTimeout(() => {
-	// 				window.location.reload(false);
-	// 			}, 1500);
-	// 		} else {
-	// 			toast.error("Error creating product");
-	// 		}
+			const updateProduct = await axiosInstance().patch(
+				`products/${productData.id}`,
+				fd
+			);
+			console.log(updateProduct.data);
 
-	// 		return createProduct;
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
+			if (updateProduct.data.isError) {
+				alert(updateProduct.data.message);
+				return;
+			}
+
+			setTimeout(() => {
+				navigate("/admin/products");
+			}, 1500);
+
+			return;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	const handleFormInput = (event) => {
 		const { target } = event;
@@ -149,7 +228,7 @@ const AdminEditProductPage = () => {
 	const fetchProductAsync = async () => {
 		try {
 			const { data } = await axiosInstance().get(
-				`products/G102%20LIGHTSYNC`
+				`products/${productName}`
 			);
 			setProductData(data.data);
 		} catch (error) {
@@ -189,13 +268,6 @@ const AdminEditProductPage = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(productData);
-		if (productData?.product_images.length) {
-			setOldImages(productData?.product_images);
-		}
-	}, [productData]);
-
-	useEffect(() => {
 		setActiveMenu(false);
 	}, [activeMenu, categories, brands]);
 
@@ -220,7 +292,7 @@ const AdminEditProductPage = () => {
 								size="lg"
 								placeholder="Ex: Logitech Gaming Mouse HERO"
 								label="Product Name"
-								value={productData?.product_name}
+								value={formik.values.product_name}
 								labelPlacement="outside"
 								onChange={handleFormInput}
 							/>
@@ -233,6 +305,9 @@ const AdminEditProductPage = () => {
 								labelPlacement="outside"
 								placeholder="Select a category"
 								onChange={handleFormInput}
+								selectedKeys={[
+									String(formik.values.category_id),
+								]}
 							>
 								{categories.map((category) => (
 									<SelectItem
@@ -252,6 +327,7 @@ const AdminEditProductPage = () => {
 								labelPlacement="outside"
 								placeholder="Select a brand"
 								onChange={handleFormInput}
+								selectedKeys={[String(formik.values.brand_id)]}
 							>
 								{brands.map((brand) => (
 									<SelectItem key={brand.id} value={brand.id}>
@@ -321,7 +397,7 @@ const AdminEditProductPage = () => {
 												<div
 													className="mt-4"
 													onClick={() =>
-														setPreviewImages([])
+														handleRemovePreview()
 													}
 												>
 													<p className="text-red-600 font-medium">
@@ -330,7 +406,9 @@ const AdminEditProductPage = () => {
 												</div>
 												<div
 													className="mt-4"
-													onClick={handleRevert}
+													onClick={() =>
+														handleRevert()
+													}
 												>
 													<p className="text-yellow-600 font-medium">
 														Revert Images
@@ -431,6 +509,7 @@ const AdminEditProductPage = () => {
 								size="lg"
 								name="product_desc"
 								label="Product Description"
+								value={formik.values.product_desc}
 								labelPlacement="outside"
 								placeholder="Enter your product description"
 								onChange={handleFormInput}
@@ -442,8 +521,9 @@ const AdminEditProductPage = () => {
 								name="product_price"
 								size="lg"
 								placeholder="Ex: 1990000"
-								min={1}
+								min={0}
 								label="Product Price (in Rp)"
+								value={formik.values.product_price}
 								labelPlacement="outside"
 								onChange={handleFormInput}
 							/>
@@ -464,6 +544,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 120 mm"
 									label="Height (mm/cm)"
+									value={formik.values.height}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -475,6 +556,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 64 mm"
 									label="Width (mm/cm)"
+									value={formik.values.width}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -486,6 +568,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 40 mm"
 									label="Thickness (mm/cm)"
+									value={formik.values.thickness}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -497,6 +580,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 1200"
 									label="Weight (in gram)"
+									value={formik.values.weight}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -505,7 +589,16 @@ const AdminEditProductPage = () => {
 						<section className="physical-specifications flex flex-col gap-4">
 							<h3 className="font-bold">Specifications</h3>
 							<div className="form-control">
-								<Checkbox name="wireless">{`Wireless (check it if this product is wireless.)`}</Checkbox>
+								<Checkbox
+									isSelected={formik.values.wireless}
+									name="wireless"
+									onChange={(e) =>
+										formik.setFieldValue(
+											"wireless",
+											e.target.checked
+										)
+									}
+								>{`Wireless (check it if this product is wireless.)`}</Checkbox>
 							</div>
 							<div className="form-control">
 								<Input
@@ -514,6 +607,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 1.5 m"
 									label="Cable length (cm/m)"
+									value={formik.values.wired}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -525,6 +619,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 250 hours or rechargeable"
 									label="Battery life (hour/rechargeable)"
+									value={formik.values.battery_life}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -536,6 +631,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: HERO 2"
 									label="Sensor"
+									value={formik.values.sensor}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -547,6 +643,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 100 - 32.000 dpi (mouse) or 100 - 32.000 dpi (monitor)"
 									label="Resolution"
+									value={formik.values.resolution}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
@@ -558,6 +655,7 @@ const AdminEditProductPage = () => {
 									size="lg"
 									placeholder="Ex: 1"
 									label="Warranty (year)"
+									value={formik.values.warranty}
 									labelPlacement="outside"
 									onChange={handleFormInput}
 								/>
