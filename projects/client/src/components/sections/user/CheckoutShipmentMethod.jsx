@@ -30,6 +30,11 @@ const CheckoutShipmentMethod = ({
 					rajaOngkirQuery
 				);
 
+				console.log(
+					"🚀 ~ file: CheckoutShipmentMethod.jsx:32 ~ getShipmentCost ~ resultRajaOngkirCost:",
+					resultRajaOngkirCost.data.data
+				);
+
 				setShipmentServices(resultRajaOngkirCost.data.data);
 			} else if (selectedUserAddressData && totalWeight >= 30000) {
 				alert(

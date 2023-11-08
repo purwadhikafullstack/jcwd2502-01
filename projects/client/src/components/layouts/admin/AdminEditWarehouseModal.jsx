@@ -187,9 +187,9 @@ const AdminEditWarehouseModal = ({
 	}, [warehouseId]);
 
 	return (
-		<div className={`edit-product z-[9999] block`}>
+		<div className={`edit-product z-[999999] block`}>
 			<div
-				className={`z-[999] absolute top-0 right-0 bottom-0 left-0 h-full`}
+				className={`z-[99999] absolute top-0 right-0 bottom-0 left-0 h-full`}
 			>
 				<section className="admin-edit-warehouse-product w-[820px] h-full m-auto flex justify-center items-center">
 					<div className="admin-create-product-container w-full bg-background p-8 rounded-xl">
@@ -312,7 +312,7 @@ const AdminEditWarehouseModal = ({
 				</section>
 			</div>
 			<div
-				className={`z-[99] absolute top-0 right-0 left-0 bottom-0 bg-black/50 flex justify-center items-center`}
+				className={`z-[9999] absolute top-0 right-0 left-0 bottom-0 bg-black/50 flex justify-center items-center`}
 			></div>
 		</div>
 	);

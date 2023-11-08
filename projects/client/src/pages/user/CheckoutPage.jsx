@@ -7,7 +7,6 @@ import CheckoutAddress from "../../components/sections/user/CheckoutAddress";
 import CheckoutOrderList from "../../components/sections/user/CheckoutOrderList";
 import CheckoutShipmentMethod from "../../components/sections/user/CheckoutShipmentMethod";
 import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
-import Footer from "../../components/layouts/shared/Footer";
 import { onSetUserAddresses } from "../../redux/features/users";
 
 const CheckoutPage = () => {
@@ -109,6 +108,10 @@ const CheckoutPage = () => {
 			getCheckoutDetail();
 		}
 	}, [selectedItems, getCheckoutDetail, navigate]);
+
+	useEffect(() => {
+		console.log("selectedCheckoutProducts >>>>", selectedCheckoutProducts);
+	}, [selectedCheckoutProducts]);
 
 	return (
 		<main className="checkout-page h-full pt-4 md:pb-20	md:w-[1080px] md:mx-auto">

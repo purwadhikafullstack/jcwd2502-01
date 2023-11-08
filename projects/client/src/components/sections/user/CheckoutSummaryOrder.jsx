@@ -1,6 +1,5 @@
 import React from "react";
 
-import { Button } from "@nextui-org/react";
 import CheckoutPaymentModal from "../../layouts/user/CheckoutPaymentModal";
 
 const CheckoutSummaryOrder = ({ totalPrice, totalQuantity, shippingCost }) => {
@@ -46,7 +45,8 @@ const CheckoutSummaryOrder = ({ totalPrice, totalQuantity, shippingCost }) => {
 			</div>
 			<div className="checkout-pay pb-4 md:pt-2 md:pb-0">
 				<CheckoutPaymentModal
-					shippingCost={shippingCostString}
+					shippingCost={shippingCost}
+					shippingCostString={shippingCostString}
 					totalPrice={totalPriceString}
 					totalQuantity={totalQuantity}
 					totalTransaction={totalTransactionString}
