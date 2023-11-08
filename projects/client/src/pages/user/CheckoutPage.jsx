@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "../../lib/axios";
-
-import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
-import CheckoutOrderList from "../../components/sections/user/CheckoutOrderList";
-import CheckoutAddress from "../../components/sections/user/CheckoutAddress";
-import CheckoutShipmentMethod from "../../components/sections/user/CheckoutShipmentMethod";
-import Footer from "../../components/layouts/shared/Footer";
 import { useNavigate } from "react-router-dom";
+
+import CheckoutAddress from "../../components/sections/user/CheckoutAddress";
+import CheckoutOrderList from "../../components/sections/user/CheckoutOrderList";
+import CheckoutShipmentMethod from "../../components/sections/user/CheckoutShipmentMethod";
+import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
+import Footer from "../../components/layouts/shared/Footer";
 import { onSetUserAddresses } from "../../redux/features/users";
 
 const CheckoutPage = () => {
@@ -16,7 +16,9 @@ const CheckoutPage = () => {
 	const { selectedItems } = useSelector((state) => state.carts);
 	const { selectedUserAddressId } = useSelector((state) => state.user);
 
-	const [selectedUserAddressData, setSelectedUserAddressData] = useState();
+	const [selectedUserAddressData, setSelectedUserAddressData] =
+		useState(null);
+	const [nearestWarehouseData, setNearestWarehouseData] = useState(null);
 	const [selectedCheckoutProducts, setSelectedCheckoutProducts] = useState(
 		[]
 	);
@@ -28,13 +30,22 @@ const CheckoutPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const fetchSelectedUserAddressData = useCallback(async () => {
+	const resetShippingCost = () => {
+		setShippingCost(0);
+	};
+
+	const fetchOriginAndDestination = useCallback(async () => {
 		try {
-			const { data } = await axiosInstance(token).get(
+			const selectedUserAddress = await axiosInstance(token).get(
 				`user-addresses/${selectedUserAddressId}`
 			);
 
-			setSelectedUserAddressData(data.data);
+			const nearestWarehouse = await axiosInstance(token).get(
+				`checkouts/nearest-warehouse/${selectedUserAddressId}`
+			);
+
+			setSelectedUserAddressData(selectedUserAddress.data.data);
+			setNearestWarehouseData(nearestWarehouse.data.data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -48,23 +59,29 @@ const CheckoutPage = () => {
 
 			setSelectedCheckoutProducts(data.data);
 
-			const sumTotalQty = data.data
-				?.map((item) => item?.quantity)
-				.reduce((a, b) => a + b, 0);
+			const totalDetails = data.data?.reduce(
+				(acc, item) => {
+					const quantity = item.quantity;
+					const product = item.product;
+					const productPrice = product.product_price;
+					const weight = product.weight;
 
-			setTotalQuantity(sumTotalQty);
+					acc.totalQuantity += quantity;
+					acc.totalPrice += quantity * productPrice;
+					acc.totalWeight += quantity * weight;
 
-			const sumTotalPrice = data.data
-				?.map((item) => item?.quantity * item?.product.product_price)
-				.reduce((a, b) => a + b, 0);
+					return acc;
+				},
+				{
+					totalQuantity: 0,
+					totalPrice: 0,
+					totalWeight: 0,
+				}
+			);
 
-			setTotalPrice(sumTotalPrice);
-
-			const sumTotalWeight = data.data
-				?.map((item) => item?.quantity * item?.product?.weight)
-				.reduce((a, b) => a + b, 0);
-
-			setTotalWeight(sumTotalWeight);
+			setTotalQuantity(totalDetails.totalQuantity);
+			setTotalPrice(totalDetails.totalPrice);
+			setTotalWeight(totalDetails.totalWeight);
 		} catch (error) {
 			console.log(error);
 		}
@@ -75,10 +92,15 @@ const CheckoutPage = () => {
 	};
 
 	useEffect(() => {
+		dispatch(onSetUserAddresses(token));
+		window.scrollTo({ top: 0 });
+	}, []);
+
+	useEffect(() => {
 		if (selectedUserAddressId) {
-			fetchSelectedUserAddressData();
+			fetchOriginAndDestination();
 		}
-	}, [selectedUserAddressId, fetchSelectedUserAddressData]);
+	}, [selectedUserAddressId, fetchOriginAndDestination]);
 
 	useEffect(() => {
 		if (!selectedItems) {
@@ -86,39 +108,48 @@ const CheckoutPage = () => {
 		} else {
 			getCheckoutDetail();
 		}
-	}, [selectedItems]);
-
-	useEffect(() => {
-		dispatch(onSetUserAddresses(token));
-	}, []);
+	}, [selectedItems, getCheckoutDetail, navigate]);
 
 	return (
-		<>
-			<main className="checkout-page h-full pt-4 md:pb-20 md:max-w-[720px] md:mx-auto">
-				<div className="page-heading mb-4 mx-4 md:mx-0">
-					<h3 className="font-bold text-headline-sm">Checkout</h3>
+		<main className="checkout-page h-full pt-4 md:pb-20	md:w-[1080px] md:mx-auto">
+			<div className="md:flex md:justify-between md:relative">
+				<div className="md:w-[694px] md:mr-8">
+					<div className="page-heading mb-4 mx-4 md:mx-0">
+						<h3 className="font-bold text-headline-sm">Checkout</h3>
+					</div>
+					<CheckoutAddress
+						selectedUserAddressData={selectedUserAddressData}
+						resetShippingCost={resetShippingCost}
+					/>
+					<CheckoutOrderList
+						selectedCheckoutProducts={selectedCheckoutProducts}
+					/>
 				</div>
-				<CheckoutAddress
-					selectedUserAddressData={selectedUserAddressData}
-				/>
-				<CheckoutOrderList
-					selectedCheckoutProducts={selectedCheckoutProducts}
-				/>
-				<CheckoutShipmentMethod
-					totalWeight={totalWeight}
-					handleSelectedShippingCost={handleSelectedShippingCost}
-					selectedUserAddressData={selectedUserAddressData}
-				/>
-				<CheckoutSummaryOrder
-					totalPrice={totalPrice}
-					totalQuantity={totalQuantity}
-					shippingCost={shippingCost}
-				/>
-			</main>
-			<footer className="hidden md:block">
-				<Footer />
-			</footer>
-		</>
+				<div className="md:w-[380px] md:relative">
+					<div className="md:relative">
+						<div className="md:fixed md:w-[380px]">
+							<div>
+								<CheckoutShipmentMethod
+									totalWeight={totalWeight}
+									nearestWarehouseData={nearestWarehouseData}
+									handleSelectedShippingCost={
+										handleSelectedShippingCost
+									}
+									selectedUserAddressData={
+										selectedUserAddressData
+									}
+								/>
+								<CheckoutSummaryOrder
+									totalPrice={totalPrice}
+									totalQuantity={totalQuantity}
+									shippingCost={shippingCost}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
 	);
 };
 

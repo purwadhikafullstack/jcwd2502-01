@@ -3,7 +3,7 @@ import React from "react";
 import { IoLocationSharp } from "react-icons/io5";
 import ChooseAddressModal from "../../layouts/user/ChooseAddressModal";
 
-const CheckoutAddress = ({ selectedUserAddressData }) => {
+const CheckoutAddress = ({ selectedUserAddressData, resetShippingCost }) => {
 	return (
 		<section className="checkout-address p-4 mb-4 md:p-6 bg-neutral-100 dark:bg-neutral-900 md:rounded-xl">
 			<p className="text-body-lg font-medium mb-2">
@@ -24,7 +24,7 @@ const CheckoutAddress = ({ selectedUserAddressData }) => {
 						{selectedUserAddressData?.city?.postal_code}{" "}
 					</p>
 				</div>
-				<ChooseAddressModal />
+				<ChooseAddressModal resetShippingCost={resetShippingCost} />
 			</div>
 		</section>
 	);

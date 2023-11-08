@@ -12,7 +12,11 @@ Router.get(
 	verify,
 	checkoutsController.getSelectedCheckoutProducts
 );
-Router.post("/nearest-warehouse", checkoutsController.getNearestWarehouse);
+Router.get(
+	"/nearest-warehouse/:user_address_id",
+	verify,
+	checkoutsController.getNearestWarehouse
+);
 Router.post("/cost", checkoutsController.getShipmentCost);
 
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js

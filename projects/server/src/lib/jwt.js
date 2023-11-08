@@ -18,17 +18,18 @@ module.exports = {
 	verify: (req, res, next) => {
 		try {
 			const { authorization, tokentype } = req.headers;
+
 			if (!authorization) throw { message: "token was not found" };
 			// const token = authorization && authorization.split(" ")[1];
 			let secret = process.env.access_secret;
+
 			if (tokentype === "verified") secret = process.env.verified_secret;
 			if (tokentype === "reset") secret = process.env.reset_secret;
+
 			const decodeData = jwt.verify(req.token, secret);
-			console.log("DARI VERIFY>>>>>>", decodeData);
 			req.dataToken = decodeData;
+
 			if (decodeData.apiKey == "Approved") {
-				console.log("MASUK NEXT>>>>>>>>>>>>>");
-				console.log("REQ.DATATOKEN VERIFY>>>>>", req.dataToken);
 				next();
 			} else {
 				throw { message: "User is not approved" };

@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Button } from "@nextui-org/react";
+import CheckoutPaymentModal from "../../layouts/user/CheckoutPaymentModal";
 
 const CheckoutSummaryOrder = ({ totalPrice, totalQuantity, shippingCost }) => {
 	const totalPriceString = Number(totalPrice).toLocaleString("id-ID", {
@@ -27,7 +28,7 @@ const CheckoutSummaryOrder = ({ totalPrice, totalQuantity, shippingCost }) => {
 	});
 
 	return (
-		<section className="checkout-summary-order px-4 py-4 bg-neutral-100 dark:bg-neutral-900 md:rounded-xl">
+		<section className="checkout-summary-order px-4 py-4 bg-neutral-100 dark:bg-neutral-900 md:rounded-xl md:border-2 border-primary-100 dark:border-primary-900">
 			<h4 className="text-body-lg font-medium mb-2">Shopping summary</h4>
 			<div className="checkout-summary-content">
 				<p className="flex justify-between items-center text-label-lg md:text-body-lg">
@@ -44,11 +45,12 @@ const CheckoutSummaryOrder = ({ totalPrice, totalQuantity, shippingCost }) => {
 				</p>
 			</div>
 			<div className="checkout-pay pb-4 md:pt-2 md:pb-0">
-				<Button size="lg" color="primary" fullWidth>
-					<span className="font-bold text-black text-body-lg">
-						Pay
-					</span>
-				</Button>
+				<CheckoutPaymentModal
+					shippingCost={shippingCostString}
+					totalPrice={totalPriceString}
+					totalQuantity={totalQuantity}
+					totalTransaction={totalTransactionString}
+				/>
 			</div>
 		</section>
 	);

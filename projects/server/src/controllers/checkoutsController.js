@@ -52,34 +52,24 @@ module.exports = {
 	},
 	getNearestWarehouse: async (req, res, next) => {
 		try {
-			const { userLat, userLon } = req.body; // Assuming you get user's coordinates from the request body
+			const { id: user_id } = req.dataToken;
+			const { user_address_id } = req.params;
 
-			const warehouses = [
-				{
-					id: 1,
-					name: "Warehouse Kota Bandung",
-					lat: "-6.914744",
-					lon: "107.60981",
+			const selectedUserAddress = await db.user_address.findOne({
+				where: { user_id, id: user_address_id },
+				attributes: {
+					exclude: ["createdAt", "updatedAt", "deletedAt"],
 				},
-				{
-					id: 2,
-					name: "Warehouse Kota Jakarta Pusat",
-					lat: "-6.2088",
-					lon: "106.8456",
+			});
+
+			const { latitude: userLat, longitude: userLon } =
+				selectedUserAddress;
+
+			const warehouses = await db.warehouse.findAll({
+				attributes: {
+					exclude: ["createdAt", "updatedAt", "deletedAt"],
 				},
-				{
-					id: 3,
-					name: "Warehouse Kota Tangerang Selatan",
-					lat: "-6.2088",
-					lon: "106.717",
-				},
-				{
-					id: 4,
-					name: "Warehouse Kota Tangerang Utara",
-					lat: "-6.136197",
-					lon: "106.9006902",
-				},
-			];
+			});
 
 			function calculateDistance(lat1, lon1, lat2, lon2) {
 				const R = 6371; // Earth's radius in kilometers
@@ -104,8 +94,8 @@ module.exports = {
 					const distance = calculateDistance(
 						Number(userLat),
 						Number(userLon),
-						Number(warehouse.lat),
-						Number(warehouse.lon)
+						Number(warehouse.latitude),
+						Number(warehouse.longitude)
 					);
 					if (distance < minDistance) {
 						minDistance = distance;
