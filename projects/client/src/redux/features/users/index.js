@@ -8,7 +8,8 @@ const initialState = {
 	email: "",
 	role: "",
 	isLogin: false,
-	user_address: "",
+	selectedUserAddressId: null,
+	userAddresses: [],
 	status: "unverified",
 	theme: "",
 };
@@ -32,8 +33,11 @@ export const userSlice = createSlice({
 		setIsLogin: (initialState, action) => {
 			initialState.isLogin = action.payload;
 		},
-		setUserAddress: (initialState, { payload }) => {
-			initialState.user_address = payload;
+		setSelectedUserAddressId: (initialState, { payload }) => {
+			initialState.selectedUserAddressId = payload;
+		},
+		setUserAddresses: (initialState, { payload }) => {
+			initialState.userAddresses = payload;
 		},
 		setThemeUser: (initialState, { payload }) => {
 			initialState.theme = payload;
@@ -163,9 +167,25 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 	}
 };
 
-export const onUserAddress = (address) => async (dispatch) => {
+export const onSetUserAddresses = (token) => async (dispatch) => {
 	try {
-		dispatch(setUserAddress(address));
+		const { data } = await axiosInstance(token).get(`user-addresses`);
+
+		data.data?.map((address) => {
+			if (address.is_default === true) {
+				return dispatch(onSetSelectedUserAddressId(address.id));
+			}
+		});
+
+		dispatch(setUserAddresses(data.data));
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+export const onSetSelectedUserAddressId = (address) => async (dispatch) => {
+	try {
+		dispatch(setSelectedUserAddressId(address));
 	} catch (error) {
 		console.log(error);
 	}
@@ -242,7 +262,8 @@ export const {
 	setProfileUser,
 	setRole,
 	setEmail,
-	setUserAddress,
+	setSelectedUserAddressId,
+	setUserAddresses,
 	setIsLogin,
 	login,
 	reset,

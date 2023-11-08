@@ -5,7 +5,7 @@ import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 
 const CheckoutShipmentMethod = ({
-	selectedUserAddress,
+	selectedUserAddressData,
 	totalWeight,
 	handleSelectedShippingCost,
 }) => {
@@ -15,7 +15,7 @@ const CheckoutShipmentMethod = ({
 		try {
 			const rajaOngkirQuery = {
 				origin: "152",
-				destination: selectedUserAddress?.city?.id,
+				destination: selectedUserAddressData?.city?.id,
 				weight: totalWeight,
 				courier: "jne",
 			};
@@ -31,11 +31,11 @@ const CheckoutShipmentMethod = ({
 		} catch (error) {
 			console.log(error);
 		}
-	}, [selectedUserAddress, totalWeight]);
+	}, [selectedUserAddressData, totalWeight]);
 
 	useEffect(() => {
 		getShipmentCost();
-	}, [selectedUserAddress, getShipmentCost]);
+	}, [selectedUserAddressData, getShipmentCost]);
 
 	return (
 		<section className="checkout-shipment-method p-4 my-4 md:bg-neutral-100 md:dark:bg-neutral-900 md:rounded-xl">

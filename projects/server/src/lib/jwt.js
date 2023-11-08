@@ -24,9 +24,11 @@ module.exports = {
 			if (tokentype === "verified") secret = process.env.verified_secret;
 			if (tokentype === "reset") secret = process.env.reset_secret;
 			const decodeData = jwt.verify(req.token, secret);
-			console.log(decodeData);
+			console.log("DARI VERIFY>>>>>>", decodeData);
 			req.dataToken = decodeData;
 			if (decodeData.apiKey == "Approved") {
+				console.log("MASUK NEXT>>>>>>>>>>>>>");
+				console.log("REQ.DATATOKEN VERIFY>>>>>", req.dataToken);
 				next();
 			} else {
 				throw { message: "User is not approved" };
