@@ -14,7 +14,7 @@ module.exports = {
 					total_amount: 2708000,
 					total_item: 3,
 					proof_of_payment: "image",
-					status: "completed",
+					status: "1",
 				},
 			],
 			{}
