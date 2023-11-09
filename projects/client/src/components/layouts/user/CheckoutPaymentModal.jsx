@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
 	Modal,
 	ModalContent,
@@ -10,6 +10,7 @@ import {
 } from "@nextui-org/react";
 import Media from "react-media";
 import PaymentMethodsRadioGroup from "../../uis/Radios/PaymentMethodsRadioGroup";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const CheckoutPaymentModal = ({
 	totalPrice,
@@ -17,6 +18,8 @@ const CheckoutPaymentModal = ({
 	shippingCost,
 	shippingCostString,
 	totalTransaction,
+	handleCreateOrder,
+	isLoading,
 }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -99,7 +102,9 @@ const CheckoutPaymentModal = ({
 													size="md"
 													color="primary"
 													fullWidth
-													onPress={onOpen}
+													onPress={handleCreateOrder}
+													isLoading={isLoading}
+													spinner={<MySpinner />}
 													isDisabled={!shippingCost}
 												>
 													<span className="font-bold text-black text-body-lg">

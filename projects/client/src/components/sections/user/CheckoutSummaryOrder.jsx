@@ -2,7 +2,13 @@ import React from "react";
 
 import CheckoutPaymentModal from "../../layouts/user/CheckoutPaymentModal";
 
-const CheckoutSummaryOrder = ({ totalPrice, totalQuantity, shippingCost }) => {
+const CheckoutSummaryOrder = ({
+	totalPrice,
+	totalQuantity,
+	shippingCost,
+	handleCreateOrder,
+	isLoading,
+}) => {
 	const totalPriceString = Number(totalPrice).toLocaleString("id-ID", {
 		style: "currency",
 		currency: "IDR",
@@ -45,11 +51,13 @@ const CheckoutSummaryOrder = ({ totalPrice, totalQuantity, shippingCost }) => {
 			</div>
 			<div className="checkout-pay pb-4 md:pt-2 md:pb-0">
 				<CheckoutPaymentModal
+					handleCreateOrder={handleCreateOrder}
 					shippingCost={shippingCost}
 					shippingCostString={shippingCostString}
 					totalPrice={totalPriceString}
 					totalQuantity={totalQuantity}
 					totalTransaction={totalTransactionString}
+					isLoading={isLoading}
 				/>
 			</div>
 		</section>

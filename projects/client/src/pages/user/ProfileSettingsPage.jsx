@@ -29,30 +29,11 @@ const ProfileSettingsPage = () => {
 		setOpenModal(!openModal);
 	};
 
-	const [oneTime, setOneTime] = useState(0);
-
-	const handleEdit = () => {};
-
 	const renderUserAddresses = () => {
 		return userAddresses?.map((user_address) => {
-			return (
-				<CheckoutAddressCard
-					userAddressData={user_address}
-					editButton={handleEdit}
-				/>
-			);
+			return <CheckoutAddressCard userAddressData={user_address} />;
 		});
 	};
-
-	// const fetchUserAddresses = async () => {
-	// 	try {
-	// 		const { data } = await axiosInstance().get(`user-addresses/${1}`);
-
-	// 		setUserAddresses(data.data);
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
 
 	useEffect(() => {
 		dispatch(onSetUserAddresses(token));
