@@ -11,7 +11,7 @@ module.exports = {
 				.withMessage("Please provide a valid email address.")
 				.isLength({ min: 6 })
 				.withMessage("email must be more than 5 characters!")
-				.isLength({ max: 30 })
+				.isLength({ max: 50 })
 				.withMessage("email must be less than 21 characters!")
 				.run(req);
 
@@ -38,8 +38,8 @@ module.exports = {
 			await check("username")
 				.notEmpty()
 				.withMessage("Email Must be filled!")
-				.isAlphanumeric()
-				.withMessage("Spaces are not allowed.")
+				// .isAlphanumeric()
+				// .withMessage("Spaces are not allowed.")
 				.isLength({ min: 6 })
 				.withMessage("Username must be more than 5 characters!")
 				.isLength({ max: 20 })

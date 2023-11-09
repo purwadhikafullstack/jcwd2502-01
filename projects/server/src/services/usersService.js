@@ -143,6 +143,7 @@ module.exports = {
 		try {
 			const { username } = dataToken;
 			const { password } = headers;
+			console.log(username);
 			const checkUser = await db.user.findOne({ where: { username } });
 			if (!checkUser)
 				throw { isError: true, message: "Account is not exist" };
@@ -153,10 +154,11 @@ module.exports = {
 			);
 			if (!checkPassword)
 				throw { isError: true, message: "Password is Wrong!" };
-			await db.user.update(
+			const verifyUser = await db.user.update(
 				{ status: "verified" },
 				{ where: { id: checkUser.dataValues.id } }
 			);
+			console.log(verifyUser);
 			return {
 				isError: false,
 				message: "Verification is Success",

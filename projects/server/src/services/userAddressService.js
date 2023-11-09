@@ -54,6 +54,7 @@ module.exports = {
 				latitude: latitude,
 				longitude: longitude,
 			});
+			console.log(addAddress);
 
 			return {
 				isError: false,

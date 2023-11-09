@@ -37,11 +37,11 @@ const CreateNewAddressModal = () => {
 	const [selectedCity, setSelectedCity] = useState();
 	const formik = useFormik({
 		initialValues: {
-			recipient_name: username,
+			recipient_name: "",
 			address_name: "",
 			address: "",
-			province_id: null,
-			city_id: null,
+			province_id: "",
+			city_id: "",
 		},
 		onSubmit: async (values) => {
 			// onCreateNewAddress(values);
@@ -63,7 +63,7 @@ const CreateNewAddressModal = () => {
 				province_id,
 				city_id,
 			} = values;
-
+			console.log(values);
 			const createNewAddress = await axiosInstance(accessToken).post(
 				"/user-addresses/newAddress",
 				values
@@ -136,11 +136,11 @@ const CreateNewAddressModal = () => {
 			getCities();
 		}
 	}, [getProvinces, getCities, selectedProvince]);
-	// useEffect(() => {
-	// 	formik.setFieldValue("recipient_name", username);
-	// 	console.log(selectedCity);
-	// 	console.log(selectedProvince);
-	// }, [selectedCity, selectedProvince, username]);
+	useEffect(() => {
+		formik.setFieldValue("recipient_name", username);
+		console.log(selectedCity);
+		console.log(selectedProvince);
+	}, [selectedCity, selectedProvince, username]);
 
 	return (
 		<>
@@ -165,17 +165,7 @@ const CreateNewAddressModal = () => {
 						</Button>
 						<Modal
 							isOpen={isOpen}
-							onOpenChange={(newIsOpen) => {
-								if (!newIsOpen) {
-									// Modal ditutup
-									formik.resetForm();
-									formik.setFieldValue(
-										"recipient_name",
-										username
-									);
-								}
-								onOpenChange(newIsOpen); // Set nilai isOpen sesuai dengan newIsOpen jika perlu
-							}}
+							onOpenChange={onOpenChange}
 							placement={matches.medium ? "center" : "bottom"}
 							scrollBehavior="inside"
 							// onOpenChange={()=>{onClose();}}

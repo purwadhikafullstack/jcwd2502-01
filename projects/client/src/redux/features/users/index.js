@@ -43,6 +43,9 @@ export const userSlice = createSlice({
 		setUserAddresses: (initialState, { payload }) => {
 			initialState.userAddresses = payload;
 		},
+		setStatus: (initialState, { payload }) => {
+			initialState.status = payload;
+		},
 		setThemeUser: (initialState, { payload }) => {
 			initialState.theme = payload;
 		},
@@ -228,11 +231,11 @@ export const verifyUser = (password, token) => async (dispatch) => {
 		console.log(statusUser);
 		if (statusUser.data.isError)
 			return toast.error(`${statusUser.data.message}`);
-
+		dispatch(setStatus("verified"));
 		toast.success(`${statusUser.data.message}`);
-		setTimeout(() => {
-			toast.success("Now try to login");
-		}, 1000);
+		// setTimeout(() => {
+		// 	toast.success("Now try to login");
+		// }, 1000);
 		setTimeout(() => {
 			dispatch(setIsLogin(true));
 		}, 1500);
@@ -275,5 +278,6 @@ export const {
 	reset,
 	setThemeUser,
 	setSelectedUserAddressIdMain,
+	setStatus,
 } = userSlice.actions;
 export default userSlice.reducer;
