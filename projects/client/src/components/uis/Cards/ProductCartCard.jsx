@@ -62,6 +62,7 @@ const ProductCartCard = ({ dataCart }) => {
 							base: cn("max-w-full w-full"),
 							label: "w-full",
 						}}
+						size="lg"
 						defaultSelected={status ? true : false}
 						value={product?.product_name}
 						onChange={() => handleSelectProductCart(status)}

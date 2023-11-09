@@ -12,6 +12,8 @@ import { onSetUserAddresses } from "../../redux/features/users";
 const CheckoutPage = () => {
 	const token = localStorage.getItem("accessToken");
 
+	const [isLoading, setIsLoading] = useState(false);
+
 	const { selectedItems } = useSelector((state) => state.carts);
 	const { selectedUserAddressId } = useSelector((state) => state.user);
 
@@ -86,6 +88,34 @@ const CheckoutPage = () => {
 		}
 	}, []);
 
+	const createOrder = async () => {
+		setIsLoading(true);
+
+		const orderData = {
+			total_amount: totalPrice,
+			total_item: selectedItems,
+			address_id: selectedUserAddressId,
+			warehouse_id: nearestWarehouseData.id,
+			items: selectedCheckoutProducts,
+		};
+
+		setTimeout(async () => {
+			try {
+				await axiosInstance(token).post(
+					`checkouts/create-order`,
+					orderData
+				);
+
+				navigate("/cart");
+				dispatch(onSetUserAddresses(token));
+			} catch (error) {
+				console.log("Error creating order:", error);
+			} finally {
+				setIsLoading(false);
+			}
+		}, 1500);
+	};
+
 	const handleSelectedShippingCost = (shippingCost) => {
 		setShippingCost(shippingCost);
 	};
@@ -109,12 +139,8 @@ const CheckoutPage = () => {
 		}
 	}, [selectedItems, getCheckoutDetail, navigate]);
 
-	useEffect(() => {
-		console.log("selectedCheckoutProducts >>>>", selectedCheckoutProducts);
-	}, [selectedCheckoutProducts]);
-
 	return (
-		<main className="checkout-page h-full pt-4 md:pb-20	md:w-[1080px] md:mx-auto">
+		<main className="checkout-page min-h-screen pt-4 md:pb-20 md:w-[1080px] md:mx-auto">
 			<div className="md:flex md:justify-between md:relative">
 				<div className="md:w-[694px] md:mr-8">
 					<div className="page-heading mb-4 mx-4 md:mx-0">
@@ -143,9 +169,11 @@ const CheckoutPage = () => {
 									}
 								/>
 								<CheckoutSummaryOrder
+									handleCreateOrder={createOrder}
 									totalPrice={totalPrice}
 									totalQuantity={totalQuantity}
 									shippingCost={shippingCost}
+									isLoading={isLoading}
 								/>
 							</div>
 						</div>

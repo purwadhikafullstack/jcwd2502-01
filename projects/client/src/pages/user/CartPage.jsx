@@ -81,7 +81,7 @@ const CartPage = () => {
 								<Link to={"/explore"}>
 									<Button
 										color="primary"
-										className="animate-pulse"
+										className="animate-[pulse_0.8s_ease-in-out_infinite]"
 									>
 										<span className="font-medium text-black">
 											Explore Products

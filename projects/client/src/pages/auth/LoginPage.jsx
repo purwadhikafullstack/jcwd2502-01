@@ -8,7 +8,6 @@ import { FcGoogle } from "react-icons/fc";
 import { onLoginAsync } from "../../redux/features/users";
 import { Button, Input } from "@nextui-org/react";
 import { useFormik } from "formik";
-import { debounce } from "lodash";
 import * as yup from "yup";
 
 const LoginPage = () => {
@@ -20,15 +19,13 @@ const LoginPage = () => {
 	const { role } = useSelector((state) => state.user);
 
 	const [click, setClick] = useState(true);
+
 	const handleLogin = (email, password) => {
 		if (!click) return;
 		dispatch(onLoginAsync(email, password));
 		setClick(false);
 		setTimeout(() => setClick(true), 2000);
 	};
-	// const debouncedSubmit = debounce((email, password) => {
-	// 	dispatch(onLoginAsync(email, password));
-	// }, 1500);
 
 	const formik = useFormik({
 		initialValues: {

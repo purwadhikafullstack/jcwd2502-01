@@ -154,4 +154,41 @@ module.exports = {
 			next(error);
 		}
 	},
+	createOrder: async (req, res, next) => {
+		try {
+			const { id: user_id } = req.dataToken;
+
+			const {
+				total_amount,
+				total_item,
+				address_id,
+				warehouse_id,
+				items,
+			} = req.body;
+
+			const createOrder = await db.order.create({
+				total_amount,
+				total_item,
+				status: 1,
+				user_id,
+				address_id,
+				warehouse_id,
+			});
+
+			for (const item of items) {
+				await db.order_detail.create({
+					quantity: item.quantity,
+					checked_out_price: item.product.product_price,
+					order_id: createOrder.id,
+					product_id: item.product.id,
+				});
+			}
+
+			await db.cart.destroy({ where: { status: true } });
+
+			respHandler(res, "Create order success");
+		} catch (error) {
+			next(error);
+		}
+	},
 };
