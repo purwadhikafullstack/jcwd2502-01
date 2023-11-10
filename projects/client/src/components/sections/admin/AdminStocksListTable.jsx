@@ -33,7 +33,7 @@ import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 
-const AdminProductListTable = ({ props }) => {
+const AdminStocksListTable = ({ props }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -82,7 +82,7 @@ const AdminProductListTable = ({ props }) => {
 		onSubmit: (values) => {
 			// Handle the search query submission here
 			dispatch(onSearch(values.searchQuery));
-			navigate("/admin/products");
+			navigate("/admin/stocks");
 		},
 	});
 
@@ -98,7 +98,7 @@ const AdminProductListTable = ({ props }) => {
 
 	const clear = async () => {
 		await dispatch(onClear());
-		navigate(`/admin/products${search && `?search=${search}`}`);
+		navigate(`/admin/stocks${search && `?search=${search}`}`);
 		window.location.reload(false);
 	};
 
@@ -115,7 +115,7 @@ const AdminProductListTable = ({ props }) => {
 
 	useEffect(() => {
 		navigate(
-			`/admin/products?search=${search}&brand=${brand.join(
+			`/admin/stocks?search=${search}&brand=${brand.join(
 				""
 			)}&category=${category.join(
 				""
@@ -135,10 +135,10 @@ const AdminProductListTable = ({ props }) => {
 
 	const columns = [
 		{ name: "PRODUCT INFO", uid: "product_info" },
-		{ name: "DESCRIPTION", uid: "description" },
 		{ name: "CATEGORY", uid: "category" },
 		{ name: "BRAND", uid: "brand" },
 		{ name: "PRICE", uid: "price" },
+		{ name: "STOCKS", uid: "stocks" },
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
@@ -171,12 +171,6 @@ const AdminProductListTable = ({ props }) => {
 						</p>
 					</div>
 				);
-			case "description":
-				return (
-					<p className="text-base line-clamp-1">
-						{product?.product_desc}
-					</p>
-				);
 			case "category":
 				return <Chip>{product?.category?.category_type}</Chip>;
 			case "brand":
@@ -188,6 +182,12 @@ const AdminProductListTable = ({ props }) => {
 							{productPrice}
 						</p>
 					</div>
+				);
+			case "stocks":
+				return (
+					<p className="text-base line-clamp-1">
+						{/* {product?.stocks} */}
+					</p>
 				);
 			case "actions":
 				return (
@@ -320,4 +320,4 @@ const AdminProductListTable = ({ props }) => {
 	);
 };
 
-export default AdminProductListTable;
+export default AdminStocksListTable;
