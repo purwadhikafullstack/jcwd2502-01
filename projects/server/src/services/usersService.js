@@ -251,12 +251,45 @@ module.exports = {
 			const { username, email, birth_date, gender, phone } = body;
 			// console.log(id);
 			const checkUser = await db.user.findByPk(id);
-			console.log(username);
+			console.log(phone);
 
+			if (birth_date) {
+				const dateObject = new Date(birth_date);
+
+				const year = dateObject.getFullYear();
+				const month = dateObject.getMonth() + 1;
+				const day = dateObject.getDate();
+				const formattedDate = `${year}-${month
+					.toString()
+					.padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+				console.log(formattedDate);
+
+				dataSend = {
+					username: username || checkUser.dataValues.username,
+					email: email || checkUser.dataValues.email,
+					birth_date:
+						formattedDate || checkUser.dataValues.birth_date,
+					gender: gender || checkUser.dataValues.gender,
+					phone: phone || checkUser.dataValues.phone,
+				};
+
+				const updateDataUser = await db.user.update(dataSend, {
+					where: { id },
+				});
+				console.log(updateDataUser);
+				if (!updateDataUser) {
+					return { isError: true, message: "Update Data is Failed!" };
+				} else {
+					return {
+						isError: false,
+						message: "Update Data is Success!",
+					};
+				}
+			}
 			dataSend = {
 				username: username || checkUser.dataValues.username,
 				email: email || checkUser.dataValues.email,
-				birth_date: birth_date || checkUser.dataValues.birth_date,
+				birth_date: checkUser.dataValues.birth_date,
 				gender: gender || checkUser.dataValues.gender,
 				phone: phone || checkUser.dataValues.phone,
 			};
