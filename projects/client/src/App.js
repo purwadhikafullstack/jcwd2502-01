@@ -32,6 +32,7 @@ import AdminEditProductPage from "./pages/admin/products/AdminEditProductPage";
 import AdminBrandsPage from "./pages/admin/brands/AdminBrandsPage";
 import AdminOverviewDashboardPage from "./pages/admin/home/AdminOverviewDashboardPage";
 import AdminStocksListPage from "./pages/admin/stocks/AdminStocksListPage";
+import OrderListPage from "./pages/user/OrderListPage";
 
 function App() {
 	const location = useLocation();
@@ -126,6 +127,7 @@ function App() {
 					path="/profile/settings"
 					element={<ProfileSettingsPage />}
 				/>
+				<Route path="/order-list" element={<OrderListPage />} />
 				<Route path="/cart" element={<CartPage />} />
 				<Route path="/cart/checkout" element={<CheckoutPage />} />
 

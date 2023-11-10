@@ -108,6 +108,7 @@ const CheckoutPage = () => {
 
 				navigate("/cart");
 				dispatch(onSetUserAddresses(token));
+				window.location.reload(false);
 			} catch (error) {
 				console.log("Error creating order:", error);
 			} finally {

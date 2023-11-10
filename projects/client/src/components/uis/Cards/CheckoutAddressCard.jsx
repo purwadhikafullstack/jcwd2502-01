@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import Media from "react-media";
 import { Button } from "@nextui-org/react";
@@ -25,13 +25,12 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 
 	const handleAddressButton = async (addressId) => {
 		if (location.pathname === "/profile/settings") {
-			const changeMain = await axiosInstance(accessToken).patch(
+			await axiosInstance(accessToken).patch(
 				"user-addresses/mainAddress",
 				{ id: userAddressData.id }
 			);
-			console.log(changeMain);
+
 			dispatch(onSetUserAddresses(accessToken));
-			console.log("titit>>>>", addressId);
 			dispatch(setSelectedUserAddressIdMain(addressId));
 		} else {
 			dispatch(onSetSelectedUserAddressId(addressId));
@@ -47,10 +46,6 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 		province,
 		city,
 	} = userAddressData;
-
-	useEffect(() => {
-		console.log(selectedUserAddressIdMain);
-	}, [selectedUserAddressIdMain]);
 
 	return (
 		<div

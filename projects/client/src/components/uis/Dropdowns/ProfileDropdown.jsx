@@ -15,6 +15,7 @@ import { IoLogOutOutline, IoSettingsOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout } from "../../../redux/features/users";
 import { Link, useNavigate } from "react-router-dom";
+import TransactionList from "../../../assets/icons/TransactionList";
 
 const ProfileDropdown = () => {
 	const { username } = useSelector((state) => state.user);
@@ -74,6 +75,19 @@ const ProfileDropdown = () => {
 							<IoSettingsOutline size={24} />
 							<h4 className="font-medium text-body-lg">
 								Settings
+							</h4>
+						</div>
+					</Link>
+				</DropdownItem>
+				<DropdownItem key="settings">
+					<Link to={"/order-list"}>
+						<div className="flex items-center gap-2 p-2">
+							<TransactionList
+								fill={"fill-text -ml-[0.8px]"}
+								size={24}
+							/>
+							<h4 className="font-medium text-body-lg">
+								Transaction History
 							</h4>
 						</div>
 					</Link>
