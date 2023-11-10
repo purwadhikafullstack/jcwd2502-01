@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 import {
 	Dropdown,
@@ -15,10 +15,12 @@ import { IoLogOutOutline, IoSettingsOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout } from "../../../redux/features/users";
 import { Link, useNavigate } from "react-router-dom";
+import TransactionList from "../../../assets/icons/TransactionList";
 
 const ProfileDropdown = () => {
 	const { username } = useSelector((state) => state.user);
 	const { email, status } = useSelector((state) => state.user);
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -27,8 +29,6 @@ const ProfileDropdown = () => {
 		navigate("/");
 		window.location.reload(false);
 	};
-
-	useEffect(() => {}, [status]);
 
 	return (
 		<Dropdown placement="bottom-end">
@@ -79,6 +79,19 @@ const ProfileDropdown = () => {
 						</div>
 					</Link>
 				</DropdownItem>
+				<DropdownItem key="settings">
+					<Link to={"/order-list"}>
+						<div className="flex items-center gap-2 p-2">
+							<TransactionList
+								fill={"fill-text -ml-[0.8px]"}
+								size={24}
+							/>
+							<h4 className="font-medium text-body-lg">
+								Transaction History
+							</h4>
+						</div>
+					</Link>
+				</DropdownItem>
 				<DropdownItem
 					key="logout"
 					color="danger"
@@ -95,4 +108,3 @@ const ProfileDropdown = () => {
 };
 
 export default ProfileDropdown;
-
