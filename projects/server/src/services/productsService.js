@@ -1,6 +1,7 @@
 const db = require("./../models");
 const { Op } = require("sequelize");
 const { sequelize } = require("./../models");
+const fs = require("fs");
 
 module.exports = {
 	findAllProducts: async (query) => {
@@ -155,7 +156,7 @@ module.exports = {
 
 			if (checkProduct) {
 				images.map((image) => {
-					fs.unlink(image.path);
+					fs.unlinkSync(image.path);
 				});
 				return {
 					isError: true,
@@ -210,7 +211,7 @@ module.exports = {
 			const checkProduct1 = await db.product.findByPk(productId);
 			if (!checkProduct1) {
 				images.map((image) => {
-					fs.unlink(image.path);
+					fs.unlinkSync(image.path);
 				});
 				return {
 					isError: true,
@@ -225,7 +226,7 @@ module.exports = {
 			console.log("2");
 			if (checkProduct2 && checkProduct2.dataValues.id != productId) {
 				images.map((image) => {
-					fs.unlink(image.path);
+					fs.unlinkSync(image.path);
 				});
 				return {
 					isError: true,
@@ -244,12 +245,26 @@ module.exports = {
 			console.log("4");
 
 			if (dataImages.action === "remove") {
-				await db.product_image.destroy(
-					{
-						where: { product_id: productId },
-					},
-					{ transaction: t }
-				);
+				const product_images = await db.product_image.findAll({
+					where: { product_id: productId },
+				});
+				const productPath = [];
+				if (product_images.length) {
+					product_images.map((image) => {
+						productPath.push({
+							path: image.dataValues.image,
+						});
+					});
+					await db.product_image.destroy(
+						{
+							where: { product_id: productId },
+						},
+						{ transaction: t }
+					);
+				}
+				productPath.map((v) => {
+					fs.unlinkSync(__dirname + `/../${v.path}`);
+				});
 			}
 			const updateImages = [];
 			console.log("5");
@@ -272,9 +287,7 @@ module.exports = {
 							`pathnya >>>> src/${image.dataValues.image}`
 						);
 						productPath.push({
-							path: `public/${image.dataValues.image.substring(
-								7
-							)}`,
+							path: image.dataValues.image,
 						});
 					});
 					await db.product_image.destroy(
@@ -285,12 +298,9 @@ module.exports = {
 					);
 				}
 				console.log("5.2", productPath);
-				// productPath.map((v) => {
-				// 	console.log(`path real ${v.path}`);
-				// 	fs.unlink(v.path);
-				// });
-
-				console.log("5.3");
+				productPath.map((v) => {
+					fs.unlinkSync(__dirname + `/../${v.path}`);
+				});
 				const updateProductImages = await db.product_image.bulkCreate(
 					updateImages,
 					{
@@ -312,7 +322,7 @@ module.exports = {
 		} catch (error) {
 			if (images.length) {
 				images.map((image) => {
-					fs.unlink(image.path);
+					fs.unlinkSync(image.path);
 				});
 			}
 			await t.rollback();
@@ -346,20 +356,23 @@ module.exports = {
 				where: { product_id: productId },
 			});
 			const productPath = [];
-			product_images.map((image) => {
-				productPath.push({ path: image.image });
-			});
+			if (product_images.length) {
+				product_images.map((image) => {
+					productPath.push({
+						path: image.dataValues.image,
+					});
+				});
+				await db.product_image.destroy(
+					{
+						where: { product_id: productId },
+					},
+					{ transaction: t }
+				);
+			}
 			productPath.map((v) => {
-				fs.unlink(`${v.path}`);
+				fs.unlinkSync(__dirname + `/../${v.path}`);
 			});
-			await db.product_image.destroy(
-				{
-					where: { product_id: productId },
-				},
-				{
-					transaction: t,
-				}
-			);
+
 			await t.commit();
 			return { message: "Remove product success" };
 		} catch (error) {

@@ -16,7 +16,7 @@ const AdminProductListPage = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchProductAsync());
+		// dispatch(fetchProductAsync());
 
 		return () => {
 			dispatch(onClear());
