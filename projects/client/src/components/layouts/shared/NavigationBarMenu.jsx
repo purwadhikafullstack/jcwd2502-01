@@ -68,14 +68,11 @@ const NavigationBarMenu = () => {
 								<span className="text-label-md text-white uppercase">{`verified`}</span>
 							</Chip>
 						</div>
-						<Button
-							isIconOnly
-							variant="flat"
-							size="lg"
-							className="ml-auto"
-						>
-							<IoSettingsOutline size={26} />
-						</Button>
+						<Link to={"/profile/settings"} className="ml-auto">
+							<Button isIconOnly variant="flat" size="lg">
+								<IoSettingsOutline size={26} />
+							</Button>
+						</Link>
 					</div>
 				) : (
 					<div className="flex justify-between gap-2">

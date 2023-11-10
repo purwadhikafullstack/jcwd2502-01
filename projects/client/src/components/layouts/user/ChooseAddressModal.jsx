@@ -18,7 +18,7 @@ import CreateNewAddressModal from "./CreateNewAddressModal";
 import CheckoutAddressCard from "../../uis/Cards/CheckoutAddressCard";
 import { useSelector } from "react-redux";
 
-const ChooseAddressModal = () => {
+const ChooseAddressModal = ({ resetShippingCost }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const { userAddresses } = useSelector((state) => state.user);
@@ -78,7 +78,10 @@ const ChooseAddressModal = () => {
 									<ModalFooter>
 										<Button
 											color="primary"
-											onPress={onClose}
+											onPress={() => {
+												onClose();
+												resetShippingCost();
+											}}
 											className="mb-4"
 											fullWidth
 										>

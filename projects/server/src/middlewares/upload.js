@@ -10,7 +10,7 @@ const upload = async (req, res, next) => {
 			if (!req.files.images) return next();
 
 			req.files?.images?.forEach((v) => {
-				if (v.size > 1000000) {
+				if (v.size > 3000000) {
 					throw {
 						message: `${v.originalname} is too large`,
 						files: req.files,

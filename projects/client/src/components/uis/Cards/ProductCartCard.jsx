@@ -27,6 +27,7 @@ import {
 	selectProductCart,
 } from "../../../redux/features/carts";
 import { Link } from "react-router-dom";
+import Media from "react-media";
 
 const ProductCartCard = ({ dataCart }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -61,6 +62,7 @@ const ProductCartCard = ({ dataCart }) => {
 							base: cn("max-w-full w-full"),
 							label: "w-full",
 						}}
+						size="lg"
 						defaultSelected={status ? true : false}
 						value={product?.product_name}
 						onChange={() => handleSelectProductCart(status)}
@@ -112,43 +114,7 @@ const ProductCartCard = ({ dataCart }) => {
 						>
 							<IoTrashOutline size={24} color="#f00" />
 						</Button>
-						<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-							<ModalContent>
-								{(onClose) => (
-									<>
-										<ModalHeader className="flex flex-col gap-1">
-											Warning
-										</ModalHeader>
-										<ModalBody>
-											<p>Delete this from your cart?</p>
-										</ModalBody>
-										<ModalFooter>
-											<Button
-												variant="ghost"
-												onPress={onClose}
-											>
-												<p className="font-medium">
-													Cancel
-												</p>
-											</Button>
-											<Button
-												className="bg-red-600"
-												onPress={onClose}
-												onClick={() =>
-													dispatch(
-														deleteOrder(token, id)
-													)
-												}
-											>
-												<p className="font-medium text-white">
-													Delete
-												</p>
-											</Button>
-										</ModalFooter>
-									</>
-								)}
-							</ModalContent>
-						</Modal>
+
 						<div className="quantity-controller flex items-center w-[120px]">
 							<Button
 								onClick={() =>
@@ -196,6 +162,41 @@ const ProductCartCard = ({ dataCart }) => {
 					</div>
 				</div>
 			</div>
+
+			<Modal
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}
+				placement="center"
+			>
+				<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader className="flex flex-col gap-1">
+								Warning
+							</ModalHeader>
+							<ModalBody>
+								<p>Remove this product from your cart?</p>
+							</ModalBody>
+							<ModalFooter>
+								<Button variant="ghost" onPress={onClose}>
+									<p className="font-medium">Cancel</p>
+								</Button>
+								<Button
+									className="bg-red-600"
+									onPress={onClose}
+									onClick={() =>
+										dispatch(deleteOrder(token, id))
+									}
+								>
+									<p className="font-medium text-white">
+										Remove
+									</p>
+								</Button>
+							</ModalFooter>
+						</>
+					)}
+				</ModalContent>
+			</Modal>
 		</div>
 	);
 };

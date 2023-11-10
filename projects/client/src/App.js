@@ -31,6 +31,7 @@ import AdminCreateNewProductPage from "./pages/admin/products/AdminCreateNewProd
 import AdminEditProductPage from "./pages/admin/products/AdminEditProductPage";
 import AdminBrandsPage from "./pages/admin/brands/AdminBrandsPage";
 import AdminOverviewDashboardPage from "./pages/admin/home/AdminOverviewDashboardPage";
+import AdminStocksListPage from "./pages/admin/stocks/AdminStocksListPage";
 
 function App() {
 	const location = useLocation();
@@ -150,6 +151,7 @@ function App() {
 					path="/admin/edit-product/:productName"
 					element={<AdminEditProductPage />}
 				/>
+				<Route path="/admin/stocks" element={<AdminStocksListPage />} />
 				<Route
 					path="/admin/categories"
 					element={<AdminCategoriesPage />}

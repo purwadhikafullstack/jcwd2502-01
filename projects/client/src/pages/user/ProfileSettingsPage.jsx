@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import DefaultAvatar from "../../assets/avatars/default_avatar.png";
 import { Input, Image, Button } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
@@ -7,47 +7,36 @@ import UpdateProfilePictureModal from "../../components/layouts/user/UpdateProfi
 import CheckoutAddressCard from "../../components/uis/Cards/CheckoutAddressCard";
 import { axiosInstance } from "../../lib/axios";
 import CreateNewAddressModal from "../../components/layouts/user/CreateNewAddressModal";
+import { onSetUserAddresses } from "../../redux/features/users";
 
 const ProfileSettingsPage = () => {
+	const dispatch = useDispatch();
 	const [openModal, setOpenModal] = useState(false);
 	let localTheme = localStorage.getItem("theme");
-	const { username, email, role, status, phone, gender, birth_date, theme } =
-		useSelector((state) => state.user);
+	const token = localStorage.getItem("accessToken");
+	const {
+		username,
+		email,
+		role,
+		userAddresses,
+		status,
+		phone,
+		gender,
+		birth_date,
+		theme,
+	} = useSelector((state) => state.user);
 	const onOpenModal = () => {
 		setOpenModal(!openModal);
 	};
 
-	const [userAddresses, setUserAddresses] = useState([]);
-	const [oneTime, setOneTime] = useState(0);
-
-	const handleEdit = () => {};
-
 	const renderUserAddresses = () => {
 		return userAddresses?.map((user_address) => {
-			return (
-				<CheckoutAddressCard
-					userAddressData={user_address}
-					editButton={handleEdit}
-				/>
-			);
+			return <CheckoutAddressCard userAddressData={user_address} />;
 		});
 	};
 
-	const fetchUserAddresses = async () => {
-		try {
-			const { data } = await axiosInstance().get(`user-addresses/${1}`);
-
-			setUserAddresses(data.data);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	useEffect(() => {
-		fetchUserAddresses();
-	}, []);
-
-	useEffect(() => {
+		dispatch(onSetUserAddresses(token));
 		window.scrollTo({ top: 0 });
 	}, []);
 

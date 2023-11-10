@@ -2,7 +2,15 @@ import React, { useEffect } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 
-import { Button } from "@nextui-org/react";
+import {
+	Button,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalFooter,
+	ModalHeader,
+	useDisclosure,
+} from "@nextui-org/react";
 
 import ProductCartCard from "../../components/uis/Cards/ProductCartCard";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,9 +19,11 @@ import EmptyCartSVG from "../../assets/illustrations/EmptyCartSVG";
 import Footer from "../../components/layouts/shared/Footer";
 
 const CartPage = () => {
+	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
 	const token = localStorage.getItem("accessToken");
 
-	const { carts, totalPrice, selectedItems } = useSelector(
+	const { carts, totalPrice, totalWeight, selectedItems } = useSelector(
 		(state) => state.carts
 	);
 
@@ -27,6 +37,14 @@ const CartPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
+	const handleGoToCheckout = () => {
+		if (totalWeight <= 30000) {
+			navigate("/cart/checkout");
+		} else {
+			onOpen();
+		}
+	};
+
 	useEffect(() => {
 		dispatch(fetchCartAsync(token));
 		window.scrollTo({ top: 0 });
@@ -39,7 +57,7 @@ const CartPage = () => {
 					<h3 className="font-bold text-headline-sm">Cart</h3>
 				</div>
 				<div className="page-body md:grid md:grid-cols-6">
-					<div className="product-cart-list w-full col-span-4">
+					<div className="product-cart-list w-full col-span-4 z-0">
 						{carts.length ? (
 							<div className="product-cart-list-wrapper">
 								<div>
@@ -63,7 +81,7 @@ const CartPage = () => {
 								<Link to={"/explore"}>
 									<Button
 										color="primary"
-										className="animate-pulse"
+										className="animate-[pulse_0.8s_ease-in-out_infinite]"
 									>
 										<span className="font-medium text-black">
 											Explore Products
@@ -75,8 +93,8 @@ const CartPage = () => {
 					</div>
 					<div className="cart-action col-span-2">
 						<div className="cart-action-card md:col-span-2 md:ml-12 w-full md:w-[360px] md:fixed">
-							<div className="bg-background md:rounded-lg fixed bottom-0 left-0 right-0 md:sticky md:top-[140px] md:bottom-auto shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)]">
-								<div className="flex flex-col p-6 pb-10 md:p-6 text-neutral-700">
+							<div className="bg-background md:rounded-lg fixed bottom-0 left-0 right-0 md:sticky md:top-[140px] md:bottom-auto shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] z-10 md:border-2 border-primary-100 dark:border-primary-900">
+								<div className="flex flex-col p-6 pb-10 md:p-6 text-neutral-700 z-10">
 									<div className="hidden md:block order-summary mb-4">
 										<h5 className="text-text font-bold text-lg mb-4">
 											Shopping summary
@@ -105,9 +123,7 @@ const CartPage = () => {
 											isDisabled={
 												totalPrice ? false : true
 											}
-											onPress={() =>
-												navigate("/cart/checkout")
-											}
+											onPress={handleGoToCheckout}
 										>
 											<span className="text-black font-medium text-body-lg">
 												Buy {`(${selectedItems})`}
@@ -123,6 +139,34 @@ const CartPage = () => {
 			<footer className="hidden md:block">
 				<Footer />
 			</footer>
+			<Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top">
+				<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader className="flex flex-col gap-1">
+								Warning
+							</ModalHeader>
+							<ModalBody>
+								<p>
+									Some items are exceeding the 30kg limit, so
+									we should say goodbye to a few. Please
+									unselect some products.
+								</p>
+							</ModalBody>
+							<ModalFooter>
+								<Button
+									className="bg-primary-500"
+									onPress={onClose}
+								>
+									<p className="font-medium text-black">
+										Okay
+									</p>
+								</Button>
+							</ModalFooter>
+						</>
+					)}
+				</ModalContent>
+			</Modal>
 		</>
 	);
 };

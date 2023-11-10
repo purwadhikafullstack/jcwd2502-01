@@ -24,7 +24,10 @@ const OrderAction = () => {
 		return success ? (
 			<SuccessAddToCartModal
 				productDetailData={productDetail}
-				success={success}
+				open={success}
+				handleSuccessState={() => {
+					setSuccess(false);
+				}}
 			/>
 		) : null;
 	}, [success]);
@@ -83,7 +86,7 @@ const OrderAction = () => {
 		<>
 			<section className="order-action">
 				<div className="cart-action-card md:col-span-2 md:ml-12 w-full md:w-[320px] md:fixed">
-					<div className="bg-background md:rounded-lg fixed bottom-0 left-0 right-0 md:sticky md:top-[140px] md:bottom-auto shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)]">
+					<div className="bg-background md:rounded-lg fixed bottom-0 left-0 right-0 md:sticky md:top-[140px] md:bottom-auto shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] md:border-2 border-primary-100 dark:border-primary-900">
 						<div className="flex flex-col p-4 pb-10 md:p-6 text-neutral-700">
 							<div className="hidden md:block title mb-2">
 								<h5 className="font-bold text-text">
@@ -98,9 +101,7 @@ const OrderAction = () => {
 										size="sm"
 										variant="light"
 										radius="full"
-										isDisabled={
-											selectedAmount <= 1 ? true : false
-										}
+										isDisabled={selectedAmount <= 1}
 										onClick={() => {
 											onChangeAmount("minus");
 										}}
@@ -124,11 +125,7 @@ const OrderAction = () => {
 										color="primary"
 										size="sm"
 										variant="light"
-										isDisabled={
-											selectedAmount >= stocks
-												? true
-												: false
-										}
+										isDisabled={selectedAmount >= stocks}
 										radius="full"
 										onClick={() => {
 											onChangeAmount("plus");
@@ -169,9 +166,9 @@ const OrderAction = () => {
 									disabled={!stocks}
 									onClick={() => handleOrder()}
 								>
-									<span className="text-black font-medium flex items-center gap-2">
-										<span className="text-[24px]">+</span>{" "}
-										Add to cart
+									<span className="text-black font-bold text-base flex items-center gap-2">
+										<span className="text-xl">+</span>
+										<span>Add to cart</span>
 									</span>
 								</Button>
 							</div>
