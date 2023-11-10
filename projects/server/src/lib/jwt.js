@@ -17,6 +17,7 @@ module.exports = {
 	},
 	verify: (req, res, next) => {
 		try {
+			console.log(req.token);
 			const { authorization, tokentype } = req.headers;
 
 			if (!authorization) throw { message: "token was not found" };
@@ -25,10 +26,8 @@ module.exports = {
 
 			if (tokentype === "verified") secret = process.env.verified_secret;
 			if (tokentype === "reset") secret = process.env.reset_secret;
-
 			const decodeData = jwt.verify(req.token, secret);
 			req.dataToken = decodeData;
-
 			if (decodeData.apiKey == "Approved") {
 				next();
 			} else {
