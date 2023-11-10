@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import {
 	Dropdown,
@@ -19,7 +19,6 @@ import { Link, useNavigate } from "react-router-dom";
 const ProfileDropdown = () => {
 	const { username } = useSelector((state) => state.user);
 	const { email, status } = useSelector((state) => state.user);
-
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -28,6 +27,8 @@ const ProfileDropdown = () => {
 		navigate("/");
 		window.location.reload(false);
 	};
+
+	useEffect(() => {}, [status]);
 
 	return (
 		<Dropdown placement="bottom-end">
@@ -94,3 +95,4 @@ const ProfileDropdown = () => {
 };
 
 export default ProfileDropdown;
+
