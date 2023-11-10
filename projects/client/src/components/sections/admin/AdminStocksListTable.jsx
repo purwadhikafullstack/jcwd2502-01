@@ -277,8 +277,8 @@ const AdminStocksListTable = ({ props }) => {
 				</div>
 				<div className="flex justify-between items-center">
 					<span className="text-default-400 text-small">
-						Showing {products?.length} products out of {count}{" "}
-						products.
+						Showing {1 + offset}-{offset + products?.length} out of{" "}
+						{count} products.
 					</span>
 				</div>
 			</div>
