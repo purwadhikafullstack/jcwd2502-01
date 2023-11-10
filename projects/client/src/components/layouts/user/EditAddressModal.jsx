@@ -18,11 +18,13 @@ import { useFormik } from "formik";
 import { axiosInstance } from "../../../lib/axios";
 import toast, { Toaster } from "react-hot-toast";
 import * as yup from "yup";
+import { useDispatch } from "react-redux";
+import { onSetUserAddresses } from "../../../redux/features/users";
 
 export default function App({ data }) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [isLoading, setIsLoading] = useState(false);
-
+	const dispatch = useDispatch();
 	const [provinces, setProvinces] = useState([]);
 	const [selectedProvince, setSelectedProvince] = useState();
 	const [selectedCity, setSelectedCity] = useState();
@@ -108,8 +110,9 @@ export default function App({ data }) {
 				newWarehouseData
 			);
 			console.log(updateAddress);
-			window.location.reload(false);
+			// window.location.reload(false);
 			setIsLoading(false);
+			dispatch(onSetUserAddresses(accessToken));
 			return;
 		} catch (error) {
 			console.log(error);
@@ -314,6 +317,7 @@ export default function App({ data }) {
 												fullWidth
 												type="submit"
 												onClick={formik.handleSubmit}
+												onPress={onClose}
 											>
 												<span className="font-bold text-black">
 													Save changes

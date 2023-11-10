@@ -36,7 +36,7 @@ const AdminStocksListPage = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchProductAsync());
+		// dispatch(fetchProductAsync());
 	}, []);
 
 	return (

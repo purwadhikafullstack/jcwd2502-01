@@ -12,6 +12,9 @@ const initialState = {
 	selectedUserAddressId: null,
 	userAddresses: [],
 	status: "unverified",
+	gender: "",
+	birth_date: "",
+	phone: "",
 	theme: "",
 };
 
@@ -43,6 +46,9 @@ export const userSlice = createSlice({
 		setUserAddresses: (initialState, { payload }) => {
 			initialState.userAddresses = payload;
 		},
+		setStatus: (initialState, { payload }) => {
+			initialState.status = payload;
+		},
 		setThemeUser: (initialState, { payload }) => {
 			initialState.theme = payload;
 		},
@@ -63,21 +69,6 @@ export const userSlice = createSlice({
 
 export const onLoginAsync = (email, password) => async (dispatch) => {
 	try {
-		// console.log(email);
-		// console.log(password);
-		// const hasSymbol = email.indexOf("@");
-		// const hasDot = email.indexOf(".");
-
-		// if (!email || !password) {
-		// 	return toast.error("Please fill out this field.");
-		// } else if (hasSymbol === -1 || hasDot === -1) {
-		// 	return toast.error("Please provide a valid email address.");
-		// } else if (password.length < 6) {
-		// 	return toast.error(
-		// 		"The Password must be at least 6 characters long"
-		// 	);
-		// }
-
 		const checkUser = await axiosInstance().post("/users/login", {
 			email: email,
 			password: password,
@@ -228,11 +219,11 @@ export const verifyUser = (password, token) => async (dispatch) => {
 		console.log(statusUser);
 		if (statusUser.data.isError)
 			return toast.error(`${statusUser.data.message}`);
-
+		dispatch(setStatus("verified"));
 		toast.success(`${statusUser.data.message}`);
-		setTimeout(() => {
-			toast.success("Now try to login");
-		}, 1000);
+		// setTimeout(() => {
+		// 	toast.success("Now try to login");
+		// }, 1000);
 		setTimeout(() => {
 			dispatch(setIsLogin(true));
 		}, 1500);
@@ -275,5 +266,6 @@ export const {
 	reset,
 	setThemeUser,
 	setSelectedUserAddressIdMain,
+	setStatus,
 } = userSlice.actions;
 export default userSlice.reducer;

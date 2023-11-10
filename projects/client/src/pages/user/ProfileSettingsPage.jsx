@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DefaultAvatar from "../../assets/avatars/default_avatar.png";
-import { Input, Image, Button } from "@nextui-org/react";
+import { Input, Image, Button, Tooltip } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
 import UpdateProfilePictureModal from "../../components/layouts/user/UpdateProfilePictureModal";
 import CheckoutAddressCard from "../../components/uis/Cards/CheckoutAddressCard";
 import { axiosInstance } from "../../lib/axios";
 import CreateNewAddressModal from "../../components/layouts/user/CreateNewAddressModal";
 import { onSetUserAddresses } from "../../redux/features/users";
+import EditPersonalInformationModal from "../../components/layouts/user/EditPersonalInformationModal";
+import EditPersonalContactModal from "../../components/layouts/user/EditPersonalContactModal";
+import { BiEdit } from "react-icons/bi";
+import { useStateContext } from "../../contexts/ContextProvider";
 
 const ProfileSettingsPage = () => {
 	const dispatch = useDispatch();
 	const [openModal, setOpenModal] = useState(false);
+	const { openEditWarehouseModal, setOpenEditWarehouseModal } =
+		useStateContext();
+	const onOpenEditWarehouseModal = (warehouse_id) => {
+		setOpenEditWarehouseModal(!openEditWarehouseModal);
+		// setSelectedWarehouseId(warehouse_id);
+	};
 	let localTheme = localStorage.getItem("theme");
 	const token = localStorage.getItem("accessToken");
 	const {
@@ -77,18 +87,26 @@ const ProfileSettingsPage = () => {
 						</section>
 						<section className="profile-biodata-section md:w-1/2 md:mt-0 mt-5">
 							<div className="biodata text-lg">
-								<h4 className="text-xl font-bold mb-4">
-									Personal Information
-								</h4>
+								<div className="flex items-center mb-4">
+									<h4 className="text-xl font-bold ">
+										Personal Information
+									</h4>
+									<EditPersonalInformationModal />
+								</div>
 								<h4>Username: {`${username}`}</h4>
 								<h4>
 									Birth of Date:{" "}
 									{birth_date ? birth_date : "-"}
 								</h4>
 								<h4>Gender: {gender ? gender : "-"}</h4>
-								<h4 className="text-xl font-bold my-4">
-									Personal Contact
-								</h4>
+							</div>
+							<div className="biodata text-lg">
+								<div className="flex items-center mb-4">
+									<h4 className="text-xl font-bold">
+										Personal Contact
+									</h4>
+									<EditPersonalContactModal />
+								</div>
 								<h4>Email: {email}</h4>
 								<h4>
 									Status:{" "}
@@ -147,6 +165,12 @@ const ProfileSettingsPage = () => {
 				open={openModal}
 				handleOpenUpdateProfilePictureModal={onOpenModal}
 			/>
+			{openEditWarehouseModal ? (
+				<EditPersonalInformationModal
+					handleOpenEditWarehouseModal={onOpenEditWarehouseModal}
+					// warehouseId={selectedWarehouseId}
+				/>
+			) : null}
 		</div>
 	);
 };

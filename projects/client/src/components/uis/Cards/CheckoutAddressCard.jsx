@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Media from "react-media";
 import { Button } from "@nextui-org/react";
@@ -24,16 +24,35 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 	);
 
 	const handleAddressButton = async (addressId) => {
-		if (location.pathname === "/profile/settings") {
-			await axiosInstance(accessToken).patch(
-				"user-addresses/mainAddress",
-				{ id: userAddressData.id }
-			);
+		try {
+			if (location.pathname === "/profile/settings") {
+				const changeMain = await axiosInstance(accessToken).patch(
+					"/user-addresses/mainAddress",
+					{ id: userAddressData.id }
+				);
+				console.log(changeMain);
+				dispatch(onSetUserAddresses(accessToken));
+				console.log("titit>>>>", addressId);
+				dispatch(setSelectedUserAddressIdMain(addressId));
+			} else {
+				dispatch(onSetSelectedUserAddressId(addressId));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
+	const handleDeleteAddress = async (addressId) => {
+		try {
+			console.log(addressId.id);
+			const deleteAddress = await axiosInstance(accessToken).delete(
+				"/user-addresses/deleteAddress",
+				{ data: { id: addressId.id } }
+			);
+			console.log(deleteAddress);
 			dispatch(onSetUserAddresses(accessToken));
-			dispatch(setSelectedUserAddressIdMain(addressId));
-		} else {
-			dispatch(onSetSelectedUserAddressId(addressId));
+		} catch (error) {
+			console.log(error);
 		}
 	};
 
@@ -46,6 +65,10 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 		province,
 		city,
 	} = userAddressData;
+
+	useEffect(() => {
+		console.log(selectedUserAddressIdMain);
+	}, [selectedUserAddressIdMain]);
 
 	return (
 		<div
@@ -84,7 +107,10 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 								ubah
 							</button> */}
 						<EditAddressModal data={userAddressData} />
-						<button className="px-2 text-green-500 font-medium">
+						<button
+							onClick={() => handleDeleteAddress(userAddressData)}
+							className="px-2 text-green-500 font-medium"
+						>
 							hapus
 						</button>
 					</div>
