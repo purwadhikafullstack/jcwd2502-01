@@ -5,12 +5,13 @@ const Router = express.Router();
 const { productsController } = require("../controllers"); // otomatis baca index.js
 
 //* Import Middleware
-// const upload = require("./../middlewares/upload");
+const upload = require("./../middlewares/upload");
 // const { verify } = require("./../lib/jwt");
 
 Router.get("/all", productsController.getAllProducts);
 Router.get("/:productName", productsController.getProduct);
-Router.post("/", productsController.createProduct);
-Router.patch("/:productId", productsController.updateProduct);
+Router.post("/", upload, productsController.createProduct);
+Router.patch("/:productId", upload, productsController.updateProduct);
+Router.delete("/:productId", productsController.deleteProduct);
 
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js

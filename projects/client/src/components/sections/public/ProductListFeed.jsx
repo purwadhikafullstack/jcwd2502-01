@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import ProductCard from "../../uis/Cards/ProductCard";
 import { Pagination } from "@nextui-org/react";
 
-import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -14,6 +13,7 @@ import {
 	setCategory,
 	setPagination,
 } from "../../../redux/features/products";
+
 import NotFound from "../../../assets/illustrations/NotFoundillustration.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -92,46 +92,40 @@ const ProductListFeed = (props) => {
 	}, [orderField, orderDirection, search, page, category, brand]);
 
 	return (
-		<>
-			<div className="product-list md:w-full md:h-full md:pl-8">
-				{products?.length ? (
-					<>
-						<div className="grid-wrapper grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 py-4 md:py-0">
-							{renderProductFeed()}
-						</div>
-					</>
-				) : (
-					<>
-						<div className="w-full h-[50vh] py-4">
-							<img
-								src={NotFound}
-								alt=""
-								className="w-44 md:w-64 mx-auto mt-8"
-							/>
-
-							<h1 className="font-bold text-title-lg text-center pt-4">
-								Product not found
-							</h1>
-						</div>
-					</>
-				)}
-				<div className="flex justify-center items-center pt-12 pb-12 md:pb-0 ">
-					<Pagination
-						size="md"
-						showControls
-						total={totalPage ? totalPage : 1}
-						page={page ? page : 0}
-						color="secondary"
-						variant="flat"
-						className="z-0"
-						onChange={(e) => {
-							dispatch(setPagination(e, (e - 1) * 12));
-							window.scrollTo({ top: 0, behavior: "smooth" });
-						}}
-					/>
+		<div className="product-list md:w-full md:h-full md:pl-8">
+			{products?.length ? (
+				<div className="grid-wrapper grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 py-4 md:py-0">
+					{renderProductFeed()}
 				</div>
+			) : (
+				<div className="w-full h-[50vh] py-4">
+					<img
+						src={NotFound}
+						alt=""
+						className="w-44 md:w-64 mx-auto mt-8"
+					/>
+
+					<h1 className="font-bold text-title-lg text-center pt-4">
+						Product not found
+					</h1>
+				</div>
+			)}
+			<div className="flex justify-center items-center pt-12 pb-12 md:pb-0 ">
+				<Pagination
+					size="md"
+					showControls
+					total={totalPage ? totalPage : 1}
+					page={page ? page : 0}
+					color="secondary"
+					variant="flat"
+					className="z-0"
+					onChange={(e) => {
+						dispatch(setPagination(e, (e - 1) * 12));
+						window.scrollTo({ top: 0, behavior: "smooth" });
+					}}
+				/>
 			</div>
-		</>
+		</div>
 	);
 };
 

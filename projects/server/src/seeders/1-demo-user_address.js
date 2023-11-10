@@ -15,7 +15,8 @@ module.exports = {
 					address: "Jalan something",
 					province_id: "6",
 					city_id: "151",
-					address_location: "coordinate",
+					latitude: "-6.161569",
+					longitude: "106.7438905",
 				},
 			],
 			{}

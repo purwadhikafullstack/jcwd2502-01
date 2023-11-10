@@ -1,5 +1,25 @@
+
 const db = require("./../models");
 const { Op } = require("sequelize");
+const fetch = require("node-fetch");
+const zlib = require("zlib");
+
+const getLatitudeLongitude = async (cityName) => {
+	try {
+		const response = await fetch(
+			`${process.env.OPENCAGE_BASE_URL}q=${cityName},indonesia&key=${process.env.OPENCAGE_API_KEY}`
+		);
+		const responseJson = await response.json();
+		const result = responseJson.results[0];
+		const geometry = result.geometry;
+		const latitude = geometry.lat;
+		const longitude = geometry.lng;
+		return { latitude, longitude };
+	} catch (error) {
+		console.log(error);
+		throw error;
+	}
+};
 
 module.exports = {
 	findAllWarehouses: async () => {
@@ -8,7 +28,7 @@ module.exports = {
 				attributes: [
 					"id",
 					"warehouse_name",
-					"warehouse_location",
+					// "warehouse_location",
 					"warehouse_address",
 				],
 				include: [
@@ -40,7 +60,7 @@ module.exports = {
 				attributes: [
 					"id",
 					"warehouse_name",
-					"warehouse_location",
+					// "warehouse_location",
 					"warehouse_address",
 				],
 				include: [
@@ -66,13 +86,21 @@ module.exports = {
 	},
 	addWarehouse: async (data, adminId) => {
 		try {
+			const { city_id } = data;
+			const cityName = await db.city.findOne({ where: { id: city_id } });
+			const { latitude, longitude } = await getLatitudeLongitude(
+				cityName.dataValues.city_name
+			);
+			data.latitude = latitude;
+			data.longitude = longitude;
 			const createWarehouse = await db.warehouse.create(data);
-			if (adminId) {
-				await db.user.update(
-					{ warehouse_id: createWarehouse.id },
-					{ where: { id: adminId } }
-				);
-			}
+
+			// if (adminId) {
+			// 	await db.user.update(
+			// 		{ warehouse_id: createWarehouse.id },
+			// 		{ where: { id: adminId } }
+			// 	);
+			// }
 			return { message: "Create warehouse success" };
 		} catch (error) {
 			return error;
@@ -80,6 +108,13 @@ module.exports = {
 	},
 	updateWarehouse: async (warehouseId, data) => {
 		try {
+			const { city_id } = data;
+			const cityName = await db.city.findOne({ where: { id: city_id } });
+			const { latitude, longitude } = await getLatitudeLongitude(
+				cityName.dataValues.city_name
+			);
+			data.latitude = latitude;
+			data.longitude = longitude;
 			const updatedWarehouse = await db.warehouse.update(data, {
 				where: { id: warehouseId },
 			});
@@ -110,3 +145,4 @@ module.exports = {
 		}
 	},
 };
+

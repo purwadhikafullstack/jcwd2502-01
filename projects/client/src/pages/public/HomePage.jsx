@@ -12,15 +12,13 @@ const HomePage = () => {
 	}, []);
 
 	return (
-		<>
-			<main className="main-home-page bg-background">
+		<main className="main-home-page bg-background">
 				<PromotionBanner />
 				<BestSellingGears />
 				<GearCategories />
 				<HomeProductFeeds />
 				<FooterPromotion />
 			</main>
-		</>
 	);
 };
 

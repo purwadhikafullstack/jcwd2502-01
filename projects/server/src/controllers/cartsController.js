@@ -16,19 +16,27 @@ module.exports = {
 	},
 	addToCart: async (req, res, next) => {
 		try {
-			const { product_id, quantity } = req.body;
+			const { product_id, quantity, total_stocks } = req.body;
 			const { id } = req.dataToken;
-			console.log(product_id, quantity);
+
 			const [cart, created] = await db.cart.findOrCreate({
 				where: { product_id, user_id: id },
-				defaults: { quantity },
+				defaults: { quantity, product_id, user_id: id },
 			});
-			console.log("disini");
-			console.log(cart);
-			console.log(created);
+
 			if (!created) {
 				const updatedQuantity = cart.quantity + quantity;
-				await cart.update({ quantity: updatedQuantity });
+
+				if (updatedQuantity > total_stocks) {
+					throw {
+						message: `Purchase Allowance: Up to ${total_stocks} Items`,
+					};
+				}
+
+				await cart.update(
+					{ quantity: updatedQuantity },
+					{ where: { user_id: id, product_id } }
+				);
 			}
 
 			respHandler(res, "Post product to cart success", cart);
@@ -38,11 +46,12 @@ module.exports = {
 	},
 	updateProductCart: async (req, res, next) => {
 		try {
-			const { id } = req.params;
+			const { cart_id } = req.params;
+			const { id } = req.dataToken;
 			const { change } = req.query;
 
 			const getCart = await db.cart.findOne({
-				where: { id },
+				where: { id: cart_id, user_id: id },
 			});
 
 			let quantity = Number(getCart.quantity);
@@ -54,12 +63,15 @@ module.exports = {
 			}
 
 			if (quantity === 0) {
-				await db.cart.destroy({ where: { id } });
+				await db.cart.destroy({ where: { id: cart_id, user_id: id } });
 
 				return respHandler(res, "Delete Cart Success", null);
 			}
 
-			await db.cart.update({ quantity }, { where: { id } });
+			await db.cart.update(
+				{ quantity },
+				{ where: { id: cart_id, user_id: id } }
+			);
 
 			respHandler(res, "Update Cart Success", null);
 		} catch (error) {
@@ -68,11 +80,53 @@ module.exports = {
 	},
 	deleteProductCart: async (req, res, next) => {
 		try {
-			const { id } = req.params;
+			const { cart_id } = req.params;
+			const { id } = req.dataToken;
 
-			const deleteCart = await db.cart.destroy({ where: { id } });
+			const deleteCart = await db.cart.destroy({
+				where: { id: cart_id, user_id: id },
+			});
 
 			respHandler(res, "Delete Cart Success", deleteCart);
+		} catch (error) {
+			next(error);
+		}
+	},
+	selectProductCart: async (req, res, next) => {
+		try {
+			const { type } = req.body;
+			const { cart_id } = req.params;
+			const { id } = req.dataToken;
+
+			if (type === "checked") {
+				await db.cart.update(
+					{ status: true },
+					{
+						where: {
+							id: cart_id,
+							user_id: id,
+						},
+					}
+				);
+
+				respHandler(res, "Select Cart Success");
+			}
+
+			if (type === "unchecked") {
+				await db.cart.update(
+					{ status: false },
+					{
+						where: {
+							id: cart_id,
+							user_id: id,
+						},
+					}
+				);
+
+				respHandler(res, "Deselect Cart Success");
+			}
+
+			respHandler(res, "Empty command!");
 		} catch (error) {
 			next(error);
 		}

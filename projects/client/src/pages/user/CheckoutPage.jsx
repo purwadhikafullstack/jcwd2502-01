@@ -1,53 +1,186 @@
 import React, { useCallback, useEffect, useState } from "react";
-
-import Footer from "../../components/layouts/shared/Footer";
-import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
-import CheckoutShipmentMethod from "./CheckoutShipmentMethod";
-import CheckoutOrderList from "./CheckoutOrderList";
-import CheckoutAddress from "./CheckoutAddress";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "../../lib/axios";
+import { useNavigate } from "react-router-dom";
+
+import CheckoutAddress from "../../components/sections/user/CheckoutAddress";
+import CheckoutOrderList from "../../components/sections/user/CheckoutOrderList";
+import CheckoutShipmentMethod from "../../components/sections/user/CheckoutShipmentMethod";
+import CheckoutSummaryOrder from "../../components/sections/user/CheckoutSummaryOrder";
+import { onSetUserAddresses } from "../../redux/features/users";
 
 const CheckoutPage = () => {
-	const [selectedUserAddress, setSelectedUserAddress] = useState();
+	const token = localStorage.getItem("accessToken");
 
-	const { user_address } = useSelector((state) => state.user);
+	const [isLoading, setIsLoading] = useState(false);
 
-	const fetchSelectedUserAddress = useCallback(async () => {
+	const { selectedItems } = useSelector((state) => state.carts);
+	const { selectedUserAddressId } = useSelector((state) => state.user);
+
+	const [selectedUserAddressData, setSelectedUserAddressData] =
+		useState(null);
+	const [nearestWarehouseData, setNearestWarehouseData] = useState(null);
+	const [selectedCheckoutProducts, setSelectedCheckoutProducts] = useState(
+		[]
+	);
+	const [totalPrice, setTotalPrice] = useState(0);
+	const [totalQuantity, setTotalQuantity] = useState(0);
+	const [totalWeight, setTotalWeight] = useState(0);
+	const [shippingCost, setShippingCost] = useState(0);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const resetShippingCost = () => {
+		setShippingCost(0);
+	};
+
+	const fetchOriginAndDestination = useCallback(async () => {
 		try {
-			const { data } = await axiosInstance().get(
-				`user-addresses/${1}?address_id=${user_address}`
+			const selectedUserAddress = await axiosInstance(token).get(
+				`user-addresses/${selectedUserAddressId}`
 			);
 
-			setSelectedUserAddress(data.data);
+			const nearestWarehouse = await axiosInstance(token).get(
+				`checkouts/nearest-warehouse/${selectedUserAddressId}`
+			);
+
+			setSelectedUserAddressData(selectedUserAddress.data.data);
+			setNearestWarehouseData(nearestWarehouse.data.data);
 		} catch (error) {
 			console.log(error);
 		}
-	}, [user_address]);
+	}, [selectedUserAddressId]);
+
+	const getCheckoutDetail = useCallback(async () => {
+		try {
+			const { data } = await axiosInstance(token).get(
+				`checkouts/selected-products`
+			);
+
+			setSelectedCheckoutProducts(data.data);
+
+			const totalDetails = data.data?.reduce(
+				(acc, item) => {
+					const quantity = item.quantity;
+					const product = item.product;
+					const productPrice = product.product_price;
+					const weight = product.weight;
+
+					acc.totalQuantity += quantity;
+					acc.totalPrice += quantity * productPrice;
+					acc.totalWeight += quantity * weight;
+
+					return acc;
+				},
+				{
+					totalQuantity: 0,
+					totalPrice: 0,
+					totalWeight: 0,
+				}
+			);
+
+			setTotalQuantity(totalDetails.totalQuantity);
+			setTotalPrice(totalDetails.totalPrice);
+			setTotalWeight(totalDetails.totalWeight);
+		} catch (error) {
+			console.log(error);
+		}
+	}, []);
+
+	const createOrder = async () => {
+		setIsLoading(true);
+
+		const orderData = {
+			total_amount: totalPrice,
+			total_item: selectedItems,
+			address_id: selectedUserAddressId,
+			warehouse_id: nearestWarehouseData.id,
+			items: selectedCheckoutProducts,
+		};
+
+		setTimeout(async () => {
+			try {
+				await axiosInstance(token).post(
+					`checkouts/create-order`,
+					orderData
+				);
+
+				navigate("/cart");
+				dispatch(onSetUserAddresses(token));
+			} catch (error) {
+				console.log("Error creating order:", error);
+			} finally {
+				setIsLoading(false);
+			}
+		}, 1500);
+	};
+
+	const handleSelectedShippingCost = (shippingCost) => {
+		setShippingCost(shippingCost);
+	};
 
 	useEffect(() => {
-		if (user_address) {
-			fetchSelectedUserAddress();
+		dispatch(onSetUserAddresses(token));
+		window.scrollTo({ top: 0 });
+	}, []);
+
+	useEffect(() => {
+		if (selectedUserAddressId) {
+			fetchOriginAndDestination();
 		}
-	}, [user_address]);
+	}, [selectedUserAddressId, fetchOriginAndDestination]);
+
+	useEffect(() => {
+		if (!selectedItems) {
+			navigate("/cart");
+		} else {
+			getCheckoutDetail();
+		}
+	}, [selectedItems, getCheckoutDetail, navigate]);
 
 	return (
-		<>
-			<main className="checkout-page h-full pt-4 md:pb-20 md:max-w-[720px] md:mx-auto">
-				<div className="page-heading mb-4 mx-4 md:mx-0">
-					<h3 className="font-bold text-headline-sm">Checkout</h3>
+		<main className="checkout-page min-h-screen pt-4 md:pb-20 md:w-[1080px] md:mx-auto">
+			<div className="md:flex md:justify-between md:relative">
+				<div className="md:w-[694px] md:mr-8">
+					<div className="page-heading mb-4 mx-4 md:mx-0">
+						<h3 className="font-bold text-headline-sm">Checkout</h3>
+					</div>
+					<CheckoutAddress
+						selectedUserAddressData={selectedUserAddressData}
+						resetShippingCost={resetShippingCost}
+					/>
+					<CheckoutOrderList
+						selectedCheckoutProducts={selectedCheckoutProducts}
+					/>
 				</div>
-				<CheckoutAddress selectedUserAddress={selectedUserAddress} />
-				<CheckoutOrderList />
-				<CheckoutShipmentMethod
-					selectedUserAddress={selectedUserAddress}
-				/>
-				<CheckoutSummaryOrder />
-			</main>
-			<footer className="hidden md:block">
-				<Footer />
-			</footer>
-		</>
+				<div className="md:w-[380px] md:relative">
+					<div className="md:relative">
+						<div className="md:fixed md:w-[380px]">
+							<div>
+								<CheckoutShipmentMethod
+									totalWeight={totalWeight}
+									nearestWarehouseData={nearestWarehouseData}
+									handleSelectedShippingCost={
+										handleSelectedShippingCost
+									}
+									selectedUserAddressData={
+										selectedUserAddressData
+									}
+								/>
+								<CheckoutSummaryOrder
+									handleCreateOrder={createOrder}
+									totalPrice={totalPrice}
+									totalQuantity={totalQuantity}
+									shippingCost={shippingCost}
+									isLoading={isLoading}
+								/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
 	);
 };
 

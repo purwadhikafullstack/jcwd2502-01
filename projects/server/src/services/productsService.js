@@ -101,6 +101,7 @@ module.exports = {
 					"product_name",
 					"product_desc",
 					"product_price",
+					"weight",
 				],
 				include: [
 					{
@@ -138,6 +139,231 @@ module.exports = {
 			}
 			return { message: "Get product's data success", data: dataProduct };
 		} catch (error) {
+			return error;
+		}
+	},
+	addProduct: async (images, dataProduct, dataSpec) => {
+		const t = await sequelize.transaction();
+		try {
+			if (!dataProduct || !dataSpec) {
+				return { message: "Data is not complete", isError: true };
+			}
+			const { product_name } = dataProduct;
+			const checkProduct = await db.product.findOne({
+				where: { product_name },
+			});
+
+			if (checkProduct) {
+				images.map((image) => {
+					fs.unlink(image.path);
+				});
+				return {
+					isError: true,
+					message: `${product_name} is already added`,
+					data: null,
+				};
+			}
+			const addProduct = await db.product.create(dataProduct, {
+				transaction: t,
+			});
+
+			const dataImages = [];
+			if (images) {
+				for (const image of images) {
+					dataImages.push({
+						image: image.path.substring(4),
+						product_id: addProduct.dataValues.id,
+					});
+				}
+				const addProductImages = await db.product_image.bulkCreate(
+					dataImages,
+					{
+						transaction: t,
+					}
+				);
+			}
+
+			const addProductSpec = await db.specification.create(dataSpec, {
+				transaction: t,
+			});
+
+			await t.commit();
+			return { message: "Add product success", data: null };
+		} catch (error) {
+			await t.rollback();
+			return error;
+		}
+	},
+	editProduct: async (
+		productId,
+		images,
+		dataImages,
+		dataProduct,
+		dataSpec
+	) => {
+		const t = await sequelize.transaction();
+		try {
+			console.log("1");
+			if (!dataProduct || !dataSpec) {
+				return { message: "Data is not complete", isError: true };
+			}
+			const checkProduct1 = await db.product.findByPk(productId);
+			if (!checkProduct1) {
+				images.map((image) => {
+					fs.unlink(image.path);
+				});
+				return {
+					isError: true,
+					message: `Product not found`,
+					data: null,
+				};
+			}
+			const { product_name } = dataProduct;
+			const checkProduct2 = await db.product.findOne({
+				where: { product_name },
+			});
+			console.log("2");
+			if (checkProduct2 && checkProduct2.dataValues.id != productId) {
+				images.map((image) => {
+					fs.unlink(image.path);
+				});
+				return {
+					isError: true,
+					message: `${product_name} is already added`,
+					data: null,
+				};
+			}
+			console.log("3");
+			const updateProduct = await db.product.update(
+				dataProduct,
+				{ where: { id: productId } },
+				{
+					transaction: t,
+				}
+			);
+			console.log("4");
+
+			if (dataImages.action === "remove") {
+				await db.product_image.destroy(
+					{
+						where: { product_id: productId },
+					},
+					{ transaction: t }
+				);
+			}
+			const updateImages = [];
+			console.log("5");
+			if (images) {
+				for (const image of images) {
+					updateImages.push({
+						image: image.path.substring(4),
+						product_id: productId,
+					});
+				}
+				const product_images = await db.product_image.findAll({
+					where: { product_id: productId },
+				});
+				console.log("5.1");
+				const productPath = [];
+				if (product_images.length) {
+					console.log("masuk");
+					product_images.map((image) => {
+						console.log(
+							`pathnya >>>> src/${image.dataValues.image}`
+						);
+						productPath.push({
+							path: `public/${image.dataValues.image.substring(
+								7
+							)}`,
+						});
+					});
+					await db.product_image.destroy(
+						{
+							where: { product_id: productId },
+						},
+						{ transaction: t }
+					);
+				}
+				console.log("5.2", productPath);
+				// productPath.map((v) => {
+				// 	console.log(`path real ${v.path}`);
+				// 	fs.unlink(v.path);
+				// });
+
+				console.log("5.3");
+				const updateProductImages = await db.product_image.bulkCreate(
+					updateImages,
+					{
+						transaction: t,
+					}
+				);
+			}
+			console.log("6");
+			const updateProductSpec = await db.specification.update(
+				dataSpec,
+				{ where: { product_id: productId } },
+				{
+					transaction: t,
+				}
+			);
+
+			await t.commit();
+			return { message: "Update product success", data: null };
+		} catch (error) {
+			if (images.length) {
+				images.map((image) => {
+					fs.unlink(image.path);
+				});
+			}
+			await t.rollback();
+			return error;
+		}
+	},
+	removeProduct: async (productId) => {
+		const t = await sequelize.transaction();
+		try {
+			const dataProduct = await db.product.findByPk(productId);
+			if (!dataProduct) {
+				return { isError: true, message: "Product not found" };
+			}
+			await db.product.destroy(
+				{
+					where: { id: productId },
+				},
+				{
+					transaction: t,
+				}
+			);
+			await db.specification.destroy(
+				{
+					where: { product_id: productId },
+				},
+				{
+					transaction: t,
+				}
+			);
+			const product_images = await db.product_image.findAll({
+				where: { product_id: productId },
+			});
+			const productPath = [];
+			product_images.map((image) => {
+				productPath.push({ path: image.image });
+			});
+			productPath.map((v) => {
+				fs.unlink(`${v.path}`);
+			});
+			await db.product_image.destroy(
+				{
+					where: { product_id: productId },
+				},
+				{
+					transaction: t,
+				}
+			);
+			await t.commit();
+			return { message: "Remove product success" };
+		} catch (error) {
+			await t.rollback();
 			return error;
 		}
 	},

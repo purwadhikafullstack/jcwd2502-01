@@ -14,12 +14,15 @@ import {
 import { IoEyeOutline, IoTrashOutline } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 
-import CreateNewWarehouseModal from "../../../components/layouts/admin/CreateNewWarehouseModal";
+import AdminCreateNewWarehouseModal from "../../../components/layouts/admin/AdminCreateNewWarehouseModal";
+import AdminEditWarehouseModal from "../../../components/layouts/admin/AdminEditWarehouseModal";
 import { axiosInstance } from "../../../lib/axios";
-import EditWarehouseModal from "../../../components/layouts/admin/EditWarehouseModal";
+import AdminPageMainContainer from "../../../components/layouts/admin/AdminPageMainContainer";
+import { useStateContext } from "../../../contexts/ContextProvider";
 
 const AdminWarehouseListPage = () => {
-	const [openEditWarehouseModal, setOpenEditWarehouseModal] = useState(false);
+	const { openEditWarehouseModal, setOpenEditWarehouseModal } =
+		useStateContext();
 	const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
 	const [warehouses, setWarehouses] = useState([]);
 
@@ -27,6 +30,14 @@ const AdminWarehouseListPage = () => {
 		setOpenEditWarehouseModal(!openEditWarehouseModal);
 		setSelectedWarehouseId(warehouse_id);
 	};
+
+	useEffect(() => {
+		if (openEditWarehouseModal) {
+			document.body.style.overflow = "hidden";
+		} else {
+			document.body.style.overflow = "scroll";
+		}
+	}, [openEditWarehouseModal]);
 
 	const columns = [
 		{ name: "NAME", uid: "name" },
@@ -69,7 +80,6 @@ const AdminWarehouseListPage = () => {
 						<p>{warehouse.city?.city_name}</p>
 					</div>
 				);
-
 			case "admin":
 				return (
 					<div className="min-w-[200px]">
@@ -139,10 +149,10 @@ const AdminWarehouseListPage = () => {
 
 	return (
 		<>
-			<main className="admin-warehouse-list-page my-container min-h-screen py-8">
+			<AdminPageMainContainer pageName={"admin-warehouse-list-page"}>
 				<div className="flex justify-between mb-4">
 					<h1 className="font-bold text-title-lg">Warehouses</h1>
-					<CreateNewWarehouseModal />
+					<AdminCreateNewWarehouseModal />
 				</div>
 				<Table aria-label="Example table with custom cells">
 					<TableHeader columns={columns}>
@@ -164,12 +174,14 @@ const AdminWarehouseListPage = () => {
 						)}
 					</TableBody>
 				</Table>
-			</main>
-			<EditWarehouseModal
-				open={openEditWarehouseModal}
-				handleOpenEditWarehouseModal={onOpenEditWarehouseModal}
-				warehouseId={selectedWarehouseId}
-			/>
+			</AdminPageMainContainer>
+
+			{openEditWarehouseModal ? (
+				<AdminEditWarehouseModal
+					handleOpenEditWarehouseModal={onOpenEditWarehouseModal}
+					warehouseId={selectedWarehouseId}
+				/>
+			) : null}
 		</>
 	);
 };

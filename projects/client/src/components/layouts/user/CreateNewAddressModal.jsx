@@ -3,9 +3,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { axiosInstance } from "../../../lib/axios";
 
 import { useFormik } from "formik";
-
+import toast, { Toaster } from "react-hot-toast";
 import Media from "react-media";
-
+import * as yup from "yup";
 import {
 	Modal,
 	ModalContent,
@@ -20,28 +20,60 @@ import {
 	Textarea,
 	Checkbox,
 } from "@nextui-org/react";
-
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { onSetUserAddresses } from "../../../redux/features/users";
 const CreateNewAddressModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
+	const accessToken = localStorage.getItem("accessToken");
+	const { username } = useSelector((state) => state.user);
+	const dispatch = useDispatch();
+	const location = useLocation();
 	const [provinces, setProvinces] = useState([]);
 	const [selectedProvince, setSelectedProvince] = useState();
 	const [cities, setCities] = useState([]);
+	const [citiesName, setCitiesName] = useState("");
 	const [selectedCity, setSelectedCity] = useState();
-
-	// const formik = useFormik({
-	// 	initialValues: {
-	// 		recipient_name: "",
-	// 		address_name: "",
-	// 		address: "",
-	// 		province_id: null,
-	// 		city_id: null,
-	// 	},
-	// 	onSubmit: async (values) => {
-	// 		onCreateNewAddress(values);
-	// 	},
-	// });
-
+	const formik = useFormik({
+		initialValues: {
+			recipient_name: "",
+			address_name: "",
+			address: "",
+			province_id: "",
+			city_id: "",
+		},
+		onSubmit: async (values) => {
+			// onCreateNewAddress(values);
+			handleSubmit(values);
+			// formik.resetForm();
+		},
+		validationSchema: yup.object().shape({
+			address_name: yup.string().required(),
+			recipient_name: yup.string().required(),
+			address: yup.string().required(),
+		}),
+	});
+	const handleSubmit = async (values) => {
+		try {
+			const {
+				address_name,
+				address,
+				recipient_name,
+				province_id,
+				city_id,
+			} = values;
+			console.log(values);
+			const createNewAddress = await axiosInstance(accessToken).post(
+				"/user-addresses/newAddress",
+				values
+			);
+			console.log(createNewAddress);
+			dispatch(onSetUserAddresses(accessToken));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const getProvinces = useCallback(async () => {
 		try {
 			const { data } = await axiosInstance().get(`provinces`);
@@ -65,7 +97,7 @@ const CreateNewAddressModal = () => {
 	const handleProvince = (province) => {
 		// const splittedProvince = province?.split(",");
 		setSelectedProvince(province);
-		// formik.setFieldValue("province_id", province);
+		formik.setFieldValue("province_id", province);
 	};
 
 	const getCities = useCallback(async () => {
@@ -83,7 +115,7 @@ const CreateNewAddressModal = () => {
 	const renderCitiesOption = () => {
 		return cities?.map((city) => {
 			return (
-				<SelectItem key={city.id} value={city.id}>
+				<SelectItem key={city.id} value={city}>
 					{`${city.type} ${city.city_name}`}
 				</SelectItem>
 			);
@@ -92,8 +124,10 @@ const CreateNewAddressModal = () => {
 
 	const handleCity = (city) => {
 		// const splittedCity = city?.split(",");
-		setSelectedCity(city);
-		// formik.setFieldValue("city_id", city);
+		// console.log(city);
+		setSelectedCity(city.id);
+		setCitiesName(city.city_name);
+		formik.setFieldValue("city_id", city);
 	};
 
 	useEffect(() => {
@@ -102,9 +136,15 @@ const CreateNewAddressModal = () => {
 			getCities();
 		}
 	}, [getProvinces, getCities, selectedProvince]);
+	useEffect(() => {
+		formik.setFieldValue("recipient_name", username);
+		console.log(selectedCity);
+		console.log(selectedProvince);
+	}, [selectedCity, selectedProvince, username]);
 
 	return (
 		<>
+			<Toaster />
 			<Media
 				queries={{
 					medium: "(min-width: 768px)",
@@ -128,6 +168,7 @@ const CreateNewAddressModal = () => {
 							onOpenChange={onOpenChange}
 							placement={matches.medium ? "center" : "bottom"}
 							scrollBehavior="inside"
+							// onOpenChange={()=>{onClose();}}
 							size={matches.medium ? "2xl" : "full"}
 							backdrop={matches.medium ? "blur" : ""}
 						>
@@ -154,19 +195,33 @@ const CreateNewAddressModal = () => {
 														defaultValue={
 															"Albert Santoso Tandjung"
 														}
+														value={
+															formik.values
+																.recipient_name
+														}
+														onChange={
+															formik.handleChange
+														}
 														isRequired
 													/>
 												</div>
 												<div className="form-control">
 													<Input
 														type="text"
-														name="address_label"
+														name="address_name"
 														label="Address Label"
 														labelPlacement="outside"
 														variant="bordered"
 														radius="sm"
 														size="lg"
 														placeholder="Home"
+														value={
+															formik.values
+																.address_name
+														}
+														onChange={
+															formik.handleChange
+														}
 														isRequired
 													/>
 												</div>
@@ -178,11 +233,14 @@ const CreateNewAddressModal = () => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
-														onChange={(e) =>
+														onChange={(e) => {
 															handleProvince(
 																e.target.value
-															)
-														}
+															);
+															console.log(
+																e.target.value
+															);
+														}}
 														placeholder="Select a province"
 														isRequired
 													>
@@ -197,11 +255,14 @@ const CreateNewAddressModal = () => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
-														onChange={(e) =>
+														onChange={(e) => {
 															handleCity(
 																e.target.value
-															)
-														}
+															);
+															console.log(
+																e.target.value
+															);
+														}}
 														placeholder="Select a city"
 														isRequired
 													>
@@ -211,31 +272,46 @@ const CreateNewAddressModal = () => {
 												<div className="form-control">
 													<Textarea
 														placeholder="Jl. Street Address"
-														name="full_address"
+														name="address"
 														label="Full Address"
 														labelPlacement="outside"
 														variant="bordered"
 														radius="sm"
 														size="lg"
+														value={
+															formik.values
+																.address
+														}
+														onChange={
+															formik.handleChange
+														}
 														isRequired
 													/>
 												</div>
-												<div className="form-control">
-													<Checkbox>
-														<span className="font-medium">
-															Set this as the main
-															address
-														</span>
-													</Checkbox>
-												</div>
+												{location.pathname ===
+												"/profile/settings" ? null : (
+													<div className="form-control">
+														<Checkbox>
+															<span className="font-medium">
+																Set this as the
+																main address
+															</span>
+														</Checkbox>
+													</div>
+												)}
 											</form>
 										</ModalBody>
 										<ModalFooter className="justify-center">
 											<Button
 												color="primary"
 												className="text-center mb-4"
-												onPress={onClose}
+												type="submit"
+												onClick={(e) => {
+													formik.handleSubmit(e);
+													onClose();
+												}}
 												fullWidth
+												// onPress={onClose}
 											>
 												<span className="font-bold text-black">
 													Save new address

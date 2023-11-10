@@ -35,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
 	warehouse.init(
 		{
 			warehouse_name: DataTypes.STRING,
-			warehouse_location: DataTypes.STRING,
+			latitude: DataTypes.STRING,
+			longitude: DataTypes.STRING,
 			warehouse_address: DataTypes.STRING,
 			createdAt: {
 				type: DataTypes.DATE,

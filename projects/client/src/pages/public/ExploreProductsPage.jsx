@@ -48,30 +48,28 @@ const ExploreProductsPage = () => {
 	}, []);
 
 	return (
-		<>
-			<main
-				className={`explore-products-page ${
-					search ? "py-6" : "py-0"
-				} relative`}
+		<main
+			className={`explore-products-page ${
+				search ? "py-6" : "py-0"
+			} relative`}
+		>
+			<ExploreProductsHeader />
+			<div
+				className={`result-body my-container md:flex ${
+					search ? "md:pt-4 md:pb-4" : "md:pt-[88px] md:pb-4"
+				} md:mb-10`}
 			>
-				<ExploreProductsHeader />
-				<div
-					className={`result-body my-container md:flex ${
-						search ? "md:pt-4 md:pb-4" : "md:pt-[88px] md:pb-4"
-					} md:mb-10`}
-				>
-					<ExploreProductsFilterMobile
-						categoriesData={categoriesList}
-						brandsData={brandsList}
-					/>
-					<ExploreProductsFilterAside
-						categoriesData={categoriesList}
-						brandsData={brandsList}
-					/>
-					<ProductListFeed totalPage={totalPage} />
-				</div>
-			</main>
-		</>
+				<ExploreProductsFilterMobile
+					categoriesData={categoriesList}
+					brandsData={brandsList}
+				/>
+				<ExploreProductsFilterAside
+					categoriesData={categoriesList}
+					brandsData={brandsList}
+				/>
+				<ProductListFeed totalPage={totalPage} />
+			</div>
+		</main>
 	);
 };
 

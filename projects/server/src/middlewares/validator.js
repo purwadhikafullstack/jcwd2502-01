@@ -10,9 +10,9 @@ module.exports = {
 				.isEmail()
 				.withMessage("Please provide a valid email address.")
 				.isLength({ min: 6 })
-				.withMessage("Username must be more than 5 characters!")
-				.isLength({ max: 20 })
-				.withMessage("Username must be less than 21 characters!")
+				.withMessage("email must be more than 5 characters!")
+				.isLength({ max: 50 })
+				.withMessage("email must be less than 21 characters!")
 				.run(req);
 
 			await check("password")
@@ -38,8 +38,8 @@ module.exports = {
 			await check("username")
 				.notEmpty()
 				.withMessage("Email Must be filled!")
-				.isAlphanumeric()
-				.withMessage("Spaces are not allowed.")
+				// .isAlphanumeric()
+				// .withMessage("Spaces are not allowed.")
 				.isLength({ min: 6 })
 				.withMessage("Username must be more than 5 characters!")
 				.isLength({ max: 20 })

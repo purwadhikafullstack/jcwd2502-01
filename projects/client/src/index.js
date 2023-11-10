@@ -7,13 +7,16 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/app/store.js";
 import { NextUIProvider } from "@nextui-org/react";
+import { ContextProvider } from "./contexts/ContextProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
 	<Provider store={store}>
 		<BrowserRouter>
 			<NextUIProvider>
-				<App />
+				<ContextProvider>
+					<App />
+				</ContextProvider>
 			</NextUIProvider>
 		</BrowserRouter>
 	</Provider>
