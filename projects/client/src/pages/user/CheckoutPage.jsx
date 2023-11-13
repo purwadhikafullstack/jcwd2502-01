@@ -88,12 +88,13 @@ const CheckoutPage = () => {
 		}
 	}, []);
 
-	const createOrder = async () => {
+	const createOrder = useCallback(async () => {
 		setIsLoading(true);
 
 		const orderData = {
 			total_amount: totalPrice,
 			total_item: selectedItems,
+			shipping_cost: shippingCost,
 			address_id: selectedUserAddressId,
 			warehouse_id: nearestWarehouseData.id,
 			items: selectedCheckoutProducts,
@@ -106,16 +107,24 @@ const CheckoutPage = () => {
 					orderData
 				);
 
-				navigate("/cart");
-				dispatch(onSetUserAddresses(token));
-				window.location.reload(false);
+				navigate("/order-list");
+				window.location.reload();
 			} catch (error) {
 				console.log("Error creating order:", error);
 			} finally {
 				setIsLoading(false);
 			}
 		}, 1500);
-	};
+	}, [
+		totalPrice,
+		selectedItems,
+		shippingCost,
+		selectedUserAddressId,
+		nearestWarehouseData?.id,
+		selectedCheckoutProducts,
+		navigate,
+		token,
+	]);
 
 	const handleSelectedShippingCost = (shippingCost) => {
 		setShippingCost(shippingCost);

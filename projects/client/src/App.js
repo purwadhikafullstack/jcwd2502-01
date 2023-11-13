@@ -33,6 +33,7 @@ import AdminBrandsPage from "./pages/admin/brands/AdminBrandsPage";
 import AdminOverviewDashboardPage from "./pages/admin/home/AdminOverviewDashboardPage";
 import AdminStocksListPage from "./pages/admin/stocks/AdminStocksListPage";
 import OrderListPage from "./pages/user/OrderListPage";
+import OrderDetailsPage from "./pages/user/OrderDetailsPage";
 
 function App() {
 	const location = useLocation();
@@ -128,6 +129,10 @@ function App() {
 					element={<ProfileSettingsPage />}
 				/>
 				<Route path="/order-list" element={<OrderListPage />} />
+				<Route
+					path="/order-details/:receiptNumber"
+					element={<OrderDetailsPage />}
+				/>
 				<Route path="/cart" element={<CartPage />} />
 				<Route path="/cart/checkout" element={<CheckoutPage />} />
 

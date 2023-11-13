@@ -36,6 +36,7 @@ const {
 	userAddressesRouter,
 	checkoutsRouter,
 	stocksRouter,
+	ordersRouter,
 } = require("./routers");
 // ===========================
 // NOTE : Add your routes here
@@ -50,6 +51,7 @@ app.use("/api/cities", citiesRouter);
 app.use("/api/user-addresses", userAddressesRouter);
 app.use("/api/checkouts", checkoutsRouter);
 app.use("/api/stocks", stocksRouter);
+app.use("/api/orders", ordersRouter);
 
 app.get("/api", (req, res) => {
 	res.send(`Hello, this is my API`);
@@ -109,9 +111,9 @@ app.listen(PORT, (err) => {
 	if (err) {
 		console.log(`ERROR: ${err}`);
 	} else {
-		db.sequelize.sync({
-			alter: true,
-		});
+		// db.sequelize.sync({
+		// 	alter: true,
+		// });
 		console.log(`APP RUNNING at ${PORT} ✅`);
 	}
 });
