@@ -18,6 +18,9 @@ module.exports = (sequelize, DataTypes) => {
 	order.init(
 		{
 			total_amount: DataTypes.INTEGER,
+			shipping_cost: DataTypes.INTEGER,
+			receipt_number: DataTypes.INTEGER,
+			invoice: DataTypes.STRING,
 			total_item: DataTypes.INTEGER,
 			proof_of_payment: DataTypes.STRING,
 			status: { type: DataTypes.ENUM, values: enumValues },
