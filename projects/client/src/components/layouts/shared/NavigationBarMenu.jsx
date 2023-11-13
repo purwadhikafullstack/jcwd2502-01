@@ -97,7 +97,7 @@ const NavigationBarMenu = () => {
 				)}
 			</NavbarMenuItem>
 			<NavbarMenuItem>
-				<Link to={""}>
+				<Link to={"/order-list"}>
 					<Button
 						fullWidth
 						variant="flat"
