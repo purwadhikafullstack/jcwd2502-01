@@ -32,6 +32,7 @@ import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
 import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
 
 const AdminStocksListTable = ({ props }) => {
 	const dispatch = useDispatch();
@@ -192,17 +193,16 @@ const AdminStocksListTable = ({ props }) => {
 			case "actions":
 				return (
 					<div className="relative flex justify-start items-center gap-2">
-						<Link to={`/admin/edit-product/${encodedProductName}`}>
-							<Tooltip content="Edit product">
-								<Button
-									variant="light"
-									className="text-default-400 cursor-pointer active:opacity-50"
-									startContent={<BiEdit size={24} />}
-								>
-									Edit
-								</Button>
-							</Tooltip>
-						</Link>
+						{/* <Tooltip content="Edit product">
+							<Button
+								variant="light"
+								className="text-default-400 cursor-pointer active:opacity-50"
+								startContent={<BiEdit size={24} />}
+							>
+								Edit
+							</Button>
+						</Tooltip> */}
+						<AdminEditStockModal />
 					</div>
 				);
 			default:
