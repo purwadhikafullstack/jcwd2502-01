@@ -39,9 +39,10 @@ module.exports = {
 	},
 	updateStock: async (req, res, next) => {
 		try {
+			console.log(">>>> body >>>>>", req.body.stocks);
 			const { stockId } = req.params;
-			const { newStocks } = req.body;
-			const result = await editStock(stockId, newStocks);
+			const { stocks } = req.body;
+			const result = await editStock(stockId, stocks);
 			respHandler(
 				res,
 				result.message,

@@ -101,6 +101,8 @@ module.exports = {
 			const count = await db.product.count(baseQuery);
 			const dataAllProductsStocks = await db.product.findAll(baseQuery);
 
+			console.log(dataAllProductsStocks);
+
 			return {
 				message: "Get products stocks data success",
 				data: { count, products: dataAllProductsStocks },
@@ -112,10 +114,19 @@ module.exports = {
 	findOneStock: async (stockId) => {
 		try {
 			const dataStock = await db.stock.findOne({
-				attributes: ["stocks", "product_id", "warehouse_id"],
+				attributes: ["stocks"],
+				include: [
+					{
+						model: db.warehouse,
+						attributes: ["warehouse_name"],
+					},
+					{
+						model: db.product,
+						attributes: ["product_name"],
+					},
+				],
 				where: { id: stockId },
 			});
-			console.log(dataStock);
 			if (!dataStock) {
 				return {
 					isError: true,

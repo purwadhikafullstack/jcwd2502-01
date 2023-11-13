@@ -24,6 +24,7 @@ import {
 	setBrand,
 	setCategory,
 	setPagination,
+	setProducts,
 	setSearch,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
@@ -110,6 +111,7 @@ const AdminProductListTable = ({ props }) => {
 		return () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
+			dispatch(setProducts([]));
 		};
 	}, []);
 

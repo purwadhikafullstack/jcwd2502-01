@@ -17,14 +17,17 @@ import { IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import {
-	fetchProductAsync,
+	fetchStockAsync,
 	onClear,
 	onSearch,
 	onSort,
 	setBrand,
 	setCategory,
 	setPagination,
+	setProducts,
+	setProductsForStocks,
 	setSearch,
+	setWarehouse,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -34,12 +37,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
 
-const AdminStocksListTable = ({ props }) => {
+const AdminStocksListTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const products = useSelector((state) => state.products.products);
+	const warehouse = useSelector((state) => state.products.warehouse);
+	const products = useSelector((state) => state.products.productsForStocks);
 	const count = useSelector((state) => state.products.count);
 	const totalPage = useSelector((state) => state.products.totalPage);
 	const orderField = useSelector((state) => state.products.orderField);
@@ -54,12 +58,16 @@ const AdminStocksListTable = ({ props }) => {
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
+		const selectedWarehouse = queryParams.get("warehouse");
 		const selectedSearch = queryParams.get("search");
 		const selectedCategory = queryParams.get("category");
 		const selectedBrand = queryParams.get("brand");
 		const selectedOrderField = queryParams.get("orderField");
 		const selectedOrderDirection = queryParams.get("orderDirection");
 		const selectedOffset = queryParams.get("offset");
+		if (selectedWarehouse) {
+			dispatch(setWarehouse(selectedWarehouse));
+		}
 		if (selectedSearch) {
 			dispatch(onSearch(selectedSearch));
 		}
@@ -96,10 +104,17 @@ const AdminStocksListTable = ({ props }) => {
 	useEffect(() => {
 		formik.setFieldValue("searchQuery", search);
 	}, [search]);
+	useEffect(() => {
+		console.log("iini>>", products);
+	}, [products]);
 
 	const clear = async () => {
 		await dispatch(onClear());
-		navigate(`/admin/stocks${search && `?search=${search}`}`);
+		navigate(
+			`/admin/stocks?warehouse=${warehouse}${
+				search && `&search=${search}`
+			}`
+		);
 		window.location.reload(false);
 	};
 
@@ -111,28 +126,32 @@ const AdminStocksListTable = ({ props }) => {
 		return () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
+			dispatch(setProductsForStocks([]));
+			dispatch(setWarehouse(null));
 		};
 	}, []);
 
 	useEffect(() => {
-		navigate(
-			`/admin/stocks?search=${search}&brand=${brand.join(
-				""
-			)}&category=${category.join(
-				""
-			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		);
-
-		dispatch(
-			fetchProductAsync(
-				`?&search=${search}&brand=${brand.join(
+		if (warehouse) {
+			navigate(
+				`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
 					""
 				)}&category=${category.join(
 					""
 				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			)
-		);
-	}, [orderField, orderDirection, search, page, category, brand]);
+			);
+
+			dispatch(
+				fetchStockAsync(
+					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
+						""
+					)}&category=${category.join(
+						""
+					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+		}
+	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
 
 	const columns = [
 		{ name: "PRODUCT INFO", uid: "product_info" },
@@ -187,7 +206,7 @@ const AdminStocksListTable = ({ props }) => {
 			case "stocks":
 				return (
 					<p className="text-base line-clamp-1">
-						{/* {product?.stocks} */}
+						{product?.stocks[0]?.stocks}
 					</p>
 				);
 			case "actions":
@@ -202,7 +221,7 @@ const AdminStocksListTable = ({ props }) => {
 								Edit
 							</Button>
 						</Tooltip> */}
-						<AdminEditStockModal />
+						<AdminEditStockModal id={product?.stocks[0]?.id} />
 					</div>
 				);
 			default:
@@ -228,10 +247,6 @@ const AdminStocksListTable = ({ props }) => {
 			</div>
 		);
 	}, [totalPage, page]);
-
-	useEffect(() => {
-		console.log(">>>>>", products);
-	}, [products]);
 
 	return (
 		<>
@@ -271,7 +286,7 @@ const AdminStocksListTable = ({ props }) => {
 							<div className="w-full mr-2 font-medium">
 								Sort by:
 							</div>
-							<SelectSortBy admin={true} />
+							<SelectSortBy admin={false} />
 						</div>
 					</div>
 				</div>
@@ -304,7 +319,10 @@ const AdminStocksListTable = ({ props }) => {
 						</TableColumn>
 					)}
 				</TableHeader>
-				<TableBody emptyContent={"No products found"} items={products}>
+				<TableBody
+					emptyContent={"Please select warehouse"}
+					items={products}
+				>
 					{(item) => (
 						<TableRow key={item.id}>
 							{(columnKey) => (
