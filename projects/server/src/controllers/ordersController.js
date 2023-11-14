@@ -55,6 +55,7 @@ module.exports = {
 						],
 					},
 				],
+				order: [["createdAt", "DESC"]],
 				limit: itemsPerPage,
 				distinct: true,
 				paranoid: false,
@@ -145,6 +146,26 @@ module.exports = {
 			});
 
 			respHandler(res, "Get order details success", orderDetails);
+		} catch (error) {
+			next(error);
+		}
+	},
+	cancelOrder: async (req, res, next) => {
+		try {
+			const { id: user_id } = req.dataToken;
+			const { order_id: id } = req.params;
+
+			await db.order.update(
+				{ status: 6 },
+				{
+					where: {
+						user_id,
+						id,
+					},
+				}
+			);
+
+			respHandler(res, "Cancel order success");
 		} catch (error) {
 			next(error);
 		}

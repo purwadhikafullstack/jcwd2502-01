@@ -46,30 +46,25 @@ const OrderDetailsPage = () => {
 		fetchOrderDetails();
 	}, [receiptNumber]);
 
-	useEffect(() => {
-		console.log(orderDetails);
-		console.log(orderStatuses);
-	}, []);
-
 	return (
-		<>
-			<section className="bg-[#202020] px-6 py-4">
+		<div className="flex flex-col gap-3">
+			<section className="bg-neutral-100 dark:bg-[#202020] p-4">
 				{orderDetails && (
-					<h4 className="font-bold text-[18px] mb-2">
+					<h4 className="font-bold text-base mb-2">
 						{orderStatuses[Number(orderDetails?.status) - 1].label}
 					</h4>
 				)}
-				<div className="invoice flex justify-between items-center">
+				<div className="invoice text-label-lg flex justify-between items-center">
 					<p>Invoice Number</p>
 					<p>{orderDetails?.invoice}</p>
 				</div>
-				<div className="pd flex justify-between items-center">
+				<div className="pd text-label-lg flex justify-between items-center">
 					<p>Purchase Date</p>
 					<p>{formattedDateString}</p>
 				</div>
 			</section>
-			<section className="bg-[#202020] px-6 py-4">
-				<h4 className="font-bold text-[18px] mb-2">Product Details</h4>
+			<section className="bg-neutral-100 dark:bg-[#202020] p-4">
+				<h4 className="font-bold text-base mb-2">Product Details</h4>
 				<div className="flex flex-col gap-2">
 					{orderDetails?.order_details?.map((order_detail) => (
 						<Card className="p-4">
@@ -89,7 +84,7 @@ const OrderDetailsPage = () => {
 												className="w-full h-full aspect-square object-contain bg-white"
 											/>
 										</div>
-										<div className="w-[120px] ml-4 text-body-md">
+										<div className="w-[140px] ml-4 text-body-md">
 											<p className="font-bold line-clamp-2">
 												{
 													order_detail?.product
@@ -111,8 +106,8 @@ const OrderDetailsPage = () => {
 										</div>
 									</div>
 								</div>
-								<div className="right w-[100px] pl-2">
-									<div className="text-body-md">
+								<div className="right w-[100px] pl-4">
+									<div className="text-label-md">
 										<p>Total Price</p>
 										<p className="font-medium">
 											{(
@@ -133,42 +128,55 @@ const OrderDetailsPage = () => {
 					))}
 				</div>
 			</section>
-			<section className="bg-[#202020] px-6 py-4">
-				<h4 className="font-bold text-[18px] mb-2">Shopping Info</h4>
-				<div className="text-label-lg mb-2">
-					<div className="pm flex justify-start items-start mb-2">
-						<p className="w-[140px] block relative">Courier</p>
-						<span className="mr-2">:</span>
-						<p>JNE</p>
+			<section className="bg-neutral-100 dark:bg-[#202020] p-4">
+				<h4 className="font-bold text-base mb-2">Shopping Info</h4>
+				<div className="text-label-md mb-2">
+					<div>
+						<div className="pm flex justify-start items-start mb-2">
+							<p className="w-1/3 block relative">Courier</p>
+							<p>JNE</p>
+						</div>
 					</div>
-					<div className="pm flex justify-start items-start mb-2">
-						<p className="w-[140px] block relative">
-							Receipt Number
-						</p>
-						<span className="mr-2">:</span>
-						<p>{orderDetails?.receipt_number}</p>
-					</div>
-					<div className="pm flex justify-start items-start mb-2">
-						<p className="w-[140px] block relative">Address</p>
-						<span className="mr-2">:</span>
-						<div className="block">
-							<h6 className="font-bold">
-								{orderDetails?.user_address?.address_name}
-							</h6>
-							<p className="flex flex-wrap">
-								{orderDetails?.user_address?.address},{" "}
-								{orderDetails?.user_address?.city?.type}{" "}
-								{orderDetails?.user_address?.city?.city_name},{" "}
-								{orderDetails?.user_address?.province?.province}
-								,{" "}
-								{orderDetails?.user_address?.city?.postal_code}
+					<div>
+						<div className="pm flex justify-start items-start mb-2">
+							<p className="w-1/3 block relative">
+								Receipt Number
 							</p>
+							<p>{orderDetails?.receipt_number}</p>
+						</div>
+					</div>
+					<div>
+						<div className="pm flex justify-start items-start mb-2">
+							<p className="w-1/3 block relative">Address</p>
+							<div className="block w-2/3">
+								<h6 className="font-bold">
+									{orderDetails?.user_address?.address_name}
+								</h6>
+								<p className="flex flex-wrap">
+									{orderDetails?.user_address?.address},{" "}
+									{orderDetails?.user_address?.city?.type}{" "}
+									{
+										orderDetails?.user_address?.city
+											?.city_name
+									}
+									,{" "}
+									{
+										orderDetails?.user_address?.province
+											?.province
+									}
+									,{" "}
+									{
+										orderDetails?.user_address?.city
+											?.postal_code
+									}
+								</p>
+							</div>
 						</div>
 					</div>
 				</div>
 			</section>
-			<section className="bg-[#202020] px-6 py-4">
-				<h4 className="font-bold text-[18px] mb-2">Payment Details</h4>
+			<section className="bg-neutral-100 dark:bg-[#202020] p-4">
+				<h4 className="font-bold text-base mb-2">Payment Details</h4>
 				<div className="text-label-lg mb-2 text-neutral-400">
 					<div className="pm flex justify-between items-center">
 						<p>Payment Method</p>
@@ -220,7 +228,7 @@ const OrderDetailsPage = () => {
 					</p>
 				</div>
 			</section>
-		</>
+		</div>
 	);
 };
 

@@ -9,5 +9,6 @@ const { verify } = require("./../lib/jwt");
 
 Router.get("/", verify, ordersController.getOrderList);
 Router.get("/:receipt_number", verify, ordersController.getOrderDetails);
+Router.patch("/cancel/:order_id", verify, ordersController.cancelOrder);
 
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js
