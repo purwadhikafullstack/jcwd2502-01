@@ -188,6 +188,19 @@ module.exports = {
 				transaction: t,
 			});
 
+			const dataWarehouse = await db.warehouse.findAll();
+			const dataStock = [];
+			dataWarehouse.map((warehouse) => {
+				dataStock.push({
+					stocks: 0,
+					product_id: addProduct.dataValues.id,
+					warehouse_id: warehouse.id,
+				});
+			});
+			const addStock = await db.stock.bulkCreate(dataStock, {
+				transaction: t,
+			});
+
 			await t.commit();
 			return { message: "Add product success", data: null };
 		} catch (error) {

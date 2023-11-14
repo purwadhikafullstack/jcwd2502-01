@@ -60,7 +60,9 @@ const AdminStocksLogPage = () => {
 		<AdminPageMainContainer>
 			<div className="admin-page-header flex justify-between gap-4 mb-6">
 				<div className="flex items-center">
-					<h1 className="font-bold text-title-lg mr-4">Stocks</h1>
+					<h1 className="font-bold text-title-lg mr-4">
+						Stock changes
+					</h1>
 					<Select
 						items={warehouses}
 						size="sm"
