@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import OrderCard from "../../components/uis/Cards/OrderCard";
 import { Pagination, Select, SelectItem } from "@nextui-org/react";
 import { axiosInstance } from "../../lib/axios";
@@ -39,7 +39,7 @@ const OrderListPage = () => {
 
 	const handleStatusChange = (newStatus) => {
 		fetchUserOrderList(currentPage, newStatus);
-		updateUrl(currentPage, newStatus);
+		updateUrl(1, newStatus);
 	};
 
 	const updateUrl = (page, status) => {
@@ -67,10 +67,11 @@ const OrderListPage = () => {
 		return () => clearTimeout(timeoutId);
 	}, [currentPage]);
 
-	const renderPagination = () => {
+	const renderPagination = useCallback(() => {
 		if (isPaginationVisible && totalPages) {
 			return (
 				<Pagination
+					color="secondary"
 					showControls
 					total={totalPages || 1}
 					page={currentPage || 1}
@@ -79,7 +80,7 @@ const OrderListPage = () => {
 			);
 		}
 		return null;
-	};
+	}, [currentPage, currentStatus]);
 
 	const renderOrderList = () => {
 		if (orders && orders.length > 0) {

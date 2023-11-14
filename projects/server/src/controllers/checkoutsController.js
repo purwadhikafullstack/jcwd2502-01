@@ -208,4 +208,35 @@ module.exports = {
 			next(error);
 		}
 	},
+	uploadPaymentProof: async (req, res, next) => {
+		try {
+			const { id: user_id } = req.dataToken;
+			const { order_id } = req.params;
+			const fileImage = req.file;
+
+			const checkOrderPayment = await db.order.findOne({
+				where: { id: order_id, user_id },
+			});
+			const paymentHasPaid = checkOrderPayment.proof_of_payment;
+
+			if (paymentHasPaid)
+				throw {
+					message:
+						"Your transaction has already been settled with your payment.",
+				};
+			// respHandler(res, "Upload payment proof success", null, 201);
+
+			await db.order.update(
+				{
+					proof_of_payment: `public/payment-proof/${fileImage.filename}`,
+					status: 2,
+				},
+				{ where: { id: order_id, user_id } }
+			);
+
+			respHandler(res, "Upload payment proof success", null, 201);
+		} catch (error) {
+			next(error);
+		}
+	},
 };

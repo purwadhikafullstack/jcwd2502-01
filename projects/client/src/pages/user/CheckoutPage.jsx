@@ -108,7 +108,6 @@ const CheckoutPage = () => {
 				);
 
 				navigate("/order-list");
-				window.location.reload();
 			} catch (error) {
 				console.log("Error creating order:", error);
 			} finally {

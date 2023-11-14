@@ -71,7 +71,7 @@ const OrderDetailsModal = ({ receiptNumber }) => {
 						variant={matches.medium ? "light" : "flat"}
 						onPress={onOpenModal}
 					>
-						<span className="font-medium text-primary-500">
+						<span className="font-medium text-primary-600 dark:text-primary-500">
 							View Transaction Details
 						</span>
 					</Button>
@@ -92,7 +92,7 @@ const OrderDetailsModal = ({ receiptNumber }) => {
 									<ModalBody className="p-0">
 										{orderDetails && (
 											<>
-												<section className="bg-[#202020] px-6 py-4">
+												<section className="bg-neutral-100 dark:bg-[#202020] px-6 py-4">
 													<h4 className="font-bold text-[18px] mb-2">
 														{
 															orderStatuses[
@@ -119,7 +119,7 @@ const OrderDetailsModal = ({ receiptNumber }) => {
 														</p>
 													</div>
 												</section>
-												<section className="bg-[#202020] px-6 py-4">
+												<section className="bg-neutral-100 dark:bg-[#202020] px-6 py-4">
 													<h4 className="font-bold text-[18px] mb-2">
 														Product Details
 													</h4>
@@ -202,7 +202,7 @@ const OrderDetailsModal = ({ receiptNumber }) => {
 														)}
 													</div>
 												</section>
-												<section className="bg-[#202020] px-6 py-4">
+												<section className="bg-neutral-100 dark:bg-[#202020] px-6 py-4">
 													<h4 className="font-bold text-[18px] mb-2">
 														Shopping Info
 													</h4>
@@ -282,7 +282,7 @@ const OrderDetailsModal = ({ receiptNumber }) => {
 														</div>
 													</div>
 												</section>
-												<section className="bg-[#202020] px-6 py-4">
+												<section className="bg-neutral-100 dark:bg-[#202020] px-6 py-4">
 													<h4 className="font-bold text-[18px] mb-2">
 														Payment Details
 													</h4>

@@ -32,7 +32,6 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 				);
 				console.log(changeMain);
 				dispatch(onSetUserAddresses(accessToken));
-				console.log("titit>>>>", addressId);
 				dispatch(setSelectedUserAddressIdMain(addressId));
 			} else {
 				dispatch(onSetSelectedUserAddressId(addressId));
