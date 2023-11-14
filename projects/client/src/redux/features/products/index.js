@@ -86,7 +86,7 @@ export const productsSlice = createSlice({
 				const index = initialState.category.indexOf(payload);
 				initialState.category.splice(index, 1);
 			} else if (payload.length > 1) {
-				initialState.category = payload.split("").filter((v) => {
+				initialState.category = payload.split(",").filter((v) => {
 					return Number(v);
 				});
 			} else if (payload.length === 0) {
@@ -100,7 +100,7 @@ export const productsSlice = createSlice({
 				const index = initialState.brand.indexOf(payload);
 				initialState.brand.splice(index, 1);
 			} else if (payload.length > 1) {
-				initialState.brand = payload.split("").filter((v) => {
+				initialState.brand = payload.split(",").filter((v) => {
 					return Number(v);
 				});
 			} else if (payload.length === 0) {

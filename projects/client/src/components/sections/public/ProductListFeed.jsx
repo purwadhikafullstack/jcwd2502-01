@@ -74,18 +74,18 @@ const ProductListFeed = (props) => {
 	useEffect(() => {
 		navigate(
 			`/explore?search=${search}&brand=${brand.join(
-				""
+				","
 			)}&category=${category.join(
-				""
+				","
 			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 		);
 
 		dispatch(
 			fetchProductAsync(
 				`?&search=${search}&brand=${brand.join(
-					""
+					","
 				)}&category=${category.join(
-					""
+					","
 				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 			)
 		);

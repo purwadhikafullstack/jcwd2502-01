@@ -83,7 +83,7 @@ const AdminCategoriesPage = () => {
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
-						<Tooltip content="Edit warehouse">
+						<Tooltip content="Edit category">
 							<Button
 								isIconOnly
 								variant="light"
@@ -98,7 +98,7 @@ const AdminCategoriesPage = () => {
 								<BiEdit size={24} />
 							</Button>
 						</Tooltip>
-						<Tooltip color="danger" content="Remove warehouse">
+						<Tooltip color="danger" content="Remove category">
 							<Button
 								isIconOnly
 								variant="light"
