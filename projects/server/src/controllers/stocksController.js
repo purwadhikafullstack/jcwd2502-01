@@ -5,6 +5,7 @@ const {
 	findAllProductsStocks,
 	findOneStock,
 	editStock,
+	findStockHistories,
 } = require("../services/stocksService");
 
 module.exports = {
@@ -43,6 +44,21 @@ module.exports = {
 			const { stockId } = req.params;
 			const { stocks } = req.body;
 			const result = await editStock(stockId, stocks);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getStockHistories: async (req, res, next) => {
+		try {
+			const { warehouseId } = req.query;
+			const result = await findStockHistories(warehouseId);
 			respHandler(
 				res,
 				result.message,

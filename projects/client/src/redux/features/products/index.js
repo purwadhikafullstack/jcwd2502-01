@@ -5,6 +5,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
 	products: [],
 	productsForStocks: [],
+	stockHistory: [],
 	productDetail: [],
 	orderField: "",
 	orderDirection: "",
@@ -27,6 +28,9 @@ export const productsSlice = createSlice({
 		},
 		setProductsForStocks: (initialState, { payload }) => {
 			initialState.productsForStocks = payload;
+		},
+		setStockHistory: (initialState, { payload }) => {
+			initialState.stockHistory = payload;
 		},
 		setProductDetail: (initialState, { payload }) => {
 			initialState.productDetail = payload;
@@ -140,6 +144,20 @@ export const fetchStockAsync = (query) => async (dispatchEvent) => {
 		console.log(error);
 	}
 };
+export const fetchStockHistoryAsync = (query) => async (dispatchEvent) => {
+	try {
+		// const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance().get(
+			`stocks/history${query ? query : ""}`
+		);
+		const totalPage = await Math.ceil(data.data.count / 12);
+		dispatchEvent(setTotalPage(totalPage));
+		dispatchEvent(setStockHistory(data.data.history));
+		dispatchEvent(setCount(data.data.count));
+	} catch (error) {
+		console.log(error);
+	}
+};
 export const onSort = (field, direction) => async (dispatchEvent) => {
 	try {
 		dispatchEvent(setOrderField(field));
@@ -219,6 +237,7 @@ export const {
 	setWarehouse,
 	setProducts,
 	setProductsForStocks,
+	setStockHistory,
 	setOrderField,
 	setOrderDirection,
 	setSearch,
