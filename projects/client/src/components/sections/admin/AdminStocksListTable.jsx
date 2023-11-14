@@ -175,7 +175,7 @@ const AdminStocksListTable = () => {
 			case "product_info":
 				return (
 					<div className="flex items-center gap-4 w-[240px] md:w-full">
-						<div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
+						{/* <div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
 							<Image
 								src={`${
 									process.env.REACT_APP_IMAGE_API
@@ -185,7 +185,7 @@ const AdminStocksListTable = () => {
 								alt=""
 								className="product-image aspect-square w-full h-full object-contain bg-white"
 							/>
-						</div>
+						</div> */}
 						<p className="font-medium text-base line-clamp-1">
 							{product?.product_name}
 						</p>
@@ -205,9 +205,7 @@ const AdminStocksListTable = () => {
 				);
 			case "stocks":
 				return (
-					<p className="text-base line-clamp-1">
-						{product?.stocks[0]?.stocks}
-					</p>
+					<p className="text-base line-clamp-1">{product?.stock}</p>
 				);
 			case "actions":
 				return (
@@ -221,7 +219,7 @@ const AdminStocksListTable = () => {
 								Edit
 							</Button>
 						</Tooltip> */}
-						<AdminEditStockModal id={product?.stocks[0]?.id} />
+						<AdminEditStockModal id={product?.stock_id} />
 					</div>
 				);
 			default:
