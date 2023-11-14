@@ -73,13 +73,13 @@ module.exports = {
 						attributes: ["image", "id"],
 						limit: 1,
 					},
-					{
-						model: db.stock,
-						attributes: ["stocks", "id"],
-						where: { warehouse_id: warehouse },
-					},
 					categoryInclude,
 					brandInclude,
+					// {
+					// 	model: db.stock,
+					// 	attributes: ["stocks", "id"],
+					// 	where: { warehouse_id: warehouse },
+					// },
 				],
 				limit: 12,
 				order: orderOptions,
@@ -97,15 +97,29 @@ module.exports = {
 				baseQuery.offset = Number(offset);
 			}
 
-			// const dataAllProducts = await db.product.findAll(baseQuery);
+			const dataProducts = await db.product.findAll(baseQuery);
 			const count = await db.product.count(baseQuery);
-			const dataAllProductsStocks = await db.product.findAll(baseQuery);
+			const productIds = dataProducts.map((product) => product.id);
 
-			console.log(dataAllProductsStocks);
+			const dataStocks = await db.stock.findAll({
+				where: { product_id: productIds, warehouse_id: warehouse },
+				attributes: ["stocks", "id", "product_id"],
+			});
 
+			const combinedData = dataProducts.map((product) => {
+				const associatedStock = dataStocks.find(
+					(stock) => stock.product_id === product.id
+				);
+
+				return {
+					...product.toJSON(),
+					stock: associatedStock ? associatedStock.stocks : null,
+					stock_id: associatedStock ? associatedStock.id : null,
+				};
+			});
 			return {
 				message: "Get products stocks data success",
-				data: { count, products: dataAllProductsStocks },
+				data: { count, products: combinedData },
 			};
 		} catch (error) {
 			return error;
@@ -141,7 +155,7 @@ module.exports = {
 	},
 	editStock: async (stockId, newStocks) => {
 		try {
-			if (newStocks < 0) {
+			if (!newStocks || newStocks < 0) {
 				return {
 					isError: true,
 					message: `Stock can not be less than 0`,
@@ -156,6 +170,31 @@ module.exports = {
 					data: null,
 				};
 			}
+			if (newStocks == checkStock.dataValues.stocks) {
+				return {
+					message: "There is no change in quantity",
+					data: null,
+				};
+			}
+			let change = "";
+			if (newStocks < checkStock.dataValues.stocks) {
+				change = "subtraction";
+			} else {
+				change = "addition";
+			}
+			const quantity = Math.abs(
+				Number(checkStock.dataValues.stocks) - Number(newStocks)
+			);
+
+			const dataLog = {
+				change,
+				type: "manual",
+				stock_id: stockId,
+				stock_before: checkStock.dataValues.stocks,
+				quantity_change: quantity,
+			};
+
+			const updateLog = await db.stock_history.create(dataLog);
 
 			const updateStock = await db.stock.update(
 				{ stocks: newStocks },
