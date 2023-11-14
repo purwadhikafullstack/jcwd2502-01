@@ -13,7 +13,7 @@ import {
 	Image,
 	Chip,
 } from "@nextui-org/react";
-import { IoSearch } from "react-icons/io5";
+import { IoSearch, IoTrashOutline } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import {
@@ -26,6 +26,7 @@ import {
 	setPagination,
 	setProducts,
 	setSearch,
+	setTotalPage,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -103,6 +104,20 @@ const AdminProductListTable = ({ props }) => {
 		window.location.reload(false);
 	};
 
+	const onDelete = async (productId) => {
+		//confirm
+		await axiosInstance().delete(`products/${productId}`);
+		dispatch(
+			fetchProductAsync(
+				`?&search=${search}&brand=${brand.join(
+					","
+				)}&category=${category.join(
+					","
+				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			)
+		);
+	};
+
 	useEffect(() => {
 		takeFromQuery();
 
@@ -112,24 +127,25 @@ const AdminProductListTable = ({ props }) => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
 			dispatch(setProducts([]));
+			dispatch(setTotalPage(1));
 		};
 	}, []);
 
 	useEffect(() => {
 		navigate(
 			`/admin/products?search=${search}&brand=${brand.join(
-				""
+				","
 			)}&category=${category.join(
-				""
+				","
 			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 		);
 
 		dispatch(
 			fetchProductAsync(
 				`?&search=${search}&brand=${brand.join(
-					""
+					","
 				)}&category=${category.join(
-					""
+					","
 				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 			)
 		);
@@ -205,6 +221,18 @@ const AdminProductListTable = ({ props }) => {
 								</Button>
 							</Tooltip>
 						</Link>
+						<Tooltip color="danger" content="Remove product">
+							<Button
+								isIconOnly
+								variant="light"
+								className="text-lg text-danger cursor-pointer active:opacity-50"
+								onClick={() => {
+									onDelete(product?.id);
+								}}
+							>
+								<IoTrashOutline size={24} />
+							</Button>
+						</Tooltip>
 					</div>
 				);
 			default:

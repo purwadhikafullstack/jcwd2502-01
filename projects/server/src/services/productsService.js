@@ -33,7 +33,7 @@ module.exports = {
 			};
 
 			if (category) {
-				const arrayCategory = category.split("");
+				const arrayCategory = category.split(",");
 				categoryInclude.where = {
 					id: {
 						[Op.in]: arrayCategory,
@@ -42,7 +42,7 @@ module.exports = {
 			}
 
 			if (brand) {
-				const arrayBrand = brand.split("");
+				const arrayBrand = brand.split(",");
 				brandInclude.where = {
 					id: {
 						[Op.in]: arrayBrand,

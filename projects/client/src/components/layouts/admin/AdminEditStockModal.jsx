@@ -70,9 +70,9 @@ const AdminEditStockModal = ({ id }) => {
 			dispatch(
 				fetchStockAsync(
 					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-						""
+						","
 					)}&category=${category.join(
-						""
+						","
 					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 				)
 			);
@@ -108,7 +108,7 @@ const AdminEditStockModal = ({ id }) => {
 
 	return (
 		<>
-			<Tooltip content="Edit product">
+			<Tooltip content="Edit stock">
 				<Button
 					variant="light"
 					onPress={onOpen}

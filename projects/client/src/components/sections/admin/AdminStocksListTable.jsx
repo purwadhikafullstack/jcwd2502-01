@@ -24,9 +24,9 @@ import {
 	setBrand,
 	setCategory,
 	setPagination,
-	setProducts,
 	setProductsForStocks,
 	setSearch,
+	setTotalPage,
 	setWarehouse,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
@@ -104,9 +104,6 @@ const AdminStocksListTable = () => {
 	useEffect(() => {
 		formik.setFieldValue("searchQuery", search);
 	}, [search]);
-	useEffect(() => {
-		console.log("iini>>", products);
-	}, [products]);
 
 	const clear = async () => {
 		await dispatch(onClear());
@@ -127,6 +124,7 @@ const AdminStocksListTable = () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
 			dispatch(setProductsForStocks([]));
+			dispatch(setTotalPage(1));
 			dispatch(setWarehouse(null));
 		};
 	}, []);
@@ -135,18 +133,18 @@ const AdminStocksListTable = () => {
 		if (warehouse) {
 			navigate(
 				`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-					""
+					","
 				)}&category=${category.join(
-					""
+					","
 				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 			);
 
 			dispatch(
 				fetchStockAsync(
 					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-						""
+						","
 					)}&category=${category.join(
-						""
+						","
 					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 				)
 			);
