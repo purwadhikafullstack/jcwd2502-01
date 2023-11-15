@@ -9,6 +9,7 @@ const upload = require("./../middlewares/upload");
 // const { verify } = require("./../lib/jwt");
 
 Router.get("/all", stocksController.getAllProductsStocks);
+Router.get("/history", stocksController.getStockHistories);
 Router.get("/:stockId", stocksController.getOneStock);
 // Router.post("/", upload, productsController.createProduct);
 Router.patch("/:stockId", stocksController.updateStock);

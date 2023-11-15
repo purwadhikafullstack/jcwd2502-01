@@ -205,4 +205,57 @@ module.exports = {
 			return error;
 		}
 	},
+	findStockHistories: async (warehouseId) => {
+		try {
+			const baseQuery = {
+				attributes: [
+					"id",
+					"change",
+					"stock_before",
+					"quantity_change",
+					"type",
+					"createdAt",
+					"user_id",
+					"stock_mutation_id",
+				],
+				include: [
+					{
+						model: db.stock,
+						attributes: ["id", "stocks"],
+						include: [
+							{
+								model: db.warehouse,
+								attributes: ["warehouse_name"],
+							},
+							{
+								model: db.product,
+								attributes: ["product_name"],
+							},
+						],
+					},
+				],
+				order: [["createdAt", "desc"]],
+			};
+			if (warehouseId) {
+				baseQuery.include[0].where = { warehouse_id: warehouseId };
+			}
+			const dataLogStock = await db.stock_history.findAll(baseQuery);
+			if (!dataLogStock) {
+				return {
+					isError: true,
+					message: `There is no change in stock`,
+					data: null,
+				};
+			}
+
+			const count = await db.stock_history.count(baseQuery);
+
+			return {
+				message: "Get stock change log success",
+				data: { count, history: dataLogStock },
+			};
+		} catch (error) {
+			return error;
+		}
+	},
 };

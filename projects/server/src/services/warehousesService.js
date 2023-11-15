@@ -1,6 +1,6 @@
-
 const db = require("./../models");
 const { Op } = require("sequelize");
+const { sequelize } = require("./../models");
 const fetch = require("node-fetch");
 const zlib = require("zlib");
 
@@ -85,6 +85,7 @@ module.exports = {
 		}
 	},
 	addWarehouse: async (data, adminId) => {
+		const t = await sequelize.transaction();
 		try {
 			const { city_id } = data;
 			const cityName = await db.city.findOne({ where: { id: city_id } });
@@ -93,16 +94,26 @@ module.exports = {
 			);
 			data.latitude = latitude;
 			data.longitude = longitude;
-			const createWarehouse = await db.warehouse.create(data);
+			const createWarehouse = await db.warehouse.create(data, {
+				transaction: t,
+			});
 
-			// if (adminId) {
-			// 	await db.user.update(
-			// 		{ warehouse_id: createWarehouse.id },
-			// 		{ where: { id: adminId } }
-			// 	);
-			// }
+			const dataProduct = await db.product.findAll();
+			const dataStock = [];
+			dataProduct.map((product) => {
+				dataStock.push({
+					stocks: 0,
+					product_id: product.id,
+					warehouse_id: createWarehouse.dataValues.id,
+				});
+			});
+			const addStock = await db.stock.bulkCreate(dataStock, {
+				transaction: t,
+			});
+			await t.commit();
 			return { message: "Create warehouse success" };
 		} catch (error) {
+			await t.rollback();
 			return error;
 		}
 	},
@@ -145,4 +156,3 @@ module.exports = {
 		}
 	},
 };
-
