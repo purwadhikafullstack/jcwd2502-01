@@ -4,12 +4,15 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	products: [],
+	productsForStocks: [],
+	stockHistory: [],
 	productDetail: [],
 	orderField: "",
 	orderDirection: "",
 	search: "",
 	category: [],
 	brand: [],
+	warehouse: null,
 	page: 1,
 	offset: 0,
 	count: 0,
@@ -22,6 +25,12 @@ export const productsSlice = createSlice({
 	reducers: {
 		setProducts: (initialState, { payload }) => {
 			initialState.products = payload;
+		},
+		setProductsForStocks: (initialState, { payload }) => {
+			initialState.productsForStocks = payload;
+		},
+		setStockHistory: (initialState, { payload }) => {
+			initialState.stockHistory = payload;
 		},
 		setProductDetail: (initialState, { payload }) => {
 			initialState.productDetail = payload;
@@ -40,6 +49,9 @@ export const productsSlice = createSlice({
 		},
 		setSearch: (initialState, { payload }) => {
 			initialState.search = payload;
+		},
+		setWarehouse: (initialState, { payload }) => {
+			initialState.warehouse = payload;
 		},
 		setPage: (initialState, { payload }) => {
 			initialState.page = payload;
@@ -78,7 +90,7 @@ export const productsSlice = createSlice({
 				const index = initialState.category.indexOf(payload);
 				initialState.category.splice(index, 1);
 			} else if (payload.length > 1) {
-				initialState.category = payload.split("").filter((v) => {
+				initialState.category = payload.split(",").filter((v) => {
 					return Number(v);
 				});
 			} else if (payload.length === 0) {
@@ -92,7 +104,7 @@ export const productsSlice = createSlice({
 				const index = initialState.brand.indexOf(payload);
 				initialState.brand.splice(index, 1);
 			} else if (payload.length > 1) {
-				initialState.brand = payload.split("").filter((v) => {
+				initialState.brand = payload.split(",").filter((v) => {
 					return Number(v);
 				});
 			} else if (payload.length === 0) {
@@ -113,6 +125,34 @@ export const fetchProductAsync = (query) => async (dispatchEvent) => {
 		const totalPage = await Math.ceil(data.data.count / 12);
 		dispatchEvent(setTotalPage(totalPage));
 		dispatchEvent(setProducts(data.data.products));
+		dispatchEvent(setCount(data.data.count));
+	} catch (error) {
+		console.log(error);
+	}
+};
+export const fetchStockAsync = (query) => async (dispatchEvent) => {
+	try {
+		// const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance().get(
+			`stocks/all${query ? query : ""}`
+		);
+		const totalPage = await Math.ceil(data.data.count / 12);
+		dispatchEvent(setTotalPage(totalPage));
+		dispatchEvent(setProductsForStocks(data.data.products));
+		dispatchEvent(setCount(data.data.count));
+	} catch (error) {
+		console.log(error);
+	}
+};
+export const fetchStockHistoryAsync = (query) => async (dispatchEvent) => {
+	try {
+		// const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance().get(
+			`stocks/history${query ? query : ""}`
+		);
+		const totalPage = await Math.ceil(data.data.count / 12);
+		dispatchEvent(setTotalPage(totalPage));
+		dispatchEvent(setStockHistory(data.data.history));
 		dispatchEvent(setCount(data.data.count));
 	} catch (error) {
 		console.log(error);
@@ -194,7 +234,10 @@ export const onClear = () => async (dispatchEvent) => {
 };
 
 export const {
+	setWarehouse,
 	setProducts,
+	setProductsForStocks,
+	setStockHistory,
 	setOrderField,
 	setOrderDirection,
 	setSearch,

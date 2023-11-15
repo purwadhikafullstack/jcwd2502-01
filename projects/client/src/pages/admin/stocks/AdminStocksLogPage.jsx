@@ -6,11 +6,11 @@ import {
 	setWarehouse,
 } from "../../../redux/features/products";
 import { Button, Select, SelectItem } from "@nextui-org/react";
-import AdminStocksListTable from "../../../components/sections/admin/AdminStocksListTable";
+import AdminStockLogTable from "../../../components/sections/admin/AdminStockLogTable";
 import { Link } from "react-router-dom";
 import { axiosInstance } from "../../../lib/axios";
 
-const AdminStocksListPage = () => {
+const AdminStocksLogPage = () => {
 	const [warehouses, setWarehouses] = useState([]);
 	const [selectedWarehouse, setSelectedWarehouse] = useState(null);
 	const products = useSelector((state) => state.products.products);
@@ -59,44 +59,35 @@ const AdminStocksListPage = () => {
 	return (
 		<AdminPageMainContainer>
 			<div className="admin-page-header flex justify-between gap-4 mb-6">
-				<div className="flex justify-between w-full">
-					<div className="flex items-center">
-						<h1 className="font-bold text-title-lg mr-4">Stocks</h1>
-						<Select
-							items={warehouses}
-							size="sm"
-							variant="bordered"
-							className="min-w-[240px]"
-							radius="lg"
-							placeholder="Select warehouse"
-							onChange={(e) => {
-								dispatch(setWarehouse(e.target.value));
-							}}
-							selectedKeys={
-								warehouse ? [String(warehouse)] : null
-							}
-						>
-							{(warehouse) => (
-								<SelectItem key={warehouse.id}>
-									{warehouse.warehouse_name}
-								</SelectItem>
-							)}
-						</Select>
-					</div>
-					<Link to={"/admin/stocks/log"}>
-						<Button color="primary" size="md">
-							<span className="font-medium text-black">
-								Stocks Change Log
-							</span>
-						</Button>
-					</Link>
+				<div className="flex items-center">
+					<h1 className="font-bold text-title-lg mr-4">
+						Stock changes
+					</h1>
+					<Select
+						items={warehouses}
+						size="sm"
+						variant="bordered"
+						className="min-w-[240px]"
+						radius="lg"
+						placeholder="Select warehouse"
+						onChange={(e) => {
+							dispatch(setWarehouse(e.target.value));
+						}}
+						selectedKeys={warehouse ? [String(warehouse)] : null}
+					>
+						{(warehouse) => (
+							<SelectItem key={warehouse.id}>
+								{warehouse.warehouse_name}
+							</SelectItem>
+						)}
+					</Select>
 				</div>
 			</div>
 			<div className="pb-12">
-				<AdminStocksListTable />
+				<AdminStockLogTable />
 			</div>
 		</AdminPageMainContainer>
 	);
 };
 
-export default AdminStocksListPage;
+export default AdminStocksLogPage;

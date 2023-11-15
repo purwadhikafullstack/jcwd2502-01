@@ -32,6 +32,9 @@ import AdminEditProductPage from "./pages/admin/products/AdminEditProductPage";
 import AdminBrandsPage from "./pages/admin/brands/AdminBrandsPage";
 import AdminOverviewDashboardPage from "./pages/admin/home/AdminOverviewDashboardPage";
 import AdminStocksListPage from "./pages/admin/stocks/AdminStocksListPage";
+import OrderListPage from "./pages/user/OrderListPage";
+import OrderDetailsPage from "./pages/user/OrderDetailsPage";
+import AdminStocksLogPage from "./pages/admin/stocks/AdminStocksLogPage";
 
 function App() {
 	const location = useLocation();
@@ -126,6 +129,11 @@ function App() {
 					path="/profile/settings"
 					element={<ProfileSettingsPage />}
 				/>
+				<Route path="/order-list" element={<OrderListPage />} />
+				<Route
+					path="/order-details/:receiptNumber"
+					element={<OrderDetailsPage />}
+				/>
 				<Route path="/cart" element={<CartPage />} />
 				<Route path="/cart/checkout" element={<CheckoutPage />} />
 
@@ -152,6 +160,10 @@ function App() {
 					element={<AdminEditProductPage />}
 				/>
 				<Route path="/admin/stocks" element={<AdminStocksListPage />} />
+				<Route
+					path="/admin/stocks/log"
+					element={<AdminStocksLogPage />}
+				/>
 				<Route
 					path="/admin/categories"
 					element={<AdminCategoriesPage />}

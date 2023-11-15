@@ -33,7 +33,7 @@ module.exports = {
 			};
 
 			if (category) {
-				const arrayCategory = category.split("");
+				const arrayCategory = category.split(",");
 				categoryInclude.where = {
 					id: {
 						[Op.in]: arrayCategory,
@@ -42,7 +42,7 @@ module.exports = {
 			}
 
 			if (brand) {
-				const arrayBrand = brand.split("");
+				const arrayBrand = brand.split(",");
 				brandInclude.where = {
 					id: {
 						[Op.in]: arrayBrand,
@@ -188,6 +188,19 @@ module.exports = {
 				transaction: t,
 			});
 
+			const dataWarehouse = await db.warehouse.findAll();
+			const dataStock = [];
+			dataWarehouse.map((warehouse) => {
+				dataStock.push({
+					stocks: 0,
+					product_id: addProduct.dataValues.id,
+					warehouse_id: warehouse.id,
+				});
+			});
+			const addStock = await db.stock.bulkCreate(dataStock, {
+				transaction: t,
+			});
+
 			await t.commit();
 			return { message: "Add product success", data: null };
 		} catch (error) {
@@ -204,7 +217,6 @@ module.exports = {
 	) => {
 		const t = await sequelize.transaction();
 		try {
-			console.log("1");
 			if (!dataProduct || !dataSpec) {
 				return { message: "Data is not complete", isError: true };
 			}
@@ -223,7 +235,6 @@ module.exports = {
 			const checkProduct2 = await db.product.findOne({
 				where: { product_name },
 			});
-			console.log("2");
 			if (checkProduct2 && checkProduct2.dataValues.id != productId) {
 				images.map((image) => {
 					fs.unlinkSync(image.path);
@@ -234,7 +245,6 @@ module.exports = {
 					data: null,
 				};
 			}
-			console.log("3");
 			const updateProduct = await db.product.update(
 				dataProduct,
 				{ where: { id: productId } },
@@ -242,7 +252,6 @@ module.exports = {
 					transaction: t,
 				}
 			);
-			console.log("4");
 
 			if (dataImages.action === "remove") {
 				const product_images = await db.product_image.findAll({
@@ -267,7 +276,6 @@ module.exports = {
 				});
 			}
 			const updateImages = [];
-			console.log("5");
 			if (images) {
 				for (const image of images) {
 					updateImages.push({
@@ -278,14 +286,9 @@ module.exports = {
 				const product_images = await db.product_image.findAll({
 					where: { product_id: productId },
 				});
-				console.log("5.1");
 				const productPath = [];
 				if (product_images.length) {
-					console.log("masuk");
 					product_images.map((image) => {
-						console.log(
-							`pathnya >>>> src/${image.dataValues.image}`
-						);
 						productPath.push({
 							path: image.dataValues.image,
 						});
@@ -297,7 +300,6 @@ module.exports = {
 						{ transaction: t }
 					);
 				}
-				console.log("5.2", productPath);
 				productPath.map((v) => {
 					fs.unlinkSync(__dirname + `/../${v.path}`);
 				});
@@ -308,7 +310,6 @@ module.exports = {
 					}
 				);
 			}
-			console.log("6");
 			const updateProductSpec = await db.specification.update(
 				dataSpec,
 				{ where: { product_id: productId } },

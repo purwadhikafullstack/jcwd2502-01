@@ -18,15 +18,18 @@ import { BiEdit } from "react-icons/bi";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import {
 	fetchStockAsync,
+	fetchStockHistoryAsync,
 	onClear,
 	onSearch,
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
+	setProducts,
 	setProductsForStocks,
 	setSearch,
-	setTotalPage,
+	setStockHistory,
 	setWarehouse,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
@@ -37,13 +40,13 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
 
-const AdminStocksListTable = () => {
+const AdminStockLogTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 
 	const warehouse = useSelector((state) => state.products.warehouse);
-	const products = useSelector((state) => state.products.productsForStocks);
+	const history = useSelector((state) => state.products.stockHistory);
 	const count = useSelector((state) => state.products.count);
 	const totalPage = useSelector((state) => state.products.totalPage);
 	const orderField = useSelector((state) => state.products.orderField);
@@ -104,6 +107,9 @@ const AdminStocksListTable = () => {
 	useEffect(() => {
 		formik.setFieldValue("searchQuery", search);
 	}, [search]);
+	useEffect(() => {
+		console.log("iini>>", history);
+	}, [history]);
 
 	const clear = async () => {
 		await dispatch(onClear());
@@ -123,28 +129,28 @@ const AdminStocksListTable = () => {
 		return () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
-			dispatch(setProductsForStocks([]));
-			dispatch(setTotalPage(1));
+			dispatch(setStockHistory([]));
+			dispatch(setCount(0));
 			dispatch(setWarehouse(null));
 		};
 	}, []);
 
 	useEffect(() => {
 		if (warehouse) {
-			navigate(
-				`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			);
+			// navigate(
+			// 	`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
+			// 		""
+			// 	)}&category=${category.join(
+			// 		""
+			// 	)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			// );
 
 			dispatch(
-				fetchStockAsync(
-					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-						","
+				fetchStockHistoryAsync(
+					`?warehouseId=${warehouse}&search=${search}&brand=${brand.join(
+						""
 					)}&category=${category.join(
-						","
+						""
 					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 				)
 			);
@@ -152,63 +158,81 @@ const AdminStocksListTable = () => {
 	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
 
 	const columns = [
-		{ name: "PRODUCT INFO", uid: "product_info" },
-		{ name: "CATEGORY", uid: "category" },
-		{ name: "BRAND", uid: "brand" },
-		{ name: "PRICE", uid: "price" },
-		{ name: "STOCKS", uid: "stocks" },
-		{ name: "ACTIONS", uid: "actions" },
+		{ name: "DATE", uid: "date" },
+		{ name: "PRODUCT", uid: "product" },
+		{ name: "WAREHOUSE", uid: "warehouse" },
+		{ name: "STOCK BEFORE", uid: "stock_before" },
+		{ name: "CHANGE", uid: "change" },
+		{ name: "FINAL STOCK", uid: "final_stock" },
+		{ name: "TYPE", uid: "type" },
 	];
 
-	const renderCell = React.useCallback((product, columnKey) => {
-		const productPrice = product?.product_price.toLocaleString("id-ID", {
-			style: "currency",
-			currency: "IDR",
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
-		});
-		const encodedProductName = encodeURIComponent(product?.product_name);
+	const renderCell = React.useCallback((change, columnKey) => {
+		let finalStock = 0;
+		let green = true;
 
+		if (change?.change === "addition") {
+			finalStock =
+				Number(change?.stock_before) + Number(change?.quantity_change);
+		} else {
+			green = false;
+			finalStock =
+				Number(change?.stock_before) - Number(change?.quantity_change);
+		}
 		switch (columnKey) {
-			case "product_info":
+			case "date":
 				return (
 					<div className="flex items-center gap-4 w-[240px] md:w-full">
-						{/* <div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
-							<Image
-								src={`${
-									process.env.REACT_APP_IMAGE_API
-								}${product?.product_images[0]?.image.substring(
-									7
-								)}`}
-								alt=""
-								className="product-image aspect-square w-full h-full object-contain bg-white"
-							/>
-						</div> */}
 						<p className="font-medium text-base line-clamp-1">
-							{product?.product_name}
+							{change?.createdAt.substring(0, 10)}
 						</p>
 					</div>
 				);
 			case "category":
-				return <Chip>{product?.category?.category_type}</Chip>;
+				return <Chip>{change?.category?.category_type}</Chip>;
 			case "brand":
-				return <Chip>{product?.brand?.brand_name}</Chip>;
-			case "price":
+				return <Chip>{change?.brand?.brand_name}</Chip>;
+			case "product":
 				return (
 					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{productPrice}
+						<p className="font-medium text-base line-clamp-1">
+							{change?.stock?.product?.product_name}
 						</p>
 					</div>
 				);
-			case "stocks":
+			case "warehouse":
 				return (
-					<p className="text-base line-clamp-1">{product?.stock}</p>
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-medium text-base line-clamp-1">
+							{change?.stock?.warehouse?.warehouse_name}
+						</p>
+					</div>
 				);
+			case "stock_before":
+				return (
+					<p className="text-base line-clamp-1">
+						{change?.stock_before}
+					</p>
+				);
+			case "change":
+				return (
+					<p
+						className={`${
+							green ? "text-green-600" : "text-red-600"
+						} text-base line-clamp-1`}
+					>
+						{change?.quantity_change}
+					</p>
+				);
+			case "final_stock":
+				return <p className="text-base line-clamp-1">{finalStock}</p>;
+
+			case "type":
+				return <Chip>{change?.type}</Chip>;
 			case "actions":
 				return (
 					<div className="relative flex justify-start items-center gap-2">
-						{/* <Tooltip content="Edit product">
+						{/* <Tooltip content="Edit change">
 							<Button
 								variant="light"
 								className="text-default-400 cursor-pointer active:opacity-50"
@@ -217,7 +241,7 @@ const AdminStocksListTable = () => {
 								Edit
 							</Button>
 						</Tooltip> */}
-						<AdminEditStockModal id={product?.stock_id} />
+						<AdminEditStockModal id={change?.stocks[0]?.id} />
 					</div>
 				);
 			default:
@@ -248,7 +272,7 @@ const AdminStocksListTable = () => {
 		<>
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
-					<form className="w-[50%]" onSubmit={handleSubmitSearch}>
+					{/* <form className="w-[50%]" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
 							placeholder="Search for product by name"
@@ -284,15 +308,15 @@ const AdminStocksListTable = () => {
 							</div>
 							<SelectSortBy admin={false} />
 						</div>
-					</div>
+					</div> */}
 				</div>
 				<div className="flex justify-between items-center">
 					<span className="text-default-400 text-small">
 						Showing
-						{products?.length
-							? ` ${1 + offset}-${offset + products?.length} `
+						{history?.length
+							? ` ${1 + offset}-${offset + history?.length} `
 							: ` 0 `}
-						out of {count} products.
+						out of {count} changes.
 					</span>
 				</div>
 			</div>
@@ -320,7 +344,7 @@ const AdminStocksListTable = () => {
 				</TableHeader>
 				<TableBody
 					emptyContent={"Please select warehouse"}
-					items={products}
+					items={history}
 				>
 					{(item) => (
 						<TableRow key={item.id}>
@@ -337,4 +361,4 @@ const AdminStocksListTable = () => {
 	);
 };
 
-export default AdminStocksListTable;
+export default AdminStockLogTable;

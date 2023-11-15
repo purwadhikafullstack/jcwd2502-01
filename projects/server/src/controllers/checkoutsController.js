@@ -158,18 +158,35 @@ module.exports = {
 		try {
 			const { id: user_id } = req.dataToken;
 
+			const time = new Date();
+
 			const {
 				total_amount,
+				shipping_cost,
 				total_item,
 				address_id,
 				warehouse_id,
 				items,
 			} = req.body;
 
+			const shippingCost = Number(shipping_cost);
+
+			const invoice = `INV/${time.getFullYear()}${
+				time.getMonth() + 1
+			}${time.getDate()}/NXCMP/${Math.floor(
+				100000 + Math.random() * 900000
+			)}`;
+
+			const receipt_number =
+				10000000 + Math.floor(Math.random() * 90000000);
+
 			const createOrder = await db.order.create({
 				total_amount,
+				shipping_cost: shippingCost,
 				total_item,
 				status: 1,
+				invoice,
+				receipt_number,
 				user_id,
 				address_id,
 				warehouse_id,
@@ -187,6 +204,37 @@ module.exports = {
 			await db.cart.destroy({ where: { status: true } });
 
 			respHandler(res, "Create order success");
+		} catch (error) {
+			next(error);
+		}
+	},
+	uploadPaymentProof: async (req, res, next) => {
+		try {
+			const { id: user_id } = req.dataToken;
+			const { order_id } = req.params;
+			const fileImage = req.file;
+
+			const checkOrderPayment = await db.order.findOne({
+				where: { id: order_id, user_id },
+			});
+			const paymentHasPaid = checkOrderPayment.proof_of_payment;
+
+			if (paymentHasPaid)
+				throw {
+					message:
+						"Your transaction has already been settled with your payment.",
+				};
+			// respHandler(res, "Upload payment proof success", null, 201);
+
+			await db.order.update(
+				{
+					proof_of_payment: `public/payment-proof/${fileImage.filename}`,
+					status: 2,
+				},
+				{ where: { id: order_id, user_id } }
+			);
+
+			respHandler(res, "Upload payment proof success", null, 201);
 		} catch (error) {
 			next(error);
 		}
