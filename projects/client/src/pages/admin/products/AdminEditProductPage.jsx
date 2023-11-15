@@ -230,7 +230,12 @@ const AdminEditProductPage = () => {
 			const { data } = await axiosInstance().get(
 				`products/${productName}`
 			);
-			setProductData(data.data);
+
+			if (data.data) {
+				setProductData(data.data);
+			} else {
+				navigate("/admin/products");
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -295,6 +300,7 @@ const AdminEditProductPage = () => {
 								value={formik.values.product_name}
 								labelPlacement="outside"
 								onChange={handleFormInput}
+								isRequired
 							/>
 						</div>
 						<div className="form-control">
@@ -308,6 +314,7 @@ const AdminEditProductPage = () => {
 								selectedKeys={[
 									String(formik.values.category_id),
 								]}
+								isRequired
 							>
 								{categories.map((category) => (
 									<SelectItem
@@ -328,6 +335,7 @@ const AdminEditProductPage = () => {
 								placeholder="Select a brand"
 								onChange={handleFormInput}
 								selectedKeys={[String(formik.values.brand_id)]}
+								isRequired
 							>
 								{brands.map((brand) => (
 									<SelectItem key={brand.id} value={brand.id}>
@@ -526,6 +534,7 @@ const AdminEditProductPage = () => {
 								value={formik.values.product_price}
 								labelPlacement="outside"
 								onChange={handleFormInput}
+								isRequired
 							/>
 						</div>
 					</section>
@@ -583,6 +592,7 @@ const AdminEditProductPage = () => {
 									value={formik.values.weight}
 									labelPlacement="outside"
 									onChange={handleFormInput}
+									isRequired
 								/>
 							</div>
 						</section>
@@ -662,7 +672,18 @@ const AdminEditProductPage = () => {
 							</div>
 						</section>
 					</section>
-					<section>
+					<section className="flex items-center gap-4">
+						<Button
+							fullWidth
+							size="lg"
+							type="button"
+							onClick={() => navigate(-1)}
+							className="bg-red-600"
+						>
+							<p className="text-white font-medium">
+								Cancel changes
+							</p>
+						</Button>
 						<Button
 							fullWidth
 							color="primary"

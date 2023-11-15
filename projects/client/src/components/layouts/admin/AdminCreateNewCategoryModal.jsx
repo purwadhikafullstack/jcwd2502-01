@@ -78,26 +78,26 @@ const AdminCreateNewCategoryModal = () => {
 										</h2>
 									</ModalHeader>
 									<ModalBody>
-										<form className="flex flex-col gap-4 h-full">
-											<div className="form-control">
-												<Input
-													type="text"
-													name="category_type"
-													label="Category Name"
-													labelPlacement="outside"
-													variant="bordered"
-													radius="sm"
-													size="lg"
-													placeholder="Laptop"
-													isRequired
-													onChange={(e) =>
-														setCategoryType(
-															e.target.value
-														)
-													}
-												/>
-											</div>
-										</form>
+										{/* <form className="flex flex-col gap-4 h-full"> */}
+										<div className="form-control">
+											<Input
+												type="text"
+												name="category_type"
+												label="Category Name"
+												labelPlacement="outside"
+												variant="bordered"
+												radius="sm"
+												size="lg"
+												placeholder="Laptop"
+												isRequired
+												onChange={(e) =>
+													setCategoryType(
+														e.target.value
+													)
+												}
+											/>
+										</div>
+										{/* </form> */}
 									</ModalBody>
 									<ModalFooter className="justify-center">
 										<Button

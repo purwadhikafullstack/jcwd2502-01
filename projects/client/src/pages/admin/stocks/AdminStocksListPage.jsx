@@ -69,15 +69,18 @@ const AdminStocksListPage = () => {
 							className="min-w-[240px]"
 							radius="lg"
 							placeholder="Select warehouse"
-							onChange={(e) => {
-								dispatch(setWarehouse(e.target.value));
-							}}
 							selectedKeys={
 								warehouse ? [String(warehouse)] : null
 							}
 						>
 							{(warehouse) => (
-								<SelectItem key={warehouse.id}>
+								<SelectItem
+									key={warehouse.id}
+									value={warehouse.id}
+									onClick={() =>
+										dispatch(setWarehouse(warehouse.id))
+									}
+								>
 									{warehouse.warehouse_name}
 								</SelectItem>
 							)}

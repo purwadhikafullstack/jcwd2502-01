@@ -216,6 +216,7 @@ const AdminCreateNewProductPage = () => {
 								label="Product Name"
 								labelPlacement="outside"
 								onChange={handleFormInput}
+								isRequired
 							/>
 						</div>
 						<div className="form-control">
@@ -226,6 +227,7 @@ const AdminCreateNewProductPage = () => {
 								labelPlacement="outside"
 								placeholder="Select a category"
 								onChange={handleFormInput}
+								isRequired
 							>
 								{categories.map((category) => (
 									<SelectItem
@@ -245,6 +247,7 @@ const AdminCreateNewProductPage = () => {
 								labelPlacement="outside"
 								placeholder="Select a brand"
 								onChange={handleFormInput}
+								isRequired
 							>
 								{brands.map((brand) => (
 									<SelectItem key={brand.id} value={brand.id}>
@@ -374,6 +377,7 @@ const AdminCreateNewProductPage = () => {
 								label="Product Price (in Rp)"
 								labelPlacement="outside"
 								onChange={handleFormInput}
+								isRequired
 							/>
 						</div>
 					</section>
@@ -427,6 +431,7 @@ const AdminCreateNewProductPage = () => {
 									label="Weight (in gram)"
 									labelPlacement="outside"
 									onChange={handleFormInput}
+									isRequired
 								/>
 							</div>
 						</section>
@@ -500,7 +505,16 @@ const AdminCreateNewProductPage = () => {
 							</div>
 						</section>
 					</section>
-					<section>
+					<section className="flex items-center gap-4">
+						<Button
+							fullWidth
+							size="lg"
+							type="button"
+							onClick={() => navigate(-1)}
+							className="bg-red-600"
+						>
+							<p className="text-white font-medium">Cancel</p>
+						</Button>
 						<Button
 							fullWidth
 							color="primary"
