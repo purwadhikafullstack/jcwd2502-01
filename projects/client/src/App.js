@@ -43,6 +43,10 @@ function App() {
 		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
 	);
 
+	const [lang, setLang] = useState(
+		localStorage.getItem("lang") ? localStorage.getItem("lang") : "en"
+	);
+
 	const handleToggle = (e) => {
 		if (e.target.checked) {
 			setTheme("dark");
@@ -53,6 +57,7 @@ function App() {
 
 	useEffect(() => {
 		localStorage.setItem("theme", theme);
+		localStorage.setItem("lang", lang);
 		const localTheme = localStorage.getItem("theme");
 		document.querySelector("html").setAttribute("class", localTheme);
 	}, [theme]);

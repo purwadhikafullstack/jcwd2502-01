@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -8,6 +8,8 @@ import { Provider } from "react-redux";
 import { store } from "./redux/app/store.js";
 import { NextUIProvider } from "@nextui-org/react";
 import { ContextProvider } from "./contexts/ContextProvider";
+import "./i18n";
+import "flag-icons";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,7 +17,9 @@ root.render(
 		<BrowserRouter>
 			<NextUIProvider>
 				<ContextProvider>
-					<App />
+					<Suspense fallback={<h1>Loading...</h1>}>
+						<App />
+					</Suspense>
 				</ContextProvider>
 			</NextUIProvider>
 		</BrowserRouter>

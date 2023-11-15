@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { onLogout } from "../../../redux/features/users";
 import { Link, useNavigate } from "react-router-dom";
 import TransactionList from "../../../assets/icons/TransactionList";
+import SelectLang from "../Selects/SelectLang";
 
 const ProfileDropdown = () => {
 	const { username } = useSelector((state) => state.user);

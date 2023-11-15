@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { IoSearch, IoCartOutline } from "react-icons/io5";
@@ -20,8 +21,11 @@ import { onSearch, setSearch } from "../../../redux/features/products";
 import { fetchCartAsync } from "../../../redux/features/carts";
 import NavigationBarMenu from "./NavigationBarMenu";
 import ProfileDropdown from "../../uis/Dropdowns/ProfileDropdown";
+import SelectLang from "../../uis/Selects/SelectLang";
 
 const NavigationBar = () => {
+	const { t } = useTranslation();
+
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [click, setClick] = useState(true);
 	const dispatch = useDispatch();
@@ -103,7 +107,7 @@ const NavigationBar = () => {
 				<form className="w-full" onSubmit={handleSubmitSearch}>
 					<Input
 						type="text"
-						placeholder="Search on Nexocomp"
+						placeholder={t("search_on_nexo")}
 						isClearable
 						onClear={() => dispatch(setSearch(""))}
 						startContent={<IoSearch opacity={".5"} />}
@@ -116,7 +120,10 @@ const NavigationBar = () => {
 					/>
 				</form>
 			</NavbarContent>
-			<NavbarContent justify="end" className="hidden md:flex md:px-2">
+			<NavbarContent>
+				<SelectLang />
+			</NavbarContent>
+			<NavbarContent justify="end" className="hidden md:flex">
 				<Badge
 					disableOutline
 					content={count}
@@ -137,8 +144,8 @@ const NavigationBar = () => {
 			<NavbarContent justify="end" className="gap-2 hidden md:flex ">
 				{token ? (
 					<NavbarItem className="flex">
-							<ProfileDropdown />
-						</NavbarItem>
+						<ProfileDropdown />
+					</NavbarItem>
 				) : (
 					<>
 						<NavbarItem className="">
@@ -148,14 +155,14 @@ const NavigationBar = () => {
 									className="font-medium text-white"
 									fullWidth
 								>
-									Login
+									{t("login")}
 								</Button>
 							</Link>
 						</NavbarItem>
 						<NavbarItem className="">
 							<Link to={"/signup"}>
 								<Button className="bg-primary-500 text-black font-medium">
-									Sign Up
+									{t("sign_up")}
 								</Button>
 							</Link>
 						</NavbarItem>
