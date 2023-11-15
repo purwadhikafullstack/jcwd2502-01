@@ -67,7 +67,7 @@ const OrderListPage = () => {
 		return () => clearTimeout(timeoutId);
 	}, [currentPage]);
 
-	const renderPagination = useCallback(() => {
+	const renderPagination = () => {
 		if (isPaginationVisible && totalPages) {
 			return (
 				<Pagination
@@ -80,7 +80,7 @@ const OrderListPage = () => {
 			);
 		}
 		return null;
-	}, [currentPage, currentStatus]);
+	};
 
 	const renderOrderList = () => {
 		if (orders && orders.length > 0) {
