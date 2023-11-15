@@ -24,10 +24,12 @@ import {
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
 	setProducts,
 	setProductsForStocks,
 	setSearch,
+	setStockHistory,
 	setWarehouse,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
@@ -127,7 +129,8 @@ const AdminStockLogTable = () => {
 		return () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
-			dispatch(setProductsForStocks([]));
+			dispatch(setStockHistory([]));
+			dispatch(setCount(0));
 			dispatch(setWarehouse(null));
 		};
 	}, []);
@@ -215,8 +218,8 @@ const AdminStockLogTable = () => {
 				return (
 					<p
 						className={`${
-							green && "text-green-600"
-						} text-red-600 text-base line-clamp-1`}
+							green ? "text-green-600" : "text-red-600"
+						} text-base line-clamp-1`}
 					>
 						{change?.quantity_change}
 					</p>
