@@ -35,6 +35,7 @@ import AdminStocksListPage from "./pages/admin/stocks/AdminStocksListPage";
 import OrderListPage from "./pages/user/OrderListPage";
 import OrderDetailsPage from "./pages/user/OrderDetailsPage";
 import AdminStocksLogPage from "./pages/admin/stocks/AdminStocksLogPage";
+import AdminUserListPage from "./pages/admin/users/AdminUserListPage";
 
 function App() {
 	const location = useLocation();
@@ -147,6 +148,7 @@ function App() {
 					path="/admin/warehouses"
 					element={<AdminWarehouseListPage />}
 				/>
+				<Route path="/admin/users" element={<AdminUserListPage />} />
 				<Route
 					path="/admin/products"
 					element={<AdminProductListPage />}
