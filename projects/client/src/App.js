@@ -36,6 +36,7 @@ import OrderListPage from "./pages/user/OrderListPage";
 import OrderDetailsPage from "./pages/user/OrderDetailsPage";
 import AdminStocksLogPage from "./pages/admin/stocks/AdminStocksLogPage";
 import AdminUserListPage from "./pages/admin/users/AdminUserListPage";
+import AdminSalesReportPage from "./pages/admin/reports/AdminSalesReportPage";
 
 function App() {
 	const location = useLocation();
@@ -176,6 +177,10 @@ function App() {
 					element={<AdminCategoriesPage />}
 				/>
 				<Route path="/admin/brands" element={<AdminBrandsPage />} />
+				<Route
+					path="/admin/reports"
+					element={<AdminSalesReportPage />}
+				/>
 
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>

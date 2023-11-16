@@ -120,7 +120,7 @@ const NavigationBar = () => {
 					/>
 				</form>
 			</NavbarContent>
-			<NavbarContent>
+			<NavbarContent className="hidden md:flex">
 				<SelectLang />
 			</NavbarContent>
 			<NavbarContent justify="end" className="hidden md:flex">

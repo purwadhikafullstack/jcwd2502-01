@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import ProductCard from "../../uis/Cards/ProductCard";
 import { Pagination } from "@nextui-org/react";
@@ -18,6 +18,8 @@ import NotFound from "../../../assets/illustrations/NotFoundillustration.png";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const ProductListFeed = (props) => {
+	const [oneTime, setOneTime] = useState(false);
+
 	const products = useSelector((state) => state.products.products);
 	const count = useSelector((state) => state.products.count);
 	const totalPage = useSelector((state) => state.products.totalPage);
@@ -69,27 +71,42 @@ const ProductListFeed = (props) => {
 
 	useEffect(() => {
 		takeFromQuery();
+		setOneTime(true);
 	}, []);
 
 	useEffect(() => {
-		navigate(
-			`/explore?search=${search}&brand=${brand.join(
-				","
-			)}&category=${category.join(
-				","
-			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		);
+		if (oneTime) {
+			navigate(
+				`/explore?search=${search}&brand=${brand.join(
+					","
+				)}&category=${category.join(
+					","
+				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			);
 
-		dispatch(
-			fetchProductAsync(
+			console.log(
 				`?&search=${search}&brand=${brand.join(
 					","
 				)}&category=${category.join(
 					","
 				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			)
-		);
-	}, [orderField, orderDirection, search, page, category, brand]);
+			);
+
+			dispatch(
+				fetchProductAsync(
+					`?&search=${search}&brand=${brand.join(
+						","
+					)}&category=${category.join(
+						","
+					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+		}
+	}, [orderField, orderDirection, search, page, category, brand, oneTime]);
+
+	useEffect(() => {
+		console.log(">>>", products);
+	}, [products]);
 
 	return (
 		<div className="product-list md:w-full md:h-full md:pl-8">

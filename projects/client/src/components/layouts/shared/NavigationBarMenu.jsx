@@ -17,6 +17,7 @@ import {
 import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
 import TransactionList from "../../../assets/icons/TransactionList";
 import { onLogout } from "../../../redux/features/users";
+import SelectLang from "../../uis/Selects/SelectLang";
 
 const NavigationBarMenu = () => {
 	const { username, email, role } = useSelector((state) => state.user);
@@ -130,6 +131,10 @@ const NavigationBarMenu = () => {
 				</Link>
 			</NavbarMenuItem>
 			<NavbarMenuItem className="mb-4 mt-auto text-right">
+				<div className="flex justify-between items-center mb-4">
+					<p className="font-medium text-body-lg">Change Language</p>
+					<SelectLang />
+				</div>
 				<div className="flex justify-between items-center">
 					<p className="font-medium text-body-lg">Change Theme</p>
 					<ThemeToggle

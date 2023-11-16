@@ -33,7 +33,8 @@ const SelectLang = () => {
 	const handleLangToggle = (e) => {
 		const lang = Object.entries(e)[0][1];
 
-		setSelectedLang(e);
+		console.log(lang);
+		setSelectedLang([lang]);
 		i18next.changeLanguage(lang);
 		localStorage.setItem("lang", lang);
 	};
@@ -42,6 +43,10 @@ const SelectLang = () => {
 		<Dropdown>
 			<DropdownTrigger>
 				<Button variant="flat" isIconOnly>
+					{/* {selectedLang ? (
+						<span className={`fi fi-${langCode}`}></span>
+					) : (
+						)} */}
 					<FiGlobe size={20} />
 				</Button>
 			</DropdownTrigger>
