@@ -6,6 +6,10 @@ const {
 	findOneStock,
 	editStock,
 	findStockHistories,
+	findIncomingMutation,
+	findOutgoingMutation,
+	addMutation,
+	updateMutationStatus,
 } = require("../services/stocksService");
 
 module.exports = {
@@ -40,7 +44,6 @@ module.exports = {
 	},
 	updateStock: async (req, res, next) => {
 		try {
-			console.log(">>>> body >>>>>", req.body.stocks);
 			const { stockId } = req.params;
 			const { stocks } = req.body;
 			const result = await editStock(stockId, stocks);
@@ -70,72 +73,67 @@ module.exports = {
 			next(error);
 		}
 	},
-	// createProduct: async (req, res, next) => {
-	// 	try {
-	// 		const images = req.files.images;
-	// 		console.log("images", images);
-	// 		const dataProduct = JSON.parse(req.body.dataProduct);
-	// 		const dataSpec = JSON.parse(req.body.dataSpec);
-	// 		const result = await addProduct(images, dataProduct, dataSpec);
-	// 		respHandler(
-	// 			res,
-	// 			result.message,
-	// 			result.data,
-	// 			result.status,
-	// 			result.isError
-	// 		);
-	// 	} catch (error) {
-	// 		next(error);
-	// 	}
-	// },
-	// updateProduct: async (req, res, next) => {
-	// 	try {
-	// 		const { productId } = req.params;
-	// 		const images = req.files.images;
-	// 		console.log("images", images);
-	// 		const dataImages = JSON.parse(req.body.dataImages);
-	// 		const dataProduct = JSON.parse(req.body.dataProduct);
-	// 		const dataSpec = JSON.parse(req.body.dataSpec);
-	// 		// console.log(
-	// 		// 	"masuk",
-	// 		// 	productId,
-	// 		// 	images,
-	// 		// 	dataImages,
-	// 		// 	dataProduct,
-	// 		// 	dataSpec
-	// 		// );
-	// 		const result = await editProduct(
-	// 			productId,
-	// 			images,
-	// 			dataImages,
-	// 			dataProduct,
-	// 			dataSpec
-	// 		);
-	// 		respHandler(
-	// 			res,
-	// 			result.message,
-	// 			result.data,
-	// 			result.status,
-	// 			result.isError
-	// 		);
-	// 	} catch (error) {
-	// 		next(error);
-	// 	}
-	// },
-	// deleteProduct: async (req, res, next) => {
-	// 	try {
-	// 		const { productId } = req.params;
-
-	// 		const result = await removeProduct(productId);
-	// 		respHandler(
-	// 			res,
-	// 			result.message,
-	// 			result.data,
-	// 			result.status,
-	// 			result.isError
-	// 		);
-	// 	} catch (error) {
-	// 		next(error);
-	// 	}
-	// },
+	getIncomingMutation: async (req, res, next) => {
+		try {
+			const { warehouseId, status } = req.query;
+			const result = await findIncomingMutation(warehouseId, status);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getOutgoingMutation: async (req, res, next) => {
+		try {
+			const { warehouseId, status } = req.query;
+			const result = await findOutgoingMutation(warehouseId, status);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	createMutation: async (req, res, next) => {
+		try {
+			console.log("masuk create mutation");
+			const data = req.body;
+			const result = await addMutation(data);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	updateMutation: async (req, res, next) => {
+		try {
+			console.log("masuk update mutation");
+			const { mutationId } = req.params;
+			const { status } = req.body;
+			const result = await updateMutationStatus(mutationId, status);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
 };
