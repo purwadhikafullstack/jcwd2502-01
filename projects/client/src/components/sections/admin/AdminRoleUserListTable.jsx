@@ -15,6 +15,7 @@ import {
 const AdminRoleUserListTable = () => {
 	const columns = [
 		{ name: "NAME", uid: "name" },
+		{ name: "EMAIL", uid: "email" },
 		{ name: "ROLE", uid: "role" },
 		{ name: "STATUS", uid: "status" },
 		{ name: "ACTIONS", uid: "actions" },
@@ -80,21 +81,19 @@ const AdminRoleUserListTable = () => {
 			case "name":
 				return (
 					<User
-						avatarProps={{ radius: "lg", src: user.avatar }}
-						description={user.email}
+						avatarProps={{ radius: "full", src: user.avatar }}
 						name={cellValue}
 					>
 						{user.email}
 					</User>
 				);
+			case "email":
+				return <p className="font-medium">{user.email}</p>;
 			case "role":
 				return (
 					<div className="flex flex-col">
 						<p className="text-bold text-sm capitalize">
 							{cellValue}
-						</p>
-						<p className="text-bold text-sm capitalize text-default-400">
-							{user.team}
 						</p>
 					</div>
 				);
