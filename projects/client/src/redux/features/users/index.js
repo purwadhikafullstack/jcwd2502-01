@@ -16,6 +16,7 @@ const initialState = {
 	birth_date: "",
 	phone: "",
 	theme: "",
+	dataUser: [],
 };
 
 export const userSlice = createSlice({
@@ -51,6 +52,9 @@ export const userSlice = createSlice({
 		},
 		setThemeUser: (initialState, { payload }) => {
 			initialState.theme = payload;
+		},
+		setDataUser: (initialState, { payload }) => {
+			initialState.dataUser = payload;
 		},
 		login: (state, action) => {
 			return (state = {
@@ -254,6 +258,13 @@ export const resetPassword = (token, newpass, conpass) => async (dispatch) => {
 	}
 };
 
+export const getDataUser = () => async (dispatch) => {
+	try {
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 export const {
 	setUsername,
 	setProfileUser,
@@ -267,5 +278,6 @@ export const {
 	setThemeUser,
 	setSelectedUserAddressIdMain,
 	setStatus,
+	setDataUser,
 } = userSlice.actions;
 export default userSlice.reducer;

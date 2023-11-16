@@ -43,9 +43,9 @@ module.exports = {
 	},
 	deleteBrand: async (req, res, next) => {
 		try {
-			const { id } = req.params;
+			const { brandId } = req.params;
 
-			const result = await removeBrand(id);
+			const result = await removeBrand(brandId);
 
 			respHandler(res, result.message, result.data);
 		} catch (error) {
@@ -54,9 +54,9 @@ module.exports = {
 	},
 	updateBrand: async (req, res, next) => {
 		try {
-			const { id } = req.params;
+			const { brandId } = req.params;
 			const { brand_name } = req.body;
-			const result = await editBrand(id, brand_name);
+			const result = await editBrand(brandId, brand_name);
 
 			respHandler(
 				res,
