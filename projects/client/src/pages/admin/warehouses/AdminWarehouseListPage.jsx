@@ -9,6 +9,7 @@ import {
 	User,
 	Tooltip,
 	Button,
+	Pagination,
 } from "@nextui-org/react";
 
 import { IoEyeOutline, IoTrashOutline } from "react-icons/io5";
@@ -132,6 +133,32 @@ const AdminWarehouseListPage = () => {
 		}
 	}, []);
 
+	const bottomContent = React.useMemo(
+		() => {
+			return (
+				<div className="py-2 px-2 flex justify-between items-center">
+					<Pagination
+						size="md"
+						showControls
+						// total={totalPage ? totalPage : 1}
+						// page={page ? page : 0}
+						color="secondary"
+						variant="flat"
+						className="z-0"
+						// onChange={(e) => {
+						// 	dispatch(setPagination(e, (e - 1) * 12));
+						// 	window.scrollTo({ top: 0, behavior: "smooth" });
+						// }}
+					/>
+				</div>
+			);
+		},
+		[
+			// totalPage,
+			// page
+		]
+	);
+
 	const fetchWarehouses = async () => {
 		try {
 			// const accessToken = localStorage.getItem("accessToken");
@@ -154,7 +181,11 @@ const AdminWarehouseListPage = () => {
 					<h1 className="font-bold text-title-lg">Warehouses</h1>
 					<AdminCreateNewWarehouseModal />
 				</div>
-				<Table aria-label="Example table with custom cells">
+				<Table
+					aria-label="Example table with custom cells"
+					bottomContent={bottomContent}
+					bottomContentPlacement="outside"
+				>
 					<TableHeader columns={columns}>
 						{(column) => (
 							<TableColumn key={column.uid} align={"center"}>

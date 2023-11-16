@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import OrderCard from "../../components/uis/Cards/OrderCard";
 import { Pagination, Select, SelectItem } from "@nextui-org/react";
 import { axiosInstance } from "../../lib/axios";
@@ -17,6 +17,8 @@ const OrderListPage = () => {
 	const [orders, setOrders] = useState([]);
 	const [totalPages, setTotalPages] = useState(1);
 	const [isPaginationVisible, setIsPaginationVisible] = useState(false);
+	const [status, setStatus] = useState("");
+	const [page, setPage] = useState("");
 
 	const fetchUserOrderList = async (page, status = "") => {
 		try {
@@ -26,20 +28,25 @@ const OrderListPage = () => {
 
 			setOrders(data.data.orderList);
 			setTotalPages(data.data.pagination.totalPages);
+
+			console.log(page, status);
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
 	const handlePageChange = (newPage) => {
-		fetchUserOrderList(newPage);
-		updateUrl(newPage);
+		fetchUserOrderList(newPage, status);
+		updateUrl(newPage, status);
+		setPage(newPage);
 		window.scrollTo({ top: 0 });
 	};
 
 	const handleStatusChange = (newStatus) => {
-		fetchUserOrderList(currentPage, newStatus);
+		setPage(1);
+		fetchUserOrderList(1, newStatus);
 		updateUrl(1, newStatus);
+		setStatus(newStatus);
 	};
 
 	const updateUrl = (page, status) => {
@@ -62,25 +69,25 @@ const OrderListPage = () => {
 
 		const timeoutId = setTimeout(() => {
 			setIsPaginationVisible(true);
-		}, 200);
+		}, 400);
 
 		return () => clearTimeout(timeoutId);
 	}, [currentPage]);
 
-	const renderPagination = useCallback(() => {
+	const renderPagination = () => {
 		if (isPaginationVisible && totalPages) {
 			return (
 				<Pagination
 					color="secondary"
 					showControls
 					total={totalPages || 1}
-					page={currentPage || 1}
+					page={page || 1}
 					onChange={handlePageChange}
 				/>
 			);
 		}
 		return null;
-	}, [currentPage, currentStatus]);
+	};
 
 	const renderOrderList = () => {
 		if (orders && orders.length > 0) {
@@ -120,13 +127,16 @@ const OrderListPage = () => {
 						variant="bordered"
 						size="md"
 						className="md:col-span-2"
-						onChange={(e) => handleStatusChange(e.target.value)}
+						// onChange={(e) => handleStatusChange(e.target.value)}
 						defaultSelectedKeys={
 							currentStatus && [String(currentStatus)]
 						}
 					>
 						{(status) => (
-							<SelectItem key={status.value}>
+							<SelectItem
+								key={status.value}
+								onClick={() => handleStatusChange(status.value)}
+							>
 								{status.label}
 							</SelectItem>
 						)}
