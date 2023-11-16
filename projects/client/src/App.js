@@ -36,12 +36,17 @@ import OrderListPage from "./pages/user/OrderListPage";
 import OrderDetailsPage from "./pages/user/OrderDetailsPage";
 import AdminStocksLogPage from "./pages/admin/stocks/AdminStocksLogPage";
 import AdminUserListPage from "./pages/admin/users/AdminUserListPage";
+import AdminSalesReportPage from "./pages/admin/reports/AdminSalesReportPage";
 
 function App() {
 	const location = useLocation();
 
 	const [theme, setTheme] = useState(
 		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
+	);
+
+	const [lang, setLang] = useState(
+		localStorage.getItem("lang") ? localStorage.getItem("lang") : "en"
 	);
 
 	const handleToggle = (e) => {
@@ -54,6 +59,7 @@ function App() {
 
 	useEffect(() => {
 		localStorage.setItem("theme", theme);
+		localStorage.setItem("lang", lang);
 		const localTheme = localStorage.getItem("theme");
 		document.querySelector("html").setAttribute("class", localTheme);
 	}, [theme]);
@@ -163,7 +169,7 @@ function App() {
 				/>
 				<Route path="/admin/stocks" element={<AdminStocksListPage />} />
 				<Route
-					path="/admin/stocks/log"
+					path="/admin/mutations"
 					element={<AdminStocksLogPage />}
 				/>
 				<Route
@@ -171,6 +177,10 @@ function App() {
 					element={<AdminCategoriesPage />}
 				/>
 				<Route path="/admin/brands" element={<AdminBrandsPage />} />
+				<Route
+					path="/admin/reports"
+					element={<AdminSalesReportPage />}
+				/>
 
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>

@@ -18,6 +18,7 @@ import { useStateContext } from "../../../contexts/ContextProvider";
 import { axiosInstance } from "../../../lib/axios";
 import AdminEditBrandModal from "../../../components/layouts/admin/AdminEditBrandModal";
 import AdminCreateNewBrandModal from "../../../components/layouts/admin/AdminCreateNewBrandModal";
+import SelectSortBy from "../../../components/uis/Selects/SelectSortBy";
 
 const AdminBrandsPage = () => {
 	const { openEditBrandModal, setOpenEditBrandModal } = useStateContext();
@@ -151,6 +152,12 @@ const AdminBrandsPage = () => {
 			<AdminPageMainContainer>
 				<div className="admin-page-header flex justify-between gap-4 mb-6">
 					<h1 className="font-bold text-title-lg">Brands</h1>
+				</div>
+				<div className="w-full flex justify-between mb-4">
+					<div className="sort-by flex items-center w-1/4">
+						<div className="min-w-[80px] font-medium">Sort by:</div>
+						<SelectSortBy admin={true} />
+					</div>
 					<AdminCreateNewBrandModal />
 				</div>
 				<Table
