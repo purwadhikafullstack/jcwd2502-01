@@ -308,4 +308,20 @@ module.exports = {
 			return error;
 		}
 	},
+	getAllData: async () => {
+		try {
+			const allData = await db.user.findAll({
+				attributes: ["profile_picture", "username", "email", "status"],
+				where: { role: "user" },
+			});
+			console.log(allData);
+			return {
+				message: "success!",
+				data: allData,
+			};
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
 };

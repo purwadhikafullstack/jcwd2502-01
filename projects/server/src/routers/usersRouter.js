@@ -13,5 +13,6 @@ Router.patch("/verifyStatus", verify, usersController.verifyStatus);
 Router.get("/reqPass", verify, usersController.requestChangePassword);
 Router.patch("/changePass", verify, usersController.changePasswordUser);
 Router.patch("/personalData", verify, usersController.updatePersonalData);
+Router.get("/allDataUser", verify, usersController.getAllUser);
 
 module.exports = Router;
