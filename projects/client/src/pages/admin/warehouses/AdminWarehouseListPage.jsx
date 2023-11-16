@@ -20,6 +20,7 @@ import AdminEditWarehouseModal from "../../../components/layouts/admin/AdminEdit
 import { axiosInstance } from "../../../lib/axios";
 import AdminPageMainContainer from "../../../components/layouts/admin/AdminPageMainContainer";
 import { useStateContext } from "../../../contexts/ContextProvider";
+import SelectSortBy from "../../../components/uis/Selects/SelectSortBy";
 
 const AdminWarehouseListPage = () => {
 	const { openEditWarehouseModal, setOpenEditWarehouseModal } =
@@ -179,6 +180,12 @@ const AdminWarehouseListPage = () => {
 			<AdminPageMainContainer pageName={"admin-warehouse-list-page"}>
 				<div className="flex justify-between mb-4">
 					<h1 className="font-bold text-title-lg">Warehouses</h1>
+				</div>
+				<div className="w-full flex justify-between mb-4">
+					<div className="sort-by flex items-center w-1/4">
+						<div className="min-w-[80px] font-medium">Sort by:</div>
+						<SelectSortBy admin={true} />
+					</div>
 					<AdminCreateNewWarehouseModal />
 				</div>
 				<Table

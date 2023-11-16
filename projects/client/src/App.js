@@ -166,7 +166,7 @@ function App() {
 				/>
 				<Route path="/admin/stocks" element={<AdminStocksListPage />} />
 				<Route
-					path="/admin/stocks/log"
+					path="/admin/mutations"
 					element={<AdminStocksLogPage />}
 				/>
 				<Route

@@ -1,44 +1,17 @@
 import React, { useEffect, useState } from "react";
 import AdminPageMainContainer from "../../../components/layouts/admin/AdminPageMainContainer";
 import { useDispatch, useSelector } from "react-redux";
-import {
-	fetchProductAsync,
-	setWarehouse,
-} from "../../../redux/features/products";
-import { Button, Select, SelectItem } from "@nextui-org/react";
+import { setWarehouse } from "../../../redux/features/products";
+import { Button, Select, SelectItem, Tab, Tabs } from "@nextui-org/react";
 import AdminStocksListTable from "../../../components/sections/admin/AdminStocksListTable";
 import { Link } from "react-router-dom";
 import { axiosInstance } from "../../../lib/axios";
+import AdminIncomingStocksTable from "../../../components/sections/admin/AdminIncomingStocksTable";
+import AdminOutgoingStocksTable from "../../../components/sections/admin/AdminOutgoingStocksTable";
 
 const AdminStocksListPage = () => {
 	const [warehouses, setWarehouses] = useState([]);
-	const [selectedWarehouse, setSelectedWarehouse] = useState(null);
-	const products = useSelector((state) => state.products.products);
 	const warehouse = useSelector((state) => state.products.warehouse);
-
-	// const warehouses = [
-	// 	{
-	// 		id: 1,
-	// 		warehouse_name: "Bandung",
-	// 		warehouse_address: "jl. something 1",
-	// 		city_id: 23,
-	// 		province_id: 9,
-	// 	},
-	// 	{
-	// 		id: 2,
-	// 		warehouse_name: "Tangerang",
-	// 		warehouse_address: "jl. something 2",
-	// 		city_id: 457,
-	// 		province_id: 3,
-	// 	},
-	// 	{
-	// 		id: 3,
-	// 		warehouse_name: "Jakarta",
-	// 		warehouse_address: "jl. something 3",
-	// 		city_id: 151,
-	// 		province_id: 6,
-	// 	},
-	// ];
 
 	const dispatch = useDispatch();
 
@@ -51,8 +24,25 @@ const AdminStocksListPage = () => {
 		}
 	};
 
+	let tabs = [
+		{
+			id: "stocks",
+			label: "Stocks",
+			content: <AdminStocksListTable />,
+		},
+		{
+			id: "incoming",
+			label: "Incoming",
+			content: <AdminIncomingStocksTable />,
+		},
+		{
+			id: "outgoing",
+			label: "Outgoing",
+			content: <AdminOutgoingStocksTable />,
+		},
+	];
+
 	useEffect(() => {
-		// dispatch(fetchProductAsync());
 		fetchWarehouses();
 	}, []);
 
@@ -96,7 +86,13 @@ const AdminStocksListPage = () => {
 				</div>
 			</div>
 			<div className="pb-12">
-				<AdminStocksListTable />
+				<Tabs aria-label="Dynamic tabs" items={tabs}>
+					{(item) => (
+						<Tab key={item.id} title={item.label}>
+							{item.content}
+						</Tab>
+					)}
+				</Tabs>
 			</div>
 		</AdminPageMainContainer>
 	);
