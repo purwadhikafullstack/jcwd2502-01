@@ -258,4 +258,206 @@ module.exports = {
 			return error;
 		}
 	},
+	findIncomingMutation: async (warehouseId, status) => {
+		try {
+			if (!warehouseId) {
+				return { isError: true, message: "Please select warehouse" };
+			}
+			const baseQuery = {
+				attributes: {
+					exclude: [
+						"createdAt",
+						"updatedAt",
+						"deletedAt",
+						"warehouse_id_from",
+					],
+				},
+				include: [
+					// { model: db.user, as: "admin_from" },
+					{ model: db.product, attributes: ["id", "product_name"] },
+					{
+						model: db.warehouse,
+						as: "warehouse_from",
+						attributes: ["id", "warehouse_name"],
+					},
+				],
+				where: { warehouse_id_to: warehouseId },
+			};
+			if (status) {
+				baseQuery.where = { warehouse_id_to: warehouseId, status };
+			}
+			const dataMutation = await db.stock_mutation.findAll(baseQuery);
+			return {
+				message: "Get incoming mutation success",
+				data: dataMutation,
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+	findOutgoingMutation: async (warehouseId, status) => {
+		try {
+			if (!warehouseId) {
+				return { isError: true, message: "Please select warehouse" };
+			}
+			const baseQuery = {
+				attributes: {
+					exclude: [
+						"createdAt",
+						"updatedAt",
+						"deletedAt",
+						"warehouse_id_to",
+					],
+				},
+				include: [
+					// { model: db.user, as: "admin_from" },
+					{ model: db.product, attributes: ["id", "product_name"] },
+					{
+						model: db.warehouse,
+						as: "warehouse_to",
+						attributes: ["id", "warehouse_name"],
+					},
+				],
+				where: { warehouse_id_from: warehouseId },
+			};
+			if (status) {
+				baseQuery.where = { warehouse_id_from: warehouseId, status };
+			}
+			const dataMutation = await db.stock_mutation.findAll(baseQuery);
+			return {
+				message: "Get outgoing mutation success",
+				data: dataMutation,
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+	addMutation: async (data) => {
+		try {
+			if (!data) {
+				return { isError: true, message: "Please provide the data" };
+			}
+			const { warehouse_id_to, warehouse_id_from, product_id, status } =
+				data;
+			const checkWarehouse1 = await db.warehouse.findByPk(
+				warehouse_id_to
+			);
+			if (!checkWarehouse1) {
+				return {
+					isError: true,
+					message: `Destination warehouse is not found`,
+				};
+			}
+			const checkWarehouse2 = await db.warehouse.findByPk(
+				warehouse_id_from
+			);
+			if (!checkWarehouse2) {
+				return {
+					isError: true,
+					message: `Original warehouse is not found`,
+				};
+			}
+			const checkProduct = await db.product.findByPk(product_id);
+			if (!checkProduct) {
+				return {
+					isError: true,
+					message: `Product is not found`,
+				};
+			}
+			if (status === "accepted") {
+				// atur sm stock
+			}
+			const createData = await db.stock_mutation.create(data);
+			return { message: "Create request success" };
+		} catch (error) {
+			return error;
+		}
+	},
+	updateMutationStatus: async (mutationId, status) => {
+		const t = await sequelize.transaction();
+		try {
+			if (!status) {
+				return { isError: true, message: "Please provide the change" };
+			}
+			const checkMutation = await db.stock_mutation.findByPk(mutationId);
+			if (!checkMutation) {
+				return {
+					isError: true,
+					message: `Stock mutation is not found`,
+				};
+			}
+			const { product_id, warehouse_id_from, warehouse_id_to } =
+				checkMutation;
+			if (status === "accepted") {
+				const stock_from = await db.stock.findOne({
+					where: { product_id, warehouse_id: warehouse_id_from },
+				});
+				const stock_to = await db.stock.findOne({
+					where: { product_id, warehouse_id: warehouse_id_to },
+				});
+				console.log(">>> stock", stock_from.stocks, stock_to.stocks);
+				const newStocksFrom =
+					stock_from.stocks - checkMutation.quantity;
+				if (newStocksFrom < 0) {
+					await db.stock_mutation.update(
+						{ status: "canceled" },
+						{ where: { id: mutationId } },
+						{
+							transaction: t,
+						}
+					);
+					await t.commit();
+					return {
+						isError: true,
+						message: `There are not enough stocks, the request is automatically canceled`,
+					};
+				}
+				const newStocksTo = stock_to.stocks + checkMutation.quantity;
+				await db.stock.update(
+					{ stocks: newStocksFrom },
+					{ where: { id: stock_from.id } },
+					{
+						transaction: t,
+					}
+				);
+				await db.stock.update(
+					{ stocks: newStocksTo },
+					{ where: { id: stock_to.id } },
+					{
+						transaction: t,
+					}
+				);
+				const dataLogFrom = {
+					change: "subtraction",
+					type: "mutation",
+					stock_id: stock_from.id,
+					stock_before: stock_from.stocks,
+					quantity_change: checkMutation.quantity,
+				};
+				const dataLogTo = {
+					change: "addition",
+					type: "mutation",
+					stock_id: stock_to.id,
+					stock_before: stock_to.stocks,
+					quantity_change: checkMutation.quantity,
+				};
+
+				await db.stock_history.bulkCreate([dataLogFrom, dataLogTo], {
+					transaction: t,
+				});
+			}
+			const updateMutation = await db.stock_mutation.update(
+				status,
+				{ where: { id: mutationId } },
+				{
+					transaction: t,
+				}
+			);
+			await t.commit();
+			return { message: "Create request success" };
+		} catch (error) {
+			await t.rollback();
+			return error;
+		}
+	},
 };
