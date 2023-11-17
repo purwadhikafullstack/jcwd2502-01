@@ -116,19 +116,39 @@ export const productsSlice = createSlice({
 	},
 });
 
-export const fetchProductAsync = (query) => async (dispatchEvent) => {
-	try {
-		// const accessToken = localStorage.getItem("accessToken");
-		const { data } = await axiosInstance().get(
-			`products/all${query ? query : ""}`
-		);
-		const totalPage = await Math.ceil(data.data.count / 12);
-		dispatchEvent(setTotalPage(totalPage));
-		dispatchEvent(setProducts(data.data.products));
-		dispatchEvent(setCount(data.data.count));
-	} catch (error) {
-		console.log(error);
-	}
+// export const fetchProductAsync = (query) => async (dispatchEvent) => {
+// 	try {
+// 		// const accessToken = localStorage.getItem("accessToken");
+// 		const { data } = await axiosInstance().get(
+// 			`products/all${query ? query : ""}`
+// 		);
+// 		const totalPage = await Math.ceil(data.data.count / 12);
+// 		dispatchEvent(setTotalPage(totalPage));
+// 		dispatchEvent(setProducts(data.data.products));
+// 		dispatchEvent(setCount(data.data.count));
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// };
+
+export const fetchProductAsync = (query) => (dispatchEvent) => {
+	return new Promise(async (resolve, reject) => {
+		try {
+			// const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance().get(
+				`products/all${query ? query : ""}`
+			);
+			const totalPage = Math.ceil(data.data.count / 12);
+
+			dispatchEvent(setTotalPage(totalPage));
+			dispatchEvent(setProducts(data.data.products));
+			dispatchEvent(setCount(data.data.count));
+			resolve(); // Mengembalikan resolve() jika berhasil
+		} catch (error) {
+			console.log(error);
+			reject(error); // Mengembalikan reject() jika terjadi error
+		}
+	});
 };
 export const fetchStockAsync = (query) => async (dispatchEvent) => {
 	try {

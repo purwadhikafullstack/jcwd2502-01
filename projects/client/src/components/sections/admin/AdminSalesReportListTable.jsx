@@ -38,7 +38,7 @@ import { useFormik } from "formik";
 import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
 import AdminCreateRequestStockModal from "../../layouts/admin/AdminCreateRequestStockModal";
 
-const AdminStocksListTable = () => {
+const AdminSalesReportListTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -153,12 +153,14 @@ const AdminStocksListTable = () => {
 	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
 
 	const columns = [
-		{ name: "PRODUCT INFO", uid: "product_info" },
+		{ name: "DATE", uid: "date" },
+		{ name: "INVOICE", uid: "category" },
+		{ name: "PRODUCT NAME", uid: "product_name" },
 		{ name: "CATEGORY", uid: "category" },
 		{ name: "BRAND", uid: "brand" },
-		{ name: "PRICE", uid: "price" },
-		{ name: "STOCKS", uid: "stocks" },
-		{ name: "ACTIONS", uid: "actions" },
+		{ name: "QUANTITY", uid: "quantity" },
+		{ name: "FINAL PRICE", uid: "final_price" },
+		{ name: "WAREHOUSE", uid: "warehouse" },
 	];
 
 	const renderCell = React.useCallback((product, columnKey) => {
@@ -171,46 +173,68 @@ const AdminStocksListTable = () => {
 		const encodedProductName = encodeURIComponent(product?.product_name);
 
 		switch (columnKey) {
-			case "product_info":
+			case "date":
 				return (
-					<div className="flex items-center gap-4 w-[240px] md:w-full">
-						{/* <div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
-							<Image
-								src={`${
-									process.env.REACT_APP_IMAGE_API
-								}${product?.product_images[0]?.image.substring(
-									7
-								)}`}
-								alt=""
-								className="product-image aspect-square w-full h-full object-contain bg-white"
-							/>
-						</div> */}
-						<p className="font-medium text-base line-clamp-1">
-							{product?.product_name}
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{productPrice} {/* <<< order.createdAt */}
+						</p>
+					</div>
+				);
+			case "invoice":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.invoice`}
+						</p>
+					</div>
+				);
+			case "product_name":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.product.product_name`}
 						</p>
 					</div>
 				);
 			case "category":
-				return <Chip>{product?.category?.category_type}</Chip>;
-			case "brand":
-				return <Chip>{product?.brand?.brand_name}</Chip>;
-			case "price":
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{productPrice}
+							{`order.order_detail.product.category.id`}
 						</p>
 					</div>
 				);
-			case "stocks":
+			case "brand":
 				return (
-					<p className="text-base line-clamp-1">{product?.stock}</p>
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.product.brand.id`}
+						</p>
+					</div>
 				);
-			case "actions":
+			case "quantity":
 				return (
-					<div className="relative flex justify-start items-center gap-2">
-						<AdminEditStockModal id={product?.stock_id} />
-						<AdminCreateRequestStockModal />
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.product.quantity`}
+						</p>
+					</div>
+				);
+			case "final_price":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.total_amount`}
+						</p>
+					</div>
+				);
+			case "warehouse":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.warehouse`}
+						</p>
 					</div>
 				);
 			default:
@@ -313,7 +337,7 @@ const AdminStocksListTable = () => {
 				</TableHeader>
 				<TableBody
 					emptyContent={"Please select warehouse"}
-					items={products}
+					items={products} // <<<< ganti jadi orders / order_details (?)
 				>
 					{(item) => (
 						<TableRow key={item.id}>
@@ -330,4 +354,4 @@ const AdminStocksListTable = () => {
 	);
 };
 
-export default AdminStocksListTable;
+export default AdminSalesReportListTable;

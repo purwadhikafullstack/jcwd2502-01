@@ -133,7 +133,7 @@ const AdminEditStockModal = ({ id }) => {
 									Edit Stocks
 								</h2>
 							</ModalHeader>
-							<ModalBody>
+							<ModalBody className="pb-6">
 								<form
 									onSubmit={formik.handleSubmit}
 									className="flex flex-col gap-4 h-full"

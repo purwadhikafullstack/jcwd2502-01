@@ -9,6 +9,6 @@ const { brandsController } = require("../controllers"); // otomatis baca index.j
 Router.get("/all", brandsController.getAllBrands);
 Router.get("/all-products", brandsController.getAllBrandsWithProducts);
 Router.post("/", brandsController.addBrand);
-Router.delete("/:id", brandsController.deleteBrand);
-Router.patch("/:id", brandsController.updateBrand);
+Router.delete("/:brandId", brandsController.deleteBrand);
+Router.patch("/:brandId", brandsController.updateBrand);
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js
