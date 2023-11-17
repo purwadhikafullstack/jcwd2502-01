@@ -308,7 +308,7 @@ module.exports = {
 			return error;
 		}
 	},
-	getAllData: async () => {
+	getAllDataUser: async () => {
 		try {
 			const allData = await db.user.findAll({
 				attributes: ["profile_picture", "username", "email", "status"],

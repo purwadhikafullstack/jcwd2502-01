@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const db = require("./../models");
 
 module.exports = {
 	createJWT: (payload, expiry, tokentype) => {
@@ -32,6 +33,56 @@ module.exports = {
 				next();
 			} else {
 				throw { message: "User is not approved" };
+			}
+		} catch (error) {
+			next(error);
+		}
+	},
+	verifyAdmin: async (req, res, next) => {
+		try {
+			const { authorization, tokentype } = req.headers;
+
+			if (!authorization) throw { message: "token was not found" };
+			let secret = process.env.access_secret;
+			const decodeData = jwt.verify(req.token, secret);
+			console.log(decodeData);
+			const checkAdmin = await db.user.findByPk(decodeData.id);
+			// console.log(checkAdmin.dataValues);
+			if (!checkAdmin)
+				throw {
+					message: "User not Found!",
+				};
+			if (checkAdmin.role === "user")
+				throw {
+					message: "Role user cannot fetch data order!",
+				};
+			req.idWarehouse = checkAdmin.warehouse_id;
+			req.role = checkAdmin.role;
+			next();
+		} catch (error) {
+			next(error);
+		}
+	},
+	verifySuper: async (req, res, next) => {
+		try {
+			const { authorization, tokentype } = req.headers;
+
+			if (!authorization) throw { message: "token was not found" };
+			let secret = process.env.access_secret;
+			const decodeData = jwt.verify(req.token, secret);
+			console.log(decodeData);
+			const checkAdmin = await db.user.findByPk(decodeData.id);
+			console.log(checkAdmin.dataValues);
+			if (!checkAdmin)
+				throw {
+					message: "User not Found!",
+				};
+			if (checkAdmin.dataValues.role === "super") {
+				next();
+			} else {
+				throw {
+					message: "user not authorized!",
+				};
 			}
 		} catch (error) {
 			next(error);

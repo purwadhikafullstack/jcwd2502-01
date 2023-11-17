@@ -37,6 +37,7 @@ const {
 	checkoutsRouter,
 	stocksRouter,
 	ordersRouter,
+	reportsRouter,
 } = require("./routers");
 // ===========================
 // NOTE : Add your routes here
@@ -52,6 +53,7 @@ app.use("/api/user-addresses", userAddressesRouter);
 app.use("/api/checkouts", checkoutsRouter);
 app.use("/api/stocks", stocksRouter);
 app.use("/api/orders", ordersRouter);
+app.use("/api/reports", reportsRouter);
 
 app.get("/api", (req, res) => {
 	res.send(`Hello, this is my API`);
