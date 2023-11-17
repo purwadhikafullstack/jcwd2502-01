@@ -23,6 +23,7 @@ import {
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
 	setProducts,
 	setSearch,
@@ -132,6 +133,7 @@ const AdminProductListTable = ({ props }) => {
 			dispatch(setSearch(""));
 			dispatch(setProducts([]));
 			dispatch(setTotalPage(1));
+			dispatch(setCount(0));
 		};
 	}, []);
 

@@ -76,13 +76,13 @@ const AdminStocksListPage = () => {
 							)}
 						</Select>
 					</div>
-					<Link to={"/admin/stocks/log"}>
+					{/* <Link to={"/admin/stocks/log"}>
 						<Button color="primary" size="md">
 							<span className="font-medium text-black">
 								Stocks Change Log
 							</span>
 						</Button>
-					</Link>
+					</Link> */}
 				</div>
 			</div>
 			<div className="pb-12">

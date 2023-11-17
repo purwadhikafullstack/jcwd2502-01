@@ -10,6 +10,7 @@ const {
 	findOutgoingMutation,
 	addMutation,
 	updateMutationStatus,
+	findSpecificStock,
 } = require("../services/stocksService");
 
 module.exports = {
@@ -31,6 +32,21 @@ module.exports = {
 		try {
 			const { stockId } = req.params;
 			const result = await findOneStock(stockId);
+			respHandler(
+				res,
+				result.message,
+				result.data,
+				result.status,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getSpecificStock: async (req, res, next) => {
+		try {
+			const { productId, warehouseId } = req.query;
+			const result = await findSpecificStock(productId, warehouseId);
 			respHandler(
 				res,
 				result.message,
@@ -75,8 +91,7 @@ module.exports = {
 	},
 	getIncomingMutation: async (req, res, next) => {
 		try {
-			const { warehouseId, status } = req.query;
-			const result = await findIncomingMutation(warehouseId, status);
+			const result = await findIncomingMutation(req.query);
 			respHandler(
 				res,
 				result.message,
@@ -90,8 +105,7 @@ module.exports = {
 	},
 	getOutgoingMutation: async (req, res, next) => {
 		try {
-			const { warehouseId, status } = req.query;
-			const result = await findOutgoingMutation(warehouseId, status);
+			const result = await findOutgoingMutation(req.query);
 			respHandler(
 				res,
 				result.message,

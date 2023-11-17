@@ -6,10 +6,12 @@ const initialState = {
 	products: [],
 	productsForStocks: [],
 	stockHistory: [],
+	stockMutations: [],
 	productDetail: [],
 	orderField: "",
 	orderDirection: "",
 	search: "",
+	status: "pending",
 	category: [],
 	brand: [],
 	warehouse: null,
@@ -32,6 +34,9 @@ export const productsSlice = createSlice({
 		setStockHistory: (initialState, { payload }) => {
 			initialState.stockHistory = payload;
 		},
+		setStockMutations: (initialState, { payload }) => {
+			initialState.stockMutations = payload;
+		},
 		setProductDetail: (initialState, { payload }) => {
 			initialState.productDetail = payload;
 		},
@@ -50,6 +55,9 @@ export const productsSlice = createSlice({
 		setSearch: (initialState, { payload }) => {
 			initialState.search = payload;
 		},
+		setStatus: (initialState, { payload }) => {
+			initialState.status = payload;
+		},
 		setWarehouse: (initialState, { payload }) => {
 			initialState.warehouse = payload;
 		},
@@ -64,26 +72,6 @@ export const productsSlice = createSlice({
 		},
 		resetOffset: (initialState) => {
 			initialState.offset = 0;
-		},
-		nextPage: (initialState) => {
-			initialState.page += 1;
-		},
-		addOffset: (initialState) => {
-			initialState.offset += 10;
-		},
-		previousPage: (initialState) => {
-			if (initialState.page == 1) {
-				initialState.page = 1;
-			} else {
-				initialState.page -= 1;
-			}
-		},
-		subtractOffset: (initialState) => {
-			if (initialState.offset == 0) {
-				initialState.offset = 0;
-			} else {
-				initialState.offset -= 10;
-			}
 		},
 		setCategory: (initialState, { payload }) => {
 			if (initialState.category.includes(payload)) {
@@ -116,40 +104,21 @@ export const productsSlice = createSlice({
 	},
 });
 
-// export const fetchProductAsync = (query) => async (dispatchEvent) => {
-// 	try {
-// 		// const accessToken = localStorage.getItem("accessToken");
-// 		const { data } = await axiosInstance().get(
-// 			`products/all${query ? query : ""}`
-// 		);
-// 		const totalPage = await Math.ceil(data.data.count / 12);
-// 		dispatchEvent(setTotalPage(totalPage));
-// 		dispatchEvent(setProducts(data.data.products));
-// 		dispatchEvent(setCount(data.data.count));
-// 	} catch (error) {
-// 		console.log(error);
-// 	}
-// };
-
-export const fetchProductAsync = (query) => (dispatchEvent) => {
-	return new Promise(async (resolve, reject) => {
-		try {
-			// const accessToken = localStorage.getItem("accessToken");
-			const { data } = await axiosInstance().get(
-				`products/all${query ? query : ""}`
-			);
-			const totalPage = Math.ceil(data.data.count / 12);
-
-			dispatchEvent(setTotalPage(totalPage));
-			dispatchEvent(setProducts(data.data.products));
-			dispatchEvent(setCount(data.data.count));
-			resolve(); // Mengembalikan resolve() jika berhasil
-		} catch (error) {
-			console.log(error);
-			reject(error); // Mengembalikan reject() jika terjadi error
-		}
-	});
+export const fetchProductAsync = (query) => async (dispatchEvent) => {
+	try {
+		// const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance().get(
+			`products/all${query ? query : ""}`
+		);
+		const totalPage = await Math.ceil(data.data.count / 12);
+		dispatchEvent(setTotalPage(totalPage));
+		dispatchEvent(setProducts(data.data.products));
+		dispatchEvent(setCount(data.data.count));
+	} catch (error) {
+		console.log(error);
+	}
 };
+
 export const fetchStockAsync = (query) => async (dispatchEvent) => {
 	try {
 		// const accessToken = localStorage.getItem("accessToken");
@@ -178,6 +147,32 @@ export const fetchStockHistoryAsync = (query) => async (dispatchEvent) => {
 		console.log(error);
 	}
 };
+export const fetchStockMutationsAsync =
+	(type, query) => async (dispatchEvent) => {
+		try {
+			if (type === "in") {
+				// const accessToken = localStorage.getItem("accessToken");
+				const { data } = await axiosInstance().get(
+					`stocks/mutation-in${query ? query : ""}`
+				);
+				const totalPage = await Math.ceil(data.data.count / 12);
+				dispatchEvent(setTotalPage(totalPage));
+				dispatchEvent(setStockMutations(data.data.mutations));
+				dispatchEvent(setCount(data.data.count));
+			} else if (type === "out") {
+				// const accessToken = localStorage.getItem("accessToken");
+				const { data } = await axiosInstance().get(
+					`stocks/mutation-out${query ? query : ""}`
+				);
+				const totalPage = await Math.ceil(data.data.count / 12);
+				dispatchEvent(setTotalPage(totalPage));
+				dispatchEvent(setStockMutations(data.data.mutations));
+				dispatchEvent(setCount(data.data.count));
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
 export const onSort = (field, direction) => async (dispatchEvent) => {
 	try {
 		dispatchEvent(setOrderField(field));
@@ -215,22 +210,6 @@ export const onBrand = (brand) => async (dispatchEvent) => {
 		console.log(error);
 	}
 };
-export const onNextPage = () => async (dispatchEvent) => {
-	try {
-		dispatchEvent(nextPage());
-		dispatchEvent(addOffset());
-	} catch (error) {
-		console.log(error);
-	}
-};
-export const onPreviousPage = () => async (dispatchEvent) => {
-	try {
-		dispatchEvent(previousPage());
-		dispatchEvent(subtractOffset());
-	} catch (error) {
-		console.log(error);
-	}
-};
 export const setPagination = (page, offset) => async (dispatchEvent) => {
 	try {
 		dispatchEvent(setPage(page));
@@ -254,19 +233,17 @@ export const onClear = () => async (dispatchEvent) => {
 };
 
 export const {
+	setStatus,
 	setWarehouse,
 	setProducts,
 	setProductsForStocks,
 	setStockHistory,
+	setStockMutations,
 	setOrderField,
 	setOrderDirection,
 	setSearch,
 	setPage,
 	setOffset,
-	nextPage,
-	addOffset,
-	previousPage,
-	subtractOffset,
 	resetPage,
 	resetOffset,
 	setCategory,
