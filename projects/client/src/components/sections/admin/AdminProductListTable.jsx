@@ -139,7 +139,13 @@ const AdminProductListTable = ({ props }) => {
 				","
 			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 		);
-
+		console.log(
+			`query >>> ?&search=${search}&brand=${brand.join(
+				","
+			)}&category=${category.join(
+				","
+			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+		);
 		dispatch(
 			fetchProductAsync(
 				`?&search=${search}&brand=${brand.join(
@@ -150,6 +156,10 @@ const AdminProductListTable = ({ props }) => {
 			)
 		);
 	}, [orderField, orderDirection, search, page, category, brand]);
+
+	useEffect(() => {
+		console.log("products >>> ", products);
+	}, [products]);
 
 	const columns = [
 		{ name: "PRODUCT INFO", uid: "product_info" },
@@ -258,10 +268,6 @@ const AdminProductListTable = ({ props }) => {
 			</div>
 		);
 	}, [totalPage, page]);
-
-	useEffect(() => {
-		console.log(">>>>>", products);
-	}, [products]);
 
 	return (
 		<>

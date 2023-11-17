@@ -132,7 +132,7 @@ module.exports = {
 				include: [
 					{
 						model: db.warehouse,
-						attributes: ["warehouse_name"],
+						attributes: ["id", "warehouse_name"],
 					},
 					{
 						model: db.product,
