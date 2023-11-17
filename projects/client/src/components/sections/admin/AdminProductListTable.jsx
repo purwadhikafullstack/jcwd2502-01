@@ -23,6 +23,7 @@ import {
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
 	setProducts,
 	setSearch,
@@ -132,6 +133,7 @@ const AdminProductListTable = ({ props }) => {
 			dispatch(setSearch(""));
 			dispatch(setProducts([]));
 			dispatch(setTotalPage(1));
+			dispatch(setCount(0));
 		};
 	}, []);
 
@@ -156,6 +158,10 @@ const AdminProductListTable = ({ props }) => {
 			);
 		}
 	}, [orderField, orderDirection, search, page, category, brand, oneTime]);
+
+	useEffect(() => {
+		console.log("products >>> ", products);
+	}, [products]);
 
 	const columns = [
 		{ name: "PRODUCT INFO", uid: "product_info" },
@@ -264,10 +270,6 @@ const AdminProductListTable = ({ props }) => {
 			</div>
 		);
 	}, [totalPage, page]);
-
-	useEffect(() => {
-		console.log(">>>>>", products);
-	}, [products]);
 
 	return (
 		<>

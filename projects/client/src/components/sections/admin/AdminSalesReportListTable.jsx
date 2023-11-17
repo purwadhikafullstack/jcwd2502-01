@@ -23,6 +23,7 @@ import {
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
 	setProductsForStocks,
 	setSearch,
@@ -127,6 +128,7 @@ const AdminSalesReportListTable = () => {
 			dispatch(setProductsForStocks([]));
 			dispatch(setTotalPage(1));
 			dispatch(setWarehouse(null));
+			dispatch(setCount(0));
 		};
 	}, []);
 

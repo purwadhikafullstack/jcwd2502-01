@@ -54,6 +54,24 @@ module.exports = {
 			return error;
 		}
 	},
+	findOtherWarehouses: async (warehouseId) => {
+		try {
+			const dataWarehouses = await db.warehouse.findAll({
+				attributes: ["id", "warehouse_name"],
+				where: {
+					id: {
+						[Op.not]: warehouseId,
+					},
+				},
+			});
+			return {
+				message: "Get product's data success",
+				data: dataWarehouses,
+			};
+		} catch (error) {
+			return error;
+		}
+	},
 	findWarehouse: async (warehouseId) => {
 		try {
 			const dataWarehouse = await db.warehouse.findOne({

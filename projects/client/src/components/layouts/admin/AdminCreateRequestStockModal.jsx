@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Button,
 	Card,
@@ -11,18 +11,24 @@ import {
 	ModalFooter,
 	ModalHeader,
 	Select,
+	SelectItem,
 	Tooltip,
 	useDisclosure,
 } from "@nextui-org/react";
 import { FaCodePullRequest } from "react-icons/fa6";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { axiosInstance } from "../../../lib/axios";
 
-const AdminCreateRequestStockModal = () => {
+const AdminCreateRequestStockModal = ({ productName, warehouseId }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [isLoading, setIsLoading] = useState(false);
+	const [dataProduct, setDataProduct] = useState([]);
+	const [dataWarehouse, setDataWarehouse] = useState([]);
+	const [dataStock, setDataStock] = useState(null);
+	const [warehouseIdFrom, setWarehouseIdFrom] = useState(0);
 
+	const warehouse = useSelector((state) => state.products.warehouse);
 	const [warehouseIDTo, setWarehouseIDTo] = useState(null);
 
 	const dispatch = useDispatch();
@@ -30,41 +36,69 @@ const AdminCreateRequestStockModal = () => {
 	const formik = useFormik({
 		initialValues: {
 			quantity: 0,
-			product_id: `{product.id}`,
-			warehoues_id_to: "",
+			product_id: "",
+			warehouse_id_from: "",
+			warehouse_id_to: "",
+			status: "pending",
 		},
 		onSubmit: async (values) => {
 			onSubmitCreateRequest(values);
 		},
 	});
 
+	const fetchDataProduct = async () => {
+		const { data } = await axiosInstance().get(`products/${productName}`);
+		formik.setFieldValue("product_id", data?.data?.id);
+		setDataProduct(data.data);
+	};
+	const fetchDataWarehouse = async () => {
+		const { data } = await axiosInstance().get(
+			`warehouses/others/${warehouse}`
+		);
+		formik.setFieldValue("warehouse_id_from", warehouse);
+		setDataWarehouse(data.data);
+	};
+	useEffect(() => {
+		fetchDataProduct();
+		fetchDataWarehouse();
+	}, []);
+
 	const onSubmitCreateRequest = async (values) => {
 		try {
 			setIsLoading(true);
-			// const { stocks } = values;
+			const {
+				quantity,
+				product_id,
+				warehouse_id_from,
+				warehouse_id_to,
+				status,
+			} = values;
 
-			// if (!stocks) {
-			// 	alert("Please fill in all form fields");
-			// 	return; // Stop further execution
-			// }
+			if (!warehouse_id_to) {
+				alert("Please choose a warehouse");
+				return; // Stop further execution
+			}
+			if (quantity <= 0) {
+				alert("Quantity can not be 0 or less than 0");
+				return; // Stop further execution
+			}
 
+			if (quantity - dataStock.stocks) {
+				alert("Quantity requested is more than what is available");
+				return; // Stop further execution
+			}
 			// // const accessToken = localStorage.getItem("accessToken");
-
-			// const updateStocks = await axiosInstance().patch(`stocks/${id}`, {
-			// 	stocks,
-			// });
-
-			// dispatch(
-			// 	fetchStockAsync(
-			// 		`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-			// 			","
-			// 		)}&category=${category.join(
-			// 			","
-			// 		)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			// 	)
-			// );
-
-			// window.location.reload(false);
+			const dataToSend = {
+				quantity,
+				status,
+				product_id,
+				warehouse_id_from,
+				warehouse_id_to,
+			};
+			const { data } = await axiosInstance().post(
+				`stocks/mutation`,
+				dataToSend
+			);
 			setIsLoading(false);
 			return;
 		} catch (error) {
@@ -74,25 +108,28 @@ const AdminCreateRequestStockModal = () => {
 		}
 	};
 
-	const handleFormInput = (event) => {
+	const handleFormInput = async (event) => {
 		const { target } = event;
-		formik.setFieldValue(target.name, target.value);
+		if (target.name === "warehouse_id_to") {
+			const { data } = await axiosInstance().get(
+				`stocks/specific/?productId=${dataProduct.id}&warehouseId=${target.value}`
+			);
+			setDataStock(data.data);
+			formik.setFieldValue(target.name, target.value);
+		} else {
+			formik.setFieldValue(target.name, Number(target.value));
+		}
 	};
 
-	const handleWarehouseIDTo = (warehouseIDTo) => {
-		setWarehouseIDTo(warehouseIDTo);
-		formik.setFieldValue("warehouse_id_to", warehouseIDTo);
+	const renderWarehousesOption = () => {
+		return dataWarehouse?.map((warehouse) => {
+			return (
+				<SelectItem key={warehouse.id} value={warehouse.id}>
+					{` ${warehouse.warehouse_name}`}
+				</SelectItem>
+			);
+		});
 	};
-
-	// const renderWarehousesOption = () => {
-	// 	return warehouses?.map((warehouse) => {
-	// 		return (
-	// 			<SelectItem key={warehouse.id} value={warehouse.id}>
-	// 				{`${warehouse.type} ${warehouse.warehouse_name}`}
-	// 			</SelectItem>
-	// 		);
-	// 	});
-	// };
 
 	return (
 		<>
@@ -138,18 +175,48 @@ const AdminCreateRequestStockModal = () => {
 															// }${product?.product_images[0]?.image.substring(
 															// 	7
 															// )}`}
-															src={`${process.env.REACT_APP_IMAGE_API}1.png`}
+															src={`${
+																process.env
+																	.REACT_APP_IMAGE_API
+															}${dataProduct?.product_images[0]?.image.substring(
+																7
+															)}`}
 															alt="logitech"
 															className="w-full h-full aspect-square object-contain bg-white"
 														/>
 													</div>
 													<div>
-														<h4 className="font-bold">{`PRODUCT NAME`}</h4>
+														<h4 className="font-bold">{`${dataProduct?.product_name}`}</h4>
 													</div>
 												</div>
 											</CardBody>
 										</Card>
 									</div>
+									<div className="form-control">
+										<Select
+											name="warehouse_id_to"
+											label="Request to warehouse..."
+											labelPlacement="outside"
+											variant="bordered"
+											radius="sm"
+											size="lg"
+											onChange={handleFormInput}
+											placeholder="Select a warehouse"
+											isRequired
+											selectedKeys={
+												warehouseIDTo
+													? [String(warehouseIDTo)]
+													: null
+											}
+										>
+											{renderWarehousesOption()}
+										</Select>
+									</div>
+									{dataStock && (
+										<div>
+											{dataStock.stocks} stocks available{" "}
+										</div>
+									)}
 									<div className="form-control">
 										<Input
 											type="number"
@@ -165,30 +232,7 @@ const AdminCreateRequestStockModal = () => {
 											isRequired
 										/>
 									</div>
-									<div className="form-control">
-										<Select
-											name="warehouse_id_to"
-											label="Request to warehouse..."
-											labelPlacement="outside"
-											variant="bordered"
-											radius="sm"
-											size="lg"
-											onChange={(e) =>
-												handleWarehouseIDTo(
-													e.target.value
-												)
-											}
-											placeholder="Select a City"
-											isRequired
-											selectedKeys={
-												setWarehouseIDTo
-													? [String(warehouseIDTo)]
-													: ""
-											}
-										>
-											{/* {renderWarehousesOption()} */}
-										</Select>
-									</div>
+
 									<div className="modal-footer pt-4">
 										<Button
 											isLoading={isLoading}
@@ -196,7 +240,7 @@ const AdminCreateRequestStockModal = () => {
 											className="text-center"
 											fullWidth
 											type="submit"
-											onPress={onClose}
+											// onPress={onClose}
 										>
 											<span className="font-bold text-black">
 												Create Request
