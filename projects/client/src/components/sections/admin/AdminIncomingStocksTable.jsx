@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
 import {
-	Table,
-	TableHeader,
-	TableColumn,
-	TableBody,
-	TableRow,
-	TableCell,
-	Input,
 	Button,
-	Pagination,
-	Tooltip,
-	Image,
 	Chip,
+	Pagination,
+	Table,
+	TableBody,
+	TableCell,
+	TableColumn,
+	TableHeader,
+	TableRow,
+	Tooltip,
 } from "@nextui-org/react";
-import { IoSearch } from "react-icons/io5";
-import { BiEdit } from "react-icons/bi";
+import React, { useEffect } from "react";
+import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
+import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
 	fetchStockAsync,
 	onClear,
@@ -29,16 +29,8 @@ import {
 	setTotalPage,
 	setWarehouse,
 } from "../../../redux/features/products";
-import { axiosInstance } from "../../../lib/axios";
-import { useDispatch, useSelector } from "react-redux";
-import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
-import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
-import AdminCreateRequestStockModal from "../../layouts/admin/AdminCreateRequestStockModal";
 
-const AdminStocksListTable = () => {
+const AdminIncomingStocksTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -86,25 +78,6 @@ const AdminStocksListTable = () => {
 			dispatch(setPagination(selectedPage, Number(selectedOffset)));
 		}
 	};
-
-	const formik = useFormik({
-		initialValues: { searchQuery: "" },
-		onSubmit: (values) => {
-			// Handle the search query submission here
-			dispatch(onSearch(values.searchQuery));
-			navigate("/admin/stocks");
-		},
-	});
-
-	const handleSubmitSearch = (e) => {
-		e.preventDefault();
-		formik.handleSubmit();
-		window.scrollTo({ top: 0 });
-	};
-
-	useEffect(() => {
-		formik.setFieldValue("searchQuery", search);
-	}, [search]);
 
 	const clear = async () => {
 		await dispatch(onClear());
@@ -154,10 +127,9 @@ const AdminStocksListTable = () => {
 
 	const columns = [
 		{ name: "PRODUCT INFO", uid: "product_info" },
-		{ name: "CATEGORY", uid: "category" },
-		{ name: "BRAND", uid: "brand" },
-		{ name: "PRICE", uid: "price" },
-		{ name: "STOCKS", uid: "stocks" },
+		{ name: "FROM", uid: "from" },
+		{ name: "QUANTITY", uid: "quantity" },
+		{ name: "STATUS", uid: "status" },
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
@@ -174,43 +146,32 @@ const AdminStocksListTable = () => {
 			case "product_info":
 				return (
 					<div className="flex items-center gap-4 w-[240px] md:w-full">
-						{/* <div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
-							<Image
-								src={`${
-									process.env.REACT_APP_IMAGE_API
-								}${product?.product_images[0]?.image.substring(
-									7
-								)}`}
-								alt=""
-								className="product-image aspect-square w-full h-full object-contain bg-white"
-							/>
-						</div> */}
 						<p className="font-medium text-base line-clamp-1">
 							{product?.product_name}
 						</p>
 					</div>
 				);
-			case "category":
+			case "from":
 				return <Chip>{product?.category?.category_type}</Chip>;
-			case "brand":
+			case "quantity":
 				return <Chip>{product?.brand?.brand_name}</Chip>;
-			case "price":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{productPrice}
-						</p>
-					</div>
-				);
-			case "stocks":
+			case "status":
 				return (
 					<p className="text-base line-clamp-1">{product?.stock}</p>
 				);
 			case "actions":
 				return (
 					<div className="relative flex justify-start items-center gap-2">
-						<AdminEditStockModal id={product?.stock_id} />
-						<AdminCreateRequestStockModal />
+						<Button variant="flat" className="bg-red-600">
+							<span className="font-medium text-white">
+								Accept
+							</span>
+						</Button>
+						<Button variant="flat" className="bg-primary-600">
+							<span className="font-medium text-white">
+								Reject
+							</span>
+						</Button>
 					</div>
 				);
 			default:
@@ -241,37 +202,19 @@ const AdminStocksListTable = () => {
 		<>
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
-					<form className="w-[50%]" onSubmit={handleSubmitSearch}>
-						<Input
-							type="text"
-							placeholder="Search for product by name"
-							isClearable
-							onClear={() => dispatch(setSearch(""))}
-							startContent={<IoSearch opacity={".5"} />}
-							variant="bordered"
-							fullWidth
-							onChange={(e) =>
-								formik.setFieldValue(
-									"searchQuery",
-									e.target.value
-								)
-							}
-							value={formik.values.searchQuery}
-						/>
-					</form>
-					<div className="flex gap-3">
-						<Button
-							variant="bordered"
-							className="border-neutral-200 dark:border-neutral-700"
-							onClick={() => clear()}
-						>{`Clear Filter(s)`}</Button>
+					<div className="flex gap-3 w-full">
 						<div className="select-brands">
 							<SelectProductBrands />
 						</div>
 						<div className="select-categories">
 							<SelectProductCategories />
 						</div>
-						<div className="sort-by flex items-center">
+						<Button
+							variant="bordered"
+							className="border-neutral-200 dark:border-neutral-700"
+							onClick={() => clear()}
+						>{`Clear Filter(s)`}</Button>
+						<div className="sort-by ml-auto flex items-center">
 							<div className="w-full mr-2 font-medium">
 								Sort by:
 							</div>
@@ -330,4 +273,4 @@ const AdminStocksListTable = () => {
 	);
 };
 
-export default AdminStocksListTable;
+export default AdminIncomingStocksTable;

@@ -36,6 +36,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 
 const AdminProductListTable = ({ props }) => {
+	const [oneTime, setOneTime] = useState(false);
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -121,6 +123,8 @@ const AdminProductListTable = ({ props }) => {
 	useEffect(() => {
 		takeFromQuery();
 
+		setOneTime(true);
+
 		window.scrollTo({ top: 0 });
 
 		return () => {
@@ -132,30 +136,26 @@ const AdminProductListTable = ({ props }) => {
 	}, []);
 
 	useEffect(() => {
-		navigate(
-			`/admin/products?search=${search}&brand=${brand.join(
-				","
-			)}&category=${category.join(
-				","
-			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		);
-		console.log(
-			`query >>> ?&search=${search}&brand=${brand.join(
-				","
-			)}&category=${category.join(
-				","
-			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		);
-		dispatch(
-			fetchProductAsync(
-				`?&search=${search}&brand=${brand.join(
+		if (oneTime) {
+			navigate(
+				`/admin/products?search=${search}&brand=${brand.join(
 					","
 				)}&category=${category.join(
 					","
 				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			)
-		);
-	}, [orderField, orderDirection, search, page, category, brand]);
+			);
+
+			dispatch(
+				fetchProductAsync(
+					`?&search=${search}&brand=${brand.join(
+						","
+					)}&category=${category.join(
+						","
+					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+		}
+	}, [orderField, orderDirection, search, page, category, brand, oneTime]);
 
 	useEffect(() => {
 		console.log("products >>> ", products);

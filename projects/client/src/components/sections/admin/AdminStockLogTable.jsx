@@ -41,6 +41,8 @@ import { useFormik } from "formik";
 import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
 
 const AdminStockLogTable = () => {
+	const [oneTime, setOneTime] = useState(false);
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -124,6 +126,8 @@ const AdminStockLogTable = () => {
 	useEffect(() => {
 		takeFromQuery();
 
+		setOneTime(true);
+
 		window.scrollTo({ top: 0 });
 
 		return () => {
@@ -136,7 +140,7 @@ const AdminStockLogTable = () => {
 	}, []);
 
 	useEffect(() => {
-		if (warehouse) {
+		if (warehouse && oneTime) {
 			// navigate(
 			// 	`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
 			// 		""
@@ -155,7 +159,16 @@ const AdminStockLogTable = () => {
 				)
 			);
 		}
-	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
+	}, [
+		orderField,
+		orderDirection,
+		search,
+		page,
+		category,
+		brand,
+		warehouse,
+		oneTime,
+	]);
 
 	const columns = [
 		{ name: "DATE", uid: "date" },

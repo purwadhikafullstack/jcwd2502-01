@@ -4,8 +4,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchProductAsync } from "../../../redux/features/products";
 import { Link } from "react-router-dom";
 import { Button } from "@nextui-org/react";
+import { useTranslation } from "react-i18next";
 
 const HomeProductFeeds = () => {
+	const { t } = useTranslation();
 	const dispatch = useDispatch();
 	const products = useSelector((state) => state.products.products);
 
@@ -18,10 +20,10 @@ const HomeProductFeeds = () => {
 			<div className="py-8">
 				<div className="section-title text-center mb-2 md:mb-6">
 					<h2 className="text-headline-sm md:text-headline-lg font-bold">
-						Gear Up, Win the Game
+						{t("guwtg")}
 					</h2>
 					<p className="text-body-sm md:text-body-lg text-neutral-600 dark:text-neutral-400">
-						We have a bunch of gear for you to win the game.
+						{t("guwtg_desc")}
 					</p>
 				</div>
 				<div className="grid-wrapper grid grid-cols-2 gap-2 md:grid-cols-4 md:gap-4 py-4">
@@ -33,7 +35,7 @@ const HomeProductFeeds = () => {
 					<Link to={"/explore"}>
 						<Button color="primary" size="lg">
 							<span className="font-medium text-black">
-								Explore Products
+								{t("explore_products")}
 							</span>
 						</Button>
 					</Link>

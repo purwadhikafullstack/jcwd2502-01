@@ -18,6 +18,7 @@ import { BiEdit } from "react-icons/bi";
 import { useStateContext } from "../../../contexts/ContextProvider";
 import AdminEditCategoryModal from "../../../components/layouts/admin/AdminEditCategoryModal";
 import { axiosInstance } from "../../../lib/axios";
+import SelectSortBy from "../../../components/uis/Selects/SelectSortBy";
 
 const AdminCategoriesPage = () => {
 	const { openEditCategoryModal, setOpenEditCategoryModal } =
@@ -148,6 +149,12 @@ const AdminCategoriesPage = () => {
 			<AdminPageMainContainer>
 				<div className="admin-page-header flex justify-between gap-4 mb-6">
 					<h1 className="font-bold text-title-lg">Categories</h1>
+				</div>
+				<div className="w-full flex justify-between mb-4">
+					<div className="sort-by flex items-center w-1/4">
+						<div className="min-w-[80px] font-medium">Sort by:</div>
+						<SelectSortBy admin={true} />
+					</div>
 					<AdminCreateNewCategoryModal />
 				</div>
 				<Table
