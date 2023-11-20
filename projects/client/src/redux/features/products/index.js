@@ -13,8 +13,11 @@ const initialState = {
 	search: "",
 	status: "pending",
 	category: [],
+	categories: [],
 	brand: [],
+	brands: [],
 	warehouse: null,
+	warehouses: [],
 	page: 1,
 	offset: 0,
 	count: 0,
@@ -61,6 +64,9 @@ export const productsSlice = createSlice({
 		setWarehouse: (initialState, { payload }) => {
 			initialState.warehouse = payload;
 		},
+		setWarehouses: (initialState, { payload }) => {
+			initialState.warehouses = payload;
+		},
 		setPage: (initialState, { payload }) => {
 			initialState.page = payload;
 		},
@@ -72,6 +78,12 @@ export const productsSlice = createSlice({
 		},
 		resetOffset: (initialState) => {
 			initialState.offset = 0;
+		},
+		setCategories: (initialState, { payload }) => {
+			initialState.categories = payload;
+		},
+		setBrands: (initialState, { payload }) => {
+			initialState.brands = payload;
 		},
 		setCategory: (initialState, { payload }) => {
 			if (initialState.category.includes(payload)) {
@@ -113,6 +125,48 @@ export const fetchProductAsync = (query) => async (dispatchEvent) => {
 		const totalPage = await Math.ceil(data.data.count / 12);
 		dispatchEvent(setTotalPage(totalPage));
 		dispatchEvent(setProducts(data.data.products));
+		dispatchEvent(setCount(data.data.count));
+	} catch (error) {
+		console.log(error);
+	}
+};
+export const fetchBrandsAsync = (query) => async (dispatchEvent) => {
+	try {
+		// const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance().get(
+			`brands/all-products${query ? query : ""}`
+		);
+		const totalPage = await Math.ceil(data.data.count / 12);
+		dispatchEvent(setTotalPage(totalPage));
+		dispatchEvent(setBrands(data.data.brands));
+		dispatchEvent(setCount(data.data.count));
+	} catch (error) {
+		console.log(error);
+	}
+};
+export const fetchCategoriesAsync = (query) => async (dispatchEvent) => {
+	try {
+		// const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance().get(
+			`categories/all-products${query ? query : ""}`
+		);
+		const totalPage = await Math.ceil(data.data.count / 12);
+		dispatchEvent(setTotalPage(totalPage));
+		dispatchEvent(setCategories(data.data.categories));
+		dispatchEvent(setCount(data.data.count));
+	} catch (error) {
+		console.log(error);
+	}
+};
+export const fetchWarehousesAsync = (query) => async (dispatchEvent) => {
+	try {
+		// const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance().get(
+			`warehouses/list${query ? query : ""}`
+		);
+		const totalPage = await Math.ceil(data.data.count / 12);
+		dispatchEvent(setTotalPage(totalPage));
+		dispatchEvent(setWarehouses(data.data.warehouses));
 		dispatchEvent(setCount(data.data.count));
 	} catch (error) {
 		console.log(error);
@@ -233,6 +287,9 @@ export const onClear = () => async (dispatchEvent) => {
 };
 
 export const {
+	setBrands,
+	setCategories,
+	setWarehouses,
 	setStatus,
 	setWarehouse,
 	setProducts,

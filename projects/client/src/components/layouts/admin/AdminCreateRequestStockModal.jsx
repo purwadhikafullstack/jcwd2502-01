@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { axiosInstance } from "../../../lib/axios";
 
-const AdminCreateRequestStockModal = ({ productName, warehouseId }) => {
+const AdminCreateRequestStockModal = ({ productName }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [isLoading, setIsLoading] = useState(false);
 	const [dataProduct, setDataProduct] = useState([]);
@@ -61,7 +61,7 @@ const AdminCreateRequestStockModal = ({ productName, warehouseId }) => {
 	useEffect(() => {
 		fetchDataProduct();
 		fetchDataWarehouse();
-	}, []);
+	}, [warehouse]);
 
 	const onSubmitCreateRequest = async (values) => {
 		try {
@@ -82,8 +82,7 @@ const AdminCreateRequestStockModal = ({ productName, warehouseId }) => {
 				alert("Quantity can not be 0 or less than 0");
 				return; // Stop further execution
 			}
-
-			if (quantity - dataStock.stocks) {
+			if (quantity > dataStock.stocks) {
 				alert("Quantity requested is more than what is available");
 				return; // Stop further execution
 			}
@@ -100,6 +99,7 @@ const AdminCreateRequestStockModal = ({ productName, warehouseId }) => {
 				dataToSend
 			);
 			setIsLoading(false);
+			window.location.reload(false);
 			return;
 		} catch (error) {
 			console.log(error);
@@ -133,22 +133,21 @@ const AdminCreateRequestStockModal = ({ productName, warehouseId }) => {
 
 	return (
 		<>
-			<Tooltip content="Create request">
-				<Button
-					variant="light"
-					onPress={onOpen}
-					className="text-default-400 cursor-pointer active:opacity-50"
-					startContent={<FaCodePullRequest size={20} />}
-				>
-					Request
-				</Button>
-			</Tooltip>
+			<Button
+				variant="light"
+				onPress={onOpen}
+				className="text-default-400 cursor-pointer active:opacity-50"
+				startContent={<FaCodePullRequest size={20} />}
+			>
+				Request
+			</Button>
 			<Modal
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
 				placement="center"
 				scrollBehavior="inside"
 				size="2xl"
+				onClose={() => setDataStock(null)}
 			>
 				<ModalContent>
 					{(onClose) => (
@@ -240,7 +239,7 @@ const AdminCreateRequestStockModal = ({ productName, warehouseId }) => {
 											className="text-center"
 											fullWidth
 											type="submit"
-											// onPress={onClose}
+											// onPress={() => onClose}
 										>
 											<span className="font-bold text-black">
 												Create Request

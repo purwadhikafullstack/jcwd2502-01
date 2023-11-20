@@ -149,7 +149,15 @@ module.exports = {
 			if (!dataProduct || !dataSpec) {
 				return { message: "Data is not complete", isError: true };
 			}
-			const { product_name } = dataProduct;
+			const { product_name, category_id, brand_id } = dataProduct;
+			const { weight } = dataSpec;
+			if (!product_name || !category_id || !brand_id || !weight) {
+				return {
+					isError: true,
+					message: `Some of the fields are missing`,
+					data: null,
+				};
+			}
 			const checkProduct = await db.product.findOne({
 				where: { product_name },
 			});
