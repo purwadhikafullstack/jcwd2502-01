@@ -4,7 +4,7 @@ import { Select, SelectItem } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
 import { onSort } from "../../../redux/features/products";
 
-const SelectSortBy = ({ admin }) => {
+const SelectSortBy = ({ admin, placeholder = "Options" }) => {
 	const dispatch = useDispatch();
 	const [keyOrder, setKeyOrder] = useState(null);
 	const orderField = useSelector((state) => state.products.orderField);
@@ -32,7 +32,7 @@ const SelectSortBy = ({ admin }) => {
 	return (
 		<Select
 			labelPlacement={"outside-left"}
-			placeholder="Options"
+			placeholder={placeholder}
 			size="md"
 			variant="bordered"
 			className="min-w-[178px]"
