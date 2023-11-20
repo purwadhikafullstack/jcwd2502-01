@@ -72,7 +72,7 @@ const SelectSortBy = ({ admin }) => {
 					value={"last_updated"}
 					onClick={() => dispatch(onSort("updatedAt", "desc"))}
 				>
-					Last Updated
+					Last updated
 				</SelectItem>
 			) : null}
 		</Select>

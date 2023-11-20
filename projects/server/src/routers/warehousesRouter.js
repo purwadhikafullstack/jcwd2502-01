@@ -9,6 +9,7 @@ const { warehousesController } = require("../controllers"); // otomatis baca ind
 // const { verify } = require("./../lib/jwt");
 
 Router.get("/all", warehousesController.getAllWarehouses);
+Router.get("/list", warehousesController.getWarehouseList);
 Router.get("/others/:warehouseId", warehousesController.getOtherWarehouses);
 Router.get("/:warehouseId", warehousesController.getWarehouse);
 Router.post("/", warehousesController.createWarehouse);

@@ -13,31 +13,49 @@ module.exports = {
 		}
 	},
 
-	findAllBrandsWithProducts: async () => {
+	findAllBrandsWithProducts: async (query) => {
 		try {
-			const dataBrandsWithProducts = await db.brand.findAll({
-				attributes: ["id", "brand_name"],
-				include: [
-					{
-						model: db.product,
-						attributes: [
-							[
-								Sequelize.fn(
-									"COUNT",
-									Sequelize.col("product_name")
-								),
-								"total_products",
-							],
-						],
-					},
+			const { offset, orderField, orderDirection } = query;
+
+			const orderOptions = [];
+			if (orderField && orderDirection) {
+				if (orderField === "total_products") {
+					orderOptions.push([
+						Sequelize.literal("total_products"),
+						orderDirection,
+					]);
+				} else {
+					orderOptions.push([orderField, orderDirection]);
+				}
+			}
+
+			const baseQuery = {
+				attributes: [
+					"id",
+					"brand_name",
+					"updatedAt",
+					[
+						Sequelize.literal(`
+						  (SELECT COUNT(*) 
+						   FROM products 
+						   WHERE products.brand_id = brand.id 
+						   AND products.deletedAt IS NULL
+						  )`),
+						"total_products",
+					],
 				],
-				order: [["updatedAt", "DESC"]],
 				group: ["brand.id"],
-			});
+				limit: 12,
+				offset: Number(offset) || 0,
+				order: orderOptions,
+			};
+
+			const dataBrandsWithProducts = await db.brand.findAll(baseQuery);
+			const count = await db.brand.count();
 
 			return {
 				message: "Get brands success",
-				data: dataBrandsWithProducts,
+				data: { count, brands: dataBrandsWithProducts },
 			};
 		} catch (error) {
 			return error;

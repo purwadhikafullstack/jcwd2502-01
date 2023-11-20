@@ -214,7 +214,6 @@ const AdminStocksListTable = () => {
 						<AdminEditStockModal id={product?.stock_id} />
 						<AdminCreateRequestStockModal
 							productName={encodedProductName}
-							warehouseId={warehouse}
 						/>
 					</div>
 				);

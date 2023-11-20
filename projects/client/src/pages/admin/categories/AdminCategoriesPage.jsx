@@ -12,6 +12,8 @@ import {
 	Button,
 	Input,
 	Pagination,
+	Select,
+	SelectItem,
 } from "@nextui-org/react";
 import { IoTrashOutline, IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
@@ -19,13 +21,112 @@ import { useStateContext } from "../../../contexts/ContextProvider";
 import AdminEditCategoryModal from "../../../components/layouts/admin/AdminEditCategoryModal";
 import { axiosInstance } from "../../../lib/axios";
 import SelectSortBy from "../../../components/uis/Selects/SelectSortBy";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+	fetchCategoriesAsync,
+	onClear,
+	onSort,
+	setBrands,
+	setCategories,
+	setCount,
+	setOrderDirection,
+	setOrderField,
+	setPagination,
+	setTotalPage,
+} from "../../../redux/features/products";
 
 const AdminCategoriesPage = () => {
 	const { openEditCategoryModal, setOpenEditCategoryModal } =
 		useStateContext();
 	const [selectedCategoryId, setSelectedCategoryId] = useState(null);
 	const [selectedCategoryType, setSelectedCategoryType] = useState(null);
-	const [categories, setCategories] = useState([]);
+
+	const [oneTime, setOneTime] = useState(false);
+	const [keyOrder, setKeyOrder] = useState("");
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const location = useLocation();
+
+	const categories = useSelector((state) => state.products.categories);
+	const count = useSelector((state) => state.products.count);
+	const totalPage = useSelector((state) => state.products.totalPage);
+
+	const page = useSelector((state) => state.products.page);
+	const offset = useSelector((state) => state.products.offset);
+	const orderField = useSelector((state) => state.products.orderField);
+	const orderDirection = useSelector(
+		(state) => state.products.orderDirection
+	);
+
+	const takeFromQuery = () => {
+		const queryParams = new URLSearchParams(location.search);
+		const selectedOrderField = queryParams.get("orderField");
+		const selectedOrderDirection = queryParams.get("orderDirection");
+		const selectedOffset = queryParams.get("offset");
+		if (selectedOrderField) {
+			dispatch(setOrderField(selectedOrderField));
+		}
+		if (selectedOrderDirection) {
+			dispatch(setOrderDirection(selectedOrderDirection));
+		}
+		if (!selectedOrderField && !selectedOrderDirection) {
+			dispatch(setOrderField("updatedAt"));
+			dispatch(setOrderDirection("desc"));
+		}
+		if (selectedOffset) {
+			const selectedPage = Number(selectedOffset) / 12 + 1;
+			dispatch(setPagination(selectedPage, Number(selectedOffset)));
+		}
+	};
+
+	useEffect(() => {
+		takeFromQuery();
+		setOneTime(true);
+
+		window.scrollTo({ top: 0 });
+
+		return () => {
+			dispatch(onClear());
+			dispatch(setTotalPage(1));
+			dispatch(setCategories([]));
+			dispatch(setCount(0));
+		};
+	}, []);
+
+	useEffect(() => {
+		if (oneTime) {
+			navigate(
+				`/admin/categories?orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			);
+			dispatch(
+				fetchCategoriesAsync(
+					`?orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+		}
+		if (orderField === "category_type" && orderDirection === "asc") {
+			setKeyOrder("az");
+		} else if (
+			orderField === "category_type" &&
+			orderDirection === "desc"
+		) {
+			setKeyOrder("za");
+		} else if (
+			orderField === "total_products" &&
+			orderDirection === "desc"
+		) {
+			setKeyOrder("most");
+		} else if (
+			orderField === "total_products" &&
+			orderDirection === "asc"
+		) {
+			setKeyOrder("least");
+		} else if (orderField === "updatedAt" && orderDirection === "desc") {
+			setKeyOrder("last_updated");
+		}
+	}, [orderField, orderDirection, offset, oneTime]);
 
 	const onOpenEditCategoryModal = (category_id, category_type) => {
 		setOpenEditCategoryModal(!openEditCategoryModal);
@@ -33,18 +134,6 @@ const AdminCategoriesPage = () => {
 		setSelectedCategoryType(category_type);
 	};
 
-	const fetchCategories = async () => {
-		try {
-			// const accessToken = localStorage.getItem("accessToken");
-			const { data } = await axiosInstance().get(
-				`categories/all-products`
-			);
-
-			setCategories(data.data);
-		} catch (error) {
-			console.log(error);
-		}
-	};
 	const onDelete = async (categoryId) => {
 		try {
 			// const accessToken = localStorage.getItem("accessToken");
@@ -57,10 +146,6 @@ const AdminCategoriesPage = () => {
 			console.log(error);
 		}
 	};
-
-	useEffect(() => {
-		fetchCategories();
-	}, []);
 
 	useEffect(() => {
 		if (openEditCategoryModal) {
@@ -81,7 +166,7 @@ const AdminCategoriesPage = () => {
 			case "category_name":
 				return <p>{category.category_type}</p>;
 			case "total_products":
-				return <p>{category.products[0]?.total_products || "-"}</p>;
+				return <p>{category?.total_products || "-"}</p>;
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
@@ -118,31 +203,25 @@ const AdminCategoriesPage = () => {
 		}
 	}, []);
 
-	const bottomContent = React.useMemo(
-		() => {
-			return (
-				<div className="py-2 px-2 flex justify-between items-center">
-					<Pagination
-						size="md"
-						showControls
-						// total={totalPage ? totalPage : 1}
-						// page={page ? page : 0}
-						color="secondary"
-						variant="flat"
-						className="z-0"
-						// onChange={(e) => {
-						// 	dispatch(setPagination(e, (e - 1) * 12));
-						// 	window.scrollTo({ top: 0, behavior: "smooth" });
-						// }}
-					/>
-				</div>
-			);
-		},
-		[
-			// totalPage,
-			// page
-		]
-	);
+	const bottomContent = React.useMemo(() => {
+		return (
+			<div className="py-2 px-2 flex justify-between items-center">
+				<Pagination
+					size="md"
+					showControls
+					total={totalPage ? totalPage : 1}
+					page={page ? page : 0}
+					color="secondary"
+					variant="flat"
+					className="z-0"
+					onChange={(e) => {
+						dispatch(setPagination(e, (e - 1) * 12));
+						window.scrollTo({ top: 0, behavior: "smooth" });
+					}}
+				/>
+			</div>
+		);
+	}, [totalPage, page]);
 
 	return (
 		<>
@@ -152,8 +231,75 @@ const AdminCategoriesPage = () => {
 				</div>
 				<div className="w-full flex justify-between mb-4">
 					<div className="sort-by flex items-center w-1/4">
-						<div className="min-w-[80px] font-medium">Sort by:</div>
-						<SelectSortBy admin={true} />
+						{/* <div className="min-w-[80px] font-medium">Sort by:</div>
+						<SelectSortBy admin={true} /> */}
+						<div className="sort-by flex items-center w-1/4">
+							<div className="min-w-[80px] font-medium">
+								Sort by:
+							</div>
+							<Select
+								labelPlacement={"outside-left"}
+								placeholder="Options"
+								size="md"
+								variant="bordered"
+								className="min-w-[178px]"
+								selectedKeys={
+									keyOrder ? [String(keyOrder)] : null
+								}
+							>
+								<SelectItem
+									key={"last_updated"}
+									value={"last_updated"}
+									onClick={() =>
+										dispatch(onSort("updatedAt", "desc"))
+									}
+								>
+									Last updated
+								</SelectItem>
+								<SelectItem
+									key={"az"}
+									value={"az"}
+									onClick={() =>
+										dispatch(onSort("category_type", "asc"))
+									}
+								>
+									A-Z
+								</SelectItem>
+								<SelectItem
+									key={"za"}
+									value={"za"}
+									onClick={() =>
+										dispatch(
+											onSort("category_type", "desc")
+										)
+									}
+								>
+									Z-A
+								</SelectItem>
+								<SelectItem
+									key={"most"}
+									value={"most"}
+									onClick={() =>
+										dispatch(
+											onSort("total_products", "desc")
+										)
+									}
+								>
+									Most products
+								</SelectItem>
+								<SelectItem
+									key={"least"}
+									value={"least"}
+									onClick={() =>
+										dispatch(
+											onSort("total_products", "asc")
+										)
+									}
+								>
+									Least products
+								</SelectItem>
+							</Select>
+						</div>
 					</div>
 					<AdminCreateNewCategoryModal />
 				</div>

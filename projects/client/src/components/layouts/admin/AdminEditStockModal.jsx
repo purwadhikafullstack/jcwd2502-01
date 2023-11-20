@@ -108,16 +108,14 @@ const AdminEditStockModal = ({ id }) => {
 
 	return (
 		<>
-			<Tooltip content="Edit stock">
-				<Button
-					variant="light"
-					onPress={onOpen}
-					className="text-default-400 cursor-pointer active:opacity-50"
-					startContent={<BiEdit size={24} />}
-				>
-					Edit
-				</Button>
-			</Tooltip>
+			<Button
+				variant="light"
+				onPress={onOpen}
+				className="text-default-400 cursor-pointer active:opacity-50"
+				startContent={<BiEdit size={24} />}
+			>
+				Edit
+			</Button>
 			<Modal
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}

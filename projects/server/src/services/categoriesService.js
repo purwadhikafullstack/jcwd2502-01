@@ -8,26 +8,6 @@ module.exports = {
 				attributes: ["id", "category_type"],
 			});
 
-			// const dataCategoriesWithProducts = await db.category.findAll({
-			// 	attributes: ["id", "category_type"],
-			// 	include: [
-			// 		{
-			// 			model: db.product,
-			// 			attributes: [
-			// 				[
-			// 					Sequelize.fn(
-			// 						"COUNT",
-			// 						Sequelize.col("product_name")
-			// 					),
-			// 					"total_products",
-			// 				],
-			// 			],
-			// 		},
-			// 	],
-			// 	order: [["updatedAt", "DESC"]],
-			// 	group: ["category.id"],
-			// });
-
 			return {
 				message: "Get categories success",
 				data: dataAllCategories,
@@ -36,31 +16,51 @@ module.exports = {
 			return error;
 		}
 	},
-	findAllCategoriesWithProducts: async () => {
+	findAllCategoriesWithProducts: async (query) => {
 		try {
-			const dataCategoriesWithProducts = await db.category.findAll({
-				attributes: ["id", "category_type"],
-				include: [
-					{
-						model: db.product,
-						attributes: [
-							[
-								Sequelize.fn(
-									"COUNT",
-									Sequelize.col("product_name")
-								),
-								"total_products",
-							],
-						],
-					},
+			const { offset, orderField, orderDirection } = query;
+
+			const orderOptions = [];
+			if (orderField && orderDirection) {
+				if (orderField === "total_products") {
+					orderOptions.push([
+						Sequelize.literal("total_products"),
+						orderDirection,
+					]);
+				} else {
+					orderOptions.push([orderField, orderDirection]);
+				}
+			}
+
+			const baseQuery = {
+				attributes: [
+					"id",
+					"category_type",
+					"updatedAt",
+					[
+						Sequelize.literal(`
+						  (SELECT COUNT(*) 
+						   FROM products 
+						   WHERE products.category_id = category.id 
+						   AND products.deletedAt IS NULL
+						  )`),
+						"total_products",
+					],
 				],
-				order: [["updatedAt", "DESC"]],
 				group: ["category.id"],
-			});
+				limit: 12,
+				offset: Number(offset) || 0,
+				order: orderOptions,
+			};
+
+			const dataCategoriesWithProducts = await db.category.findAll(
+				baseQuery
+			);
+			const count = await db.category.count();
 
 			return {
 				message: "Get categories success",
-				data: dataCategoriesWithProducts,
+				data: { count, categories: dataCategoriesWithProducts },
 			};
 		} catch (error) {
 			return error;

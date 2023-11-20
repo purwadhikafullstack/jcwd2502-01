@@ -77,7 +77,7 @@ const AdminIncomingStocksTable = () => {
 		dispatch(
 			fetchStockMutationsAsync(
 				"in",
-				`?warehouse=${warehouse}&offset=${offset}`
+				`?warehouse=${warehouse}&status=${status}&offset=${offset}`
 			)
 		);
 	};
@@ -324,7 +324,7 @@ const AdminIncomingStocksTable = () => {
 					)}
 				</TableHeader>
 				<TableBody
-					emptyContent={"Please select warehouse"}
+					emptyContent={"No request available"}
 					items={stockMutations}
 				>
 					{(item) => (

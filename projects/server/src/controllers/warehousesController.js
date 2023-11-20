@@ -8,6 +8,7 @@ const {
 	removeWarehouse,
 	findWarehouse,
 	findOtherWarehouses,
+	findWarehouseList,
 } = require("./../services/warehousesService");
 
 const respHandler = require("../utils/respHandler");
@@ -16,6 +17,14 @@ module.exports = {
 	getAllWarehouses: async (req, res, next) => {
 		try {
 			const result = await findAllWarehouses();
+			respHandler(res, result.message, result.data);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getWarehouseList: async (req, res, next) => {
+		try {
+			const result = await findWarehouseList(req.query);
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
