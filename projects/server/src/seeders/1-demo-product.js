@@ -106,7 +106,7 @@ module.exports = {
 						"Four-switch D-pad for smooth control and a familiar console layout. Plug-and-play on PC. Windows® 11, Windows 10, Windows 8, Windows 7, or Windows Vista, ChromeOS™ Internet connection for optional software downloads",
 					product_price: "339000",
 					brand_id: 1,
-					category_id: 4,
+					category_id: 3,
 					weight: 380,
 				},
 				{
@@ -116,7 +116,7 @@ module.exports = {
 						"D-pad four switches for accurate control. Fast 2.4 GHz wireless via USB nano receiver. Dual-motor vibration feedback. PC compatible. Windows® 11, Windows 10, Windows 8, Windows 7, or Windows Vista, ChromeOS™ Internet connection for optional software downloads",
 					product_price: "749000",
 					brand_id: 1,
-					category_id: 4,
+					category_id: 3,
 					weight: 380,
 				},
 				{
