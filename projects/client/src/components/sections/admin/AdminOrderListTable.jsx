@@ -17,7 +17,6 @@ import { axiosInstance } from "../../../lib/axios";
 import { orderStatuses } from "../../../data/constant";
 import { useLocation } from "react-router-dom";
 
-import { FaCheck, FaXmark } from "react-icons/fa6";
 import AdminViewOrderDetailsModal from "./AdminViewOrderDetailsModal";
 
 const AdminOrderListTable = () => {
@@ -155,6 +154,22 @@ const AdminOrderListTable = () => {
 
 		const cellValue = order[columnKey];
 
+		const renderAction = () => {
+			if (order?.status === "2") {
+				return <AdminViewOrderDetailsModal orderDetailsData={order} />;
+			} else if (order?.status === "6") {
+				return (
+					<Button isDisabled variant="faded" color="primary">
+						Cancel order
+					</Button>
+				);
+			} else if (order?.status === "1") {
+				return <Button>Cancel Order</Button>;
+			} else {
+				return null;
+			}
+		};
+
 		switch (columnKey) {
 			case "date":
 				return (
@@ -211,17 +226,7 @@ const AdminOrderListTable = () => {
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-3">
-						<AdminViewOrderDetailsModal orderDetailsData={order} />
-						{/* <Tooltip content="Accept Order">
-							<Button isIconOnly variant="faded" color="primary">
-								<FaCheck size={20} />
-							</Button>
-						</Tooltip>
-						<Tooltip content="Reject Order">
-							<Button isIconOnly variant="faded" color="danger">
-								<FaXmark size={20} />
-							</Button>
-						</Tooltip> */}
+						{renderAction()}
 					</div>
 				);
 			default:

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import OrderCard from "../../components/uis/Cards/OrderCard";
 import { Pagination, Select, SelectItem } from "@nextui-org/react";
 import { axiosInstance } from "../../lib/axios";
@@ -17,16 +17,14 @@ const OrderListPage = () => {
 	const [orders, setOrders] = useState([]);
 	const [totalPages, setTotalPages] = useState(1);
 	const [isPaginationVisible, setIsPaginationVisible] = useState(false);
-	const [status, setStatus] = useState("");
-	const [page, setPage] = useState("");
+	const [status, setStatus] = useState(currentStatus.toString());
+	const [page, setPage] = useState(currentPage);
 
 	const fetchUserOrderList = async (page, status = "") => {
 		try {
 			const { data } = await axiosInstance(token).get(
 				`orders?page=${page}&status=${status}`
 			);
-
-			console.log(">>>>", data.data.orderList);
 
 			setOrders(data.data.orderList);
 			setTotalPages(data.data.pagination.totalPages);
@@ -36,17 +34,17 @@ const OrderListPage = () => {
 	};
 
 	const handlePageChange = (newPage) => {
-		fetchUserOrderList(newPage, status);
-		updateUrl(newPage, status);
 		setPage(newPage);
+		updateUrl(newPage, status);
+		fetchUserOrderList(newPage, status);
 		window.scrollTo({ top: 0 });
 	};
 
 	const handleStatusChange = (newStatus) => {
-		setPage(1);
 		fetchUserOrderList(1, newStatus);
 		updateUrl(1, newStatus);
 		setStatus(newStatus);
+		setPage(1);
 	};
 
 	const updateUrl = (page, status) => {
@@ -81,7 +79,7 @@ const OrderListPage = () => {
 					color="secondary"
 					showControls
 					total={totalPages || 1}
-					page={currentPage || 1}
+					page={page || 1}
 					onChange={handlePageChange}
 				/>
 			);
@@ -111,10 +109,6 @@ const OrderListPage = () => {
 		}
 	};
 
-	useEffect(() => {
-		console.log(orders);
-	}, [orders]);
-
 	return (
 		<main className="my-container min-h-screen py-4">
 			<div className="page-heading mb-4">
@@ -131,9 +125,8 @@ const OrderListPage = () => {
 						variant="bordered"
 						size="md"
 						className="md:col-span-2"
-						// onChange={(e) => handleStatusChange(e.target.value)}
 						defaultSelectedKeys={
-							currentStatus && [String(currentStatus)]
+							currentStatus ? [currentStatus.toString()] : []
 						}
 					>
 						{(status) => (

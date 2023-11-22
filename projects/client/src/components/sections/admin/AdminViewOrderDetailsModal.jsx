@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import {
 	Modal,
 	ModalContent,
@@ -14,13 +14,12 @@ import {
 import Media from "react-media";
 import { orderStatuses } from "../../../data/constant";
 import { FaRegEye } from "react-icons/fa6";
+import PaymentProofModal from "../../uis/Modals/PaymentProofModal";
 
 const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-	const [orderDetails, setOrderDetails] = useState(orderDetailsData);
-
-	const date = new Date(orderDetails?.createdAt);
+	const date = new Date(orderDetailsData?.createdAt);
 
 	const optionsDate = {
 		day: "numeric",
@@ -39,8 +38,6 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 		"en-GB",
 		optionsDate
 	)}, ${date.toLocaleTimeString("en-US", optionsTime)} WIB`;
-
-	console.log(orderDetailsData);
 
 	return (
 		<Media
@@ -76,14 +73,14 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 										</span>
 									</ModalHeader>
 									<ModalBody className="p-0">
-										{orderDetails && (
+										{orderDetailsData && (
 											<>
 												<section className="bg-neutral-100 dark:bg-[#202020] px-6 py-4">
 													<h4 className="font-bold text-[18px] mb-2">
 														{
 															orderStatuses[
 																Number(
-																	orderDetails?.status
+																	orderDetailsData?.status
 																) - 1
 															].label
 														}
@@ -92,7 +89,7 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 														<p>Invoice Number</p>
 														<p>
 															{
-																orderDetails?.invoice
+																orderDetailsData?.invoice
 															}
 														</p>
 													</div>
@@ -110,7 +107,7 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 														Product Details
 													</h4>
 													<div className="flex flex-col gap-2">
-														{orderDetails?.order_details?.map(
+														{orderDetailsData?.order_details?.map(
 															(order_detail) => (
 																<Card className="p-4">
 																	<div className="flex items-center">
@@ -211,7 +208,7 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 															</span>
 															<p>
 																{
-																	orderDetails?.receipt_number
+																	orderDetailsData?.receipt_number
 																}
 															</p>
 														</div>
@@ -225,40 +222,40 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 															<div>
 																<h6 className="font-bold">
 																	{
-																		orderDetails
+																		orderDetailsData
 																			?.user_address
 																			?.address_name
 																	}
 																</h6>
 																<p>
 																	{
-																		orderDetails
+																		orderDetailsData
 																			?.user_address
 																			?.address
 																	}
 																	,{" "}
 																	{
-																		orderDetails
+																		orderDetailsData
 																			?.user_address
 																			?.city
 																			?.type
 																	}{" "}
 																	{
-																		orderDetails
+																		orderDetailsData
 																			?.user_address
 																			?.city
 																			?.city_name
 																	}
 																	,{" "}
 																	{
-																		orderDetails
+																		orderDetailsData
 																			?.user_address
 																			?.province
 																			?.province
 																	}
 																	,{" "}
 																	{
-																		orderDetails
+																		orderDetailsData
 																			?.user_address
 																			?.city
 																			?.postal_code
@@ -282,10 +279,10 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 														<div className="pd flex justify-between items-center">
 															<p>
 																Total Price{" "}
-																{`(${orderDetails?.total_item} Items)`}{" "}
+																{`(${orderDetailsData?.total_item} Items)`}{" "}
 															</p>
 															<p>
-																{orderDetails?.total_amount.toLocaleString(
+																{orderDetailsData?.total_amount.toLocaleString(
 																	"id-ID",
 																	{
 																		style: "currency",
@@ -300,7 +297,7 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 														<div className="pd flex justify-between items-center">
 															<p>Shipping Cost</p>
 															<p>
-																{orderDetails?.shipping_cost.toLocaleString(
+																{orderDetailsData?.shipping_cost.toLocaleString(
 																	"id-ID",
 																	{
 																		style: "currency",
@@ -319,8 +316,8 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 														</p>
 														<p>
 															{(
-																orderDetails?.total_amount +
-																orderDetails?.shipping_cost
+																orderDetailsData?.total_amount +
+																orderDetailsData?.shipping_cost
 															).toLocaleString(
 																"id-ID",
 																{
@@ -333,16 +330,44 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 															)}
 														</p>
 													</div>
+													<div className="pt-4 w-full">
+														<PaymentProofModal
+															imageSource={
+																orderDetailsData?.proof_of_payment
+															}
+														/>
+													</div>
 												</section>
 											</>
 										)}
 									</ModalBody>
-									<ModalFooter>
+									<ModalFooter className="flex justify-center">
 										<Button
-											variant="light"
+											fullWidth
 											onPress={onClose}
+											className="bg-red-600"
 										>
-											Close
+											<span className="font-medium text-white">
+												Cancel Order
+											</span>
+										</Button>
+										<Button
+											fullWidth
+											onPress={onClose}
+											className="bg-red-600"
+										>
+											<span className="font-medium text-white">
+												Reject Order
+											</span>
+										</Button>
+										<Button
+											fullWidth
+											onPress={onClose}
+											className="bg-primary-500"
+										>
+											<span className="font-medium text-black">
+												Accept Order
+											</span>
 										</Button>
 									</ModalFooter>
 								</>

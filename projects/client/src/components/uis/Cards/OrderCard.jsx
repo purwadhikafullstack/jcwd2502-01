@@ -234,7 +234,7 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 													}
 												>
 													<span className="font-medium text-black">
-														Paid
+														Uploaded
 													</span>
 												</Button>
 											)}
