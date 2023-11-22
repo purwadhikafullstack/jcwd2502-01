@@ -18,6 +18,7 @@ module.exports = {
 					total_item: 3,
 					proof_of_payment: "image",
 					status: "1",
+					viewed: null,
 				},
 			],
 			{}
