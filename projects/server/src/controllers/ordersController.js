@@ -2,6 +2,8 @@ const db = require("./../models");
 const { Op } = require("sequelize");
 const respHandler = require("../utils/respHandler");
 
+const { adminCancelOrderService } = require("../services/ordersService");
+
 module.exports = {
 	getOrderList: async (req, res, next) => {
 		try {
@@ -166,6 +168,124 @@ module.exports = {
 			);
 
 			respHandler(res, "Cancel order success");
+		} catch (error) {
+			next(error);
+		}
+	},
+	adminGetAllUserOrderList: async (req, res, next) => {
+		try {
+			const { id: user_id } = req.dataToken;
+			const { page = 1, status, search } = req.query;
+
+			const itemsPerPage = 12;
+			const offset = (page - 1) * itemsPerPage;
+
+			const whereCondition = {};
+
+			if (status) {
+				whereCondition.status = status;
+			}
+
+			if (search) {
+				whereCondition[Op.or] = [
+					{ receipt_number: { [Op.like]: `%${search}%` } },
+					{ invoice: { [Op.like]: `%${search}%` } },
+				];
+			}
+
+			const orderList = await db.order.findAndCountAll({
+				where: whereCondition,
+				attributes: {
+					exclude: ["updatedAt", "deletedAt"],
+				},
+				include: [
+					{
+						model: db.order_detail,
+						attributes: {
+							exclude: ["createdAt", "updatedAt", "deletedAt"],
+						},
+						include: [
+							{
+								model: db.product,
+								attributes: [
+									"id",
+									"weight",
+									"product_name",
+									"product_price",
+								],
+								include: [
+									{
+										model: db.product_image,
+										attributes: ["image", "id"],
+										limit: 1,
+									},
+									{
+										model: db.specification,
+										attributes: ["weight"],
+									},
+								],
+							},
+						],
+					},
+					{
+						model: db.warehouse,
+						attributes: [
+							"id",
+							"warehouse_name",
+							"warehouse_address",
+						],
+					},
+					{
+						model: db.user_address,
+						attributes: {
+							exclude: ["createdAt", "updatedAt", "deletedAt"],
+						},
+						include: [
+							{
+								model: db.province,
+								attributes: ["id", "province"],
+							},
+							{
+								model: db.city,
+								attributes: [
+									"id",
+									"type",
+									"city_name",
+									"postal_code",
+								],
+							},
+						],
+					},
+				],
+				order: [["createdAt", "DESC"]],
+				limit: itemsPerPage,
+				distinct: true,
+				paranoid: false,
+				offset,
+			});
+
+			const totalPages = Math.ceil(orderList.count / itemsPerPage);
+
+			respHandler(res, "Get order list success", {
+				orderList: orderList.rows,
+				pagination: {
+					page: +page,
+					count: orderList.count,
+					totalPages,
+					totalItems: orderList.count,
+					offset,
+				},
+			});
+		} catch (error) {
+			next(error);
+		}
+	},
+	adminCancelOrder: async (req, res, next) => {
+		try {
+			const { order_id: id } = req.params;
+
+			const result = await adminCancelOrderService(id);
+			respHandler(res, result.message);
 		} catch (error) {
 			next(error);
 		}

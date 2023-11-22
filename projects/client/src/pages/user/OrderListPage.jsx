@@ -26,10 +26,10 @@ const OrderListPage = () => {
 				`orders?page=${page}&status=${status}`
 			);
 
+			console.log(">>>>", data.data.orderList);
+
 			setOrders(data.data.orderList);
 			setTotalPages(data.data.pagination.totalPages);
-
-			console.log(page, status);
 		} catch (error) {
 			console.log(error);
 		}
@@ -81,7 +81,7 @@ const OrderListPage = () => {
 					color="secondary"
 					showControls
 					total={totalPages || 1}
-					page={page || 1}
+					page={currentPage || 1}
 					onChange={handlePageChange}
 				/>
 			);
@@ -110,6 +110,10 @@ const OrderListPage = () => {
 			);
 		}
 	};
+
+	useEffect(() => {
+		console.log(orders);
+	}, [orders]);
 
 	return (
 		<main className="my-container min-h-screen py-4">

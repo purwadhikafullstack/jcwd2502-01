@@ -2,6 +2,8 @@ import {
 	Button,
 	Chip,
 	Pagination,
+	Select,
+	SelectItem,
 	Table,
 	TableBody,
 	TableCell,
@@ -18,17 +20,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
 	fetchStockAsync,
+	fetchStockMutationsAsync,
 	onClear,
 	onSearch,
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
 	setProductsForStocks,
 	setSearch,
+	setStatus,
+	setStockMutations,
 	setTotalPage,
 	setWarehouse,
 } from "../../../redux/features/products";
+import { axiosInstance } from "../../../lib/axios";
 
 const AdminOutgoingStocksTable = () => {
 	const dispatch = useDispatch();
@@ -36,42 +43,26 @@ const AdminOutgoingStocksTable = () => {
 	const location = useLocation();
 
 	const warehouse = useSelector((state) => state.products.warehouse);
-	const products = useSelector((state) => state.products.productsForStocks);
+	const stockMutations = useSelector(
+		(state) => state.products.stockMutations
+	);
 	const count = useSelector((state) => state.products.count);
 	const totalPage = useSelector((state) => state.products.totalPage);
-	const orderField = useSelector((state) => state.products.orderField);
-	const orderDirection = useSelector(
-		(state) => state.products.orderDirection
-	);
-	const search = useSelector((state) => state.products.search);
+
 	const page = useSelector((state) => state.products.page);
 	const offset = useSelector((state) => state.products.offset);
-	const category = useSelector((state) => state.products.category);
-	const brand = useSelector((state) => state.products.brand);
+	const status = useSelector((state) => state.products.status);
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedWarehouse = queryParams.get("warehouse");
-		const selectedSearch = queryParams.get("search");
-		const selectedCategory = queryParams.get("category");
-		const selectedBrand = queryParams.get("brand");
-		const selectedOrderField = queryParams.get("orderField");
-		const selectedOrderDirection = queryParams.get("orderDirection");
+		const selectedStatus = queryParams.get("status");
 		const selectedOffset = queryParams.get("offset");
 		if (selectedWarehouse) {
 			dispatch(setWarehouse(selectedWarehouse));
 		}
-		if (selectedSearch) {
-			dispatch(onSearch(selectedSearch));
-		}
-		if (selectedCategory) {
-			dispatch(setCategory(selectedCategory));
-		}
-		if (selectedBrand) {
-			dispatch(setBrand(selectedBrand));
-		}
-		if (selectedOrderDirection && selectedOrderField) {
-			dispatch(onSort(selectedOrderField, selectedOrderDirection));
+		if (selectedStatus) {
+			dispatch(setStatus(selectedStatus));
 		}
 		if (selectedOffset) {
 			const selectedPage = Number(selectedOffset) / 12 + 1;
@@ -79,16 +70,17 @@ const AdminOutgoingStocksTable = () => {
 		}
 	};
 
-	const clear = async () => {
-		await dispatch(onClear());
-		navigate(
-			`/admin/stocks?warehouse=${warehouse}${
-				search && `&search=${search}`
-			}`
+	const handleAction = async (action, mutationId) => {
+		await axiosInstance().patch(`stocks/mutation/${mutationId}`, {
+			status: action,
+		});
+		dispatch(
+			fetchStockMutationsAsync(
+				"out",
+				`?warehouse=${warehouse}&status=${status}&offset=${offset}`
+			)
 		);
-		window.location.reload(false);
 	};
-
 	useEffect(() => {
 		takeFromQuery();
 
@@ -97,71 +89,97 @@ const AdminOutgoingStocksTable = () => {
 		return () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
-			dispatch(setProductsForStocks([]));
 			dispatch(setTotalPage(1));
 			dispatch(setWarehouse(null));
+			dispatch(setStockMutations([]));
+			dispatch(setCount(0));
+			dispatch(setStatus("pending"));
 		};
 	}, []);
 
 	useEffect(() => {
 		if (warehouse) {
 			navigate(
-				`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				`/admin/stocks?warehouse=${warehouse}&status=${status}&offset=${offset}`
 			);
-
 			dispatch(
-				fetchStockAsync(
-					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-						","
-					)}&category=${category.join(
-						","
-					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				fetchStockMutationsAsync(
+					"out",
+					`?warehouse=${warehouse}&status=${status}&offset=${offset}`
 				)
 			);
 		}
-	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
+	}, [status, page, warehouse]);
 
 	const columns = [
+		{ name: "DATE", uid: "date" },
 		{ name: "PRODUCT INFO", uid: "product_info" },
-		{ name: "FROM", uid: "from" },
+		{ name: "TO", uid: "to" },
 		{ name: "QUANTITY", uid: "quantity" },
+		{ name: "STOCK", uid: "stock" },
 		{ name: "STATUS", uid: "status" },
+		{ name: "ACTION", uid: "action" },
 	];
 
-	const renderCell = React.useCallback((product, columnKey) => {
-		const productPrice = product?.product_price.toLocaleString("id-ID", {
-			style: "currency",
-			currency: "IDR",
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
-		});
-		const encodedProductName = encodeURIComponent(product?.product_name);
-
+	const renderCell = React.useCallback((request, columnKey) => {
 		switch (columnKey) {
+			case "date":
+				return (
+					<div className="flex items-center gap-4 w-[240px] md:w-full">
+						<p className="font-medium text-base line-clamp-1">
+							{request?.createdAt.substring(0, 10)}
+						</p>
+					</div>
+				);
 			case "product_info":
 				return (
 					<div className="flex items-center gap-4 w-[240px] md:w-full">
 						<p className="font-medium text-base line-clamp-1">
-							{product?.product_name}
+							{request?.product?.product_name}
 						</p>
 					</div>
 				);
-			case "from":
-				return <Chip>{product?.category?.category_type}</Chip>;
-			case "quantity":
-				return <Chip>{product?.brand?.brand_name}</Chip>;
-			case "status":
+			case "to":
 				return (
-					<p className="text-base line-clamp-1">{product?.stock}</p>
+					<p className="text-base line-clamp-1">
+						{request?.warehouse_to?.warehouse_name}
+					</p>
+				);
+			case "quantity":
+				return (
+					<p className="text-base line-clamp-1">
+						{request?.quantity}
+					</p>
+				);
+			case "stock":
+				return (
+					<p className="text-base line-clamp-1">
+						{request?.product?.stocks[0]?.stocks}
+					</p>
+				);
+			case "status":
+				return <Chip>{request?.status}</Chip>;
+			case "action":
+				return (
+					request?.status === "pending" && (
+						<div className="relative flex justify-start items-center gap-2">
+							<Button
+								onClick={() =>
+									handleAction("canceled", request.id)
+								}
+								variant="flat"
+								className="bg-primary-600"
+							>
+								<span className="font-medium text-white">
+									CANCEL
+								</span>
+							</Button>
+						</div>
+					)
 				);
 			default:
 		}
 	}, []);
-
 	const bottomContent = React.useMemo(() => {
 		return (
 			<div className="py-2 px-2 flex justify-between items-center">
@@ -187,32 +205,87 @@ const AdminOutgoingStocksTable = () => {
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
 					<div className="flex gap-3 w-full">
-						<div className="select-brands">
+						{/* <div className="select-brands">
 							<SelectProductBrands />
 						</div>
 						<div className="select-categories">
 							<SelectProductCategories />
-						</div>
-						<Button
+						</div> */}
+						{/* <Button
 							variant="bordered"
 							className="border-neutral-200 dark:border-neutral-700"
 							onClick={() => clear()}
-						>{`Clear Filter(s)`}</Button>
+						>{`Clear Filter(s)`}</Button> */}
 						<div className="sort-by ml-auto flex items-center">
 							<div className="w-full mr-2 font-medium">
 								Sort by:
 							</div>
-							<SelectSortBy admin={false} />
+							<Select
+								labelPlacement={"outside-left"}
+								placeholder="Options"
+								size="md"
+								variant="bordered"
+								className="min-w-[178px]"
+								selectedKeys={
+									status ? [String(status)] : ["all"]
+								}
+							>
+								<SelectItem
+									key={"all"}
+									value={"all"}
+									onClick={() => dispatch(setStatus(""))}
+								>
+									Show All
+								</SelectItem>
+								<SelectItem
+									key={"accepted"}
+									value={"accepted"}
+									onClick={() =>
+										dispatch(setStatus("accepted"))
+									}
+								>
+									Accepted
+								</SelectItem>
+								<SelectItem
+									key={"pending"}
+									value={"pending"}
+									onClick={() =>
+										dispatch(setStatus("pending"))
+									}
+								>
+									Pending
+								</SelectItem>
+								<SelectItem
+									key={"rejected"}
+									value={"rejected"}
+									onClick={() =>
+										dispatch(setStatus("rejected"))
+									}
+								>
+									Rejected
+								</SelectItem>
+								<SelectItem
+									key={"canceled"}
+									value={"canceled"}
+									onClick={() =>
+										dispatch(setStatus("canceled"))
+									}
+								>
+									Canceled
+								</SelectItem>
+							</Select>
 						</div>
 					</div>
 				</div>
 				<div className="flex justify-between items-center">
 					<span className="text-default-400 text-small">
 						Showing
-						{products?.length
-							? ` ${1 + offset}-${offset + products?.length} `
+						{stockMutations?.length
+							? ` ${1 + offset}-${
+									offset + stockMutations?.length
+							  } `
 							: ` 0 `}
-						out of {count} products.
+						out of {count} requests.
 					</span>
 				</div>
 			</div>
@@ -239,8 +312,8 @@ const AdminOutgoingStocksTable = () => {
 					)}
 				</TableHeader>
 				<TableBody
-					emptyContent={"Please select warehouse"}
-					items={products}
+					emptyContent={"No request available"}
+					items={stockMutations}
 				>
 					{(item) => (
 						<TableRow key={item.id}>

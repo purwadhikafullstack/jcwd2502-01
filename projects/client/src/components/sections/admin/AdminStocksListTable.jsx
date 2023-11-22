@@ -23,6 +23,7 @@ import {
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
 	setProductsForStocks,
 	setSearch,
@@ -127,6 +128,7 @@ const AdminStocksListTable = () => {
 			dispatch(setProductsForStocks([]));
 			dispatch(setTotalPage(1));
 			dispatch(setWarehouse(null));
+			dispatch(setCount(0));
 		};
 	}, []);
 
@@ -210,7 +212,9 @@ const AdminStocksListTable = () => {
 				return (
 					<div className="relative flex justify-start items-center gap-2">
 						<AdminEditStockModal id={product?.stock_id} />
-						<AdminCreateRequestStockModal />
+						<AdminCreateRequestStockModal
+							productName={encodedProductName}
+						/>
 					</div>
 				);
 			default:

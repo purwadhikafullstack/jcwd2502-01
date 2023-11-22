@@ -8,21 +8,22 @@ import { Link } from "react-router-dom";
 import { axiosInstance } from "../../../lib/axios";
 import AdminIncomingStocksTable from "../../../components/sections/admin/AdminIncomingStocksTable";
 import AdminOutgoingStocksTable from "../../../components/sections/admin/AdminOutgoingStocksTable";
+import SelectWarehouses from "../../../components/uis/Selects/SelectWarehouses";
 
 const AdminStocksListPage = () => {
-	const [warehouses, setWarehouses] = useState([]);
-	const warehouse = useSelector((state) => state.products.warehouse);
+	// const [warehouses, setWarehouses] = useState([]);
+	// const warehouse = useSelector((state) => state.products.warehouse);
 
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
-	const fetchWarehouses = async () => {
-		try {
-			const { data } = await axiosInstance().get(`warehouses/all`);
-			setWarehouses(data.data);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	// const fetchWarehouses = async () => {
+	// 	try {
+	// 		const { data } = await axiosInstance().get(`warehouses/all`);
+	// 		setWarehouses(data.data);
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// };
 
 	let tabs = [
 		{
@@ -42,9 +43,9 @@ const AdminStocksListPage = () => {
 		},
 	];
 
-	useEffect(() => {
-		fetchWarehouses();
-	}, []);
+	// useEffect(() => {
+	// 	fetchWarehouses();
+	// }, []);
 
 	return (
 		<AdminPageMainContainer>
@@ -52,37 +53,8 @@ const AdminStocksListPage = () => {
 				<div className="flex justify-between w-full">
 					<div className="flex items-center">
 						<h1 className="font-bold text-title-lg mr-4">Stocks</h1>
-						<Select
-							items={warehouses}
-							size="sm"
-							variant="bordered"
-							className="min-w-[240px]"
-							radius="lg"
-							placeholder="Select warehouse"
-							selectedKeys={
-								warehouse ? [String(warehouse)] : null
-							}
-						>
-							{(warehouse) => (
-								<SelectItem
-									key={warehouse.id}
-									value={warehouse.id}
-									onClick={() =>
-										dispatch(setWarehouse(warehouse.id))
-									}
-								>
-									{warehouse.warehouse_name}
-								</SelectItem>
-							)}
-						</Select>
+						<SelectWarehouses />
 					</div>
-					<Link to={"/admin/stocks/log"}>
-						<Button color="primary" size="md">
-							<span className="font-medium text-black">
-								Stocks Change Log
-							</span>
-						</Button>
-					</Link>
 				</div>
 			</div>
 			<div className="pb-12">

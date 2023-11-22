@@ -19,7 +19,7 @@ module.exports = {
 	},
 	getAllBrandsWithProducts: async (req, res, next) => {
 		try {
-			const result = await findAllBrandsWithProducts();
+			const result = await findAllBrandsWithProducts(req.query);
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);

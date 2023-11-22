@@ -12,6 +12,7 @@ Router.get("/all", stocksController.getAllProductsStocks);
 Router.get("/history", stocksController.getStockHistories);
 Router.get("/mutation-in", stocksController.getIncomingMutation);
 Router.get("/mutation-out", stocksController.getOutgoingMutation);
+Router.get("/specific", stocksController.getSpecificStock);
 Router.get("/:stockId", stocksController.getOneStock);
 Router.post("/mutation", stocksController.createMutation);
 Router.patch("/:stockId", stocksController.updateStock);

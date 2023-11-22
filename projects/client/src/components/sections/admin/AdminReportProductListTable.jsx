@@ -13,11 +13,11 @@ import {
 	Image,
 	Chip,
 } from "@nextui-org/react";
-import { IoSearch, IoTrashOutline } from "react-icons/io5";
+import { IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import {
-	fetchProductAsync,
+	fetchStockAsync,
 	onClear,
 	onSearch,
 	onSort,
@@ -25,9 +25,10 @@ import {
 	setCategory,
 	setCount,
 	setPagination,
-	setProducts,
+	setProductsForStocks,
 	setSearch,
 	setTotalPage,
+	setWarehouse,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
@@ -35,15 +36,17 @@ import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
 import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
+import AdminCreateRequestStockModal from "../../layouts/admin/AdminCreateRequestStockModal";
+import MyMonthPicker from "../../uis/MyMonthPicker/MyMonthPicker";
 
-const AdminProductListTable = ({ props }) => {
-	const [oneTime, setOneTime] = useState(false);
-
+const AdminReportProductListTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const products = useSelector((state) => state.products.products);
+	const warehouse = useSelector((state) => state.products.warehouse);
+	const products = useSelector((state) => state.products.productsForStocks);
 	const count = useSelector((state) => state.products.count);
 	const totalPage = useSelector((state) => state.products.totalPage);
 	const orderField = useSelector((state) => state.products.orderField);
@@ -58,12 +61,16 @@ const AdminProductListTable = ({ props }) => {
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
+		const selectedWarehouse = queryParams.get("warehouse");
 		const selectedSearch = queryParams.get("search");
 		const selectedCategory = queryParams.get("category");
 		const selectedBrand = queryParams.get("brand");
 		const selectedOrderField = queryParams.get("orderField");
 		const selectedOrderDirection = queryParams.get("orderDirection");
 		const selectedOffset = queryParams.get("offset");
+		if (selectedWarehouse) {
+			dispatch(setWarehouse(selectedWarehouse));
+		}
 		if (selectedSearch) {
 			dispatch(onSearch(selectedSearch));
 		}
@@ -87,7 +94,7 @@ const AdminProductListTable = ({ props }) => {
 		onSubmit: (values) => {
 			// Handle the search query submission here
 			dispatch(onSearch(values.searchQuery));
-			navigate("/admin/products");
+			navigate("/admin/stocks");
 		},
 	});
 
@@ -103,44 +110,33 @@ const AdminProductListTable = ({ props }) => {
 
 	const clear = async () => {
 		await dispatch(onClear());
-		navigate(`/admin/products${search && `?search=${search}`}`);
-		window.location.reload(false);
-	};
-
-	const onDelete = async (productId) => {
-		//confirm
-		await axiosInstance().delete(`products/${productId}`);
-		dispatch(
-			fetchProductAsync(
-				`?&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			)
+		navigate(
+			`/admin/stocks?warehouse=${warehouse}${
+				search && `&search=${search}`
+			}`
 		);
+		window.location.reload(false);
 	};
 
 	useEffect(() => {
 		takeFromQuery();
-
-		setOneTime(true);
 
 		window.scrollTo({ top: 0 });
 
 		return () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
-			dispatch(setProducts([]));
+			dispatch(setProductsForStocks([]));
 			dispatch(setTotalPage(1));
+			dispatch(setWarehouse(null));
 			dispatch(setCount(0));
 		};
 	}, []);
 
 	useEffect(() => {
-		if (oneTime) {
+		if (warehouse) {
 			navigate(
-				`/admin/products?search=${search}&brand=${brand.join(
+				`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
 					","
 				)}&category=${category.join(
 					","
@@ -148,8 +144,8 @@ const AdminProductListTable = ({ props }) => {
 			);
 
 			dispatch(
-				fetchProductAsync(
-					`?&search=${search}&brand=${brand.join(
+				fetchStockAsync(
+					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
 						","
 					)}&category=${category.join(
 						","
@@ -157,19 +153,17 @@ const AdminProductListTable = ({ props }) => {
 				)
 			);
 		}
-	}, [orderField, orderDirection, search, page, category, brand, oneTime]);
-
-	useEffect(() => {
-		console.log("products >>> ", products);
-	}, [products]);
+	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
 
 	const columns = [
-		{ name: "PRODUCT INFO", uid: "product_info" },
-		{ name: "DESCRIPTION", uid: "description" },
+		{ name: "DATE", uid: "date" },
+		{ name: "INVOICE", uid: "category" },
+		{ name: "PRODUCT NAME", uid: "product_name" },
 		{ name: "CATEGORY", uid: "category" },
 		{ name: "BRAND", uid: "brand" },
-		{ name: "PRICE", uid: "price" },
-		{ name: "ACTIONS", uid: "actions" },
+		{ name: "QUANTITY", uid: "quantity" },
+		{ name: "FINAL PRICE", uid: "final_price" },
+		{ name: "WAREHOUSE", uid: "warehouse" },
 	];
 
 	const renderCell = React.useCallback((product, columnKey) => {
@@ -182,69 +176,68 @@ const AdminProductListTable = ({ props }) => {
 		const encodedProductName = encodeURIComponent(product?.product_name);
 
 		switch (columnKey) {
-			case "product_info":
-				return (
-					<div className="flex items-center gap-4 w-[240px] md:w-full">
-						<div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
-							<Image
-								src={`${
-									process.env.REACT_APP_IMAGE_API
-								}${product?.product_images[0]?.image.substring(
-									7
-								)}`}
-								alt=""
-								className="product-image aspect-square w-full h-full object-contain bg-white"
-							/>
-						</div>
-						<p className="font-medium text-base line-clamp-1">
-							{product?.product_name}
-						</p>
-					</div>
-				);
-			case "description":
-				return (
-					<p className="text-base line-clamp-1">
-						{product?.product_desc}
-					</p>
-				);
-			case "category":
-				return <Chip>{product?.category?.category_type}</Chip>;
-			case "brand":
-				return <Chip>{product?.brand?.brand_name}</Chip>;
-			case "price":
+			case "date":
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{productPrice}
+							{productPrice} {/* <<< order.createdAt */}
 						</p>
 					</div>
 				);
-			case "actions":
+			case "invoice":
 				return (
-					<div className="relative flex justify-start items-center gap-2">
-						<Link to={`/admin/edit-product/${encodedProductName}`}>
-							<Tooltip content="Edit product">
-								<Button
-									variant="light"
-									className="text-default-400 cursor-pointer active:opacity-50"
-									startContent={<BiEdit size={24} />}
-								>
-									Edit
-								</Button>
-							</Tooltip>
-						</Link>
-						<Tooltip color="danger" content="Remove product">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-danger cursor-pointer active:opacity-50"
-								onClick={() => {
-									onDelete(product?.id);
-								}}
-							>
-								<IoTrashOutline size={24} />
-							</Button>
-						</Tooltip>
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.invoice`}
+						</p>
+					</div>
+				);
+			case "product_name":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.product.product_name`}
+						</p>
+					</div>
+				);
+			case "category":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.product.category.id`}
+						</p>
+					</div>
+				);
+			case "brand":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.product.brand.id`}
+						</p>
+					</div>
+				);
+			case "quantity":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.order_detail.product.quantity`}
+						</p>
+					</div>
+				);
+			case "final_price":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.total_amount`}
+						</p>
+					</div>
+				);
+			case "warehouse":
+				return (
+					<div className="flex items-center gap-4 w-full">
+						<p className="font-bold text-base w-full">
+							{`order.warehouse`}
+						</p>
 					</div>
 				);
 			default:
@@ -275,7 +268,7 @@ const AdminProductListTable = ({ props }) => {
 		<>
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
-					<form className="w-[50%]" onSubmit={handleSubmitSearch}>
+					<form className="w-[30%]" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
 							placeholder="Search for product by name"
@@ -306,11 +299,9 @@ const AdminProductListTable = ({ props }) => {
 							<SelectProductCategories />
 						</div>
 						<div className="sort-by flex items-center">
-							<div className="w-full mr-2 font-medium">
-								Sort by:
-							</div>
-							<SelectSortBy admin={true} />
+							<SelectSortBy admin={false} placeholder="Sort" />
 						</div>
+						<MyMonthPicker />
 					</div>
 				</div>
 				<div className="flex justify-between items-center">
@@ -345,7 +336,10 @@ const AdminProductListTable = ({ props }) => {
 						</TableColumn>
 					)}
 				</TableHeader>
-				<TableBody emptyContent={"No products found"} items={products}>
+				<TableBody
+					emptyContent={"Please select warehouse"}
+					items={products} // <<<< ganti jadi orders / order_details (?)
+				>
 					{(item) => (
 						<TableRow key={item.id}>
 							{(columnKey) => (
@@ -361,4 +355,4 @@ const AdminProductListTable = ({ props }) => {
 	);
 };
 
-export default AdminProductListTable;
+export default AdminReportProductListTable;

@@ -132,7 +132,7 @@ module.exports = {
 				include: [
 					{
 						model: db.warehouse,
-						attributes: ["warehouse_name"],
+						attributes: ["id", "warehouse_name"],
 					},
 					{
 						model: db.product,
@@ -140,6 +140,24 @@ module.exports = {
 					},
 				],
 				where: { id: stockId },
+			});
+			if (!dataStock) {
+				return {
+					isError: true,
+					message: `Stock not found`,
+					data: null,
+				};
+			}
+			return { message: "Get stock data success", data: dataStock };
+		} catch (error) {
+			return error;
+		}
+	},
+	findSpecificStock: async (productId, warehouseId) => {
+		try {
+			const dataStock = await db.stock.findOne({
+				attributes: ["stocks"],
+				where: { product_id: productId, warehouse_id: warehouseId },
 			});
 			if (!dataStock) {
 				return {
@@ -258,75 +276,99 @@ module.exports = {
 			return error;
 		}
 	},
-	findIncomingMutation: async (warehouseId, status) => {
+	findIncomingMutation: async (query) => {
 		try {
-			if (!warehouseId) {
+			const { warehouse, status, offset } = query;
+			if (!warehouse) {
 				return { isError: true, message: "Please select warehouse" };
 			}
 			const baseQuery = {
 				attributes: {
-					exclude: [
-						"createdAt",
-						"updatedAt",
-						"deletedAt",
-						"warehouse_id_from",
-					],
+					exclude: ["updatedAt", "deletedAt", "warehouse_id_from"],
 				},
 				include: [
 					// { model: db.user, as: "admin_from" },
-					{ model: db.product, attributes: ["id", "product_name"] },
+					{
+						model: db.product,
+						attributes: ["id", "product_name"],
+						include: [
+							{
+								model: db.stock,
+								where: { warehouse_id: warehouse },
+								limit: 1,
+							},
+						],
+					},
 					{
 						model: db.warehouse,
 						as: "warehouse_from",
 						attributes: ["id", "warehouse_name"],
 					},
 				],
-				where: { warehouse_id_to: warehouseId },
+				where: { warehouse_id_to: warehouse },
+				limit: 12,
+				order: [["createdAt", "desc"]],
 			};
+			if (offset) {
+				baseQuery.offset = Number(offset);
+			}
 			if (status) {
-				baseQuery.where = { warehouse_id_to: warehouseId, status };
+				baseQuery.where = { warehouse_id_to: warehouse, status };
 			}
 			const dataMutation = await db.stock_mutation.findAll(baseQuery);
+			const count = await db.stock_mutation.count(baseQuery);
 			return {
 				message: "Get incoming mutation success",
-				data: dataMutation,
+				data: { count, mutations: dataMutation },
 			};
 		} catch (error) {
 			return error;
 		}
 	},
-	findOutgoingMutation: async (warehouseId, status) => {
+	findOutgoingMutation: async (query) => {
 		try {
-			if (!warehouseId) {
+			const { warehouse, status, offset } = query;
+			if (!warehouse) {
 				return { isError: true, message: "Please select warehouse" };
 			}
 			const baseQuery = {
 				attributes: {
-					exclude: [
-						"createdAt",
-						"updatedAt",
-						"deletedAt",
-						"warehouse_id_to",
-					],
+					exclude: ["updatedAt", "deletedAt", "warehouse_id_to"],
 				},
 				include: [
 					// { model: db.user, as: "admin_from" },
-					{ model: db.product, attributes: ["id", "product_name"] },
+					{
+						model: db.product,
+						attributes: ["id", "product_name"],
+						include: [
+							{
+								model: db.stock,
+								where: { warehouse_id: warehouse },
+								limit: 1,
+							},
+						],
+					},
 					{
 						model: db.warehouse,
 						as: "warehouse_to",
 						attributes: ["id", "warehouse_name"],
 					},
 				],
-				where: { warehouse_id_from: warehouseId },
+				where: { warehouse_id_from: warehouse },
+				limit: 12,
+				order: [["createdAt", "desc"]],
 			};
+			if (offset) {
+				baseQuery.offset = Number(offset);
+			}
 			if (status) {
-				baseQuery.where = { warehouse_id_from: warehouseId, status };
+				baseQuery.where = { warehouse_id_from: warehouse, status };
 			}
 			const dataMutation = await db.stock_mutation.findAll(baseQuery);
+			const count = await db.stock_mutation.count(baseQuery);
 			return {
 				message: "Get outgoing mutation success",
-				data: dataMutation,
+				data: { count, mutations: dataMutation },
 			};
 		} catch (error) {
 			return error;
@@ -381,7 +423,7 @@ module.exports = {
 					Number(stock_from.stocks) - Number(quantity);
 				if (newStocksFrom < 0) {
 					await db.stock_mutation.update(
-						{ status: "canceled" },
+						{ status: "rejected" },
 						{ where: { id: mutationId } },
 						{
 							transaction: t,
@@ -390,7 +432,7 @@ module.exports = {
 					await t.commit();
 					return {
 						isError: true,
-						message: `There are not enough stocks, the request is automatically canceled`,
+						message: `There are not enough stocks, the request is automatically rejected`,
 					};
 				}
 				const newStocksTo = Number(stock_to.stocks) - Number(quantity);
@@ -448,7 +490,11 @@ module.exports = {
 			}
 			const { product_id, warehouse_id_from, warehouse_id_to, status } =
 				checkMutation;
-			if (status === "canceled" || status === "accepted") {
+			if (
+				status === "rejected" ||
+				status === "accepted" ||
+				status === "canceled"
+			) {
 				return { message: "Mutation process is already completed" };
 			}
 			if (newStatus === "accepted") {
@@ -458,12 +504,11 @@ module.exports = {
 				const stock_to = await db.stock.findOne({
 					where: { product_id, warehouse_id: warehouse_id_from },
 				});
-				console.log(">>> stock", stock_from.stocks, stock_to.stocks);
 				const newStocksFrom =
 					Number(stock_from.stocks) - Number(checkMutation.quantity);
 				if (newStocksFrom < 0) {
 					await db.stock_mutation.update(
-						{ status: "canceled" },
+						{ status: "rejected" },
 						{ where: { id: mutationId } },
 						{
 							transaction: t,
@@ -472,7 +517,7 @@ module.exports = {
 					await t.commit();
 					return {
 						isError: true,
-						message: `There are not enough stocks, the request is automatically canceled`,
+						message: `There are not enough stocks, the request is automatically rejected`,
 					};
 				}
 				const newStocksTo =

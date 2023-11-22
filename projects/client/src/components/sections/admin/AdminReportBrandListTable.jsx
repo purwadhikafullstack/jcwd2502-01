@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
 	Table,
 	TableHeader,
@@ -9,12 +9,8 @@ import {
 	Input,
 	Button,
 	Pagination,
-	Tooltip,
-	Image,
-	Chip,
 } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
-import { BiEdit } from "react-icons/bi";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import {
 	fetchStockAsync,
@@ -23,22 +19,20 @@ import {
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
 	setProductsForStocks,
 	setSearch,
 	setTotalPage,
 	setWarehouse,
 } from "../../../redux/features/products";
-import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
-import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
-import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
-import AdminCreateRequestStockModal from "../../layouts/admin/AdminCreateRequestStockModal";
+import SelectWarehouses from "../../uis/Selects/SelectWarehouses";
+import MyMonthPicker from "../../uis/MyMonthPicker/MyMonthPicker";
 
-const AdminSalesReportListTable = () => {
+const AdminReportBrandListTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -127,6 +121,7 @@ const AdminSalesReportListTable = () => {
 			dispatch(setProductsForStocks([]));
 			dispatch(setTotalPage(1));
 			dispatch(setWarehouse(null));
+			dispatch(setCount(0));
 		};
 	}, []);
 
@@ -153,35 +148,22 @@ const AdminSalesReportListTable = () => {
 	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
 
 	const columns = [
-		{ name: "DATE", uid: "date" },
-		{ name: "INVOICE", uid: "category" },
-		{ name: "PRODUCT NAME", uid: "product_name" },
-		{ name: "CATEGORY", uid: "category" },
-		{ name: "BRAND", uid: "brand" },
-		{ name: "QUANTITY", uid: "quantity" },
-		{ name: "FINAL PRICE", uid: "final_price" },
-		{ name: "WAREHOUSE", uid: "warehouse" },
+		{ name: "NO", uid: "number" },
+		{ name: "BRAND NAME", uid: "brand_name" },
+		{ name: "TOTAL", uid: "total" },
 	];
 
 	const renderCell = React.useCallback((product, columnKey) => {
-		const productPrice = product?.product_price.toLocaleString("id-ID", {
-			style: "currency",
-			currency: "IDR",
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
-		});
-		const encodedProductName = encodeURIComponent(product?.product_name);
-
 		switch (columnKey) {
-			case "date":
+			case "number":
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{productPrice} {/* <<< order.createdAt */}
+							{`order.createdAt`} {/* <<< order.createdAt */}
 						</p>
 					</div>
 				);
-			case "invoice":
+			case "category_name":
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
@@ -189,51 +171,11 @@ const AdminSalesReportListTable = () => {
 						</p>
 					</div>
 				);
-			case "product_name":
+			case "total":
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
 							{`order.order_detail.product.product_name`}
-						</p>
-					</div>
-				);
-			case "category":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.category.id`}
-						</p>
-					</div>
-				);
-			case "brand":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.brand.id`}
-						</p>
-					</div>
-				);
-			case "quantity":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.quantity`}
-						</p>
-					</div>
-				);
-			case "final_price":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`order.total_amount`}
-						</p>
-					</div>
-				);
-			case "warehouse":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`order.warehouse`}
 						</p>
 					</div>
 				);
@@ -265,7 +207,7 @@ const AdminSalesReportListTable = () => {
 		<>
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
-					<form className="w-[50%]" onSubmit={handleSubmitSearch}>
+					<form className="w-[30%]" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
 							placeholder="Search for product by name"
@@ -286,21 +228,14 @@ const AdminSalesReportListTable = () => {
 					<div className="flex gap-3">
 						<Button
 							variant="bordered"
-							className="border-neutral-200 dark:border-neutral-700"
+							className="border-neutral-200 dark:border-neutral-700 w-full"
 							onClick={() => clear()}
 						>{`Clear Filter(s)`}</Button>
-						<div className="select-brands">
-							<SelectProductBrands />
-						</div>
-						<div className="select-categories">
-							<SelectProductCategories />
-						</div>
+						<SelectWarehouses />
 						<div className="sort-by flex items-center">
-							<div className="w-full mr-2 font-medium">
-								Sort by:
-							</div>
-							<SelectSortBy admin={false} />
+							<SelectSortBy admin={false} placeholder="Sort" />
 						</div>
+						<MyMonthPicker />
 					</div>
 				</div>
 				<div className="flex justify-between items-center">
@@ -354,4 +289,4 @@ const AdminSalesReportListTable = () => {
 	);
 };
 
-export default AdminSalesReportListTable;
+export default AdminReportBrandListTable;

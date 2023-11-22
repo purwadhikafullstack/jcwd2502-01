@@ -11,4 +11,12 @@ Router.get("/", verify, ordersController.getOrderList);
 Router.get("/:receipt_number", verify, ordersController.getOrderDetails);
 Router.patch("/cancel/:order_id", verify, ordersController.cancelOrder);
 
+// Admins
+Router.get(
+	"/admin/order-list",
+	verify,
+	ordersController.adminGetAllUserOrderList
+);
+Router.get("/admin/cancel-order", verify, ordersController.adminCancelOrder);
+
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js
