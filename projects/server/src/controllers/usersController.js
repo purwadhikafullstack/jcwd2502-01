@@ -105,7 +105,13 @@ module.exports = {
 	getAllUser: async (req, res, next) => {
 		try {
 			const result = await getAllData();
-			respHandler(res, result.message, result.data, null, result.isError);
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
+			);
 		} catch (error) {
 			next(error);
 		}
