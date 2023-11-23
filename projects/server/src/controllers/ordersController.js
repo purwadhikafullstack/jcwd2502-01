@@ -175,7 +175,7 @@ module.exports = {
 	adminGetAllUserOrderList: async (req, res, next) => {
 		try {
 			const { id: user_id } = req.dataToken;
-			const { page = 1, status, search } = req.query;
+			const { page = 1, status, search, warehouse_id } = req.query;
 
 			const itemsPerPage = 12;
 			const offset = (page - 1) * itemsPerPage;
@@ -191,6 +191,10 @@ module.exports = {
 					{ receipt_number: { [Op.like]: `%${search}%` } },
 					{ invoice: { [Op.like]: `%${search}%` } },
 				];
+			}
+
+			if (warehouse_id) {
+				whereCondition.warehouse_id = warehouse_id;
 			}
 
 			const orderList = await db.order.findAndCountAll({
@@ -257,7 +261,7 @@ module.exports = {
 						],
 					},
 				],
-				order: [["createdAt", "DESC"]],
+				order: [["createdAt", "ASC"]],
 				limit: itemsPerPage,
 				distinct: true,
 				paranoid: false,
@@ -276,6 +280,40 @@ module.exports = {
 					offset,
 				},
 			});
+		} catch (error) {
+			next(error);
+		}
+	},
+	adminConfirmOrder: async (req, res, next) => {
+		try {
+			const { order_id: id } = req.params;
+
+			const result = await adminCancelOrderService(id);
+			respHandler(res, result.message);
+		} catch (error) {
+			next(error);
+		}
+	},
+	adminRejectOrder: async (req, res, next) => {
+		try {
+			const { order_id: id } = req.params;
+
+			const checkOrder = await db.order.findByPk(id);
+
+			if (Number(checkOrder.status) === 2) {
+				await db.order.update(
+					{
+						status: 1,
+						proof_of_payment: null,
+						viewed: checkOrder.viewed + 1,
+					},
+					{ where: { id } }
+				);
+
+				return respHandler(res, "Reject order success");
+			}
+
+			respHandler(res, "Reject order failed. User have not pay yet.");
 		} catch (error) {
 			next(error);
 		}

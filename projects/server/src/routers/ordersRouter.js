@@ -17,6 +17,15 @@ Router.get(
 	verify,
 	ordersController.adminGetAllUserOrderList
 );
-Router.get("/admin/cancel-order", verify, ordersController.adminCancelOrder);
+Router.patch(
+	"/admin/reject-order/:order_id",
+	verify,
+	ordersController.adminRejectOrder
+);
+Router.patch(
+	"/admin/cancel-order/:order_id",
+	verify,
+	ordersController.adminCancelOrder
+);
 
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js
