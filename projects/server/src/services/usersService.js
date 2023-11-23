@@ -58,7 +58,7 @@ module.exports = {
 					name: "nexocomp",
 					email: "nexocomppurwadhika@gmail.com",
 				},
-				to: "andrean923@gmail.com",
+				to: registerUser.dataValues.email,
 				subject: "Register New Account",
 				html: newTemplate,
 			});

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import OrderCard from "../../components/uis/Cards/OrderCard";
 import { Pagination, Select, SelectItem } from "@nextui-org/react";
 import { axiosInstance } from "../../lib/axios";
@@ -13,6 +13,8 @@ const OrderListPage = () => {
 	const queryParams = new URLSearchParams(location.search);
 	const currentPage = +queryParams.get("page") || 1;
 	const currentStatus = +queryParams.get("status") || "";
+
+	const [oneTime, setOneTime] = useState(false);
 
 	const [orders, setOrders] = useState([]);
 	const [totalPages, setTotalPages] = useState(1);
@@ -33,16 +35,24 @@ const OrderListPage = () => {
 		}
 	};
 
+	const takeFromQuery = () => {
+		const queryParams = new URLSearchParams(location.search);
+		const currentPage = +queryParams.get("page") || 1;
+		const currentStatus = +queryParams.get("status") || "";
+		if (currentPage) {
+			setPage(currentPage);
+		}
+		if (currentStatus) {
+			setStatus(currentStatus);
+		}
+	};
+
 	const handlePageChange = (newPage) => {
 		setPage(newPage);
-		updateUrl(newPage, status);
-		fetchUserOrderList(newPage, status);
 		window.scrollTo({ top: 0 });
 	};
 
 	const handleStatusChange = (newStatus) => {
-		fetchUserOrderList(1, newStatus);
-		updateUrl(1, newStatus);
 		setStatus(newStatus);
 		setPage(1);
 	};
@@ -61,7 +71,7 @@ const OrderListPage = () => {
 	};
 
 	useEffect(() => {
-		fetchUserOrderList(currentPage, currentStatus);
+		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
 
@@ -71,6 +81,18 @@ const OrderListPage = () => {
 
 		return () => clearTimeout(timeoutId);
 	}, [currentPage]);
+
+	useEffect(() => {
+		setOneTime(true);
+	}, []);
+
+	useEffect(() => {
+		if (oneTime) {
+			updateUrl(page, status);
+
+			fetchUserOrderList(page, status);
+		}
+	}, [token, status, page, oneTime]);
 
 	const renderPagination = () => {
 		if (isPaginationVisible && totalPages) {
