@@ -13,6 +13,17 @@ module.exports = {
 				};
 			}
 
+			if (Number(checkOrder.status) === 3) {
+				await db.order.update(
+					{ status: 6 },
+					{
+						where: {
+							id: orderId,
+						},
+					}
+				);
+			}
+
 			await db.order.update(
 				{ status: 6 },
 				{
