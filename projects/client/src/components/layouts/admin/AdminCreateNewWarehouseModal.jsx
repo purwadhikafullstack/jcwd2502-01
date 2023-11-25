@@ -48,8 +48,8 @@ const AdminCreateNewWarehouseModal = () => {
 				city_id: city,
 			};
 
-			// const accessToken = localStorage.getItem("accessToken");
-			await axiosInstance().post(`warehouses`, dataToSend);
+			const accessToken = localStorage.getItem("accessToken");
+			await axiosInstance(accessToken).post(`warehouses`, dataToSend);
 			window.location.reload(false);
 			setIsLoading(false);
 		} catch (error) {

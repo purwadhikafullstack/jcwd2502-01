@@ -13,7 +13,10 @@ const Footer = () => {
 
 	const fetchCategoriesAsync = async () => {
 		try {
-			const { data } = await axiosInstance().get(`categories/all`);
+			const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance(accessToken).get(
+				`categories/all`
+			);
 
 			setCategories(data.data);
 		} catch (error) {

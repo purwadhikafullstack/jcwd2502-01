@@ -47,12 +47,16 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 	});
 
 	const fetchDataProduct = async () => {
-		const { data } = await axiosInstance().get(`products/${productName}`);
+		const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance(accessToken).get(
+			`products/${productName}`
+		);
 		formik.setFieldValue("product_id", data?.data?.id);
 		setDataProduct(data.data);
 	};
 	const fetchDataWarehouse = async () => {
-		const { data } = await axiosInstance().get(
+		const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance(accessToken).get(
 			`warehouses/others/${warehouse}`
 		);
 		formik.setFieldValue("warehouse_id_from", warehouse);
@@ -94,7 +98,8 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 				warehouse_id_from,
 				warehouse_id_to,
 			};
-			const { data } = await axiosInstance().post(
+			const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance(accessToken).post(
 				`stocks/mutation`,
 				dataToSend
 			);
@@ -110,8 +115,9 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 
 	const handleFormInput = async (event) => {
 		const { target } = event;
+		const accessToken = localStorage.getItem("accessToken");
 		if (target.name === "warehouse_id_to") {
-			const { data } = await axiosInstance().get(
+			const { data } = await axiosInstance(accessToken).get(
 				`stocks/specific/?productId=${dataProduct.id}&warehouseId=${target.value}`
 			);
 			setDataStock(data.data);

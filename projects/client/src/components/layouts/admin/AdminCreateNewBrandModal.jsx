@@ -13,11 +13,13 @@ import {
 } from "@nextui-org/react";
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
+import { useSelector } from "react-redux";
 
 const AdminCreateNewBrandModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [brandName, setBrandName] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const role = useSelector((state) => state.user.role);
 
 	const onSubmit = async (brandName) => {
 		try {
@@ -29,9 +31,9 @@ const AdminCreateNewBrandModal = () => {
 				return; // Stop further execution
 			}
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const addBrand = await axiosInstance().post(`brands`, {
+			const addBrand = await axiosInstance(accessToken).post(`brands`, {
 				brand_name: brandName,
 			});
 
@@ -57,7 +59,12 @@ const AdminCreateNewBrandModal = () => {
 		>
 			{(matches) => (
 				<>
-					<Button color="primary" size="md" onPress={onOpen}>
+					<Button
+						color="primary"
+						size="md"
+						onPress={onOpen}
+						isDisabled={role !== "super"}
+					>
 						<p className="font-medium text-black flex items-center gap-1">
 							<span className="text-[20px]">+</span>
 							<span>Add New Brand</span>

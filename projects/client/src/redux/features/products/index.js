@@ -118,8 +118,8 @@ export const productsSlice = createSlice({
 
 export const fetchProductAsync = (query) => async (dispatchEvent) => {
 	try {
-		// const accessToken = localStorage.getItem("accessToken");
-		const { data } = await axiosInstance().get(
+		const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance(accessToken).get(
 			`products/all${query ? query : ""}`
 		);
 		const totalPage = await Math.ceil(data.data.count / 12);
@@ -132,8 +132,8 @@ export const fetchProductAsync = (query) => async (dispatchEvent) => {
 };
 export const fetchBrandsAsync = (query) => async (dispatchEvent) => {
 	try {
-		// const accessToken = localStorage.getItem("accessToken");
-		const { data } = await axiosInstance().get(
+		const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance(accessToken).get(
 			`brands/all-products${query ? query : ""}`
 		);
 		const totalPage = await Math.ceil(data.data.count / 12);
@@ -146,8 +146,8 @@ export const fetchBrandsAsync = (query) => async (dispatchEvent) => {
 };
 export const fetchCategoriesAsync = (query) => async (dispatchEvent) => {
 	try {
-		// const accessToken = localStorage.getItem("accessToken");
-		const { data } = await axiosInstance().get(
+		const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance(accessToken).get(
 			`categories/all-products${query ? query : ""}`
 		);
 		const totalPage = await Math.ceil(data.data.count / 12);
@@ -160,8 +160,8 @@ export const fetchCategoriesAsync = (query) => async (dispatchEvent) => {
 };
 export const fetchWarehousesAsync = (query) => async (dispatchEvent) => {
 	try {
-		// const accessToken = localStorage.getItem("accessToken");
-		const { data } = await axiosInstance().get(
+		const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance(accessToken).get(
 			`warehouses/list${query ? query : ""}`
 		);
 		const totalPage = await Math.ceil(data.data.count / 12);
@@ -175,8 +175,8 @@ export const fetchWarehousesAsync = (query) => async (dispatchEvent) => {
 
 export const fetchStockAsync = (query) => async (dispatchEvent) => {
 	try {
-		// const accessToken = localStorage.getItem("accessToken");
-		const { data } = await axiosInstance().get(
+		const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance(accessToken).get(
 			`stocks/all${query ? query : ""}`
 		);
 		const totalPage = await Math.ceil(data.data.count / 12);
@@ -189,8 +189,8 @@ export const fetchStockAsync = (query) => async (dispatchEvent) => {
 };
 export const fetchStockHistoryAsync = (query) => async (dispatchEvent) => {
 	try {
-		// const accessToken = localStorage.getItem("accessToken");
-		const { data } = await axiosInstance().get(
+		const accessToken = localStorage.getItem("accessToken");
+		const { data } = await axiosInstance(accessToken).get(
 			`stocks/history${query ? query : ""}`
 		);
 		const totalPage = await Math.ceil(data.data.count / 12);
@@ -205,8 +205,8 @@ export const fetchStockMutationsAsync =
 	(type, query) => async (dispatchEvent) => {
 		try {
 			if (type === "in") {
-				// const accessToken = localStorage.getItem("accessToken");
-				const { data } = await axiosInstance().get(
+				const accessToken = localStorage.getItem("accessToken");
+				const { data } = await axiosInstance(accessToken).get(
 					`stocks/mutation-in${query ? query : ""}`
 				);
 				const totalPage = await Math.ceil(data.data.count / 12);
@@ -214,8 +214,8 @@ export const fetchStockMutationsAsync =
 				dispatchEvent(setStockMutations(data.data.mutations));
 				dispatchEvent(setCount(data.data.count));
 			} else if (type === "out") {
-				// const accessToken = localStorage.getItem("accessToken");
-				const { data } = await axiosInstance().get(
+				const accessToken = localStorage.getItem("accessToken");
+				const { data } = await axiosInstance(accessToken).get(
 					`stocks/mutation-out${query ? query : ""}`
 				);
 				const totalPage = await Math.ceil(data.data.count / 12);
