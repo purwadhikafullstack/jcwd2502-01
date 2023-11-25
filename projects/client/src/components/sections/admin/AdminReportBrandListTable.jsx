@@ -120,7 +120,7 @@ const AdminReportBrandListTable = () => {
 			dispatch(setSearch(""));
 			dispatch(setProductsForStocks([]));
 			dispatch(setTotalPage(1));
-			dispatch(setWarehouse(null));
+			// dispatch(setWarehouse(null));
 			dispatch(setCount(0));
 		};
 	}, []);

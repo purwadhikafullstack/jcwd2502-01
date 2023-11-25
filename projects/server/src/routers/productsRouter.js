@@ -6,12 +6,17 @@ const { productsController } = require("../controllers"); // otomatis baca index
 
 //* Import Middleware
 const upload = require("./../middlewares/upload");
-// const { verify } = require("./../lib/jwt");
+const { verifyAdmin, verifySuper } = require("../lib/jwt");
 
 Router.get("/all", productsController.getAllProducts);
 Router.get("/:productName", productsController.getProduct);
-Router.post("/", upload, productsController.createProduct);
-Router.patch("/:productId", upload, productsController.updateProduct);
-Router.delete("/:productId", productsController.deleteProduct);
+Router.post("/", verifySuper, upload, productsController.createProduct);
+Router.patch(
+	"/:productId",
+	verifySuper,
+	upload,
+	productsController.updateProduct
+);
+Router.delete("/:productId", verifySuper, productsController.deleteProduct);
 
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js

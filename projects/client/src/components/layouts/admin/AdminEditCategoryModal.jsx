@@ -51,9 +51,9 @@ const AdminEditCategoryModal = ({
 				category_type,
 			};
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const updateCategory = await axiosInstance().patch(
+			const updateCategory = await axiosInstance(accessToken).patch(
 				`categories/${categoryId}`,
 				newCategoryData
 			);

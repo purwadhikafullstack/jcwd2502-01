@@ -71,9 +71,13 @@ const AdminOutgoingStocksTable = () => {
 	};
 
 	const handleAction = async (action, mutationId) => {
-		await axiosInstance().patch(`stocks/mutation/${mutationId}`, {
-			status: action,
-		});
+		const accessToken = localStorage.getItem("accessToken");
+		await axiosInstance(accessToken).patch(
+			`stocks/mutation/${mutationId}`,
+			{
+				status: action,
+			}
+		);
 		dispatch(
 			fetchStockMutationsAsync(
 				"out",
@@ -90,7 +94,6 @@ const AdminOutgoingStocksTable = () => {
 			dispatch(onClear());
 			dispatch(setSearch(""));
 			dispatch(setTotalPage(1));
-			dispatch(setWarehouse(null));
 			dispatch(setStockMutations([]));
 			dispatch(setCount(0));
 			dispatch(setStatus("pending"));

@@ -75,9 +75,9 @@ const AdminEditWarehouseModal = ({
 				city_id,
 			};
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const updateWarehouse = await axiosInstance().patch(
+			const updateWarehouse = await axiosInstance(accessToken).patch(
 				`warehouses/${warehouseId}`,
 				newWarehouseData
 			);
@@ -171,8 +171,8 @@ const AdminEditWarehouseModal = ({
 
 	const fetchWarehouse = async () => {
 		try {
-			// const accessToken = localStorage.getItem("accessToken");
-			const { data } = await axiosInstance().get(
+			const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance(accessToken).get(
 				`warehouses/${warehouseId}`
 			);
 

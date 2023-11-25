@@ -49,6 +49,7 @@ const AdminCategoriesPage = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	const role = useSelector((state) => state.user.role);
 	const categories = useSelector((state) => state.products.categories);
 	const count = useSelector((state) => state.products.count);
 	const totalPage = useSelector((state) => state.products.totalPage);
@@ -136,11 +137,11 @@ const AdminCategoriesPage = () => {
 
 	const onDelete = async (categoryId) => {
 		try {
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
 			//confirm
 
-			await axiosInstance().delete(`categories/${categoryId}`);
+			await axiosInstance(accessToken).delete(`categories/${categoryId}`);
 			window.location.reload(false);
 		} catch (error) {
 			console.log(error);
@@ -161,47 +162,52 @@ const AdminCategoriesPage = () => {
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
-	const renderCell = React.useCallback((category, columnKey) => {
-		switch (columnKey) {
-			case "category_name":
-				return <p>{category.category_type}</p>;
-			case "total_products":
-				return <p>{category?.total_products || "-"}</p>;
-			case "actions":
-				return (
-					<div className="relative flex items-center gap-2">
-						<Tooltip content="Edit category">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-default-400 cursor-pointer active:opacity-50"
-								onPress={() => {
-									onOpenEditCategoryModal(
-										category.id,
-										category.category_type
-									);
-								}}
-							>
-								<BiEdit size={24} />
-							</Button>
-						</Tooltip>
-						<Tooltip color="danger" content="Remove category">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-danger cursor-pointer active:opacity-50"
-								onClick={() => {
-									onDelete(category.id);
-								}}
-							>
-								<IoTrashOutline size={24} />
-							</Button>
-						</Tooltip>
-					</div>
-				);
-			default:
-		}
-	}, []);
+	const renderCell = React.useCallback(
+		(category, columnKey) => {
+			switch (columnKey) {
+				case "category_name":
+					return <p>{category.category_type}</p>;
+				case "total_products":
+					return <p>{category?.total_products || "-"}</p>;
+				case "actions":
+					return (
+						<div className="relative flex items-center gap-2">
+							<Tooltip content="Edit category">
+								<Button
+									isIconOnly
+									variant="light"
+									className="text-lg text-default-400 cursor-pointer active:opacity-50"
+									onPress={() => {
+										onOpenEditCategoryModal(
+											category.id,
+											category.category_type
+										);
+									}}
+									isDisabled={role !== "super"}
+								>
+									<BiEdit size={24} />
+								</Button>
+							</Tooltip>
+							<Tooltip color="danger" content="Remove category">
+								<Button
+									isIconOnly
+									variant="light"
+									className="text-lg text-danger cursor-pointer active:opacity-50"
+									onClick={() => {
+										onDelete(category.id);
+									}}
+									isDisabled={role !== "super"}
+								>
+									<IoTrashOutline size={24} />
+								</Button>
+							</Tooltip>
+						</div>
+					);
+				default:
+			}
+		},
+		[role]
+	);
 
 	const bottomContent = React.useMemo(() => {
 		return (

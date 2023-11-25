@@ -7,6 +7,7 @@ import { axiosInstance } from "../../../lib/axios";
 const SelectWarehouses = () => {
 	const [warehouses, setWarehouses] = useState([]);
 	const warehouse = useSelector((state) => state.products.warehouse);
+	const role = useSelector((state) => state.user.role);
 
 	const dispatch = useDispatch();
 
@@ -22,6 +23,10 @@ const SelectWarehouses = () => {
 	useEffect(() => {
 		fetchWarehouses();
 	}, []);
+	useEffect(() => {
+		console.log(">>", role);
+		console.log(warehouse);
+	}, [role, warehouse]);
 
 	return (
 		<Select
@@ -31,6 +36,7 @@ const SelectWarehouses = () => {
 			labelPlacement="outside-left"
 			placeholder="Select warehouse"
 			selectedKeys={warehouse ? [String(warehouse)] : null}
+			isDisabled={role !== "super"}
 		>
 			{(warehouse) => (
 				<SelectItem
