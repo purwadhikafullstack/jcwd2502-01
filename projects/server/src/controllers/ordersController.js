@@ -1,8 +1,9 @@
 const db = require("./../models");
 const { Op } = require("sequelize");
-const respHandler = require("../utils/respHandler");
 
 const { adminCancelOrderService } = require("../services/ordersService");
+const { findNearestWarehouses } = require("../utils/distanceUtils");
+const respHandler = require("../utils/respHandler");
 
 module.exports = {
 	getOrderList: async (req, res, next) => {
@@ -288,8 +289,123 @@ module.exports = {
 		try {
 			const { order_id: id } = req.params;
 
-			const result = await adminCancelOrderService(id);
-			respHandler(res, result.message);
+			const userOrder = await db.order.findOne({ where: { id } });
+
+			const selectedWarehouseId = userOrder.warehouse_id;
+
+			// if (!userOrder) throw { message: "Order not found." };
+
+			// if (!userOrder?.proof_of_payment)
+			// 	throw { message: "This order has not been paid for yet." };
+
+			// if (Number(userOrder?.status) === 3)
+			// 	throw {
+			// 		message: "This order has already undergone processing.",
+			// 	};
+
+			// await db.order.update({ status: 3 }, { where: { id } });
+
+			const userOrderItems = await db.order_detail.findAll({
+				where: { order_id: id },
+			});
+
+			const orderItemId = userOrderItems.map((item) => item.id);
+			const productId = userOrderItems.map((item) => item.product_id);
+			const itemQuantity = userOrderItems.map((item) => item.quantity);
+
+			const selectedOriginWarehouse = await db.warehouse.findOne({
+				where: { id: selectedWarehouseId },
+			});
+
+			const {
+				latitude: originWarehouseLat,
+				longitude: originWarehouseLon,
+			} = selectedOriginWarehouse;
+
+			const sumProductStocks = async () => {
+				const totalStocks = await Promise.all(
+					productId.map(async (productId) => {
+						const productStock = await db.stock.findAll({
+							where: {
+								product_id: productId,
+							},
+						});
+						return productStock;
+					})
+				);
+
+				const result = {};
+
+				totalStocks.forEach((productStocks) => {
+					productStocks.forEach((stock) => {
+						const { product_id, stocks } = stock;
+						result[product_id] = (result[product_id] || 0) + stocks;
+					});
+				});
+
+				return result;
+			};
+
+			const totalProductStockFromAllWarehouse = await sumProductStocks();
+
+			const productStockByOriginWarehouse = await Promise.all(
+				productId.map(async (product) => {
+					const productStock = await db.stock.findAll({
+						where: {
+							warehouse_id: selectedWarehouseId,
+							product_id: product,
+						},
+					});
+					return productStock[0].stocks;
+				})
+			);
+
+			const reducedStockQuantity = productStockByOriginWarehouse.map(
+				(stock, i) => ({
+					item_id: orderItemId[i],
+					product_id: productId[i],
+					quantity: itemQuantity[i],
+					stocks: stock - itemQuantity[i],
+				})
+			);
+
+			const stockMutation = reducedStockQuantity
+				.filter((item) => item.stocks < 0)
+				.map((item) => ({
+					...item,
+					needed_quantity: Math.abs(item.stocks),
+				}));
+
+			const otherWarehouses = await db.warehouse.findAll({
+				where: {
+					id: {
+						[Op.not]: selectedWarehouseId,
+					},
+				},
+			});
+
+			const { sortedWarehousesId } = findNearestWarehouses(
+				originWarehouseLat,
+				originWarehouseLon,
+				otherWarehouses
+			);
+
+			const stocks = await Promise.all(
+				productId.map(async (product, i) => {
+					const productStock = await db.stock.findAll({
+						where: {
+							product_id: product,
+						},
+					});
+					return productStock;
+				})
+			);
+
+			respHandler(res, "Confirm order success", {
+				productStockByOriginWarehouse,
+				stockMutation,
+				sortedWarehousesId,
+			});
 		} catch (error) {
 			next(error);
 		}
