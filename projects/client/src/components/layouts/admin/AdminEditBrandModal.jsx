@@ -37,9 +37,9 @@ const AdminEditBrandModal = ({
 				brand_name,
 			};
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const updateBrand = await axiosInstance().patch(
+			const updateBrand = await axiosInstance(accessToken).patch(
 				`brands/${brandId}`,
 				newBrandData
 			);

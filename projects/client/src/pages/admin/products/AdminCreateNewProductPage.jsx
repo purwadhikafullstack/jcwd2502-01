@@ -120,17 +120,18 @@ const AdminCreateNewProductPage = () => {
 			fd.append("dataProduct", newProductDataJSON);
 			fd.append("dataSpec", newSpecDataJSON);
 
-			console.log(imagesToSend);
 			if (imagesToSend) {
 				for (const image of imagesToSend) {
 					fd.append("images", image);
 				}
 			}
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const createProduct = await axiosInstance().post("products", fd);
-			console.log(createProduct.data);
+			const createProduct = await axiosInstance(accessToken).post(
+				"products",
+				fd
+			);
 
 			if (createProduct.data.isError) {
 				alert(createProduct.data.message);

@@ -135,7 +135,6 @@ const AdminStockLogTable = () => {
 			dispatch(setSearch(""));
 			dispatch(setStockHistory([]));
 			dispatch(setCount(0));
-			dispatch(setWarehouse(null));
 		};
 	}, []);
 

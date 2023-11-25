@@ -180,8 +180,6 @@ const AdminEditProductPage = () => {
 			const dataImagesJSON = JSON.stringify(dataImages);
 			fd.append("dataImages", dataImagesJSON);
 
-			console.log(fd);
-
 			if (imagesToSend) {
 				for (const image of imagesToSend) {
 					console.log("sblm append", image);
@@ -189,14 +187,12 @@ const AdminEditProductPage = () => {
 					console.log("sesudah append");
 				}
 			}
-			console.log(imagesToSend);
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const updateProduct = await axiosInstance().patch(
+			const updateProduct = await axiosInstance(accessToken).patch(
 				`products/${productData.id}`,
 				fd
 			);
-			console.log(updateProduct.data);
 
 			if (updateProduct.data.isError) {
 				alert(updateProduct.data.message);

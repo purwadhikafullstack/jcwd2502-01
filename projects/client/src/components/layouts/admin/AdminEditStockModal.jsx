@@ -34,7 +34,10 @@ const AdminEditStockModal = ({ id }) => {
 
 	const fetchStock = async () => {
 		try {
-			const { data } = await axiosInstance().get(`stocks/${id}`);
+			const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance(accessToken).get(
+				`stocks/${id}`
+			);
 			setDataStock(data.data);
 		} catch (error) {
 			console.log(error);
@@ -61,11 +64,14 @@ const AdminEditStockModal = ({ id }) => {
 				return; // Stop further execution
 			}
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const updateStocks = await axiosInstance().patch(`stocks/${id}`, {
-				stocks,
-			});
+			const updateStocks = await axiosInstance(accessToken).patch(
+				`stocks/${id}`,
+				{
+					stocks,
+				}
+			);
 
 			dispatch(
 				fetchStockAsync(

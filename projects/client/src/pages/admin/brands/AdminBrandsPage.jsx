@@ -47,6 +47,7 @@ const AdminBrandsPage = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	const role = useSelector((state) => state.user.role);
 	const brands = useSelector((state) => state.products.brands);
 	const count = useSelector((state) => state.products.count);
 	const totalPage = useSelector((state) => state.products.totalPage);
@@ -131,11 +132,11 @@ const AdminBrandsPage = () => {
 
 	const onDelete = async (brandId) => {
 		try {
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
 			//confirm
 
-			await axiosInstance().delete(`brands/${brandId}`);
+			await axiosInstance(accessToken).delete(`brands/${brandId}`);
 			window.location.reload(false);
 		} catch (error) {
 			console.log(error);
@@ -156,47 +157,52 @@ const AdminBrandsPage = () => {
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
-	const renderCell = React.useCallback((brand, columnKey) => {
-		switch (columnKey) {
-			case "brand_name":
-				return <p>{brand.brand_name}</p>;
-			case "total_products":
-				return <p>{brand?.total_products || "-"}</p>;
-			case "actions":
-				return (
-					<div className="relative flex items-center gap-2">
-						<Tooltip content="Edit brand">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-default-400 cursor-pointer active:opacity-50"
-								onPress={() => {
-									onOpenEditBrandModal(
-										brand.id,
-										brand.brand_name
-									);
-								}}
-							>
-								<BiEdit size={24} />
-							</Button>
-						</Tooltip>
-						<Tooltip color="danger" content="Remove brand">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-danger cursor-pointer active:opacity-50"
-								onClick={() => {
-									onDelete(brand.id);
-								}}
-							>
-								<IoTrashOutline size={24} />
-							</Button>
-						</Tooltip>
-					</div>
-				);
-			default:
-		}
-	}, []);
+	const renderCell = React.useCallback(
+		(brand, columnKey) => {
+			switch (columnKey) {
+				case "brand_name":
+					return <p>{brand.brand_name}</p>;
+				case "total_products":
+					return <p>{brand?.total_products || "-"}</p>;
+				case "actions":
+					return (
+						<div className="relative flex items-center gap-2">
+							<Tooltip content="Edit brand">
+								<Button
+									isIconOnly
+									variant="light"
+									className="text-lg text-default-400 cursor-pointer active:opacity-50"
+									onPress={() => {
+										onOpenEditBrandModal(
+											brand.id,
+											brand.brand_name
+										);
+									}}
+									isDisabled={role !== "super"}
+								>
+									<BiEdit size={24} />
+								</Button>
+							</Tooltip>
+							<Tooltip color="danger" content="Remove brand">
+								<Button
+									isIconOnly
+									variant="light"
+									className="text-lg text-danger cursor-pointer active:opacity-50"
+									onClick={() => {
+										onDelete(brand.id);
+									}}
+									isDisabled={role !== "super"}
+								>
+									<IoTrashOutline size={24} />
+								</Button>
+							</Tooltip>
+						</div>
+					);
+				default:
+			}
+		},
+		[role]
+	);
 
 	const bottomContent = React.useMemo(() => {
 		return (
