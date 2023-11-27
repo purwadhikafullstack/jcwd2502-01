@@ -1,8 +1,13 @@
 const db = require("./../models");
 const { Op } = require("sequelize");
-const respHandler = require("../utils/respHandler");
 
-const { adminCancelOrderService } = require("../services/ordersService");
+const {
+	adminCancelOrderService,
+	adminConfirmOrderService,
+} = require("../services/ordersService");
+const { findNearestWarehouses } = require("../utils/distanceUtils");
+const respHandler = require("../utils/respHandler");
+const { createMutation, updateStock } = require("../utils/orderUtils");
 
 module.exports = {
 	getOrderList: async (req, res, next) => {
@@ -288,7 +293,8 @@ module.exports = {
 		try {
 			const { order_id: id } = req.params;
 
-			const result = await adminCancelOrderService(id);
+			const result = await adminConfirmOrderService(id);
+
 			respHandler(res, result.message);
 		} catch (error) {
 			next(error);
@@ -323,7 +329,7 @@ module.exports = {
 			const { order_id: id } = req.params;
 
 			const result = await adminCancelOrderService(id);
-			respHandler(res, result.message);
+			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
 		}

@@ -130,7 +130,7 @@ const AdminOrderListTable = () => {
 		if (currentWarehouseId) {
 			dispatch(setWarehouseId(currentWarehouseId));
 		}
-		if (currentWarehouseId) {
+		if (currentSearchQuery) {
 			dispatch(setSearch(currentSearchQuery));
 		}
 	};
@@ -216,6 +216,8 @@ const AdminOrderListTable = () => {
 				);
 			} else if (order?.status === "1") {
 				return <AdminCancelOrderModal orderId={order.id} />;
+			} else if (order?.status === "3") {
+				return <AdminReviewUserOrderModal orderDetailsData={order} />;
 			} else {
 				return null;
 			}
@@ -274,7 +276,7 @@ const AdminOrderListTable = () => {
 				);
 			case "actions":
 				return (
-					<div className="relative flex items-center gap-3">
+					<div className="relative flex items-center gap-3 min-w-[220px]">
 						{renderAction()}
 					</div>
 				);

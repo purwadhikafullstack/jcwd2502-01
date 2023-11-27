@@ -10,7 +10,12 @@ import {
 	Chip,
 	Tooltip,
 	getKeyValue,
+	Pagination,
+	Input,
+	Button,
 } from "@nextui-org/react";
+import SelectWarehouses from "../../uis/Selects/SelectWarehouses";
+import SelectSortBy from "../../uis/Selects/SelectSortBy";
 
 const AdminRoleUserListTable = () => {
 	const columns = [
@@ -106,21 +111,9 @@ const AdminRoleUserListTable = () => {
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
-						<Tooltip content="Details">
-							<span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-								{/* <EyeIcon /> */}
-							</span>
-						</Tooltip>
-						<Tooltip content="Edit user">
-							<span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-								{/* <EditIcon /> */}
-							</span>
-						</Tooltip>
-						<Tooltip color="danger" content="Delete user">
-							<span className="text-lg text-danger cursor-pointer active:opacity-50">
-								{/* <DeleteIcon /> */}
-							</span>
-						</Tooltip>
+						<Button variant="faded" color="danger">
+							Delete User
+						</Button>
 					</div>
 				);
 			default:
@@ -128,28 +121,88 @@ const AdminRoleUserListTable = () => {
 		}
 	}, []);
 
+	const bottomContent = React.useMemo(
+		() => {
+			return (
+				<div className="py-2 px-2 flex justify-between items-center">
+					<Pagination
+						size="md"
+						showControls
+						// total={totalPage ? totalPage : 1}
+						// page={page ? page : 0}
+						color="secondary"
+						variant="flat"
+						className="z-0"
+						// onChange={(e) => {
+						// 	dispatch(setPagination(e, (e - 1) * 12));
+						// 	window.scrollTo({ top: 0, behavior: "smooth" });
+						// }}
+					/>
+				</div>
+			);
+		},
+		[
+			// totalPage,
+			// page
+		]
+	);
+
 	return (
-		<Table aria-label="Example table with custom cells">
-			<TableHeader columns={columns}>
-				{(column) => (
-					<TableColumn
-						key={column.uid}
-						align={column.uid === "actions" ? "center" : "start"}
+		<>
+			<div className="flex flex-col gap-4">
+				<div className="flex justify-between gap-3 items-center">
+					<form
+						className="w-[30%]"
+						// onSubmit={handleSubmitSearch}
 					>
-						{column.name}
-					</TableColumn>
-				)}
-			</TableHeader>
-			<TableBody items={users}>
-				{(item) => (
-					<TableRow key={item.id}>
-						{(columnKey) => (
-							<TableCell>{renderCell(item, columnKey)}</TableCell>
-						)}
-					</TableRow>
-				)}
-			</TableBody>
-		</Table>
+						<Input
+							type="text"
+							placeholder="Search for user by name"
+							isClearable
+							// onClear={() => dispatch(setSearch(""))}
+							// startContent={<IoSearch opacity={".5"} />}
+							variant="bordered"
+							fullWidth
+							// onChange={(e) =>
+							// 	formik.setFieldValue(
+							// 		"searchQuery",
+							// 		e.target.value
+							// 	)
+							// }
+							// value={formik.values.searchQuery}
+						/>
+					</form>
+				</div>
+			</div>
+			<Table
+				aria-label="Example table with custom cells"
+				bottomContent={bottomContent}
+			>
+				<TableHeader columns={columns}>
+					{(column) => (
+						<TableColumn
+							key={column.uid}
+							align={
+								column.uid === "actions" ? "center" : "start"
+							}
+						>
+							{column.name}
+						</TableColumn>
+					)}
+				</TableHeader>
+				<TableBody items={users}>
+					{(item) => (
+						<TableRow key={item.id}>
+							{(columnKey) => (
+								<TableCell>
+									{renderCell(item, columnKey)}
+								</TableCell>
+							)}
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+		</>
 	);
 };
 

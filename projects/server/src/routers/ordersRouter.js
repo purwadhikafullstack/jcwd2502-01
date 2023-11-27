@@ -17,6 +17,11 @@ Router.get(
 	verify,
 	ordersController.adminGetAllUserOrderList
 );
+Router.post(
+	"/admin/confirm-order/:order_id",
+	// verify,
+	ordersController.adminConfirmOrder
+);
 Router.patch(
 	"/admin/reject-order/:order_id",
 	verify,
@@ -24,7 +29,7 @@ Router.patch(
 );
 Router.patch(
 	"/admin/cancel-order/:order_id",
-	verify,
+	// verify,
 	ordersController.adminCancelOrder
 );
 

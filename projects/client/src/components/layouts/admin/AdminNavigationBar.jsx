@@ -35,7 +35,7 @@ const AdminNavigationBar = () => {
 	return (
 		<Navbar
 			isBlurred={false}
-			className={`w-full py-2 bg-background`}
+			className={`w-full py-2 bg-background z-[9]`}
 			maxWidth="full"
 		>
 			<NavbarBrand>
