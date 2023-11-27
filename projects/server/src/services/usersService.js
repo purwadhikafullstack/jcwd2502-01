@@ -58,7 +58,7 @@ module.exports = {
 					name: "nexocomp",
 					email: "nexocomppurwadhika@gmail.com",
 				},
-				to: "andrean923@gmail.com",
+				to: registerUser.dataValues.email,
 				subject: "Register New Account",
 				html: newTemplate,
 			});
@@ -95,6 +95,7 @@ module.exports = {
 				},
 				"365d"
 			);
+			console.log(checkEmail.dataValues);
 			return {
 				isError: false,
 				message: "Login successful. Welcome back!",
@@ -108,6 +109,7 @@ module.exports = {
 					phone: checkEmail.dataValues.phone,
 					gender: checkEmail.dataValues.gender,
 					accessToken: accessToken,
+					warehouse_id: checkEmail.dataValues.warehouse_id,
 				},
 			};
 		} catch (error) {
@@ -120,7 +122,7 @@ module.exports = {
 			const checkData = await db.user.findOne({ where: { id } });
 			if (!checkData)
 				throw { isError: true, message: "Account is not exist" };
-
+			console.log(checkData.dataValues);
 			return {
 				isError: false,
 				message: "token still on going!",
@@ -133,6 +135,7 @@ module.exports = {
 					birth_date: checkData.dataValues.birth_date,
 					phone: checkData.dataValues.phone,
 					gender: checkData.dataValues.gender,
+					warehouse_id: checkData.dataValues.warehouse_id,
 				},
 			};
 		} catch (error) {

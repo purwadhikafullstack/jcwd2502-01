@@ -15,8 +15,10 @@ import Media from "react-media";
 import { orderStatuses } from "../../../data/constant";
 import { FaRegEye } from "react-icons/fa6";
 import PaymentProofModal from "../../uis/Modals/PaymentProofModal";
+import AdminRejectOrderModal from "./AdminRejectOrderModal";
+import AdminCancelOrderModal from "./AdminCancelOrderModal";
 
-const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
+const AdminReviewUserOrderModal = ({ orderDetailsData }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const date = new Date(orderDetailsData?.createdAt);
@@ -49,10 +51,10 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 				<>
 					<Tooltip content="View Details">
 						<Button
-							// isIconOnly
 							variant="faded"
-							color="default"
+							color="primary"
 							onPress={onOpen}
+							fullWidth
 							startContent={<FaRegEye size={18} />}
 						>
 							Review Order
@@ -342,24 +344,12 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 										)}
 									</ModalBody>
 									<ModalFooter className="flex justify-center">
-										<Button
-											fullWidth
-											onPress={onClose}
-											className="bg-red-600"
-										>
-											<span className="font-medium text-white">
-												Cancel Order
-											</span>
-										</Button>
-										<Button
-											fullWidth
-											onPress={onClose}
-											className="bg-red-600"
-										>
-											<span className="font-medium text-white">
-												Reject Order
-											</span>
-										</Button>
+										<AdminCancelOrderModal
+											orderId={orderDetailsData.id}
+										/>
+										<AdminRejectOrderModal
+											orderId={orderDetailsData.id}
+										/>
 										<Button
 											fullWidth
 											onPress={onClose}
@@ -380,4 +370,4 @@ const AdminViewOrderDetailsModal = ({ orderDetailsData }) => {
 	);
 };
 
-export default AdminViewOrderDetailsModal;
+export default AdminReviewUserOrderModal;

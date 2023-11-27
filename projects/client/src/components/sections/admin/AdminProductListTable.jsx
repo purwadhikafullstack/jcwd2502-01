@@ -43,6 +43,7 @@ const AdminProductListTable = ({ props }) => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	const role = useSelector((state) => state.user.role);
 	const products = useSelector((state) => state.products.products);
 	const count = useSelector((state) => state.products.count);
 	const totalPage = useSelector((state) => state.products.totalPage);
@@ -109,7 +110,8 @@ const AdminProductListTable = ({ props }) => {
 
 	const onDelete = async (productId) => {
 		//confirm
-		await axiosInstance().delete(`products/${productId}`);
+		const accessToken = localStorage.getItem("accessToken");
+		await axiosInstance(accessToken).delete(`products/${productId}`);
 		dispatch(
 			fetchProductAsync(
 				`?&search=${search}&brand=${brand.join(
@@ -119,6 +121,10 @@ const AdminProductListTable = ({ props }) => {
 				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 			)
 		);
+	};
+
+	const onEdit = (encodedProductName) => {
+		navigate(`/admin/edit-product/${encodedProductName}`);
 	};
 
 	useEffect(() => {
@@ -172,84 +178,97 @@ const AdminProductListTable = ({ props }) => {
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
-	const renderCell = React.useCallback((product, columnKey) => {
-		const productPrice = product?.product_price.toLocaleString("id-ID", {
-			style: "currency",
-			currency: "IDR",
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
-		});
-		const encodedProductName = encodeURIComponent(product?.product_name);
+	const renderCell = React.useCallback(
+		(product, columnKey) => {
+			const productPrice = product?.product_price.toLocaleString(
+				"id-ID",
+				{
+					style: "currency",
+					currency: "IDR",
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0,
+				}
+			);
+			const encodedProductName = encodeURIComponent(
+				product?.product_name
+			);
 
-		switch (columnKey) {
-			case "product_info":
-				return (
-					<div className="flex items-center gap-4 w-[240px] md:w-full">
-						<div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
-							<Image
-								src={`${
-									process.env.REACT_APP_IMAGE_API
-								}${product?.product_images[0]?.image.substring(
-									7
-								)}`}
-								alt=""
-								className="product-image aspect-square w-full h-full object-contain bg-white"
-							/>
+			switch (columnKey) {
+				case "product_info":
+					return (
+						<div className="flex items-center gap-4 w-[240px] md:w-full">
+							<div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
+								<Image
+									src={`${
+										process.env.REACT_APP_IMAGE_API
+									}${product?.product_images[0]?.image.substring(
+										7
+									)}`}
+									alt=""
+									className="product-image aspect-square w-full h-full object-contain bg-white"
+								/>
+							</div>
+							<p className="font-medium text-base line-clamp-1">
+								{product?.product_name}
+							</p>
 						</div>
-						<p className="font-medium text-base line-clamp-1">
-							{product?.product_name}
+					);
+				case "description":
+					return (
+						<p className="text-base line-clamp-1">
+							{product?.product_desc}
 						</p>
-					</div>
-				);
-			case "description":
-				return (
-					<p className="text-base line-clamp-1">
-						{product?.product_desc}
-					</p>
-				);
-			case "category":
-				return <Chip>{product?.category?.category_type}</Chip>;
-			case "brand":
-				return <Chip>{product?.brand?.brand_name}</Chip>;
-			case "price":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{productPrice}
-						</p>
-					</div>
-				);
-			case "actions":
-				return (
-					<div className="relative flex justify-start items-center gap-2">
-						<Link to={`/admin/edit-product/${encodedProductName}`}>
+					);
+				case "category":
+					return <Chip>{product?.category?.category_type}</Chip>;
+				case "brand":
+					return <Chip>{product?.brand?.brand_name}</Chip>;
+				case "price":
+					return (
+						<div className="flex items-center gap-4 w-full">
+							<p className="font-bold text-base w-full">
+								{productPrice}
+							</p>
+						</div>
+					);
+				case "actions":
+					return (
+						<div className="relative flex justify-start items-center gap-2">
+							{/* <Link to={`/admin/edit-product/${encodedProductName}`}> */}
 							<Tooltip content="Edit product">
 								<Button
 									variant="light"
 									className="text-default-400 cursor-pointer active:opacity-50"
 									startContent={<BiEdit size={24} />}
+									onClick={() => {
+										onEdit(encodedProductName);
+									}}
+									isDisabled={role !== "super"}
 								>
 									Edit
 								</Button>
 							</Tooltip>
-						</Link>
-						<Tooltip color="danger" content="Remove product">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-danger cursor-pointer active:opacity-50"
-								onClick={() => {
-									onDelete(product?.id);
-								}}
-							>
-								<IoTrashOutline size={24} />
-							</Button>
-						</Tooltip>
-					</div>
-				);
-			default:
-		}
-	}, []);
+							{/* </Link> */}
+							<Tooltip color="danger" content="Remove product">
+								<Button
+									isIconOnly
+									variant="light"
+									className="text-lg text-danger cursor-pointer active:opacity-50"
+									onClick={() => {
+										onDelete(product?.id);
+									}}
+									isDisabled={role !== "super"}
+								>
+									<IoTrashOutline size={24} />
+								</Button>
+							</Tooltip>
+						</div>
+					);
+				default:
+			}
+		},
+		[role]
+	);
 
 	const bottomContent = React.useMemo(() => {
 		return (

@@ -13,11 +13,13 @@ import {
 } from "@nextui-org/react";
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
+import { useSelector } from "react-redux";
 
 const AdminCreateNewCategoryModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [categoryType, setCategoryType] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const role = useSelector((state) => state.user.role);
 	const onSubmit = async (categoryType) => {
 		try {
 			setIsLoading(true);
@@ -28,11 +30,14 @@ const AdminCreateNewCategoryModal = () => {
 				return; // Stop further execution
 			}
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const addCategory = await axiosInstance().post(`categories`, {
-				category_type: categoryType,
-			});
+			const addCategory = await axiosInstance(accessToken).post(
+				`categories`,
+				{
+					category_type: categoryType,
+				}
+			);
 
 			if (addCategory.data.isError) {
 				alert(addCategory.data.message);
@@ -56,7 +61,12 @@ const AdminCreateNewCategoryModal = () => {
 		>
 			{(matches) => (
 				<>
-					<Button color="primary" size="md" onPress={onOpen}>
+					<Button
+						color="primary"
+						size="md"
+						onPress={onOpen}
+						isDisabled={role !== "super"}
+					>
 						<p className="font-medium text-black flex items-center gap-1">
 							<span className="text-[20px]">+</span>
 							<span>Add New Category</span>

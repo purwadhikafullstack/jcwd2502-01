@@ -119,7 +119,6 @@ module.exports = {
 	},
 	createMutation: async (req, res, next) => {
 		try {
-			console.log("masuk create mutation");
 			const data = req.body;
 			const result = await addMutation(data);
 			respHandler(
@@ -135,7 +134,6 @@ module.exports = {
 	},
 	updateMutation: async (req, res, next) => {
 		try {
-			console.log("masuk update mutation");
 			const { mutationId } = req.params;
 			const { status } = req.body;
 			const result = await updateMutationStatus(mutationId, status);

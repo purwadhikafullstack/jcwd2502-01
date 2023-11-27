@@ -13,14 +13,32 @@ module.exports = {
 				};
 			}
 
-			await db.order.update(
-				{ status: 6 },
-				{
-					where: {
-						id: orderId,
-					},
-				}
-			);
+			if (Number(checkOrder.status) === 3) {
+				await db.order.update(
+					{ status: 6 },
+					{
+						where: {
+							id: orderId,
+						},
+					}
+				);
+				return { message: "Cancel order success" };
+			}
+
+			if (
+				Number(checkOrder.status) === 1 ||
+				Number(checkOrder.status) === 2
+			) {
+				await db.order.update(
+					{ status: 6 },
+					{
+						where: {
+							id: orderId,
+						},
+					}
+				);
+				return { message: "Cancel order success" };
+			}
 
 			return { message: "Cancel order success" };
 		} catch (error) {

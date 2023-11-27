@@ -54,7 +54,7 @@ module.exports = {
 				};
 			if (checkAdmin.role === "user")
 				throw {
-					message: "Role user cannot fetch data order!",
+					message: "User is not authorized!",
 				};
 			req.idWarehouse = checkAdmin.warehouse_id;
 			req.role = checkAdmin.role;
@@ -80,8 +80,9 @@ module.exports = {
 			if (checkAdmin.dataValues.role === "super") {
 				next();
 			} else {
+				console.log("masuk verify super");
 				throw {
-					message: "user not authorized!",
+					message: "User is not authorized!",
 				};
 			}
 		} catch (error) {

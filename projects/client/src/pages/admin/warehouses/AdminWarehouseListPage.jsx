@@ -141,7 +141,8 @@ const AdminWarehouseListPage = () => {
 
 	const onDelete = async (warehouseId) => {
 		//confirm
-		await axiosInstance().delete(`warehouses/${warehouseId}`);
+		const accessToken = localStorage.getItem("accessToken");
+		await axiosInstance(accessToken).delete(`warehouses/${warehouseId}`);
 		window.location.reload(false);
 	};
 

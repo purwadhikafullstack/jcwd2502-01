@@ -1,14 +1,12 @@
-
 import { Select, SelectItem } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setWarehouse } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
 
-const SelectWarehouses = () => {
+const SelectWarehouseInOrderPage = () => {
 	const [warehouses, setWarehouses] = useState([]);
 	const warehouse = useSelector((state) => state.products.warehouse);
-	const role = useSelector((state) => state.user.role);
 
 	const dispatch = useDispatch();
 
@@ -24,10 +22,6 @@ const SelectWarehouses = () => {
 	useEffect(() => {
 		fetchWarehouses();
 	}, []);
-	useEffect(() => {
-		console.log(">>", role);
-		console.log(warehouse);
-	}, [role, warehouse]);
 
 	return (
 		<Select
@@ -37,7 +31,6 @@ const SelectWarehouses = () => {
 			labelPlacement="outside-left"
 			placeholder="Select warehouse"
 			selectedKeys={warehouse ? [String(warehouse)] : null}
-			isDisabled={role !== "super"}
 		>
 			{(warehouse) => (
 				<SelectItem
@@ -52,5 +45,4 @@ const SelectWarehouses = () => {
 	);
 };
 
-export default SelectWarehouses;
-
+export default SelectWarehouseInOrderPage;

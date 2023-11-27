@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import {
 	Table,
@@ -324,3 +325,4 @@ const AdminReportCategoryListTable = () => {
 };
 
 export default AdminReportCategoryListTable;
+
