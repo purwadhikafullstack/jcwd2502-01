@@ -106,6 +106,12 @@ module.exports = {
 			const orderInclude = {
 				model: db.order,
 				attributes: ["id", "invoice", "status", "warehouse_id"],
+				include: [
+					{
+						model: db.warehouse,
+						attributes: ["warehouse_name"],
+					},
+				],
 				// where: {
 				// 	status: "6",
 				// },
@@ -209,6 +215,7 @@ module.exports = {
 				"createdAt",
 				"status",
 				"total_amount",
+				"receipt_number",
 			];
 			const baseQuery = {
 				attributes: selectedAttributes,
@@ -248,6 +255,7 @@ module.exports = {
 					),
 				},
 				order: orderOptions,
+				limit: 15,
 			};
 
 			if (warehouse) {
@@ -264,7 +272,7 @@ module.exports = {
 				baseQuery.offset = Number(offset);
 			}
 			const getOrder = await db.order.findAll(baseQuery);
-			const count = await db.order.count(baseQuery);
+			const count = await db.order.count();
 			return {
 				data: { count, order: getOrder },
 			};
@@ -314,11 +322,12 @@ module.exports = {
 			const baseQuery = {
 				//category
 				attributes: selectedAttributes,
+				order: orderOptions,
 			};
 
 			if (search) {
 				baseQuery.where = {
-					invoice: {
+					category_type: {
 						[Op.like]: `%${search}%`,
 					},
 				};
@@ -334,6 +343,14 @@ module.exports = {
 						Sequelize.fn("SUM", Sequelize.col("quantity")),
 						"total_items",
 					],
+					// [
+					// 	Sequelize.fn(
+					// 		"SUM",
+					// 		Sequelize.col("quantity") *
+					// 			Number(Sequelize.col("checked_out_price"))
+					// 	),
+					// 	"total_sales",
+					// ],
 					[Sequelize.literal("order.warehouse_id"), "warehouse_id"],
 					[Sequelize.literal("product.category_id"), "category_id"],
 				],
@@ -366,6 +383,7 @@ module.exports = {
 			}
 
 			const getData = await db.category.findAll(baseQuery);
+			const getCountData = await db.category.count(baseQuery);
 			const getDataTransaction = await db.order_detail.findAll(
 				getTotalTransaction
 			);
@@ -391,9 +409,8 @@ module.exports = {
 
 			console.log(mergedData);
 
-			// const getTotal = await db.order;
 			return {
-				data: mergedData,
+				data: { count: getCountData, dataBrand: mergedData },
 			};
 		} catch (error) {
 			return error;
@@ -426,7 +443,9 @@ module.exports = {
 					data: null,
 				};
 			}
-
+			const currentDate = new Date();
+			const defaultYear = currentDate.getFullYear();
+			const defaultMonth = currentDate.getMonth() + 1;
 			const selectedAttributes = ["id", "brand_name"];
 
 			const orderOptions = [];
@@ -436,35 +455,80 @@ module.exports = {
 
 			const baseQuery = {
 				attributes: selectedAttributes,
+				order: orderOptions,
+			};
+
+			if (search) {
+				baseQuery.where = {
+					brand_name: {
+						[Op.like]: `%${search}%`,
+					},
+				};
+			}
+
+			if (offset) {
+				baseQuery.offset = Number(offset);
+			}
+
+			const getTotalBrand = {
+				attributes: [
+					[
+						Sequelize.fn("SUM", Sequelize.col("quantity")),
+						"total_items",
+					],
+					[Sequelize.literal("product.brand_id"), "brand_id"],
+				],
 				include: [
 					{
 						model: db.product,
-						attributes: [
-							// "brand_id",
-							[
-								Sequelize.fn("SUM", Sequelize.col("quantity")),
-								"total_items",
-							],
-						],
-						include: [
-							{
-								model: db.order_detail,
-								attributes: [],
-								include: [
-									{
-										model: db.order,
-										attributes: [],
-									},
-								],
-							},
-						],
+						attributes: [],
+					},
+					{
+						model: db.order,
+						attributes: [],
 					},
 				],
-				group: ["brand.id"],
+				where: {
+					[Op.and]: Sequelize.literal(
+						`MONTH(order_detail.createdAt) = ${
+							month || defaultMonth
+						} AND YEAR(order_detail.createdAt)= ${
+							year || defaultYear
+						}`
+					),
+				},
+				group: ["product.brand_id"],
 			};
+
+			if (warehouse) {
+				getTotalBrand.include[1].where = {
+					warehouse_id: warehouse,
+				};
+			}
+
 			const getBrand = await db.brand.findAll(baseQuery);
+			const getCountData = await db.brand.count(baseQuery);
+			const getDataTransaction = await db.order_detail.findAll(
+				getTotalBrand
+			);
+
+			const mergedData = getBrand.map((data) => {
+				const transactionData = getDataTransaction.find(
+					(transaction) => {
+						return data.id === transaction.dataValues.brand_id;
+					}
+				);
+
+				return {
+					...data.toJSON(),
+					total_items: transactionData
+						? transactionData.dataValues.total_items
+						: 0,
+				};
+			});
+
 			return {
-				data: getBrand,
+				data: { count: getCountData, dataBrand: mergedData },
 			};
 		} catch (error) {
 			console.log(error);

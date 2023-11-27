@@ -3,8 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setWarehouse } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
+import { useLocation } from "react-router-dom";
 
 const SelectWarehouses = () => {
+	const location = useLocation();
 	const [warehouses, setWarehouses] = useState([]);
 	const warehouse = useSelector((state) => state.products.warehouse);
 
@@ -21,7 +23,12 @@ const SelectWarehouses = () => {
 
 	useEffect(() => {
 		fetchWarehouses();
+		// if()
 	}, []);
+
+	useEffect(() => {
+		console.log(warehouse);
+	}, [warehouse]);
 
 	return (
 		<Select
@@ -30,7 +37,7 @@ const SelectWarehouses = () => {
 			className="min-w-[240px]"
 			labelPlacement="outside-left"
 			placeholder="Select warehouse"
-			selectedKeys={warehouse ? [String(warehouse)] : null}
+			selectedKeys={warehouse ? [String(warehouse)] : []}
 		>
 			{(warehouse) => (
 				<SelectItem

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Table,
 	TableHeader,
@@ -11,19 +11,10 @@ import {
 	Pagination,
 } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
-import SelectSortBy from "../../uis/Selects/SelectSortBy";
+import SelectSortByB from "../../uis/Selects/SelectSortByB";
 import {
-	fetchStockAsync,
-	onClear,
-	onSearch,
-	onSort,
-	setBrand,
-	setCategory,
 	setCount,
-	setPagination,
 	setProductsForStocks,
-	setSearch,
-	setTotalPage,
 	setWarehouse,
 } from "../../../redux/features/products";
 import { useDispatch, useSelector } from "react-redux";
@@ -31,62 +22,76 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import SelectWarehouses from "../../uis/Selects/SelectWarehouses";
 import MyMonthPicker from "../../uis/MyMonthPicker/MyMonthPicker";
+import {
+	getTransactionByBrand,
+	onSearchBrand,
+	onClearBrand,
+	setTotalPageBrand,
+	setSearchBrand,
+	setPaginationBrand,
+	setCountBrand,
+	onSortB,
+} from "../../../redux/features/report";
 
 const AdminReportBrandListTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
+	const [oneTime, setOneTime] = useState(true);
 
-	const warehouse = useSelector((state) => state.products.warehouse);
-	const products = useSelector((state) => state.products.productsForStocks);
-	const count = useSelector((state) => state.products.count);
-	const totalPage = useSelector((state) => state.products.totalPage);
-	const orderField = useSelector((state) => state.products.orderField);
-	const orderDirection = useSelector(
-		(state) => state.products.orderDirection
+	let month = "";
+	let year = "";
+	const transactionByBrand = useSelector(
+		(state) => state.report.transactionByBrand
 	);
-	const search = useSelector((state) => state.products.search);
-	const page = useSelector((state) => state.products.page);
-	const offset = useSelector((state) => state.products.offset);
-	const category = useSelector((state) => state.products.category);
-	const brand = useSelector((state) => state.products.brand);
+	console.log(transactionByBrand);
+	const role = useSelector((state) => state.user.role);
+	const warehouse = useSelector((state) => state.products.warehouse);
+	const count = useSelector((state) => state.report.countBrand);
+	const totalPage = useSelector((state) => state.report.totalPageBrand);
+	const orderFieldBrand = useSelector(
+		(state) => state.report.orderFieldBrand
+	);
+	const orderDirectionBrand = useSelector(
+		(state) => state.report.orderDirectionBrand
+	);
+	const search = useSelector((state) => state.report.searchBrand);
+	const page = useSelector((state) => state.report.pageBrand);
+	const offset = useSelector((state) => state.report.offsetBrand);
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedWarehouse = queryParams.get("warehouse");
 		const selectedSearch = queryParams.get("search");
-		const selectedCategory = queryParams.get("category");
-		const selectedBrand = queryParams.get("brand");
 		const selectedOrderField = queryParams.get("orderField");
 		const selectedOrderDirection = queryParams.get("orderDirection");
 		const selectedOffset = queryParams.get("offset");
+		const selectedMonth = queryParams.get("month");
+		const selectedYear = queryParams.get("year");
 		if (selectedWarehouse) {
 			dispatch(setWarehouse(selectedWarehouse));
 		}
 		if (selectedSearch) {
-			dispatch(onSearch(selectedSearch));
-		}
-		if (selectedCategory) {
-			dispatch(setCategory(selectedCategory));
-		}
-		if (selectedBrand) {
-			dispatch(setBrand(selectedBrand));
+			dispatch(onSearchBrand(selectedSearch));
 		}
 		if (selectedOrderDirection && selectedOrderField) {
-			dispatch(onSort(selectedOrderField, selectedOrderDirection));
+			dispatch(onSortB(selectedOrderField, selectedOrderDirection));
 		}
 		if (selectedOffset) {
 			const selectedPage = Number(selectedOffset) / 12 + 1;
-			dispatch(setPagination(selectedPage, Number(selectedOffset)));
+			dispatch(setPaginationBrand(selectedPage, Number(selectedOffset)));
 		}
+		// if (selectedMonth) {
+		// 	dispatch();
+		// }
 	};
 
 	const formik = useFormik({
-		initialValues: { searchQuery: "" },
+		initialValues: { searchQuery1: "" },
 		onSubmit: (values) => {
 			// Handle the search query submission here
-			dispatch(onSearch(values.searchQuery));
-			navigate("/admin/stocks");
+			dispatch(onSearchBrand(values.searchQuery1));
+			navigate("/admin/reports");
 		},
 	});
 
@@ -97,77 +102,110 @@ const AdminReportBrandListTable = () => {
 	};
 
 	useEffect(() => {
-		formik.setFieldValue("searchQuery", search);
+		formik.setFieldValue("searchQuery1", search);
 	}, [search]);
 
 	const clear = async () => {
-		await dispatch(onClear());
+		await dispatch(onClearBrand());
+		if (role === "super") {
+			dispatch(setWarehouse(null));
+			// window.location.reload();
+			navigate(
+				`/admin/reports?search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
+			);
+			return takeFromQuery();
+		}
 		navigate(
-			`/admin/stocks?warehouse=${warehouse}${
-				search && `&search=${search}`
-			}`
+			`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
 		);
-		window.location.reload(false);
+		return takeFromQuery();
+		// window.location.reload();
 	};
-
+	// console.log(role);
 	useEffect(() => {
 		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
 
 		return () => {
-			dispatch(onClear());
-			dispatch(setSearch(""));
-			dispatch(setProductsForStocks([]));
-			dispatch(setTotalPage(1));
+			dispatch(onClearBrand());
+			dispatch(setSearchBrand(""));
+			// dispatch(setProductsForStocks([]));
+			dispatch(setTotalPageBrand(1));
 			dispatch(setWarehouse(null));
-			dispatch(setCount(0));
+			dispatch(setCountBrand(0));
 		};
 	}, []);
-
+	console.log(warehouse);
 	useEffect(() => {
 		if (warehouse) {
-			navigate(
-				`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			console.log(
+				`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
 			);
-
+			navigate(
+				`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
+			);
 			dispatch(
-				fetchStockAsync(
-					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-						","
-					)}&category=${category.join(
-						","
-					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				getTransactionByBrand(
+					`?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
+				)
+			);
+		} else {
+			navigate(
+				`/admin/reports?search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
+			);
+			dispatch(
+				getTransactionByBrand(
+					`?search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
 				)
 			);
 		}
-	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
+		console.log(
+			orderFieldBrand,
+			orderDirectionBrand,
+			search,
+			page,
+			warehouse
+		);
+		// }
+	}, [
+		orderFieldBrand,
+		orderDirectionBrand,
+		search,
+		page,
+		warehouse,
+		month,
+		year,
+	]);
 
 	const columns = [
-		{ name: "NO", uid: "number" },
+		// { name: "NO", uid: "number" },
 		{ name: "BRAND NAME", uid: "brand_name" },
 		{ name: "TOTAL", uid: "total" },
 	];
+	// useEffect(() => {
+	// 	dispatch(getTransactionByBrand());
+	// }, []);
 
-	const renderCell = React.useCallback((product, columnKey) => {
+	useEffect(() => {
+		console.log(transactionByBrand);
+	}, [transactionByBrand]);
+
+	const renderCell = React.useCallback((TBBrand, columnKey, index) => {
 		switch (columnKey) {
-			case "number":
+			// case "number":
+			// 	// const nextTAbleIndex = rowIndex + 1;
+			// 	console.log(index);
+			// 	return (
+			// 		<div className="flex items-center gap-4 w-full">
+			// 			<p className="font-bold text-base w-full">{index}</p>
+			// 		</div>
+			// 	);
+			case "brand_name":
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.createdAt`} {/* <<< order.createdAt */}
-						</p>
-					</div>
-				);
-			case "category_name":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`order.order_detail.invoice`}
+							{`${TBBrand.brand_name}`}
 						</p>
 					</div>
 				);
@@ -175,7 +213,7 @@ const AdminReportBrandListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.product_name`}
+							{`${TBBrand.total_items}`}
 						</p>
 					</div>
 				);
@@ -195,7 +233,7 @@ const AdminReportBrandListTable = () => {
 					variant="flat"
 					className="z-0"
 					onChange={(e) => {
-						dispatch(setPagination(e, (e - 1) * 12));
+						dispatch(setPaginationBrand(e, (e - 1) * 12));
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}
 				/>
@@ -212,17 +250,17 @@ const AdminReportBrandListTable = () => {
 							type="text"
 							placeholder="Search for product by name"
 							isClearable
-							onClear={() => dispatch(setSearch(""))}
+							onClear={() => dispatch(setSearchBrand(""))}
 							startContent={<IoSearch opacity={".5"} />}
 							variant="bordered"
 							fullWidth
 							onChange={(e) =>
 								formik.setFieldValue(
-									"searchQuery",
+									"searchQuery1",
 									e.target.value
 								)
 							}
-							value={formik.values.searchQuery}
+							value={formik.values.searchQuery1}
 						/>
 					</form>
 					<div className="flex gap-3">
@@ -233,7 +271,7 @@ const AdminReportBrandListTable = () => {
 						>{`Clear Filter(s)`}</Button>
 						<SelectWarehouses />
 						<div className="sort-by flex items-center">
-							<SelectSortBy admin={false} placeholder="Sort" />
+							<SelectSortByB placeholder="Sort" />
 						</div>
 						<MyMonthPicker />
 					</div>
@@ -241,8 +279,10 @@ const AdminReportBrandListTable = () => {
 				<div className="flex justify-between items-center">
 					<span className="text-default-400 text-small">
 						Showing
-						{products?.length
-							? ` ${1 + offset}-${offset + products?.length} `
+						{transactionByBrand?.length
+							? ` ${1 + offset}-${
+									offset + transactionByBrand?.length
+							  } `
 							: ` 0 `}
 						out of {count} products.
 					</span>
@@ -272,17 +312,19 @@ const AdminReportBrandListTable = () => {
 				</TableHeader>
 				<TableBody
 					emptyContent={"Please select warehouse"}
-					items={products} // <<<< ganti jadi orders / order_details (?)
+					items={transactionByBrand}
 				>
-					{(item) => (
-						<TableRow key={item.id}>
-							{(columnKey) => (
-								<TableCell>
-									{renderCell(item, columnKey)}
-								</TableCell>
-							)}
-						</TableRow>
-					)}
+					{(item) => {
+						return (
+							<TableRow key={item.id}>
+								{(columnKey) => (
+									<TableCell>
+										{renderCell(item, columnKey)}
+									</TableCell>
+								)}
+							</TableRow>
+						);
+					}}
 				</TableBody>
 			</Table>
 		</>

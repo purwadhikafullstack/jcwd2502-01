@@ -17,17 +17,11 @@ import { IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import {
-	fetchStockAsync,
 	onClear,
-	onSearch,
-	onSort,
 	setBrand,
 	setCategory,
-	setCount,
 	setPagination,
-	setProductsForStocks,
 	setSearch,
-	setTotalPage,
 	setWarehouse,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
@@ -39,23 +33,38 @@ import { useFormik } from "formik";
 import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
 import AdminCreateRequestStockModal from "../../layouts/admin/AdminCreateRequestStockModal";
 import MyMonthPicker from "../../uis/MyMonthPicker/MyMonthPicker";
+import {
+	getTransactionByProduct,
+	onClearProduct,
+	onSearchProduct,
+	onSortP,
+	setCountProduct,
+	setPaginationProduct,
+	setSearchProduct,
+	setTotalPageProduct,
+} from "../../../redux/features/report";
 
 const AdminReportProductListTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 
+	const transactionByProduct = useSelector(
+		(state) => state.report.transactionByProduct
+	);
+	const year = useSelector((state) => state.report.year);
+	const month = useSelector((state) => state.report.month);
 	const warehouse = useSelector((state) => state.products.warehouse);
 	const products = useSelector((state) => state.products.productsForStocks);
-	const count = useSelector((state) => state.products.count);
-	const totalPage = useSelector((state) => state.products.totalPage);
-	const orderField = useSelector((state) => state.products.orderField);
+	const count = useSelector((state) => state.report.countProduct);
+	const totalPage = useSelector((state) => state.report.totalPageProduct);
+	const orderField = useSelector((state) => state.report.orderFieldProduct);
 	const orderDirection = useSelector(
-		(state) => state.products.orderDirection
+		(state) => state.report.orderDirectionProduct
 	);
-	const search = useSelector((state) => state.products.search);
-	const page = useSelector((state) => state.products.page);
-	const offset = useSelector((state) => state.products.offset);
+	const search = useSelector((state) => state.report.searchProduct);
+	const page = useSelector((state) => state.report.pageProduct);
+	const offset = useSelector((state) => state.report.offsetProduct);
 	const category = useSelector((state) => state.products.category);
 	const brand = useSelector((state) => state.products.brand);
 
@@ -72,7 +81,7 @@ const AdminReportProductListTable = () => {
 			dispatch(setWarehouse(selectedWarehouse));
 		}
 		if (selectedSearch) {
-			dispatch(onSearch(selectedSearch));
+			dispatch(onSearchProduct(selectedSearch));
 		}
 		if (selectedCategory) {
 			dispatch(setCategory(selectedCategory));
@@ -81,20 +90,22 @@ const AdminReportProductListTable = () => {
 			dispatch(setBrand(selectedBrand));
 		}
 		if (selectedOrderDirection && selectedOrderField) {
-			dispatch(onSort(selectedOrderField, selectedOrderDirection));
+			dispatch(onSortP(selectedOrderField, selectedOrderDirection));
 		}
 		if (selectedOffset) {
 			const selectedPage = Number(selectedOffset) / 12 + 1;
-			dispatch(setPagination(selectedPage, Number(selectedOffset)));
+			dispatch(
+				setPaginationProduct(selectedPage, Number(selectedOffset))
+			);
 		}
 	};
 
 	const formik = useFormik({
-		initialValues: { searchQuery: "" },
+		initialValues: { searchQuery3: "" },
 		onSubmit: (values) => {
 			// Handle the search query submission here
-			dispatch(onSearch(values.searchQuery));
-			navigate("/admin/stocks");
+			dispatch(onSearchProduct(values.searchQuery3));
+			navigate("/admin/reports?tab=products");
 		},
 	});
 
@@ -105,13 +116,13 @@ const AdminReportProductListTable = () => {
 	};
 
 	useEffect(() => {
-		formik.setFieldValue("searchQuery", search);
+		formik.setFieldValue("searchQuery3", search);
 	}, [search]);
 
 	const clear = async () => {
-		await dispatch(onClear());
+		await dispatch(onClearProduct());
 		navigate(
-			`/admin/stocks?warehouse=${warehouse}${
+			`/admin/reports?tab=products&warehouse=${warehouse}${
 				search && `&search=${search}`
 			}`
 		);
@@ -125,39 +136,63 @@ const AdminReportProductListTable = () => {
 
 		return () => {
 			dispatch(onClear());
-			dispatch(setSearch(""));
-			dispatch(setProductsForStocks([]));
-			dispatch(setTotalPage(1));
+			dispatch(setSearchProduct(""));
+			// dispatch(setProductsForStocks([]));
+			dispatch(setTotalPageProduct(1));
 			dispatch(setWarehouse(null));
-			dispatch(setCount(0));
+			dispatch(setCountProduct(0));
 		};
 	}, []);
 
 	useEffect(() => {
-		if (warehouse) {
-			navigate(
-				`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			);
+		// if (warehouse) {
+		navigate(
+			`/admin/reports?tab=products&${
+				warehouse && `warehouse=${warehouse}`
+			}${search && `&search=${search}`}&brand=${brand.join(
+				","
+			)}&category=${category.join(
+				","
+			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}${
+				month && `&month=${month}`
+			}${year && `&year=${year}`}`
+		);
 
-			dispatch(
-				fetchStockAsync(
-					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-						","
-					)}&category=${category.join(
-						","
-					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-				)
-			);
-		}
-	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
+		dispatch(
+			getTransactionByProduct(
+				`?${warehouse && `warehouse=${warehouse}`}${
+					search && `&search=${search}`
+				}&brand=${brand.join(",")}&category=${category.join(
+					","
+				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}${
+					month && `&month=${month}`
+				} ${year && `&year=${year}`}`
+			)
+		);
+		// }
+	}, [
+		orderField,
+		orderDirection,
+		search,
+		page,
+		category,
+		brand,
+		warehouse,
+		month,
+		year,
+	]);
+
+	// useEffect(() => {
+	// 	dispatch(getTransactionByProduct());
+	// }, []);
+
+	useEffect(() => {
+		console.log(transactionByProduct);
+	}, [transactionByProduct]);
 
 	const columns = [
 		{ name: "DATE", uid: "date" },
-		{ name: "INVOICE", uid: "category" },
+		{ name: "INVOICE", uid: "invoice" },
 		{ name: "PRODUCT NAME", uid: "product_name" },
 		{ name: "CATEGORY", uid: "category" },
 		{ name: "BRAND", uid: "brand" },
@@ -167,7 +202,18 @@ const AdminReportProductListTable = () => {
 	];
 
 	const renderCell = React.useCallback((product, columnKey) => {
-		const productPrice = product?.product_price.toLocaleString("id-ID", {
+		const formattedDate = new Date(product.createdAt).toLocaleDateString(
+			"en-GB",
+			{
+				day: "numeric",
+				month: "short",
+				year: "numeric",
+			}
+		);
+
+		const productPrice = (
+			product.checked_out_price * product.quantity
+		).toLocaleString("id-ID", {
 			style: "currency",
 			currency: "IDR",
 			minimumFractionDigits: 0,
@@ -180,7 +226,7 @@ const AdminReportProductListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{productPrice} {/* <<< order.createdAt */}
+							{formattedDate}
 						</p>
 					</div>
 				);
@@ -188,7 +234,7 @@ const AdminReportProductListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.order_detail.invoice`}
+							{product.order.invoice}
 						</p>
 					</div>
 				);
@@ -196,7 +242,7 @@ const AdminReportProductListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.product_name`}
+							{product.product.product_name}
 						</p>
 					</div>
 				);
@@ -204,7 +250,7 @@ const AdminReportProductListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.category.id`}
+							{product.product.category.category_type}
 						</p>
 					</div>
 				);
@@ -212,7 +258,7 @@ const AdminReportProductListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.brand.id`}
+							{product.product.brand.brand_name}
 						</p>
 					</div>
 				);
@@ -220,7 +266,7 @@ const AdminReportProductListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.quantity`}
+							{product.quantity}
 						</p>
 					</div>
 				);
@@ -228,7 +274,7 @@ const AdminReportProductListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.total_amount`}
+							{productPrice}
 						</p>
 					</div>
 				);
@@ -236,7 +282,7 @@ const AdminReportProductListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.warehouse`}
+							{product.order.warehouse.warehouse_name}
 						</p>
 					</div>
 				);
@@ -250,13 +296,13 @@ const AdminReportProductListTable = () => {
 				<Pagination
 					size="md"
 					showControls
-					total={totalPage ? totalPage : 1}
+					total={transactionByProduct ? totalPage : 1}
 					page={page ? page : 0}
 					color="secondary"
 					variant="flat"
 					className="z-0"
 					onChange={(e) => {
-						dispatch(setPagination(e, (e - 1) * 12));
+						dispatch(setPaginationProduct(e, (e - 1) * 12));
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}
 				/>
@@ -273,17 +319,17 @@ const AdminReportProductListTable = () => {
 							type="text"
 							placeholder="Search for product by name"
 							isClearable
-							onClear={() => dispatch(setSearch(""))}
+							onClear={() => dispatch(setSearchProduct(""))}
 							startContent={<IoSearch opacity={".5"} />}
 							variant="bordered"
 							fullWidth
 							onChange={(e) =>
 								formik.setFieldValue(
-									"searchQuery",
+									"searchQuery3",
 									e.target.value
 								)
 							}
-							value={formik.values.searchQuery}
+							value={formik.values.searchQuery3}
 						/>
 					</form>
 					<div className="flex gap-3">
@@ -307,10 +353,12 @@ const AdminReportProductListTable = () => {
 				<div className="flex justify-between items-center">
 					<span className="text-default-400 text-small">
 						Showing
-						{products?.length
-							? ` ${1 + offset}-${offset + products?.length} `
+						{transactionByProduct?.length
+							? ` ${1 + offset}-${
+									offset + transactionByProduct?.length
+							  } `
 							: ` 0 `}
-						out of {count} products.
+						out of {count} transaction per product.
 					</span>
 				</div>
 			</div>
@@ -338,7 +386,7 @@ const AdminReportProductListTable = () => {
 				</TableHeader>
 				<TableBody
 					emptyContent={"Please select warehouse"}
-					items={products} // <<<< ganti jadi orders / order_details (?)
+					items={transactionByProduct}
 				>
 					{(item) => (
 						<TableRow key={item.id}>
