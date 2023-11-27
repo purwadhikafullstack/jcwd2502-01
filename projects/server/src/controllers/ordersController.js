@@ -4,6 +4,7 @@ const { Op } = require("sequelize");
 const { adminCancelOrderService } = require("../services/ordersService");
 const { findNearestWarehouses } = require("../utils/distanceUtils");
 const respHandler = require("../utils/respHandler");
+const { createMutation } = require("../utils/orderUtils");
 
 module.exports = {
 	getOrderList: async (req, res, next) => {
@@ -376,35 +377,89 @@ module.exports = {
 					needed_quantity: Math.abs(item.stocks),
 				}));
 
-			const otherWarehouses = await db.warehouse.findAll({
-				where: {
-					id: {
-						[Op.not]: selectedWarehouseId,
-					},
-				},
-			});
-
-			const { sortedWarehousesId } = findNearestWarehouses(
-				originWarehouseLat,
-				originWarehouseLon,
-				otherWarehouses
-			);
-
-			const stocks = await Promise.all(
-				productId.map(async (product, i) => {
-					const productStock = await db.stock.findAll({
-						where: {
-							product_id: product,
+			if (stockMutation) {
+				const otherWarehouses = await db.warehouse.findAll({
+					where: {
+						id: {
+							[Op.not]: selectedWarehouseId,
 						},
-					});
-					return productStock;
-				})
-			);
+					},
+				});
+
+				const { sortedWarehousesId } = findNearestWarehouses(
+					originWarehouseLat,
+					originWarehouseLon,
+					otherWarehouses
+				);
+
+				const stocks = await Promise.all(
+					productId.map(async (product, i) => {
+						const productStock = await db.stock.findAll({
+							where: {
+								product_id: product,
+							},
+						});
+						return productStock;
+					})
+				);
+
+				for (const item of stockMutation) {
+					let neededQuantity = item.needed_quantity;
+
+					for (const warehouse of sortedWarehousesId) {
+						console.log("NEEDED QUANTITY AWAL", neededQuantity);
+						console.log(item.product_id, warehouse);
+
+						if (neededQuantity === 0) {
+							console.log("BREAK");
+							break;
+						}
+
+						const productStock = await db.stock.findOne({
+							where: {
+								warehouse_id: warehouse,
+								product_id: item.product_id,
+							},
+						});
+
+						if (productStock.dataValues.stocks >= neededQuantity) {
+							console.log(item.product_id, warehouse);
+
+							console.log("JALAN 1");
+
+							createMutation(
+								warehouse,
+								selectedWarehouseId,
+								item.product_id,
+								neededQuantity
+							);
+
+							neededQuantity = 0;
+						} else if (
+							productStock.dataValues.stocks > 0 &&
+							productStock.dataValues.stocks < neededQuantity
+						) {
+							console.log("JALAN 2");
+
+							createMutation(
+								warehouse,
+								selectedWarehouseId,
+								item.product_id,
+								productStock.dataValues.stocks
+							);
+
+							neededQuantity -= productStock.dataValues.stocks;
+						} else {
+							console.log("JALAN 3");
+							continue;
+						}
+					}
+				}
+			}
 
 			respHandler(res, "Confirm order success", {
 				productStockByOriginWarehouse,
 				stockMutation,
-				sortedWarehousesId,
 			});
 		} catch (error) {
 			next(error);
