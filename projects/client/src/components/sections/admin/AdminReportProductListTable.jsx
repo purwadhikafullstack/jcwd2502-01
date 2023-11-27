@@ -15,7 +15,7 @@ import {
 } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
-import SelectSortBy from "../../uis/Selects/SelectSortBy";
+import SelectSortByP from "../../uis/Selects/SelectSortByP";
 import {
 	onClear,
 	setBrand,
@@ -122,9 +122,9 @@ const AdminReportProductListTable = () => {
 	const clear = async () => {
 		await dispatch(onClearProduct());
 		navigate(
-			`/admin/reports?tab=products&warehouse=${warehouse}${
-				search && `&search=${search}`
-			}`
+			`/admin/reports?tab=products&${
+				warehouse && `warehouse=${warehouse}`
+			}${search && `&search=${search}`}`
 		);
 		window.location.reload(false);
 	};
@@ -135,7 +135,7 @@ const AdminReportProductListTable = () => {
 		window.scrollTo({ top: 0 });
 
 		return () => {
-			dispatch(onClear());
+			dispatch(onClearProduct());
 			dispatch(setSearchProduct(""));
 			// dispatch(setProductsForStocks([]));
 			dispatch(setTotalPageProduct(1));
@@ -345,7 +345,7 @@ const AdminReportProductListTable = () => {
 							<SelectProductCategories />
 						</div>
 						<div className="sort-by flex items-center">
-							<SelectSortBy admin={false} placeholder="Sort" />
+							<SelectSortByP placeholder="Sort" />
 						</div>
 						<MyMonthPicker />
 					</div>

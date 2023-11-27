@@ -15,6 +15,10 @@ module.exports = {
 				year,
 			} = query;
 
+			const currentDate = new Date();
+			const defaultYear = currentDate.getFullYear();
+			const defaultMonth = currentDate.getMonth() + 1;
+
 			if (idWarehouse && idWarehouse !== warehouse)
 				return {
 					isError: true,
@@ -67,7 +71,7 @@ module.exports = {
 			const orderOptions = [];
 
 			if (orderField && orderDirection) {
-				orderOptions.push([orderField, orderDirection]);
+				orderOptions.push([db.product, orderField, orderDirection]);
 			}
 
 			const baseQuery = {
@@ -86,7 +90,6 @@ module.exports = {
 					// 	where: { warehouse_id: warehouse },
 					// },
 				],
-				order: orderOptions,
 			};
 
 			if (search) {
@@ -115,6 +118,7 @@ module.exports = {
 				// where: {
 				// 	status: "6",
 				// },
+				// order: orderOptions,
 			};
 
 			if (warehouse) {
@@ -143,9 +147,14 @@ module.exports = {
 					},
 				],
 				where: {
-					// month, // createdAt,
-					// status: 5,
+					// status: "6",
+					[Op.and]: Sequelize.literal(
+						`MONTH(order.createdAt) = ${
+							month || defaultMonth
+						} AND YEAR(order.createdAt)= ${year || defaultYear}`
+					),
 				},
+				order: orderOptions,
 				limit: 12,
 			};
 

@@ -11,13 +11,8 @@ import {
 	Pagination,
 } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
-import SelectSortBy from "../../uis/Selects/SelectSortBy";
-import {
-	onClear,
-	onSearch,
-	onSort,
-	setWarehouse,
-} from "../../../redux/features/products";
+import SelectSortByT from "../../uis/Selects/SelectSortByT";
+import { onSort, setWarehouse } from "../../../redux/features/products";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -31,6 +26,7 @@ import {
 	setTotalPageTransaction,
 	onClearTransaction,
 	onSearchTransaction,
+	onSortT,
 } from "../../../redux/features/report";
 
 const AdminReportTransactionListTable = () => {
@@ -70,7 +66,7 @@ const AdminReportTransactionListTable = () => {
 			dispatch(onSearchTransaction(selectedSearch));
 		}
 		if (selectedOrderDirection && selectedOrderField) {
-			dispatch(onSort(selectedOrderField, selectedOrderDirection));
+			dispatch(onSortT(selectedOrderField, selectedOrderDirection));
 		}
 		if (selectedOffset) {
 			const selectedPage = Number(selectedOffset) / 12 + 1;
@@ -299,7 +295,7 @@ const AdminReportTransactionListTable = () => {
 						>{`Clear Filter(s)`}</Button>
 						<SelectWarehouses />
 						<div className="sort-by flex items-center">
-							<SelectSortBy admin={false} placeholder="Sort" />
+							<SelectSortByT placeholder="Sort" />
 						</div>
 						<MyMonthPicker />
 					</div>
