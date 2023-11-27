@@ -29,7 +29,7 @@ Router.patch(
 );
 Router.patch(
 	"/admin/cancel-order/:order_id",
-	verify,
+	// verify,
 	ordersController.adminCancelOrder
 );
 

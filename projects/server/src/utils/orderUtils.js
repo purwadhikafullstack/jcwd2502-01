@@ -107,8 +107,74 @@ const createMutation = async (
 	}
 };
 
-const updateStock = () => {
-	return;
+const updateStock = async (
+	orderItems,
+	originWarehouseId,
+	isCancelOrder = false
+) => {
+	for (const order of orderItems) {
+		try {
+			const productStock = await db.stock.findOne({
+				where: {
+					warehouse_id: originWarehouseId,
+					product_id: order.product_id,
+				},
+			});
+
+			if (productStock && !isCancelOrder) {
+				const updatedStock = productStock.stocks - order.quantity;
+
+				const logData = {
+					change: "subtraction",
+					type: "transaction",
+					stock_id: productStock.id,
+					stock_before: productStock.stocks,
+					quantity_change: order.quantity,
+				};
+
+				await db.stock.update(
+					{ stocks: updatedStock },
+					{
+						where: {
+							warehouse_id: originWarehouseId,
+							product_id: order.product_id,
+						},
+					}
+				);
+
+				await db.stock_history.create(logData);
+			} else if (productStock && isCancelOrder) {
+				const updatedStock = productStock.stocks + order.quantity;
+
+				const logData = {
+					change: "addittion",
+					type: "transaction",
+					stock_id: productStock.id,
+					stock_before: productStock.stocks,
+					quantity_change: order.quantity,
+				};
+
+				await db.stock.update(
+					{ stocks: updatedStock },
+					{
+						where: {
+							warehouse_id: originWarehouseId,
+							product_id: order.product_id,
+						},
+					}
+				);
+
+				await db.stock_history.create(logData);
+			} else {
+				console.log(
+					"Product stock not found for product_id:",
+					order.product_id
+				);
+			}
+		} catch (error) {
+			console.error("Error updating stock:", error);
+		}
+	}
 };
 
 module.exports = { createMutation, updateStock };
