@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import {
 	Table,
@@ -11,52 +12,52 @@ import {
 	Pagination,
 } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
-import SelectSortBy from "../../uis/Selects/SelectSortBy";
-import {
-	fetchStockAsync,
-	onClear,
-	onSearch,
-	onSort,
-	setBrand,
-	setCategory,
-	setCount,
-	setPagination,
-	setProductsForStocks,
-	setSearch,
-	setTotalPage,
-	setWarehouse,
-} from "../../../redux/features/products";
+import SelectSortByC from "../../uis/Selects/SelectSortByC";
+import { setWarehouse } from "../../../redux/features/products";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import SelectWarehouses from "../../uis/Selects/SelectWarehouses";
 import MyMonthPicker from "../../uis/MyMonthPicker/MyMonthPicker";
+import {
+	getTransactionByCategory,
+	onSearchCategory,
+	onClearCategory,
+	setTotalPageCategory,
+	setSearchCategory,
+	setPaginationCategory,
+	onSortC,
+	setCountCategory,
+} from "../../../redux/features/report";
 
 const AdminReportCategoryListTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const warehouse = useSelector((state) => state.products.warehouse);
-	const products = useSelector((state) => state.products.productsForStocks);
-	const count = useSelector((state) => state.products.count);
-	const totalPage = useSelector((state) => state.products.totalPage);
-	const orderField = useSelector((state) => state.products.orderField);
-	const orderDirection = useSelector(
-		(state) => state.products.orderDirection
+	const transactionByCategory = useSelector(
+		(state) => state.report.transactionByCategory
 	);
-	const search = useSelector((state) => state.products.search);
-	const page = useSelector((state) => state.products.page);
-	const offset = useSelector((state) => state.products.offset);
-	const category = useSelector((state) => state.products.category);
-	const brand = useSelector((state) => state.products.brand);
+	const warehouse = useSelector((state) => state.products.warehouse);
+	const role = useSelector((state) => state.user.role);
+	const count = useSelector((state) => state.report.countCategory);
+	const totalPage = useSelector((state) => state.report.totalPageCategory);
+	const orderFieldCategory = useSelector(
+		(state) => state.report.orderFieldCategory
+	);
+	const orderDirectionCategory = useSelector(
+		(state) => state.report.orderDirectionCategory
+	);
+	const search = useSelector((state) => state.report.searchCategory);
+	const page = useSelector((state) => state.report.totalPageCategory);
+	const offset = useSelector((state) => state.report.offsetCategory);
+	const month = useSelector((state) => state.report.month);
+	const year = useSelector((state) => state.report.year);
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedWarehouse = queryParams.get("warehouse");
 		const selectedSearch = queryParams.get("search");
-		const selectedCategory = queryParams.get("category");
-		const selectedBrand = queryParams.get("brand");
 		const selectedOrderField = queryParams.get("orderField");
 		const selectedOrderDirection = queryParams.get("orderDirection");
 		const selectedOffset = queryParams.get("offset");
@@ -64,20 +65,16 @@ const AdminReportCategoryListTable = () => {
 			dispatch(setWarehouse(selectedWarehouse));
 		}
 		if (selectedSearch) {
-			dispatch(onSearch(selectedSearch));
-		}
-		if (selectedCategory) {
-			dispatch(setCategory(selectedCategory));
-		}
-		if (selectedBrand) {
-			dispatch(setBrand(selectedBrand));
+			dispatch(onSearchCategory(selectedSearch));
 		}
 		if (selectedOrderDirection && selectedOrderField) {
-			dispatch(onSort(selectedOrderField, selectedOrderDirection));
+			dispatch(onSortC(selectedOrderField, selectedOrderDirection));
 		}
 		if (selectedOffset) {
 			const selectedPage = Number(selectedOffset) / 12 + 1;
-			dispatch(setPagination(selectedPage, Number(selectedOffset)));
+			dispatch(
+				setPaginationCategory(selectedPage, Number(selectedOffset))
+			);
 		}
 	};
 
@@ -85,8 +82,8 @@ const AdminReportCategoryListTable = () => {
 		initialValues: { searchQuery: "" },
 		onSubmit: (values) => {
 			// Handle the search query submission here
-			dispatch(onSearch(values.searchQuery));
-			navigate("/admin/stocks");
+			dispatch(onSearchCategory(values.searchQuery));
+			navigate("/admin/reports");
 		},
 	});
 
@@ -101,13 +98,22 @@ const AdminReportCategoryListTable = () => {
 	}, [search]);
 
 	const clear = async () => {
-		await dispatch(onClear());
+		await dispatch(onClearCategory());
+		if (role === "super") {
+			dispatch(setWarehouse(null));
+			// window.location.reload();
+			return navigate(
+				`/admin/reports?search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
+					month && `&month=${month}`
+				}${year && `&year=${year}`}`
+			);
+		}
 		navigate(
-			`/admin/stocks?warehouse=${warehouse}${
-				search && `&search=${search}`
-			}`
+			`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
+				month && `&month=${month}`
+			}${year && `&year=${year}`}`
 		);
-		window.location.reload(false);
+		// window.location.reload();
 	};
 
 	useEffect(() => {
@@ -116,58 +122,85 @@ const AdminReportCategoryListTable = () => {
 		window.scrollTo({ top: 0 });
 
 		return () => {
-			dispatch(onClear());
-			dispatch(setSearch(""));
-			dispatch(setProductsForStocks([]));
-			dispatch(setTotalPage(1));
-			// dispatch(setWarehouse(null));
-			dispatch(setCount(0));
+			dispatch(onClearCategory());
+			dispatch(setSearchCategory(""));
+			// dispatch(setProductsForStocks([]));
+			dispatch(setTotalPageCategory(1));
+			dispatch(setWarehouse(null));
+			dispatch(setCountCategory(0));
 		};
 	}, []);
 
 	useEffect(() => {
 		if (warehouse) {
 			navigate(
-				`/admin/stocks?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
+					month && `&month=${month}`
+				}${year && `&year=${year}`}`
 			);
 
 			dispatch(
-				fetchStockAsync(
-					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
-						","
-					)}&category=${category.join(
-						","
-					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				getTransactionByCategory(
+					`?warehouse=${warehouse}&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
+						month && `&month=${month}`
+					}${year && `&year=${year}`}`
+				)
+				// getTransactionByCategory()
+			);
+		} else {
+			navigate(
+				`/admin/reports?&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
+					month && `&month=${month}`
+				}${year && `&year=${year}`}`
+			);
+
+			dispatch(
+				getTransactionByCategory(
+					`?&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
+						month && `&month=${month}`
+					}${year && `&year=${year}`}`
 				)
 			);
 		}
-	}, [orderField, orderDirection, search, page, category, brand, warehouse]);
+		console.log(orderFieldCategory, orderDirectionCategory);
+	}, [
+		orderFieldCategory,
+		orderDirectionCategory,
+		search,
+		page,
+		warehouse,
+		month,
+		year,
+	]);
+	// useEffect(() => {
+	// 	dispatch(getTransactionByCategory());
+	// }, []);
+
+	// useEffect(() => {
+	// 	console.log(transactionByCategory);
+	// }, [transactionByCategory]);
 
 	const columns = [
-		{ name: "NO", uid: "number" },
+		// { name: "NO", uid: "number" },
 		{ name: "CATEGORY NAME", uid: "category_name" },
 		{ name: "TOTAL", uid: "total" },
 	];
 
-	const renderCell = React.useCallback((product, columnKey) => {
+	const renderCell = React.useCallback((TBCategory, columnKey) => {
 		switch (columnKey) {
-			case "number":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`order.createdAt`} {/* <<< order.createdAt */}
-						</p>
-					</div>
-				);
+			// case "number":
+			// 	return (
+			// 		<div className="flex items-center gap-4 w-full">
+			// 			<p className="font-bold text-base w-full">
+			// 				{`${TBCategory.id}`}{" "}
+			// 			</p>
+			// 		</div>
+			// 	);
 			case "category_name":
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.order_detail.invoice`}
+							{`${TBCategory.category_type}`}
 						</p>
 					</div>
 				);
@@ -175,7 +208,7 @@ const AdminReportCategoryListTable = () => {
 				return (
 					<div className="flex items-center gap-4 w-full">
 						<p className="font-bold text-base w-full">
-							{`order.order_detail.product.product_name`}
+							{`${TBCategory.total_items}`}
 						</p>
 					</div>
 				);
@@ -195,7 +228,7 @@ const AdminReportCategoryListTable = () => {
 					variant="flat"
 					className="z-0"
 					onChange={(e) => {
-						dispatch(setPagination(e, (e - 1) * 12));
+						dispatch(setPaginationCategory(e, (e - 1) * 12));
 						window.scrollTo({ top: 0, behavior: "smooth" });
 					}}
 				/>
@@ -212,7 +245,7 @@ const AdminReportCategoryListTable = () => {
 							type="text"
 							placeholder="Search for product by name"
 							isClearable
-							onClear={() => dispatch(setSearch(""))}
+							onClear={() => dispatch(setSearchCategory(""))}
 							startContent={<IoSearch opacity={".5"} />}
 							variant="bordered"
 							fullWidth
@@ -233,7 +266,7 @@ const AdminReportCategoryListTable = () => {
 						>{`Clear Filter(s)`}</Button>
 						<SelectWarehouses />
 						<div className="sort-by flex items-center">
-							<SelectSortBy admin={false} placeholder="Sort" />
+							<SelectSortByC placeholder="Sort" />
 						</div>
 						<MyMonthPicker />
 					</div>
@@ -241,8 +274,10 @@ const AdminReportCategoryListTable = () => {
 				<div className="flex justify-between items-center">
 					<span className="text-default-400 text-small">
 						Showing
-						{products?.length
-							? ` ${1 + offset}-${offset + products?.length} `
+						{transactionByCategory?.length
+							? ` ${1 + offset}-${
+									offset + transactionByCategory?.length
+							  } `
 							: ` 0 `}
 						out of {count} products.
 					</span>
@@ -272,7 +307,7 @@ const AdminReportCategoryListTable = () => {
 				</TableHeader>
 				<TableBody
 					emptyContent={"Please select warehouse"}
-					items={products} // <<<< ganti jadi orders / order_details (?)
+					items={transactionByCategory} // <<<< ganti jadi orders / order_details (?)
 				>
 					{(item) => (
 						<TableRow key={item.id}>
@@ -290,3 +325,4 @@ const AdminReportCategoryListTable = () => {
 };
 
 export default AdminReportCategoryListTable;
+
