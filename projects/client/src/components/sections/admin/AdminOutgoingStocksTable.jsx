@@ -119,7 +119,7 @@ const AdminOutgoingStocksTable = () => {
 		{ name: "PRODUCT INFO", uid: "product_info" },
 		{ name: "TO", uid: "to" },
 		{ name: "QUANTITY", uid: "quantity" },
-		{ name: "STOCK", uid: "stock" },
+		{ name: "STOCK IN WAREHOUSE", uid: "stock" },
 		{ name: "STATUS", uid: "status" },
 		{ name: "ACTION", uid: "action" },
 	];
