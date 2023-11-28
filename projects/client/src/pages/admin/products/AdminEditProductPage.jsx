@@ -200,7 +200,7 @@ const AdminEditProductPage = () => {
 			}
 
 			setTimeout(() => {
-				navigate("/admin/products");
+				navigate(-1);
 			}, 1500);
 
 			return;

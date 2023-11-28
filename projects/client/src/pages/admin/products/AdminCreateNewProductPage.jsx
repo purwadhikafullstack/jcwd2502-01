@@ -139,7 +139,9 @@ const AdminCreateNewProductPage = () => {
 			}
 
 			setTimeout(() => {
-				navigate("/admin/products");
+				navigate(
+					"/admin/products?orderField=updatedAt&orderDirection=desc"
+				);
 			}, 1500);
 
 			return;
