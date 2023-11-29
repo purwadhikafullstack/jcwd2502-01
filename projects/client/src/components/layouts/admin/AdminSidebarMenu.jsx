@@ -5,9 +5,11 @@ import NexocompLogo from "../../../assets/logo/NexocompLogo";
 import { Button } from "@nextui-org/react";
 import { IoClose } from "react-icons/io5";
 import { useStateContext } from "../../../contexts/ContextProvider";
+import { useSelector } from "react-redux";
 
 const AdminSidebarMenu = () => {
 	const { activeMenu, setActiveMenu, screenSize } = useStateContext();
+	const { role } = useSelector((state) => state.user);
 
 	const handleCloseSidebar = () => {
 		if (activeMenu && screenSize <= 900) {
@@ -41,7 +43,7 @@ const AdminSidebarMenu = () => {
 				</Button>{" "}
 			</div>
 			<div className="link-list flex flex-col gap-4 mt-8">
-				{adminSidebarMenuLinks("super")?.map((link) => {
+				{adminSidebarMenuLinks(role)?.map((link) => {
 					return (
 						<NavLink
 							to={link.path}

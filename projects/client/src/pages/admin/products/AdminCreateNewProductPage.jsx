@@ -14,6 +14,7 @@ import { onClear, setSearch } from "../../../redux/features/products";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AdminCreateNewProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
@@ -27,8 +28,31 @@ const AdminCreateNewProductPage = () => {
 		const selectedImages = event.target.files;
 		const selectedImagesArray = Array.from(selectedImages);
 
+		const maxSize = 3 * 1024 * 1024; // 3MB limit
+		const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+		const isValidSize = selectedImagesArray.every(
+			(image) => image.size <= maxSize
+		);
+		const isValidType = selectedImagesArray.every((image) =>
+			validImageTypes.includes(image.type)
+		);
+
+		if (!isValidSize && !isValidType) {
+			toast.error(
+				"Maximum file size allowed is 3MB and only JPEG, JPG, or PNG files are allowed"
+			);
+			return false;
+		} else if (!isValidSize) {
+			toast.error("Maximum file size allowed is 3MB");
+			return false;
+		} else if (!isValidType) {
+			toast.error("Please select valid image files (JPEG, JPG, or PNG)");
+			return false;
+		}
+
 		if (selectedImagesArray.length > 3) {
-			alert("Maximum of three images can be uploaded");
+			toast.error("Maximum of three images can be uploaded");
 			return false;
 		} else {
 			const imagesArray = selectedImagesArray.map((image) => {
@@ -38,6 +62,7 @@ const AdminCreateNewProductPage = () => {
 			setProductImages(imagesArray);
 		}
 	};
+
 	const handleRemovePreview = () => {
 		setProductImages([]);
 		setImagesToSend([]);
@@ -134,7 +159,7 @@ const AdminCreateNewProductPage = () => {
 			);
 
 			if (createProduct.data.isError) {
-				alert(createProduct.data.message);
+				toast.error(createProduct.data.message);
 				return;
 			}
 
@@ -268,10 +293,15 @@ const AdminCreateNewProductPage = () => {
 									Product Images (Max 3 Images)
 								</h3>
 								<p className="text-sm">
-									Image format: .jpg, .jpeg, .png
-									<br /> Minimum size: 300 x 300 pixels (For
-									best quality, use a minimum size of 700 x
-									700 pixels).
+									<b>Image format: .jpg, .jpeg, .png</b>
+									<br />
+									<b>Max size: 3 mb.</b>
+									<br />
+									<span className="text-neutral-400 font-medium">
+										Minimum dimension: 300 x 300 pixels (For
+										best quality, use a minimum size of 700
+										x 700 pixels).
+									</span>
 								</p>
 							</div>
 							<div className="product-images-inputs w-full ml-12">
@@ -302,29 +332,31 @@ const AdminCreateNewProductPage = () => {
 												onChange={getFileImages}
 												className="hidden"
 											/>
-											<div
-												className="mt-4"
-												onClick={() =>
-													document
-														.querySelector(
-															"#productImgInput1"
-														)
-														.click()
-												}
-											>
-												<p className="text-primary-600 font-medium">
-													Change Images
-												</p>
-											</div>
-											<div
-												className="mt-4"
-												onClick={() =>
-													handleRemovePreview()
-												}
-											>
-												<p className="text-primary-600 font-medium">
-													Remove Images
-												</p>
+											<div className="flex mt-4 gap-4">
+												<div
+													className=""
+													onClick={() =>
+														document
+															.querySelector(
+																"#productImgInput1"
+															)
+															.click()
+													}
+												>
+													<p className="text-primary-600 font-medium hover:cursor-pointer hover:underline">
+														Change Images
+													</p>
+												</div>
+												<div
+													className=""
+													onClick={() =>
+														handleRemovePreview()
+													}
+												>
+													<p className="text-red-600 font-medium hover:cursor-pointer hover:underline">
+														Remove Images
+													</p>
+												</div>
 											</div>
 										</div>
 									) : (

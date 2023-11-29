@@ -17,6 +17,7 @@ import {
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 import { IoAdd } from "react-icons/io5";
+import toast from "react-hot-toast";
 
 const AdminCreateNewWarehouseModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -37,7 +38,7 @@ const AdminCreateNewWarehouseModal = () => {
 			setIsLoading(true);
 			const { name, province, city, address } = data;
 			if (!name || !province || !city || !address) {
-				alert("Please fill out all the form");
+				toast.error("Please fill out all the form");
 				return;
 			}
 

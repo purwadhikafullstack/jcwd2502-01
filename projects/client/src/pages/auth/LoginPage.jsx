@@ -46,7 +46,7 @@ const LoginPage = () => {
 		console.log(role);
 		if (role === "user") {
 			navigate("/");
-		} else if (role === "admin") {
+		} else if (role === "admin" || role === "super") {
 			navigate("/admin");
 		}
 	}, [role]);

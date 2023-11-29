@@ -38,10 +38,6 @@ import AdminStocksLogPage from "./pages/admin/stocks/AdminStocksLogPage";
 import AdminUserListPage from "./pages/admin/users/AdminUserListPage";
 import AdminSalesReportPage from "./pages/admin/reports/AdminSalesReportPage";
 import AdminOrderListPage from "./pages/admin/orders/AdminOrderListPage";
-import AdminReportTransactionListTable from "./components/sections/admin/AdminReportTransactionListTable";
-import AdminReportCategoryListTable from "./components/sections/admin/AdminReportCategoryListTable";
-import AdminReportBrandListTable from "./components/sections/admin/AdminReportBrandListTable";
-import AdminReportProductListTable from "./components/sections/admin/AdminReportProductListTable";
 
 function App() {
 	const location = useLocation();
@@ -175,7 +171,7 @@ function App() {
 				/>
 				<Route path="/admin/stocks" element={<AdminStocksListPage />} />
 				<Route
-					path="/admin/mutations"
+					path="/admin/stock-history"
 					element={<AdminStocksLogPage />}
 				/>
 				<Route
@@ -187,22 +183,6 @@ function App() {
 					path="/admin/reports"
 					element={<AdminSalesReportPage />}
 				/>
-				{/* <Route
-					path="/admin/reports/transaction"
-					element={<AdminReportTransactionListTable />}
-				/>
-				<Route
-					path="/admin/reports/category"
-					element={<AdminReportCategoryListTable />}
-				/>
-				<Route
-					path="/admin/reports/brand"
-					element={<AdminReportBrandListTable />}
-				/>
-				<Route
-					path="/admin/reports/product"
-					element={<AdminReportProductListTable />}
-				/> */}
 
 				<Route path="*" element={<NotFoundPage />} />
 			</Routes>

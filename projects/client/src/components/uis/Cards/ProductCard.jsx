@@ -2,6 +2,8 @@ import React from "react";
 import { Chip, Image } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 
+import DefaultProductImg from "./../../../assets/logo/nexo_sqr.png";
+
 const ProductCard = (props) => {
 	const data = props.data;
 
@@ -20,10 +22,18 @@ const ProductCard = (props) => {
 				<div className="image-wrapper aspect-square w-full">
 					<Image
 						radius="none"
-						src={`${
-							process.env.REACT_APP_IMAGE_API
-						}${data?.product_images[0]?.image.substring(7)}`}
-						className="image aspect-square w-full h-full rounded-t-[19px] object-contain"
+						src={
+							data?.product_images?.length
+								? `${
+										process.env.REACT_APP_IMAGE_API
+								  }${data?.product_images[0]?.image.substring(
+										7
+								  )}`
+								: DefaultProductImg
+						}
+						className={`image aspect-square w-full h-full rounded-t-[19px] object-contain ${
+							data?.product_images?.length ? "p-0" : "p-4"
+						}`}
 						alt={`${data?.product_images[0]?.image.substring(7)}`}
 					/>
 				</div>

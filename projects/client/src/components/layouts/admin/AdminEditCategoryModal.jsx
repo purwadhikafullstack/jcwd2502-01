@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
+import toast from "react-hot-toast";
 
 const AdminEditCategoryModal = ({
 	handleOpenEditCategoryModal,
@@ -42,7 +43,7 @@ const AdminEditCategoryModal = ({
 			const { category_type } = values;
 
 			if (!category_type) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields");
 				setIsLoading(false);
 				return; // Stop further execution
 			}
@@ -59,19 +60,19 @@ const AdminEditCategoryModal = ({
 			);
 
 			if (updateCategory.data.isError) {
-				alert(updateCategory.data.message);
+				toast.error(updateCategory.data.message);
 				setIsLoading(false);
 				return;
 			}
 
 			// if (updateCategory.status === 201) {
-			// 	alert("Warehouse updated successfully");
+			// 	toast.error("Warehouse updated successfully");
 
 			// 	setTimeout(() => {
 			// 		window.location.reload(false);
 			// 	}, 1500);
 			// } else {
-			// 	alert("Error updating warehouse");
+			// 	toast.error("Error updating warehouse");
 			// }
 
 			window.location.reload(false);

@@ -14,7 +14,7 @@ import ProductCard from "../Cards/ProductCard";
 import MySwiperButtonPrev from "../MySwiperButtons/MySwiperButtonPrev";
 import MySwiperButtonNext from "../MySwiperButtons/MySwiperButtonNext";
 
-const SwiperBestSellingGears = () => {
+const SwiperBestSellingGears = ({ topSoldProducts }) => {
 	return (
 		<Swiper
 			autoplay={{
@@ -37,31 +37,15 @@ const SwiperBestSellingGears = () => {
 			className={`mySwiper w-full`}
 		>
 			<MySwiperButtonPrev />
-			<SwiperSlide className="my-2">
-				<ProductCard />
-			</SwiperSlide>
-			<SwiperSlide className="my-2">
-				<ProductCard />
-			</SwiperSlide>
-			<SwiperSlide className="my-2">
-				<ProductCard />
-			</SwiperSlide>
-			<SwiperSlide className="my-2">
-				<ProductCard />
-			</SwiperSlide>
-			<SwiperSlide className="my-2">
-				<ProductCard />
-			</SwiperSlide>
-			<SwiperSlide className="my-2">
-				<ProductCard />
-			</SwiperSlide>
-			<SwiperSlide className="my-2">
-				<ProductCard />
-			</SwiperSlide>
-			<SwiperSlide className="my-2">
-				<ProductCard />
-			</SwiperSlide>
-			<MySwiperButtonNext />
+			{topSoldProducts?.map((product) => {
+				return (
+					<>
+						<SwiperSlide className="my-2">
+							<ProductCard data={product} />
+						</SwiperSlide>
+					</>
+				);
+			})}
 		</Swiper>
 	);
 };

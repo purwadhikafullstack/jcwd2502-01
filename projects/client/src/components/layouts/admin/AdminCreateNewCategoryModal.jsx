@@ -14,6 +14,7 @@ import {
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const AdminCreateNewCategoryModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -25,7 +26,7 @@ const AdminCreateNewCategoryModal = () => {
 			setIsLoading(true);
 
 			if (!categoryType) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields");
 				setIsLoading(false);
 				return; // Stop further execution
 			}
@@ -40,7 +41,7 @@ const AdminCreateNewCategoryModal = () => {
 			);
 
 			if (addCategory.data.isError) {
-				alert(addCategory.data.message);
+				toast.error(addCategory.data.message);
 				setIsLoading(false);
 				return;
 			}

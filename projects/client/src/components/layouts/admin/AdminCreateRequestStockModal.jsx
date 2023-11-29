@@ -19,6 +19,7 @@ import { FaCodePullRequest } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { axiosInstance } from "../../../lib/axios";
+import toast from "react-hot-toast";
 
 const AdminCreateRequestStockModal = ({ productName }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -79,15 +80,17 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 			} = values;
 
 			if (!warehouse_id_to) {
-				alert("Please choose a warehouse");
+				toast.error("Please choose a warehouse");
 				return; // Stop further execution
 			}
 			if (quantity <= 0) {
-				alert("Quantity can not be 0 or less than 0");
+				toast.error("Quantity can not be 0 or less than 0");
 				return; // Stop further execution
 			}
 			if (quantity > dataStock.stocks) {
-				alert("Quantity requested is more than what is available");
+				toast.error(
+					"Quantity requested is more than what is available"
+				);
 				return; // Stop further execution
 			}
 			// // const accessToken = localStorage.getItem("accessToken");
