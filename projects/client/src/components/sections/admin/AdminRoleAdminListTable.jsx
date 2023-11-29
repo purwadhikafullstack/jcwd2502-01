@@ -13,7 +13,7 @@ import {
 	Input,
 	Pagination,
 } from "@nextui-org/react";
-import { BiEdit } from "react-icons/bi";
+import { RiUserSettingsLine } from "react-icons/ri";
 import {
 	fetchAdmin,
 	onClearAdmin,
@@ -27,16 +27,18 @@ import {
 import { useFormik } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoTrashOutline, IoSearch } from "react-icons/io5";
-import SelectSortByUser from "../../uis/Selects/SelectSortByUser";
 import { useDispatch, useSelector } from "react-redux";
 import SelectSortByAdmin from "../../uis/Selects/SelectSortByAdmin";
 import EditAdminManageUser from "../../layouts/user/EditAdminManageUser";
 import CreateNewAdminModal from "../../layouts/user/CreateNewAdminModal";
+import { axiosInstance } from "../../../lib/axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const AdminRoleAdminListTable = () => {
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const navigate = useNavigate();
+	const accessToken = localStorage.getItem("accessToken");
 	const [touchModal, setTouchModal] = useState(false);
 	const {
 		countAdmin,
@@ -94,8 +96,30 @@ const AdminRoleAdminListTable = () => {
 
 	const clear = async () => {
 		await dispatch(onClearAdmin());
-		navigate(`/admin/users?${searchAdmin && `&search=${searchAdmin}`}`);
+		navigate(`/admin/users`);
 		// window.location.reload(false);
+	};
+
+	const handleDelete = async (id) => {
+		try {
+			console.log(id);
+			const deleteAdmin = await axiosInstance(accessToken).delete(
+				`/users/deleteAdminData/${id}`
+			);
+			if (!deleteAdmin.data.isError)
+				toast.success(deleteAdmin.data.message);
+			console.log(`/users/deleteAdminData/${id}`);
+			console.log(deleteAdmin);
+			dispatch(
+				fetchAdmin(
+					`?${
+						searchAdmin && `&search=${searchAdmin}`
+					}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
+				)
+			);
+		} catch (error) {
+			console.error();
+		}
 	};
 
 	const takeFromQuery = () => {
@@ -174,32 +198,28 @@ const AdminRoleAdminListTable = () => {
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
-						<Tooltip content="Edit Admin">
-							{/* <Button
+						<EditAdminManageUser
+							data={users}
+							handleRefresh={setTouchModal}
+						/>
+						<Tooltip color="success" content="Reset Password">
+							<Button
 								isIconOnly
-								variant="light"
-								className="text-lg text-default-400 cursor-pointer active:opacity-50"
-								// onPress={() => {
-								// 	onOpenEditCategoryModal(
-								// 		category.id,
-								// 		category.category_type
-								// 	);
-								// }}
-								// isDisabled={role !== "super"}
+								variant="flat"
+								className="text-lg cursor-pointer active:opacity-50"
 							>
-								<BiEdit size={24} />
-							</Button> */}
-							<EditAdminManageUser data={users} />
+								<RiUserSettingsLine
+									className="text-green-600"
+									size={24}
+								/>
+							</Button>
 						</Tooltip>
 						<Tooltip color="danger" content="Remove Admin">
 							<Button
 								isIconOnly
-								variant="light"
+								variant="flat"
 								className="text-lg text-danger cursor-pointer active:opacity-50"
-								// onClick={() => {
-								// 	onDelete(category.id);
-								// }}
-								// isDisabled={role !== "super"}
+								onClick={() => handleDelete(users.id)}
 							>
 								<IoTrashOutline size={24} />
 							</Button>
@@ -207,7 +227,6 @@ const AdminRoleAdminListTable = () => {
 					</div>
 				);
 			default:
-			// return cellValue;
 		}
 	}, []);
 
@@ -233,6 +252,7 @@ const AdminRoleAdminListTable = () => {
 
 	return (
 		<>
+			<Toaster />
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
 					<form className="w-[30%]" onSubmit={handleSubmitSearch}>

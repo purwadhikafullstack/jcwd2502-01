@@ -13,6 +13,8 @@ const {
 	getAllDataUser,
 	getAllDataAdmin,
 	createAdmin,
+	updateDataAdmin,
+	deleteDataAdmin,
 } = require("./../services/usersService");
 const respHandler = require("./../utils/respHandler");
 
@@ -141,6 +143,35 @@ module.exports = {
 			}
 		} catch (error) {
 			console.log(error);
+			next(error);
+		}
+	},
+	updateAdminData: async (req, res, next) => {
+		try {
+			const result = await updateDataAdmin(req.body);
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	deleteAdminData: async (req, res, next) => {
+		try {
+			const result = await deleteDataAdmin(req.params);
+			// console.log(req.params);
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
+			);
+		} catch (error) {
 			next(error);
 		}
 	},

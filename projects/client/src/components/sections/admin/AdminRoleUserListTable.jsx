@@ -112,7 +112,7 @@ const AdminRoleUserListTable = () => {
 		{ name: "NAME", uid: "name" },
 		{ name: "EMAIL", uid: "email" },
 		{ name: "STATUS", uid: "status" },
-		{ name: "ACTIONS", uid: "actions" },
+		// { name: "ACTIONS", uid: "actions" },
 	];
 
 	const handleSubmitSearch = (e) => {
@@ -127,7 +127,7 @@ const AdminRoleUserListTable = () => {
 
 	const clear = async () => {
 		await dispatch(onClearUser());
-		navigate(`/admin/users?${searchUser && `&search=${searchUser}`}`);
+		navigate(`/admin/users`);
 		// window.location.reload(false);
 	};
 

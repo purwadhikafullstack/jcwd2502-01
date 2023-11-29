@@ -40,9 +40,6 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 	const [warehouseAdmin, setWarehouseAdmin] = useState([]);
 	// const [selectedProvince, setSelectedProvince] = useState();
 	const [selectedWarehouse, setSelectedWarehouse] = useState();
-	const [cities, setCities] = useState([]);
-	const [citiesName, setCitiesName] = useState("");
-	const [selectedCity, setSelectedCity] = useState();
 	const formik = useFormik({
 		initialValues: {
 			username: "",
@@ -70,9 +67,12 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 				values
 			);
 			console.log(createNewAdmin);
-			handleRefresh(true);
+			if (!createNewAdmin.data.isError) {
+				toast.success(createNewAdmin.data.message);
+				handleRefresh(true);
+			}
 			// dispatch(onSetUserAddresses(accessToken));
-			// formik.resetForm();
+			formik.resetForm();
 		} catch (error) {
 			console.log(error);
 		}
@@ -303,7 +303,7 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 												// onPress={onClose}
 											>
 												<span className="font-bold text-black">
-													Save New Data Admin
+													Create New Admin
 												</span>
 											</Button>
 											<Button

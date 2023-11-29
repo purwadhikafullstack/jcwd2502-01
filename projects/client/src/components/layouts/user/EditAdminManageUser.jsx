@@ -24,54 +24,46 @@ import {
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { onSetUserAddresses } from "../../../redux/features/users";
+import { OnCheckIsLogin } from "../../../redux/features/users";
 import { BiEdit } from "react-icons/bi";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-const EditAdminManageUser = ({ data }) => {
+const EditAdminManageUser = ({ data, handleRefresh }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [warehouses, setWarehouses] = useState([]);
 	const accessToken = localStorage.getItem("accessToken");
-	const { username } = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const location = useLocation();
-	const [showPassword, setShowPassword] = useState(false);
-	const [provinces, setProvinces] = useState([]);
-	const [warehouseAdmin, setWarehouseAdmin] = useState([]);
-	// const [selectedProvince, setSelectedProvince] = useState();
 	const [selectedRole, setSelectedRole] = useState(null);
 	const [selectedWarehouse, setSelectedWarehouse] = useState();
-	const [cities, setCities] = useState([]);
-	const [citiesName, setCitiesName] = useState("");
-	const [selectedCity, setSelectedCity] = useState();
+
 	const formik = useFormik({
 		initialValues: {
-			username: data?.username || "",
-			email: data?.email || "",
-			password: data?.password || "",
-			warehouse_id: data?.warehouse_id || "",
-			role: data?.role || "",
+			idUser: data?.id,
+			username: data?.username,
+			email: data?.email,
+			warehouse_id: data?.warehouse_id,
+			role: data?.role,
 		},
-		onSubmit: async (values) => {
-			// handleSubmit(values);
-			console.log(values);
+		onSubmit: (values) => {
+			handleSubmit(values);
+			// console.log(values.idUser);
 		},
 		validationSchema: yup.object().shape({
 			username: yup.string().required(),
 			email: yup.string().required(),
-			password: yup.string().required(),
 		}),
 	});
 	const handleSubmit = async (values) => {
 		try {
 			const { username, email, password, warehouse_id, role } = values;
 			console.log(values);
-			// const createNewAddress = await axiosInstance(accessToken).post(
-			// 	"/user-addresses/newAddress",
-			// 	values
-			// );
-			// console.log(createNewAddress);
-			// dispatch(onSetUserAddresses(accessToken));
-			formik.resetForm();
+			const updateDataAdmin = await axiosInstance(accessToken).post(
+				"/users/updateAdminData",
+				values
+			);
+			console.log(updateDataAdmin);
+			handleRefresh(true);
+			// formik.resetForm();
 		} catch (error) {
 			console.log(error);
 		}
@@ -121,13 +113,29 @@ const EditAdminManageUser = ({ data }) => {
 		setSelectedWarehouse(item);
 		formik.setFieldValue("warehouse_id", item);
 	};
+	const handleRole = (item) => {
+		setSelectedRole(item);
+		formik.setFieldValue("role", item);
+	};
 	useEffect(() => {
 		fetchWarehouses();
 	}, []);
+	// useEffect(() => {
+	// 	// formik.setFieldValue("recipient_name", username);
+	// 	// console.log(formik.values);
+	// }, [formik]);
+
 	useEffect(() => {
-		// formik.setFieldValue("recipient_name", username);
-		console.log(selectedWarehouse);
-	}, [selectedWarehouse]);
+		formik.setValues({
+			idUser: data?.id || "",
+			username: data?.username || "",
+			email: data?.email || "",
+			warehouse_id: data?.warehouse_id || "",
+			role: data?.role || "",
+		});
+
+		// gender ? setSelectedGender(gender):
+	}, [data]);
 
 	return (
 		<>
@@ -140,7 +148,7 @@ const EditAdminManageUser = ({ data }) => {
 				{(matches) => (
 					<>
 						<Tooltip content="Edit Admin">
-							<Button onPress={onOpen}>
+							<Button variant="flat" isIconOnly onPress={onOpen}>
 								<BiEdit size={24} />
 							</Button>
 						</Tooltip>
@@ -163,7 +171,10 @@ const EditAdminManageUser = ({ data }) => {
 											</h2>
 										</ModalHeader>
 										<ModalBody>
-											<form className="flex flex-col justify-between gap-4 h-full">
+											<form
+												className="flex flex-col justify-between gap-4 h-full"
+												onSubmit={formik.handleSubmit}
+											>
 												<div className="form-control">
 													<Input
 														type="text"
@@ -174,9 +185,12 @@ const EditAdminManageUser = ({ data }) => {
 														radius="sm"
 														size="lg"
 														placeholder="John Doe"
-														value={
+														defaultValue={
 															formik.values
 																.username
+																? formik.values
+																		.username
+																: ""
 														}
 														onChange={
 															formik.handleChange
@@ -194,51 +208,16 @@ const EditAdminManageUser = ({ data }) => {
 														radius="sm"
 														size="lg"
 														placeholder="Home"
-														value={
+														defaultValue={
 															formik.values.email
+																? formik.values
+																		.email
+																: ""
 														}
 														onChange={
 															formik.handleChange
 														}
 														isRequired
-													/>
-												</div>
-												<div className="form-group">
-													<Input
-														type={
-															showPassword
-																? "text"
-																: "password"
-														}
-														name="password"
-														id="password"
-														placeholder="Password"
-														labelPlacement="outside"
-														variant="bordered"
-														size="lg"
-														radius="sm"
-														label="Password"
-														isRequired
-														onChange={
-															formik.handleChange
-														}
-														endContent={
-															<button
-																className="focus:outline-none"
-																type="button"
-																onClick={() =>
-																	setShowPassword(
-																		!showPassword
-																	)
-																}
-															>
-																{showPassword ? (
-																	<IoEyeOutline className="text-2xl text-default-400 pointer-events-none" />
-																) : (
-																	<IoEyeOffOutline className="text-2xl text-default-400 pointer-events-none" />
-																)}
-															</button>
-														}
 													/>
 												</div>
 												<div className="form-control">
@@ -254,6 +233,15 @@ const EditAdminManageUser = ({ data }) => {
 														}
 														placeholder="Select a Role"
 														isRequired
+														selectedKeys={
+															formik.values.role
+																? [
+																		formik
+																			.values
+																			.role,
+																  ]
+																: null
+														}
 													>
 														{renderRoleOption()}
 													</Select>
@@ -273,6 +261,22 @@ const EditAdminManageUser = ({ data }) => {
 														}
 														placeholder="Select a warehouse"
 														// isRequired
+														selectedKeys={
+															formik.values
+																.warehouse_id
+																? [
+																		String(
+																			formik
+																				.values
+																				.warehouse_id
+																		),
+																  ]
+																: null
+														}
+														value={
+															formik.values
+																.warehouse_id
+														}
 													>
 														{renderWarehouseOption()}
 													</Select>
@@ -284,9 +288,9 @@ const EditAdminManageUser = ({ data }) => {
 												color="primary"
 												className="text-center mb-4"
 												type="submit"
-												onClick={() => {
-													formik.handleSubmit();
-													// onClose();
+												onClick={(e) => {
+													formik.handleSubmit(e);
+													onClose();
 												}}
 												fullWidth
 												// onPress={onClose}

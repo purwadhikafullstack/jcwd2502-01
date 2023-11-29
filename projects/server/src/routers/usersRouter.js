@@ -21,5 +21,11 @@ Router.post(
 	checkRegister,
 	usersController.registAdmin
 );
+Router.post("/updateAdminData", verifySuper, usersController.updateAdminData);
+Router.delete(
+	"/deleteAdminData/:id",
+	verifySuper,
+	usersController.deleteAdminData
+);
 
 module.exports = Router;

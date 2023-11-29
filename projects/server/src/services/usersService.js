@@ -368,7 +368,6 @@ module.exports = {
 					"username",
 					"email",
 					"status",
-					"password",
 					"role",
 					"warehouse_id",
 				],
@@ -456,6 +455,73 @@ module.exports = {
 			return true;
 		} catch (error) {
 			console.log(error);
+			return error;
+		}
+	},
+	updateDataAdmin: async (body) => {
+		try {
+			const { idUser, username, email, role, warehouse_id } = body;
+			console.log(body);
+			if (!username || !email || !role)
+				throw { isError: true, message: "Input should be provided" };
+
+			const checkExistingUsername = await db.user.findOne({
+				where: {
+					username: username,
+					id: { [Op.not]: idUser },
+				},
+			});
+
+			if (checkExistingUsername) {
+				throw { isError: true, message: "Username already exists" };
+			}
+
+			const checkExistingEmail = await db.user.findOne({
+				where: {
+					email: email,
+					id: { [Op.not]: idUser },
+				},
+			});
+
+			if (checkExistingEmail) {
+				throw { isError: true, message: "Email already exists" };
+			}
+
+			dataSend = {
+				username: username || checkUser.dataValues.username,
+				email: email || checkUser.dataValues.email,
+				role: role || checkUser.dataValues.role,
+				warehouse_id: warehouse_id || checkUser.dataValues.warehouse_id,
+			};
+
+			const updateDataUser = await db.user.update(dataSend, {
+				where: { id: idUser },
+			});
+			console.log(updateDataUser);
+			if (!updateDataUser) {
+				return { isError: true, message: "Update Data is Failed!" };
+			} else {
+				return {
+					isError: false,
+					message: "Update Data is Success!",
+				};
+			}
+		} catch (error) {
+			return error;
+		}
+	},
+	deleteDataAdmin: async (params) => {
+		try {
+			const { id } = params;
+			// console.log(id);
+			const checkUser = await db.user.findOne({ where: { id: id } });
+			if (!checkUser) throw { isError: true, message: "user not found!" };
+			const deleteDataUser = await db.user.destroy({ where: { id: id } });
+			console.log(deleteDataUser);
+			if (!deleteDataUser)
+				throw { isError: true, message: "Failed Delete User!" };
+			return { isError: false, message: "delete User is Successful!" };
+		} catch (error) {
 			return error;
 		}
 	},

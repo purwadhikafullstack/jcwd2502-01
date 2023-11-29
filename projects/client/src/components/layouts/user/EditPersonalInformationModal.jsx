@@ -31,6 +31,7 @@ export default function App() {
 	// console.log(gender);
 	// console.log(birth_date);
 	const [selectedGender, setSelectedGender] = useState(null);
+	const [selectedBirth, setSelectedBirth] = useState(null);
 	const arrGender = [
 		{ value: "Male", label: "Male" },
 		{ value: "Female", label: "Female" },
@@ -39,6 +40,11 @@ export default function App() {
 	const handleGenderChange = (selecGen) => {
 		setSelectedGender(selecGen);
 		formik.setFieldValue("gender", selecGen);
+		console.log(selecGen);
+	};
+	const handleBirthChange = (selecGen) => {
+		setSelectedBirth(selecGen);
+		formik.setFieldValue("birth_date", selecGen);
 		console.log(selecGen);
 	};
 
@@ -50,6 +56,8 @@ export default function App() {
 		},
 		onSubmit: async (values) => {
 			// onSubmitEdit(values);
+			console.log("BERJALAN DISNI");
+			console.log(values);
 			const updateData = await axiosInstance(accessToken).patch(
 				"/users/personalData",
 				values
@@ -67,16 +75,17 @@ export default function App() {
 	const resetFrom = () => {
 		formik.setValues({
 			username: username || "",
-			birth_date: birth_date || "",
+			birth_date: selectedBirth || "",
 			gender: selectedGender || "",
 		});
 	};
 
 	useEffect(() => {
 		setSelectedGender(gender);
+		setSelectedBirth(birth_date);
 		formik.setValues({
 			username: username || "",
-			birth_date: birth_date || "",
+			birth_date: selectedBirth || "",
 			gender: selectedGender || "",
 		});
 		console.log(typeof gender);
@@ -136,10 +145,18 @@ export default function App() {
 											radius="sm"
 											size="lg"
 											placeholder="a"
-											defaultValue={"Warehouse 1"}
+											onChange={(e) =>
+												handleBirthChange(
+													e.target.value
+												)
+											}
 											isRequired
-											value={formik.values.birth_date}
-											onChange={formik.handleChange}
+											defaultValue={
+												selectedBirth
+													? [selectedBirth]
+													: ""
+											}
+											// onChange={formik.handleChange}
 										/>
 									</div>
 									<div className="form-control">
