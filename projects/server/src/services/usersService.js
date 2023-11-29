@@ -1,6 +1,7 @@
 const db = require("./../models");
 const fs = require("fs").promises;
 const handlebars = require("handlebars");
+const { Sequelize, Op, literal, fn, col } = require("sequelize");
 const path = require("path");
 const transporter = require("./../helper/transporter");
 const { createJWT } = require("./../lib/jwt");
@@ -311,17 +312,148 @@ module.exports = {
 			return error;
 		}
 	},
-	getAllDataUser: async () => {
+	getAllDataUser: async (query) => {
 		try {
-			const allData = await db.user.findAll({
-				attributes: ["profile_picture", "username", "email", "status"],
+			const { search, orderField, orderDirection, offset } = query;
+
+			const orderOptions = [];
+			if (orderField && orderDirection) {
+				orderOptions.push([orderField, orderDirection]);
+			}
+			const baseQuery = {
+				attributes: [
+					"id",
+					"profile_picture",
+					"username",
+					"email",
+					"status",
+				],
 				where: { role: "user" },
-			});
-			console.log(allData);
+				order: orderOptions,
+			};
+
+			if (search) {
+				baseQuery.where.username = {
+					[Op.like]: `%${search}%`,
+				};
+			}
+
+			if (offset) {
+				baseQuery.offset = Number(offset);
+			}
+			const allData = await db.user.findAll(baseQuery);
+			// console.log(allData);
+			const count = await db.user.count({ where: { role: "user" } });
 			return {
 				message: "success!",
-				data: allData,
+				data: { count: count, data: allData },
 			};
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
+	getAllDataAdmin: async (query) => {
+		try {
+			const { search, orderField, orderDirection, offset } = query;
+
+			const orderOptions = [];
+			if (orderField && orderDirection) {
+				orderOptions.push([orderField, orderDirection]);
+			}
+			const baseQuery = {
+				attributes: [
+					"id",
+					"profile_picture",
+					"username",
+					"email",
+					"status",
+					"password",
+					"role",
+					"warehouse_id",
+				],
+				where: { role: { [Op.in]: ["admin", "super"] } },
+				order: orderOptions,
+			};
+
+			if (search) {
+				baseQuery.where.username = {
+					[Op.like]: `%${search}%`,
+				};
+			}
+
+			if (offset) {
+				baseQuery.offset = Number(offset);
+			}
+			const allData = await db.user.findAll(baseQuery);
+			// console.log(allData);
+			const count = await db.user.count({
+				where: { role: { [Op.in]: ["admin", "super"] } },
+			});
+			// console.log(allData.dataValues.password);
+			return {
+				message: "success!",
+				data: { count: count, data: allData },
+			};
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
+	createAdmin: async (body) => {
+		try {
+			const { username, email, password, warehouse_id, role } = body;
+			const checkUsername = await db.user.findOne({
+				where: { username },
+			});
+			if (checkUsername)
+				throw { isError: true, message: "username already used" };
+			const checkEmail = await db.user.findOne({ where: { email } });
+			if (checkEmail) throw { message: "email already used" };
+			const hashPassword = await hash(password);
+			console.log(hashPassword);
+			const registerAdmin = await db.user.create({
+				username,
+				email,
+				password: hashPassword,
+				role: role,
+				status: "unverified",
+				warehouse_id: warehouse_id ? warehouse_id : null,
+				birth_date: null,
+				phone: null,
+				gender: null,
+			});
+
+			const token = createJWT(
+				{
+					username: registerAdmin.dataValues.username,
+					apiKey: "Approved",
+				},
+				"1d",
+				"verified"
+			);
+			const readTemplate = await fs.readFile(
+				path.join(__dirname, "../public/index.html"),
+				"utf-8"
+			);
+			const compiledTemplate = await handlebars.compile(readTemplate);
+			const newTemplate = compiledTemplate({
+				port: process.env.DB_PORT_index,
+				username,
+				token,
+				email,
+			});
+
+			await transporter.sendMail({
+				from: {
+					name: "nexocomp",
+					email: "nexocomppurwadhika@gmail.com",
+				},
+				to: "andrean923@gmail.com", //registerUser.dataValues.email
+				subject: "Register New Account",
+				html: newTemplate,
+			});
+			return true;
 		} catch (error) {
 			console.log(error);
 			return error;
