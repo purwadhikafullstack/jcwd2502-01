@@ -4,6 +4,7 @@ import { Select, SelectItem } from "@nextui-org/react";
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CheckoutShipmentMethod = ({
 	nearestWarehouseData,
@@ -32,7 +33,7 @@ const CheckoutShipmentMethod = ({
 
 				setShipmentServices(resultRajaOngkirCost.data.data);
 			} else if (selectedUserAddressData && totalWeight >= 30000) {
-				alert(
+				toast.error(
 					"Whoa, too much stuff! We can't handle more than 30kg. Please lighten your load."
 				);
 				navigate("/cart");

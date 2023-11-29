@@ -19,7 +19,7 @@ module.exports = {
 	},
 	getAllCategoriesWithProducts: async (req, res, next) => {
 		try {
-			const result = await findAllCategoriesWithProducts();
+			const result = await findAllCategoriesWithProducts(req.query);
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
@@ -43,9 +43,9 @@ module.exports = {
 	},
 	deleteCategory: async (req, res, next) => {
 		try {
-			const { id } = req.params;
+			const { categoryId } = req.params;
 
-			const result = await removeCategory(id);
+			const result = await removeCategory(categoryId);
 
 			respHandler(res, result.message, result.data);
 		} catch (error) {
@@ -54,9 +54,9 @@ module.exports = {
 	},
 	updateCategory: async (req, res, next) => {
 		try {
-			const { id } = req.params;
+			const { categoryId } = req.params;
 			const { category_type } = req.body;
-			const result = await editCategory(id, category_type);
+			const result = await editCategory(categoryId, category_type);
 
 			respHandler(
 				res,

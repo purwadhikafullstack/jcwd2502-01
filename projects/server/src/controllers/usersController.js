@@ -10,6 +10,7 @@ const {
 	requestPassword,
 	changePassword,
 	updateData,
+	getAllData,
 } = require("./../services/usersService");
 const respHandler = require("./../utils/respHandler");
 const e = require("express");
@@ -96,6 +97,20 @@ module.exports = {
 				null,
 				null,
 				updateUser.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getAllUser: async (req, res, next) => {
+		try {
+			const result = await getAllData();
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
 			);
 		} catch (error) {
 			next(error);

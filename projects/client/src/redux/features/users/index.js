@@ -1,6 +1,7 @@
 import { axiosInstance } from "./../../../lib/axios";
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
+import { setWarehouse } from "../products";
 
 const initialState = {
 	username: "",
@@ -16,6 +17,7 @@ const initialState = {
 	birth_date: "",
 	phone: "",
 	theme: "",
+	dataUser: [],
 };
 
 export const userSlice = createSlice({
@@ -52,6 +54,9 @@ export const userSlice = createSlice({
 		setThemeUser: (initialState, { payload }) => {
 			initialState.theme = payload;
 		},
+		setDataUser: (initialState, { payload }) => {
+			initialState.dataUser = payload;
+		},
 		login: (state, action) => {
 			return (state = {
 				...state,
@@ -73,7 +78,6 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 			email: email,
 			password: password,
 		});
-		console.log(checkUser);
 		if (checkUser.data.isError)
 			return toast.error(`${checkUser.data.message}`);
 
@@ -87,6 +91,9 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 			// dispatch(setProfileUser(checkUser.data.data.profileUser));
 			// dispatch(setEmail(checkUser.data.data.email));
 			dispatch(login(checkUser.data.data));
+			if (checkUser.data.data.role === "admin") {
+				dispatch(setWarehouse(checkUser.data.data.warehouse_id));
+			}
 		}, 1200);
 		toast.success(`${checkUser.data.message}`);
 	} catch (error) {
@@ -152,6 +159,9 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 		// dispatch(setProfileUser(CheckToken.data.data.image));
 		// dispatch(setRole(CheckToken.data.data.role));
 		dispatch(login(CheckToken.data.data));
+		if (CheckToken.data.data.role === "admin") {
+			dispatch(setWarehouse(CheckToken.data.data.warehouse_id));
+		}
 	} catch (error) {
 		if (error.response.data.isError && localStorage.getItem("tokenLogin")) {
 			localStorage.removeItem("tokenLogin");
@@ -254,6 +264,13 @@ export const resetPassword = (token, newpass, conpass) => async (dispatch) => {
 	}
 };
 
+export const getDataUser = () => async (dispatch) => {
+	try {
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 export const {
 	setUsername,
 	setProfileUser,
@@ -267,5 +284,6 @@ export const {
 	setThemeUser,
 	setSelectedUserAddressIdMain,
 	setStatus,
+	setDataUser,
 } = userSlice.actions;
 export default userSlice.reducer;

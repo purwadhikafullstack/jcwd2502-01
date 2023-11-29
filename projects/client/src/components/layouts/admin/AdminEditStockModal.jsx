@@ -15,6 +15,7 @@ import {
 import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStockAsync } from "../../../redux/features/products";
+import toast from "react-hot-toast";
 const AdminEditStockModal = ({ id }) => {
 	const [dataStock, setDataStock] = useState([]);
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -34,7 +35,10 @@ const AdminEditStockModal = ({ id }) => {
 
 	const fetchStock = async () => {
 		try {
-			const { data } = await axiosInstance().get(`stocks/${id}`);
+			const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance(accessToken).get(
+				`stocks/${id}`
+			);
 			setDataStock(data.data);
 		} catch (error) {
 			console.log(error);
@@ -57,15 +61,18 @@ const AdminEditStockModal = ({ id }) => {
 			const { stocks } = values;
 
 			if (!stocks) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields");
 				return; // Stop further execution
 			}
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const updateStocks = await axiosInstance().patch(`stocks/${id}`, {
-				stocks,
-			});
+			const updateStocks = await axiosInstance(accessToken).patch(
+				`stocks/${id}`,
+				{
+					stocks,
+				}
+			);
 
 			dispatch(
 				fetchStockAsync(
@@ -108,16 +115,14 @@ const AdminEditStockModal = ({ id }) => {
 
 	return (
 		<>
-			<Tooltip content="Edit stock">
-				<Button
-					variant="light"
-					onPress={onOpen}
-					className="text-default-400 cursor-pointer active:opacity-50"
-					startContent={<BiEdit size={24} />}
-				>
-					Edit
-				</Button>
-			</Tooltip>
+			<Button
+				variant="light"
+				onPress={onOpen}
+				className="text-default-400 cursor-pointer active:opacity-50"
+				startContent={<BiEdit size={24} />}
+			>
+				Edit
+			</Button>
 			<Modal
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
@@ -133,7 +138,7 @@ const AdminEditStockModal = ({ id }) => {
 									Edit Stocks
 								</h2>
 							</ModalHeader>
-							<ModalBody>
+							<ModalBody className="pb-6">
 								<form
 									onSubmit={formik.handleSubmit}
 									className="flex flex-col gap-4 h-full"

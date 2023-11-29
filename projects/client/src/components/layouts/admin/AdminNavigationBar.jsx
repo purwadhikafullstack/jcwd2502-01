@@ -35,12 +35,12 @@ const AdminNavigationBar = () => {
 	return (
 		<Navbar
 			isBlurred={false}
-			className={`w-full py-2 bg-background`}
+			className={`w-full py-2 bg-background z-[9]`}
 			maxWidth="full"
 		>
 			<NavbarBrand>
 				{location.pathname === "/admin/add-product" ||
-				location.pathname === "/admin/edit-product" ? (
+				location.pathname.startsWith("/admin/edit-product") ? (
 					<Link to={"/admin/home"}>
 						<div className="-mb-1.5 w-full">
 							<NexocompLogo

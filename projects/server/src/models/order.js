@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
 			total_item: DataTypes.INTEGER,
 			proof_of_payment: DataTypes.STRING,
 			status: { type: DataTypes.ENUM, values: enumValues },
+			viewed: DataTypes.INTEGER,
 			createdAt: {
 				type: DataTypes.DATE,
 				defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),

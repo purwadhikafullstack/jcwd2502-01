@@ -19,7 +19,7 @@ import TransactionList from "../../../assets/icons/TransactionList";
 
 const ProfileDropdown = () => {
 	const { username } = useSelector((state) => state.user);
-	const { email, status } = useSelector((state) => state.user);
+	const { email, status, role } = useSelector((state) => state.user);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -69,29 +69,33 @@ const ProfileDropdown = () => {
 						</div>
 					</div>
 				</DropdownItem>
-				<DropdownItem key="settings">
-					<Link to={"/profile/settings"}>
-						<div className="flex items-center gap-2 p-2">
-							<IoSettingsOutline size={24} />
-							<h4 className="font-medium text-body-lg">
-								Settings
-							</h4>
-						</div>
-					</Link>
-				</DropdownItem>
-				<DropdownItem key="settings">
-					<Link to={"/order-list"}>
-						<div className="flex items-center gap-2 p-2">
-							<TransactionList
-								fill={"fill-text -ml-[0.8px]"}
-								size={24}
-							/>
-							<h4 className="font-medium text-body-lg">
-								Transaction History
-							</h4>
-						</div>
-					</Link>
-				</DropdownItem>
+				{role === "user" && (
+					<DropdownItem key="settings">
+						<Link to={"/profile/settings"}>
+							<div className="flex items-center gap-2 p-2">
+								<IoSettingsOutline size={24} />
+								<h4 className="font-medium text-body-lg">
+									Settings
+								</h4>
+							</div>
+						</Link>
+					</DropdownItem>
+				)}
+				{role === "user" && (
+					<DropdownItem key="settings">
+						<Link to={"/order-list"}>
+							<div className="flex items-center gap-2 p-2">
+								<TransactionList
+									fill={"fill-text -ml-[0.8px]"}
+									size={24}
+								/>
+								<h4 className="font-medium text-body-lg">
+									Transaction History
+								</h4>
+							</div>
+						</Link>
+					</DropdownItem>
+				)}
 				<DropdownItem
 					key="logout"
 					color="danger"

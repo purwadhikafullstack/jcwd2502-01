@@ -13,29 +13,35 @@ import {
 } from "@nextui-org/react";
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
+import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 const AdminCreateNewCategoryModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [categoryType, setCategoryType] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
+	const role = useSelector((state) => state.user.role);
 	const onSubmit = async (categoryType) => {
 		try {
 			setIsLoading(true);
 
 			if (!categoryType) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields");
 				setIsLoading(false);
 				return; // Stop further execution
 			}
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const addCategory = await axiosInstance().post(`categories`, {
-				category_type: categoryType,
-			});
+			const addCategory = await axiosInstance(accessToken).post(
+				`categories`,
+				{
+					category_type: categoryType,
+				}
+			);
 
 			if (addCategory.data.isError) {
-				alert(addCategory.data.message);
+				toast.error(addCategory.data.message);
 				setIsLoading(false);
 				return;
 			}
@@ -56,7 +62,12 @@ const AdminCreateNewCategoryModal = () => {
 		>
 			{(matches) => (
 				<>
-					<Button color="primary" size="md" onPress={onOpen}>
+					<Button
+						color="primary"
+						size="md"
+						onPress={onOpen}
+						isDisabled={role !== "super"}
+					>
 						<p className="font-medium text-black flex items-center gap-1">
 							<span className="text-[20px]">+</span>
 							<span>Add New Category</span>
@@ -78,26 +89,26 @@ const AdminCreateNewCategoryModal = () => {
 										</h2>
 									</ModalHeader>
 									<ModalBody>
-										<form className="flex flex-col gap-4 h-full">
-											<div className="form-control">
-												<Input
-													type="text"
-													name="category_type"
-													label="Category Name"
-													labelPlacement="outside"
-													variant="bordered"
-													radius="sm"
-													size="lg"
-													placeholder="Laptop"
-													isRequired
-													onChange={(e) =>
-														setCategoryType(
-															e.target.value
-														)
-													}
-												/>
-											</div>
-										</form>
+										{/* <form className="flex flex-col gap-4 h-full"> */}
+										<div className="form-control">
+											<Input
+												type="text"
+												name="category_type"
+												label="Category Name"
+												labelPlacement="outside"
+												variant="bordered"
+												radius="sm"
+												size="lg"
+												placeholder="Laptop"
+												isRequired
+												onChange={(e) =>
+													setCategoryType(
+														e.target.value
+													)
+												}
+											/>
+										</div>
+										{/* </form> */}
 									</ModalBody>
 									<ModalFooter className="justify-center">
 										<Button

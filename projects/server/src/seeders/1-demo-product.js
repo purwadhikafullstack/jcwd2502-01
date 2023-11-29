@@ -106,7 +106,7 @@ module.exports = {
 						"Four-switch D-pad for smooth control and a familiar console layout. Plug-and-play on PC. Windows® 11, Windows 10, Windows 8, Windows 7, or Windows Vista, ChromeOS™ Internet connection for optional software downloads",
 					product_price: "339000",
 					brand_id: 1,
-					category_id: 4,
+					category_id: 3,
 					weight: 380,
 				},
 				{
@@ -116,7 +116,7 @@ module.exports = {
 						"D-pad four switches for accurate control. Fast 2.4 GHz wireless via USB nano receiver. Dual-motor vibration feedback. PC compatible. Windows® 11, Windows 10, Windows 8, Windows 7, or Windows Vista, ChromeOS™ Internet connection for optional software downloads",
 					product_price: "749000",
 					brand_id: 1,
-					category_id: 4,
+					category_id: 3,
 					weight: 380,
 				},
 				{
@@ -181,7 +181,7 @@ module.exports = {
 				},
 				{
 					id: 18,
-					product_name: "Razer BlackWidow V4 75% - US - Black",
+					product_name: "Razer BlackWidow V4 75 Percent - US - Black",
 					product_desc:
 						"Ultra-lightweight Ergonomic Esports Mouse This mouse, with its refined ergonomic design, is powered by the Razer™ Focus Pro 30K Optical Sensor. It can reach speeds up to 750 IPS and has a 70G acceleration. The mouse offers 6 programmable buttons, constructed with third-generation Optical Mouse Switches, designed for a lifespan of up to 90-million clicks. Users can benefit from 5 on-board memory profiles, and the mouse feet are made entirely of PTFE. For connectivity, it comes with a Razer™ Speedflex Cable. This keyboard features a hot-swappable design and a compact 75% layout encased in aluminum. It provides an optimized typing experience with Razer™ Mechanical Switches that are tactile in nature. The keyboard connects via a detachable Type C cable and comes with durable doubleshot ABS keycaps. It's Razer™ Synapse enabled and constructed with a 5052 Aluminum Alloy top case. Enhancements include sound dampening foam for both the PCB & case, non-conductive tape for the PCB, and additional holes for screw-in stabilizer modifications (though modifications could void the warranty). Stabilizers are lubricated, and there's added aesthetic appeal with 2-side underglow strips. The keyboard supports an impressive 8,000 Hz polling rate and features N-key rollover & anti-ghosting.",
 					product_price: "3000000",
@@ -456,7 +456,7 @@ module.exports = {
 				{
 					id: 45,
 					product_name:
-						"K65 PRO Mini RGB 65% Optical-Mechanical Wired Gaming Keyboard",
+						"K65 PRO Mini RGB 65 Percent Optical-Mechanical Wired Gaming Keyboard",
 					product_desc:
 						"The K65 PRO Mini RGB is a 65% wired gaming keyboard with a compact layout that includes essential arrow and utility keys, enhanced with convenient secondary functions. It employs CORSAIR OPX optical-mechanical switches, ensuring smooth and responsive keystrokes durable up to 150 million presses. With CORSAIR AXON Hyper-Processing Technology, this keyboard delivers inputs up to 8x faster than typical gaming keyboards and can display up to 20 RGB lighting layers. Two layers of sound dampening provide a gratifying typing experience. The package includes the K65 PRO MINI RGB keyboard, a detachable USB Type-C to Type-A cable, a radiant spacebar, and safety information.",
 					product_price: "2000000",

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import OrderCard from "../../components/uis/Cards/OrderCard";
 import { Pagination, Select, SelectItem } from "@nextui-org/react";
 import { axiosInstance } from "../../lib/axios";
@@ -14,9 +14,13 @@ const OrderListPage = () => {
 	const currentPage = +queryParams.get("page") || 1;
 	const currentStatus = +queryParams.get("status") || "";
 
+	const [oneTime, setOneTime] = useState(false);
+
 	const [orders, setOrders] = useState([]);
 	const [totalPages, setTotalPages] = useState(1);
 	const [isPaginationVisible, setIsPaginationVisible] = useState(false);
+	const [status, setStatus] = useState(currentStatus.toString());
+	const [page, setPage] = useState(currentPage);
 
 	const fetchUserOrderList = async (page, status = "") => {
 		try {
@@ -31,15 +35,26 @@ const OrderListPage = () => {
 		}
 	};
 
+	const takeFromQuery = () => {
+		const queryParams = new URLSearchParams(location.search);
+		const currentPage = +queryParams.get("page") || 1;
+		const currentStatus = +queryParams.get("status") || "";
+		if (currentPage) {
+			setPage(currentPage);
+		}
+		if (currentStatus) {
+			setStatus(currentStatus);
+		}
+	};
+
 	const handlePageChange = (newPage) => {
-		fetchUserOrderList(newPage);
-		updateUrl(newPage);
+		setPage(newPage);
 		window.scrollTo({ top: 0 });
 	};
 
 	const handleStatusChange = (newStatus) => {
-		fetchUserOrderList(currentPage, newStatus);
-		updateUrl(1, newStatus);
+		setStatus(newStatus);
+		setPage(1);
 	};
 
 	const updateUrl = (page, status) => {
@@ -56,16 +71,28 @@ const OrderListPage = () => {
 	};
 
 	useEffect(() => {
-		fetchUserOrderList(currentPage, currentStatus);
+		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
 
 		const timeoutId = setTimeout(() => {
 			setIsPaginationVisible(true);
-		}, 200);
+		}, 400);
 
 		return () => clearTimeout(timeoutId);
 	}, [currentPage]);
+
+	useEffect(() => {
+		setOneTime(true);
+	}, []);
+
+	useEffect(() => {
+		if (oneTime) {
+			updateUrl(page, status);
+
+			fetchUserOrderList(page, status);
+		}
+	}, [token, status, page, oneTime]);
 
 	const renderPagination = () => {
 		if (isPaginationVisible && totalPages) {
@@ -74,7 +101,7 @@ const OrderListPage = () => {
 					color="secondary"
 					showControls
 					total={totalPages || 1}
-					page={currentPage || 1}
+					page={page || 1}
 					onChange={handlePageChange}
 				/>
 			);
@@ -120,13 +147,15 @@ const OrderListPage = () => {
 						variant="bordered"
 						size="md"
 						className="md:col-span-2"
-						onChange={(e) => handleStatusChange(e.target.value)}
 						defaultSelectedKeys={
-							currentStatus && [String(currentStatus)]
+							currentStatus ? [currentStatus.toString()] : []
 						}
 					>
 						{(status) => (
-							<SelectItem key={status.value}>
+							<SelectItem
+								key={status.value}
+								onClick={() => handleStatusChange(status.value)}
+							>
 								{status.label}
 							</SelectItem>
 						)}

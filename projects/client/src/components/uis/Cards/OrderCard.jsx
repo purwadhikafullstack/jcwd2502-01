@@ -234,7 +234,7 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 													}
 												>
 													<span className="font-medium text-black">
-														Paid
+														Uploaded
 													</span>
 												</Button>
 											)}
@@ -334,16 +334,14 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 											variant="ghost"
 											onPress={onClose}
 										>
-											<p className="font-medium">
-												Cancel
-											</p>
+											<p className="font-medium">No</p>
 										</Button>
 										<Button
 											className="bg-red-600"
 											onClick={onCancelOrder}
 										>
 											<p className="font-medium text-white">
-												Cancel
+												Yes
 											</p>
 										</Button>
 									</ModalFooter>

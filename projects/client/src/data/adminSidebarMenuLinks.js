@@ -55,9 +55,9 @@ export const adminSidebarMenuLinks = (role) => {
 				path: "/admin/stocks",
 			},
 			{
-				name: "Mutations",
+				name: "Stock History",
 				icon: <TbReceipt size={24} />,
-				path: "/admin/mutations",
+				path: "/admin/stock-history",
 			},
 			{
 				name: "Reports",
@@ -88,9 +88,14 @@ export const adminSidebarMenuLinks = (role) => {
 				path: "/admin/categories",
 			},
 			{
-				name: "Mutations",
+				name: "Stocks",
+				icon: <BiHash size={24} />,
+				path: "/admin/stocks",
+			},
+			{
+				name: "Stock History",
 				icon: <TbReceipt size={24} />,
-				path: "/admin/mutations",
+				path: "/admin/stock-history",
 			},
 			{
 				name: "Reports",

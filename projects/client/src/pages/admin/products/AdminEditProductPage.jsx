@@ -14,6 +14,7 @@ import { onClear, setSearch } from "../../../redux/features/products";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AdminEditProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
@@ -28,12 +29,51 @@ const AdminEditProductPage = () => {
 
 	const navigate = useNavigate();
 
+	// const getFileImages = (event) => {
+	// 	const selectedImages = event.target.files;
+	// 	const selectedImagesArray = Array.from(selectedImages);
+
+	// 	if (selectedImagesArray.length > 3) {
+	// 		toast.error("Maximum of three images can be uploaded");
+	// 		return false;
+	// 	} else {
+	// 		const imagesArray = selectedImagesArray.map((image) => {
+	// 			return URL.createObjectURL(image);
+	// 		});
+	// 		setImagesToSend(selectedImages);
+	// 		setPreviewImages(imagesArray);
+	// 	}
+	// };
+
 	const getFileImages = (event) => {
 		const selectedImages = event.target.files;
 		const selectedImagesArray = Array.from(selectedImages);
 
+		const maxSize = 3 * 1024 * 1024; // 3MB limit
+		const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+		const isSizeValid = selectedImagesArray.every(
+			(image) => image.size <= maxSize
+		);
+		const isTypeValid = selectedImagesArray.every((image) =>
+			validImageTypes.includes(image.type)
+		);
+
+		if (!isSizeValid && !isTypeValid) {
+			toast.error(
+				"Maximum file size allowed is 3MB and only JPEG, JPG, or PNG files are allowed"
+			);
+			return false;
+		} else if (!isSizeValid) {
+			toast.error("Maximum file size allowed is 3MB");
+			return false;
+		} else if (!isTypeValid) {
+			toast.error("Please select valid image files (JPEG, JPG, or PNG)");
+			return false;
+		}
+
 		if (selectedImagesArray.length > 3) {
-			alert("Maximum of three images can be uploaded");
+			toast.error("Maximum of three images can be uploaded");
 			return false;
 		} else {
 			const imagesArray = selectedImagesArray.map((image) => {
@@ -180,8 +220,6 @@ const AdminEditProductPage = () => {
 			const dataImagesJSON = JSON.stringify(dataImages);
 			fd.append("dataImages", dataImagesJSON);
 
-			console.log(fd);
-
 			if (imagesToSend) {
 				for (const image of imagesToSend) {
 					console.log("sblm append", image);
@@ -189,22 +227,20 @@ const AdminEditProductPage = () => {
 					console.log("sesudah append");
 				}
 			}
-			console.log(imagesToSend);
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const updateProduct = await axiosInstance().patch(
+			const updateProduct = await axiosInstance(accessToken).patch(
 				`products/${productData.id}`,
 				fd
 			);
-			console.log(updateProduct.data);
 
 			if (updateProduct.data.isError) {
-				alert(updateProduct.data.message);
+				toast.error(updateProduct.data.message);
 				return;
 			}
 
 			setTimeout(() => {
-				navigate("/admin/products");
+				navigate(-1);
 			}, 1500);
 
 			return;
@@ -230,7 +266,12 @@ const AdminEditProductPage = () => {
 			const { data } = await axiosInstance().get(
 				`products/${productName}`
 			);
-			setProductData(data.data);
+
+			if (data.data) {
+				setProductData(data.data);
+			} else {
+				navigate("/admin/products");
+			}
 		} catch (error) {
 			console.log(error);
 		}
@@ -295,6 +336,7 @@ const AdminEditProductPage = () => {
 								value={formik.values.product_name}
 								labelPlacement="outside"
 								onChange={handleFormInput}
+								isRequired
 							/>
 						</div>
 						<div className="form-control">
@@ -308,6 +350,7 @@ const AdminEditProductPage = () => {
 								selectedKeys={[
 									String(formik.values.category_id),
 								]}
+								isRequired
 							>
 								{categories.map((category) => (
 									<SelectItem
@@ -328,6 +371,7 @@ const AdminEditProductPage = () => {
 								placeholder="Select a brand"
 								onChange={handleFormInput}
 								selectedKeys={[String(formik.values.brand_id)]}
+								isRequired
 							>
 								{brands.map((brand) => (
 									<SelectItem key={brand.id} value={brand.id}>
@@ -345,10 +389,15 @@ const AdminEditProductPage = () => {
 									Product Images (Max 3 Images)
 								</h3>
 								<p className="text-sm">
-									Image format: .jpg, .jpeg, .png
-									<br /> Minimum size: 300 x 300 pixels (For
-									best quality, use a minimum size of 700 x
-									700 pixels).
+									<b>Image format: .jpg, .jpeg, .png</b>
+									<br />
+									<b>Max size: 3 mb.</b>
+									<br />
+									<span className="text-neutral-400 font-medium">
+										Minimum dimension: 300 x 300 pixels (For
+										best quality, use a minimum size of 700
+										x 700 pixels).
+									</span>
 								</p>
 							</div>
 							<div className="product-images-inputs w-full ml-12">
@@ -390,7 +439,7 @@ const AdminEditProductPage = () => {
 															.click()
 													}
 												>
-													<p className="text-primary-600 font-medium">
+													<p className="text-primary-600 font-medium hover:cursor-pointer hover:underline">
 														Change Images
 													</p>
 												</div>
@@ -400,7 +449,7 @@ const AdminEditProductPage = () => {
 														handleRemovePreview()
 													}
 												>
-													<p className="text-red-600 font-medium">
+													<p className="text-red-600 font-medium hover:cursor-pointer hover:underline">
 														Remove Images
 													</p>
 												</div>
@@ -410,7 +459,7 @@ const AdminEditProductPage = () => {
 														handleRevert()
 													}
 												>
-													<p className="text-yellow-600 font-medium">
+													<p className="text-yellow-600 font-medium hover:cursor-pointer hover:underline">
 														Revert Images
 													</p>
 												</div>
@@ -463,7 +512,7 @@ const AdminEditProductPage = () => {
 																	.click()
 															}
 														>
-															<p className="text-primary-600 font-medium">
+															<p className="text-primary-600 font-medium hover:cursor-pointer hover:underline">
 																Change Images
 															</p>
 														</div>
@@ -473,7 +522,7 @@ const AdminEditProductPage = () => {
 																setOldImages([])
 															}
 														>
-															<p className="text-red-600 font-medium">
+															<p className="text-red-600 font-medium hover:cursor-pointer hover:underline">
 																Remove Images
 															</p>
 														</div>
@@ -526,6 +575,7 @@ const AdminEditProductPage = () => {
 								value={formik.values.product_price}
 								labelPlacement="outside"
 								onChange={handleFormInput}
+								isRequired
 							/>
 						</div>
 					</section>
@@ -583,6 +633,7 @@ const AdminEditProductPage = () => {
 									value={formik.values.weight}
 									labelPlacement="outside"
 									onChange={handleFormInput}
+									isRequired
 								/>
 							</div>
 						</section>
@@ -662,7 +713,18 @@ const AdminEditProductPage = () => {
 							</div>
 						</section>
 					</section>
-					<section>
+					<section className="flex items-center gap-4">
+						<Button
+							fullWidth
+							size="lg"
+							type="button"
+							onClick={() => navigate(-1)}
+							className="bg-red-600"
+						>
+							<p className="text-white font-medium">
+								Cancel changes
+							</p>
+						</Button>
 						<Button
 							fullWidth
 							color="primary"

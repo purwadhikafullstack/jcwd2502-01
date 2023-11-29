@@ -22,7 +22,7 @@ const getLatitudeLongitude = async (cityName) => {
 };
 
 module.exports = {
-	findAllWarehouses: async () => {
+	findAllWarehouses: async (query) => {
 		try {
 			const dataWarehouses = await db.warehouse.findAll({
 				attributes: [
@@ -45,6 +45,77 @@ module.exports = {
 						attributes: ["id", "province"],
 					},
 				],
+			});
+			return {
+				message: "Get product's data success",
+				data: dataWarehouses,
+			};
+
+			const dataCategoriesWithProducts = await db.category.findAll(
+				baseQuery
+			);
+			const count = await db.category.count();
+
+			return {
+				message: "Get categories success",
+				data: { count, categories: dataCategoriesWithProducts },
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+	findWarehouseList: async (query) => {
+		try {
+			const { offset, orderField, orderDirection } = query;
+
+			const orderOptions = [];
+			if (orderField && orderDirection) {
+				orderOptions.push([orderField, orderDirection]);
+			}
+			const baseQuery = {
+				attributes: [
+					"id",
+					"warehouse_name",
+					"warehouse_address",
+					"updatedAt",
+				],
+				include: [
+					{
+						model: db.user,
+						attributes: ["id", "username"],
+					},
+					{
+						model: db.city,
+						attributes: ["id", "type", "city_name", "postal_code"],
+					},
+					{
+						model: db.province,
+						attributes: ["id", "province"],
+					},
+				],
+				limit: 12,
+				offset: Number(offset) || 0,
+				order: orderOptions,
+			};
+			const dataWarehouses = await db.warehouse.findAll(baseQuery);
+			const count = await db.warehouse.count(baseQuery);
+			return {
+				message: "Get product's data success",
+				data: { count, warehouses: dataWarehouses },
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+	findOtherWarehouses: async (warehouseId) => {
+		try {
+			const dataWarehouses = await db.warehouse.findAll({
+				attributes: ["id", "warehouse_name"],
+				where: {
+					id: {
+						[Op.not]: warehouseId,
+					},
+				},
 			});
 			return {
 				message: "Get product's data success",

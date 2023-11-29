@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 
 import ControllerCategory from "../../../assets/images/categories-selection/controller.png";
 import HeadphoneCategory from "../../../assets/images/categories-selection/headphone.png";
@@ -9,11 +10,13 @@ import MonitorCategory from "../../../assets/images/categories-selection/monitor
 import CategorySelection from "../../uis/CategorySelection/CategorySelection";
 
 const GearCategories = () => {
+	const { t } = useTranslation();
+
 	return (
 		<section className="gear-categories my-container">
 			<div className="wrapper py-6">
 				<h2 className="font-bold text-headline-sm md:text-headline-lg text-center mb-4">
-					Hottest Gear Categories
+					{t("hottest_gear_categories")}
 				</h2>
 				<div className="category-selections md:flex md:justify-between pt-6 md:py-10 flex flex-wrap justify-center gap-4">
 					<CategorySelection

@@ -7,6 +7,8 @@ const {
 	updateWarehouse,
 	removeWarehouse,
 	findWarehouse,
+	findOtherWarehouses,
+	findWarehouseList,
 } = require("./../services/warehousesService");
 
 const respHandler = require("../utils/respHandler");
@@ -20,10 +22,27 @@ module.exports = {
 			next(error);
 		}
 	},
+	getWarehouseList: async (req, res, next) => {
+		try {
+			const result = await findWarehouseList(req.query);
+			respHandler(res, result.message, result.data);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getOtherWarehouses: async (req, res, next) => {
+		try {
+			const { warehouseId } = req.params;
+			const result = await findOtherWarehouses(warehouseId);
+			respHandler(res, result.message, result.data);
+		} catch (error) {
+			next(error);
+		}
+	},
 	getWarehouse: async (req, res, next) => {
 		try {
-			const { id } = req.params;
-			const result = await findWarehouse(id);
+			const { warehouseId } = req.params;
+			const result = await findWarehouse(warehouseId);
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
@@ -40,8 +59,8 @@ module.exports = {
 	},
 	editWarehouse: async (req, res, next) => {
 		try {
-			const { id } = req.params;
-			const result = await updateWarehouse(id, req.body);
+			const { warehouseId } = req.params;
+			const result = await updateWarehouse(warehouseId, req.body);
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
@@ -49,8 +68,8 @@ module.exports = {
 	},
 	deleteWarehouse: async (req, res, next) => {
 		try {
-			const { id } = req.params;
-			const result = await removeWarehouse(id);
+			const { warehouseId } = req.params;
+			const result = await removeWarehouse(warehouseId);
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);

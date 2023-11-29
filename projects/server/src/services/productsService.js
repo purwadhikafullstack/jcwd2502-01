@@ -149,7 +149,15 @@ module.exports = {
 			if (!dataProduct || !dataSpec) {
 				return { message: "Data is not complete", isError: true };
 			}
-			const { product_name } = dataProduct;
+			const { product_name, category_id, brand_id } = dataProduct;
+			const { weight } = dataSpec;
+			if (!product_name || !category_id || !brand_id || !weight) {
+				return {
+					isError: true,
+					message: `Some of the fields are missing`,
+					data: null,
+				};
+			}
 			const checkProduct = await db.product.findOne({
 				where: { product_name },
 			});
@@ -378,6 +386,87 @@ module.exports = {
 			return { message: "Remove product success" };
 		} catch (error) {
 			await t.rollback();
+			return error;
+		}
+	},
+	topSoldProducts: async () => {
+		try {
+			const categoryInclude = {
+				model: db.category,
+				attributes: ["category_type", "id"],
+			};
+
+			const brandInclude = {
+				model: db.brand,
+				attributes: ["brand_name", "id"],
+			};
+
+			const topSoldProducts = await db.product.findAll({
+				attributes: [
+					"id",
+					"product_name",
+					"product_price",
+					[
+						sequelize.fn(
+							"SUM",
+							sequelize.col("order_details.quantity")
+						),
+						"totalSold",
+					],
+				],
+				include: [
+					{
+						model: db.order_detail,
+						attributes: [
+							[
+								sequelize.fn("SUM", sequelize.col("quantity")),
+								"quantity",
+							],
+						],
+						where: {
+							quantity: {
+								[Op.gt]: 0,
+							},
+						},
+						include: [
+							{
+								model: db.order,
+								attributes: [],
+								where: {
+									status: {
+										[Op.in]: ["4", "5"],
+									},
+								},
+							},
+						],
+					},
+					{
+						model: db.product_image,
+						attributes: ["image", "id"],
+						limit: 1,
+					},
+					categoryInclude,
+					brandInclude,
+				],
+				order: [
+					[
+						sequelize.fn(
+							"SUM",
+							sequelize.col("order_details.quantity")
+						),
+						"DESC",
+					],
+				],
+				group: ["product.id"],
+			});
+
+			const soldTopProduct = topSoldProducts.filter((_, i) => i < 6);
+
+			return {
+				data: soldTopProduct,
+				message: "Get top sold products success",
+			};
+		} catch (error) {
 			return error;
 		}
 	},

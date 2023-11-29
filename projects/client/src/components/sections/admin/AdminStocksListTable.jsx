@@ -23,6 +23,7 @@ import {
 	onSort,
 	setBrand,
 	setCategory,
+	setCount,
 	setPagination,
 	setProductsForStocks,
 	setSearch,
@@ -36,6 +37,7 @@ import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
+import AdminCreateRequestStockModal from "../../layouts/admin/AdminCreateRequestStockModal";
 
 const AdminStocksListTable = () => {
 	const dispatch = useDispatch();
@@ -125,7 +127,7 @@ const AdminStocksListTable = () => {
 			dispatch(setSearch(""));
 			dispatch(setProductsForStocks([]));
 			dispatch(setTotalPage(1));
-			dispatch(setWarehouse(null));
+			dispatch(setCount(0));
 		};
 	}, []);
 
@@ -208,16 +210,10 @@ const AdminStocksListTable = () => {
 			case "actions":
 				return (
 					<div className="relative flex justify-start items-center gap-2">
-						{/* <Tooltip content="Edit product">
-							<Button
-								variant="light"
-								className="text-default-400 cursor-pointer active:opacity-50"
-								startContent={<BiEdit size={24} />}
-							>
-								Edit
-							</Button>
-						</Tooltip> */}
 						<AdminEditStockModal id={product?.stock_id} />
+						<AdminCreateRequestStockModal
+							productName={encodedProductName}
+						/>
 					</div>
 				);
 			default:

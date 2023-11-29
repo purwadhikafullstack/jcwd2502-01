@@ -5,13 +5,18 @@ import YourPrivacyChoices from "../../../assets/logo/YourPrivacyChoices";
 import AppStore from "../../../assets/logo/appstore.svg";
 import GooglePlay from "../../../assets/logo/googleplay.svg";
 import { axiosInstance } from "../../../lib/axios";
+import { useTranslation } from "react-i18next";
 
 const Footer = () => {
+	const { t } = useTranslation();
 	const [categories, setCategories] = useState([]);
 
 	const fetchCategoriesAsync = async () => {
 		try {
-			const { data } = await axiosInstance().get(`categories/all`);
+			const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance(accessToken).get(
+				`categories/all`
+			);
 
 			setCategories(data.data);
 		} catch (error) {
@@ -31,7 +36,7 @@ const Footer = () => {
 				<div className="footer-body md:flex block pt-12">
 					<div className="download-column mb-2 w-full text-left">
 						<h3 className="font-bold text-lg md:mb-4">
-							Download the app
+							{t("download_the_app")}
 						</h3>
 						<div className="download-links flex gap-2 py-2 items-center w-[300px] md:w-[360px] md:mt-2">
 							<div className="app-store">
@@ -60,23 +65,25 @@ const Footer = () => {
 							<div className="flex flex-col gap-2">
 								<Link>
 									<span className="hover:underline">
-										About Nexocomp
+										{t("about_nexo")}
 									</span>
 								</Link>
 								<Link>
 									<span className="hover:underline">
-										Copyright
+										{t("copyright")}
 									</span>
 								</Link>
 								<Link>
 									<span className="hover:underline">
-										FAQs
+										{t("faqs")}
 									</span>
 								</Link>
 							</div>
 						</div>
 						<div className="footer-social text-left">
-							<h3 className="font-bold mb-2 md:mb-4">Socials</h3>
+							<h3 className="font-bold mb-2 md:mb-4">
+								{t("socials")}
+							</h3>
 							<div className="flex flex-col gap-2">
 								<Link>
 									<span className="hover:underline">
@@ -97,7 +104,7 @@ const Footer = () => {
 						</div>
 						<div className="footer-categories text-left row-span-2">
 							<h3 className="font-bold mb-2 md:mb-4">
-								Categories
+								{t("categories")}
 							</h3>
 							<div className="flex flex-col gap-2">
 								{categories?.map((category) => {
@@ -125,7 +132,7 @@ const Footer = () => {
 							/>
 						</a>
 						<h3 className="mt-[2px] md:text-base text-sm text-left">
-							© 2023 Nexocomp. All rights reserved.
+							{t("rights")}
 						</h3>
 					</span>
 					<span className="legal-links w-full">
@@ -134,18 +141,18 @@ const Footer = () => {
 								<button className="flex items-center">
 									<YourPrivacyChoices />
 									<span className="ml-2">
-										Your privacy choices
+										{t("your_privacy_choices")}
 									</span>
 								</button>
 							</li>
 							<li>
-								<a href="">Terms</a>
+								<a href="">{t("terms")}</a>
 							</li>
 							<li>
-								<a href="">Privacy</a>
+								<a href="">{t("privacy")}</a>
 							</li>
 							<li>
-								<a href="">Site map</a>
+								<a href="">{t("site_map")}</a>
 							</li>
 						</ul>
 					</span>

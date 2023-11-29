@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
+import toast from "react-hot-toast";
 
 const AdminEditWarehouseModal = ({
 	handleOpenEditWarehouseModal,
@@ -63,7 +64,7 @@ const AdminEditWarehouseModal = ({
 				!province_id ||
 				!city_id
 			) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields");
 				return; // Stop further execution
 			}
 
@@ -75,21 +76,21 @@ const AdminEditWarehouseModal = ({
 				city_id,
 			};
 
-			// const accessToken = localStorage.getItem("accessToken");
+			const accessToken = localStorage.getItem("accessToken");
 
-			const updateWarehouse = await axiosInstance().patch(
+			const updateWarehouse = await axiosInstance(accessToken).patch(
 				`warehouses/${warehouseId}`,
 				newWarehouseData
 			);
 
 			// if (updateWarehouse.status === 201) {
-			// 	alert("Warehouse updated successfully");
+			// 	toast.error("Warehouse updated successfully");
 
 			// 	setTimeout(() => {
 			// 		window.location.reload(false);
 			// 	}, 1500);
 			// } else {
-			// 	alert("Error updating warehouse");
+			// 	toast.error("Error updating warehouse");
 			// }
 
 			window.location.reload(false);
@@ -171,8 +172,8 @@ const AdminEditWarehouseModal = ({
 
 	const fetchWarehouse = async () => {
 		try {
-			// const accessToken = localStorage.getItem("accessToken");
-			const { data } = await axiosInstance().get(
+			const accessToken = localStorage.getItem("accessToken");
+			const { data } = await axiosInstance(accessToken).get(
 				`warehouses/${warehouseId}`
 			);
 

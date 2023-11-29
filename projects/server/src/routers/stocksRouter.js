@@ -6,13 +6,21 @@ const { stocksController } = require("../controllers"); // otomatis baca index.j
 
 //* Import Middleware
 const upload = require("./../middlewares/upload");
-// const { verify } = require("./../lib/jwt");
+const { verifyAdmin, verifySuper } = require("../lib/jwt");
 
-Router.get("/all", stocksController.getAllProductsStocks);
-Router.get("/history", stocksController.getStockHistories);
-Router.get("/:stockId", stocksController.getOneStock);
-// Router.post("/", upload, productsController.createProduct);
-Router.patch("/:stockId", stocksController.updateStock);
+Router.get("/all", verifyAdmin, stocksController.getAllProductsStocks);
+Router.get("/history", verifyAdmin, stocksController.getStockHistories);
+Router.get("/mutation-in", verifyAdmin, stocksController.getIncomingMutation);
+Router.get("/mutation-out", verifyAdmin, stocksController.getOutgoingMutation);
+Router.get("/specific", verifyAdmin, stocksController.getSpecificStock);
+Router.get("/:stockId", verifyAdmin, stocksController.getOneStock);
+Router.post("/mutation", verifyAdmin, stocksController.createMutation);
+Router.patch("/:stockId", verifyAdmin, stocksController.updateStock);
+Router.patch(
+	"/mutation/:mutationId",
+	verifyAdmin,
+	stocksController.updateMutation
+);
 // Router.delete("/:productId", productsController.deleteProduct);
 
 module.exports = Router; // pake module.exports karena ga ada librarynya, bawaan dari js
