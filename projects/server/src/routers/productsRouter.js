@@ -9,6 +9,7 @@ const upload = require("./../middlewares/upload");
 const { verifyAdmin, verifySuper } = require("../lib/jwt");
 
 Router.get("/all", productsController.getAllProducts);
+Router.get("/top", productsController.getTopSoldProduct);
 Router.get("/:productName", productsController.getProduct);
 Router.post("/", verifySuper, upload, productsController.createProduct);
 Router.patch(

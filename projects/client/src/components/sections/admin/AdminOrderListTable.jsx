@@ -206,18 +206,40 @@ const AdminOrderListTable = () => {
 		const cellValue = order[columnKey];
 
 		const renderAction = () => {
-			if (order?.status === "2") {
+			if (order?.status === "1") {
+				return <AdminCancelOrderModal orderId={order.id} />;
+			} else if (order?.status === "2") {
 				return <AdminReviewUserOrderModal orderDetailsData={order} />;
+			} else if (order?.status === "3") {
+				return <AdminReviewUserOrderModal orderDetailsData={order} />;
+			} else if (order?.status === "4") {
+				return (
+					<Button
+						isDisabled
+						fullWidth
+						variant="faded"
+						color="primary"
+					>
+						Sending order
+					</Button>
+				);
+			} else if (order?.status === "5") {
+				return (
+					<Button
+						isDisabled
+						fullWidth
+						variant="faded"
+						color="primary"
+					>
+						Order finished
+					</Button>
+				);
 			} else if (order?.status === "6") {
 				return (
 					<Button isDisabled fullWidth variant="faded" color="danger">
 						Order cancelled
 					</Button>
 				);
-			} else if (order?.status === "1") {
-				return <AdminCancelOrderModal orderId={order.id} />;
-			} else if (order?.status === "3") {
-				return <AdminReviewUserOrderModal orderDetailsData={order} />;
 			} else {
 				return null;
 			}

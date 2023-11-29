@@ -15,6 +15,7 @@ import {
 import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStockAsync } from "../../../redux/features/products";
+import toast from "react-hot-toast";
 const AdminEditStockModal = ({ id }) => {
 	const [dataStock, setDataStock] = useState([]);
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -60,7 +61,7 @@ const AdminEditStockModal = ({ id }) => {
 			const { stocks } = values;
 
 			if (!stocks) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields");
 				return; // Stop further execution
 			}
 

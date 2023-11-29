@@ -14,6 +14,7 @@ import { onClear, setSearch } from "../../../redux/features/products";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const AdminEditProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
@@ -28,12 +29,51 @@ const AdminEditProductPage = () => {
 
 	const navigate = useNavigate();
 
+	// const getFileImages = (event) => {
+	// 	const selectedImages = event.target.files;
+	// 	const selectedImagesArray = Array.from(selectedImages);
+
+	// 	if (selectedImagesArray.length > 3) {
+	// 		toast.error("Maximum of three images can be uploaded");
+	// 		return false;
+	// 	} else {
+	// 		const imagesArray = selectedImagesArray.map((image) => {
+	// 			return URL.createObjectURL(image);
+	// 		});
+	// 		setImagesToSend(selectedImages);
+	// 		setPreviewImages(imagesArray);
+	// 	}
+	// };
+
 	const getFileImages = (event) => {
 		const selectedImages = event.target.files;
 		const selectedImagesArray = Array.from(selectedImages);
 
+		const maxSize = 3 * 1024 * 1024; // 3MB limit
+		const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+		const isSizeValid = selectedImagesArray.every(
+			(image) => image.size <= maxSize
+		);
+		const isTypeValid = selectedImagesArray.every((image) =>
+			validImageTypes.includes(image.type)
+		);
+
+		if (!isSizeValid && !isTypeValid) {
+			toast.error(
+				"Maximum file size allowed is 3MB and only JPEG, JPG, or PNG files are allowed"
+			);
+			return false;
+		} else if (!isSizeValid) {
+			toast.error("Maximum file size allowed is 3MB");
+			return false;
+		} else if (!isTypeValid) {
+			toast.error("Please select valid image files (JPEG, JPG, or PNG)");
+			return false;
+		}
+
 		if (selectedImagesArray.length > 3) {
-			alert("Maximum of three images can be uploaded");
+			toast.error("Maximum of three images can be uploaded");
 			return false;
 		} else {
 			const imagesArray = selectedImagesArray.map((image) => {
@@ -195,7 +235,7 @@ const AdminEditProductPage = () => {
 			);
 
 			if (updateProduct.data.isError) {
-				alert(updateProduct.data.message);
+				toast.error(updateProduct.data.message);
 				return;
 			}
 
@@ -349,10 +389,15 @@ const AdminEditProductPage = () => {
 									Product Images (Max 3 Images)
 								</h3>
 								<p className="text-sm">
-									Image format: .jpg, .jpeg, .png
-									<br /> Minimum size: 300 x 300 pixels (For
-									best quality, use a minimum size of 700 x
-									700 pixels).
+									<b>Image format: .jpg, .jpeg, .png</b>
+									<br />
+									<b>Max size: 3 mb.</b>
+									<br />
+									<span className="text-neutral-400 font-medium">
+										Minimum dimension: 300 x 300 pixels (For
+										best quality, use a minimum size of 700
+										x 700 pixels).
+									</span>
 								</p>
 							</div>
 							<div className="product-images-inputs w-full ml-12">
@@ -394,7 +439,7 @@ const AdminEditProductPage = () => {
 															.click()
 													}
 												>
-													<p className="text-primary-600 font-medium">
+													<p className="text-primary-600 font-medium hover:cursor-pointer hover:underline">
 														Change Images
 													</p>
 												</div>
@@ -404,7 +449,7 @@ const AdminEditProductPage = () => {
 														handleRemovePreview()
 													}
 												>
-													<p className="text-red-600 font-medium">
+													<p className="text-red-600 font-medium hover:cursor-pointer hover:underline">
 														Remove Images
 													</p>
 												</div>
@@ -414,7 +459,7 @@ const AdminEditProductPage = () => {
 														handleRevert()
 													}
 												>
-													<p className="text-yellow-600 font-medium">
+													<p className="text-yellow-600 font-medium hover:cursor-pointer hover:underline">
 														Revert Images
 													</p>
 												</div>
@@ -467,7 +512,7 @@ const AdminEditProductPage = () => {
 																	.click()
 															}
 														>
-															<p className="text-primary-600 font-medium">
+															<p className="text-primary-600 font-medium hover:cursor-pointer hover:underline">
 																Change Images
 															</p>
 														</div>
@@ -477,7 +522,7 @@ const AdminEditProductPage = () => {
 																setOldImages([])
 															}
 														>
-															<p className="text-red-600 font-medium">
+															<p className="text-red-600 font-medium hover:cursor-pointer hover:underline">
 																Remove Images
 															</p>
 														</div>

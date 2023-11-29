@@ -5,12 +5,14 @@ const upload = async (req, res, next) => {
 	const result = multerUpload.fields([{ name: "images", maxCount: 3 }]);
 	result(req, res, function (err) {
 		try {
+			const maxSize = 3 * 1024 * 1024; // 3MB limit
+
 			if (err) throw err;
 
 			if (!req.files.images) return next();
 
 			req.files?.images?.forEach((v) => {
-				if (v.size > 3000000) {
+				if (v.size > maxSize) {
 					throw {
 						message: `${v.originalname} is too large`,
 						files: req.files,

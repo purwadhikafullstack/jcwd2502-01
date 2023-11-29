@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
+import toast from "react-hot-toast";
 
 const AdminEditBrandModal = ({
 	handleOpenEditBrandModal,
@@ -28,7 +29,7 @@ const AdminEditBrandModal = ({
 			const { brand_name } = values;
 
 			if (!brand_name) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields");
 				setIsLoading(false);
 				return; // Stop further execution
 			}
@@ -45,19 +46,19 @@ const AdminEditBrandModal = ({
 			);
 
 			if (updateBrand.data.isError) {
-				alert(updateBrand.data.message);
+				toast.error(updateBrand.data.message);
 				setIsLoading(false);
 				return;
 			}
 
 			// if (updateBrand.status === 201) {
-			// 	alert("Warehouse updated successfully");
+			// 	toast.error("Warehouse updated successfully");
 
 			// 	setTimeout(() => {
 			// 		window.location.reload(false);
 			// 	}, 1500);
 			// } else {
-			// 	alert("Error updating warehouse");
+			// 	toast.error("Error updating warehouse");
 			// }
 
 			window.location.reload(false);

@@ -7,6 +7,7 @@ const {
 	addProduct,
 	editProduct,
 	removeProduct,
+	topSoldProducts,
 } = require("./../services/productsService");
 
 const respHandler = require("../utils/respHandler");
@@ -96,6 +97,15 @@ module.exports = {
 				result.status,
 				result.isError
 			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getTopSoldProduct: async (req, res, next) => {
+		try {
+			const result = await topSoldProducts();
+
+			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
 		}
