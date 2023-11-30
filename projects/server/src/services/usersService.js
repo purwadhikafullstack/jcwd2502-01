@@ -448,7 +448,7 @@ module.exports = {
 					name: "nexocomp",
 					email: "nexocomppurwadhika@gmail.com",
 				},
-				to: "andrean923@gmail.com", //registerUser.dataValues.email
+				to: registerUser.dataValues.email,
 				subject: "Register New Account",
 				html: newTemplate,
 			});
@@ -559,7 +559,7 @@ module.exports = {
 					name: "nexocomp",
 					email: "nexocomppurwadhika@gmail.com",
 				},
-				to: "andrean923@gmail.com", //checkUser.dataValues.email,
+				to: checkUser.dataValues.email,
 				subject: "Request Change Password",
 				html: newTemplate,
 			});
