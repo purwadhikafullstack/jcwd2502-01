@@ -84,7 +84,7 @@ module.exports = {
 			}
 
 			const dataAllProducts = await db.product.findAll(baseQuery);
-			const count = await db.product.count(baseQuery);
+			const count = await db.product.count({where: baseQuery.where, include: baseQuery.include || []});
 
 			return {
 				message: "Get products data success",

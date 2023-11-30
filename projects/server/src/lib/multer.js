@@ -1,7 +1,7 @@
 const multer = require("multer");
 const fs = require("fs");
 
-const defaultPath = "src/public";
+const defaultPath = `${__dirname}/../src/public`;
 const paymentProofPath = `${defaultPath}/payment-proof`;
 
 const storage = multer.diskStorage({
