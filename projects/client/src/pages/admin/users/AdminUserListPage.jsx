@@ -30,14 +30,14 @@ const AdminUserListPage = () => {
 		<AdminPageMainContainer>
 			<div className="admin-page-header flex justify-between gap-4 mb-6">
 				<h1 className="font-bold text-title-lg">User</h1>
-				<Link to={"/admin/add-product"}>
+				{/* <Link to={"/admin/add-product"}>
 					<Button color="primary" size="md">
 						<p className="font-medium text-black flex items-center gap-1">
 							<span className="text-[20px]">+</span>
 							<span>Add New User</span>
 						</p>
 					</Button>
-				</Link>
+				</Link> */}
 			</div>
 			<div className="pb-12">
 				<Tabs aria-label="Dynamic tabs" items={tabs}>
