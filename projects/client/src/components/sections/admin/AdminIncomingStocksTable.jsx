@@ -12,7 +12,7 @@ import {
 	TableRow,
 	Tooltip,
 } from "@nextui-org/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
 import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
 import SelectSortBy from "../../uis/Selects/SelectSortBy";
@@ -71,19 +71,24 @@ const AdminIncomingStocksTable = () => {
 	};
 
 	const handleAction = async (action, mutationId) => {
-		const accessToken = localStorage.getItem("accessToken");
-		await axiosInstance(accessToken).patch(
-			`stocks/mutation/${mutationId}`,
-			{
-				status: action,
-			}
-		);
-		dispatch(
-			fetchStockMutationsAsync(
-				"in",
-				`?warehouse=${warehouse}&status=${status}&offset=${offset}`
-			)
-		);
+		try {
+			const accessToken = localStorage.getItem("accessToken");
+
+			await axiosInstance(accessToken).patch(
+				`stocks/mutation/${mutationId}`,
+				{
+					status: action,
+				}
+			);
+			dispatch(
+				fetchStockMutationsAsync(
+					"in",
+					`?warehouse=${warehouse}&status=${status}&offset=${offset}`
+				)
+			);
+		} catch (error) {
+			console.log(error);
+		}
 	};
 	useEffect(() => {
 		takeFromQuery();
@@ -119,7 +124,7 @@ const AdminIncomingStocksTable = () => {
 		{ name: "PRODUCT INFO", uid: "product_info" },
 		{ name: "FROM", uid: "from" },
 		{ name: "QUANTITY", uid: "quantity" },
-		{ name: "STOCK", uid: "stock" },
+		{ name: "STOCK IN WAREHOUSE", uid: "stock" },
 		{ name: "STATUS", uid: "status" },
 		{ name: "ACTIONS", uid: "actions" },
 	];
@@ -161,32 +166,32 @@ const AdminIncomingStocksTable = () => {
 					</p>
 				);
 			case "status":
-				return <Chip>{request?.status}</Chip>;
+				return (
+					<Chip>
+						<span className="capitalize">{request?.status}</span>
+					</Chip>
+				);
 			case "actions":
 				return (
 					request?.status === "pending" && (
 						<div className="relative flex justify-start items-center gap-2">
 							<Button
 								onClick={() =>
-									handleAction("accepted", request.id)
+									handleAction("rejected", request.id)
 								}
-								variant="flat"
-								className="bg-red-600"
+								variant="faded"
+								color="danger"
 							>
-								<span className="font-medium text-white">
-									Accept
-								</span>
+								<span className="font-medium">Reject</span>
 							</Button>
 							<Button
 								onClick={() =>
-									handleAction("rejected", request.id)
+									handleAction("accepted", request.id)
 								}
-								variant="flat"
-								className="bg-primary-600"
+								variant="faded"
+								color="primary"
 							>
-								<span className="font-medium text-white">
-									Reject
-								</span>
+								<span className="font-medium">Accept</span>
 							</Button>
 						</div>
 					)

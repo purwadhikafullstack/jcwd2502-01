@@ -14,9 +14,13 @@ import { onClear, setSearch } from "../../../redux/features/products";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
+import MySpinner from "../../../components/uis/Spinners/Spinner";
 
 const AdminEditProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
+
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [oldImages, setOldImages] = useState([]);
 
@@ -32,8 +36,31 @@ const AdminEditProductPage = () => {
 		const selectedImages = event.target.files;
 		const selectedImagesArray = Array.from(selectedImages);
 
+		const maxSize = 3 * 1024 * 1024; // 3MB limit
+		const validImageTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+		const isSizeValid = selectedImagesArray.every(
+			(image) => image.size <= maxSize
+		);
+		const isTypeValid = selectedImagesArray.every((image) =>
+			validImageTypes.includes(image.type)
+		);
+
+		if (!isSizeValid && !isTypeValid) {
+			toast.error(
+				"Maximum file size allowed is 3MB and only JPEG, JPG, or PNG files are allowed"
+			);
+			return false;
+		} else if (!isSizeValid) {
+			toast.error("Maximum file size allowed is 3MB");
+			return false;
+		} else if (!isTypeValid) {
+			toast.error("Please select valid image files (JPEG, JPG, or PNG)");
+			return false;
+		}
+
 		if (selectedImagesArray.length > 3) {
-			alert("Maximum of three images can be uploaded");
+			toast.error("Maximum of three images can be uploaded");
 			return false;
 		} else {
 			const imagesArray = selectedImagesArray.map((image) => {
@@ -110,6 +137,8 @@ const AdminEditProductPage = () => {
 
 	const onSaveChanges = async (values) => {
 		try {
+			setIsLoading(true);
+
 			const {
 				product_name,
 				product_desc,
@@ -161,12 +190,6 @@ const AdminEditProductPage = () => {
 			fd.append("dataProduct", newProductDataJSON);
 			fd.append("dataSpec", newSpecDataJSON);
 
-			// if (!imagesToSend) {
-			// 	fd.append("images", null);
-			// } else {
-			// 	fd.append("images", imagesToSend);
-			// }
-
 			const dataImages = {
 				action: "new",
 			};
@@ -195,12 +218,25 @@ const AdminEditProductPage = () => {
 			);
 
 			if (updateProduct.data.isError) {
-				alert(updateProduct.data.message);
+				toast.error(updateProduct.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				setIsLoading(false);
 				return;
 			}
 
+			toast.success("Edit product success", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
 			setTimeout(() => {
-				navigate("/admin/products");
+				navigate(-1);
 			}, 1500);
 
 			return;
@@ -344,15 +380,20 @@ const AdminEditProductPage = () => {
 					<section className="product-information shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] bg-background p-8 rounded-xl flex flex-col gap-6">
 						<h2 className="font-bold text-lg">Product Detail</h2>
 						<div className="form-control-images flex">
-							<div className="product-image-info min-w-[180px]">
+							<div className="product-image-info min-w-[180px] min-h-[160px]">
 								<h3 className="font-bold">
 									Product Images (Max 3 Images)
 								</h3>
 								<p className="text-sm">
-									Image format: .jpg, .jpeg, .png
-									<br /> Minimum size: 300 x 300 pixels (For
-									best quality, use a minimum size of 700 x
-									700 pixels).
+									<b>Image format: .jpg, .jpeg, .png</b>
+									<br />
+									<b>Max size: 3 mb.</b>
+									<br />
+									<span className="text-neutral-400 font-medium">
+										Minimum dimension: 300 x 300 pixels (For
+										best quality, use a minimum size of 700
+										x 700 pixels).
+									</span>
 								</p>
 							</div>
 							<div className="product-images-inputs w-full ml-12">
@@ -394,7 +435,7 @@ const AdminEditProductPage = () => {
 															.click()
 													}
 												>
-													<p className="text-primary-600 font-medium">
+													<p className="text-primary-600 font-medium hover:cursor-pointer hover:underline">
 														Change Images
 													</p>
 												</div>
@@ -404,7 +445,7 @@ const AdminEditProductPage = () => {
 														handleRemovePreview()
 													}
 												>
-													<p className="text-red-600 font-medium">
+													<p className="text-red-600 font-medium hover:cursor-pointer hover:underline">
 														Remove Images
 													</p>
 												</div>
@@ -414,7 +455,7 @@ const AdminEditProductPage = () => {
 														handleRevert()
 													}
 												>
-													<p className="text-yellow-600 font-medium">
+													<p className="text-yellow-600 font-medium hover:cursor-pointer hover:underline">
 														Revert Images
 													</p>
 												</div>
@@ -467,7 +508,7 @@ const AdminEditProductPage = () => {
 																	.click()
 															}
 														>
-															<p className="text-primary-600 font-medium">
+															<p className="text-primary-600 font-medium hover:cursor-pointer hover:underline">
 																Change Images
 															</p>
 														</div>
@@ -477,30 +518,44 @@ const AdminEditProductPage = () => {
 																setOldImages([])
 															}
 														>
-															<p className="text-red-600 font-medium">
+															<p className="text-red-600 font-medium hover:cursor-pointer hover:underline">
 																Remove Images
 															</p>
 														</div>
 													</div>
 												</div>
 											) : (
-												<div
-													className="empty-image-0 w-full h-full cursor-pointer flex flex-col items-center justify-center"
-													onClick={() =>
-														document
-															.querySelector(
-																"#productImgInput"
-															)
-															.click()
-													}
-												>
-													<MdOutlineAddPhotoAlternate
-														size={40}
-														className="fill-primary-600"
-													/>
-													<p className="text-primary-600 font-medium">
-														Select Images
-													</p>
+												<div>
+													<div className="img-0 w-[132px] h-[132px] rounded-xl border-primary-600 border-2 border-dashed flex justify-center items-center">
+														<div
+															className="empty-image-0 w-full h-full cursor-pointer flex flex-col items-center justify-center"
+															onClick={() =>
+																document
+																	.querySelector(
+																		"#productImgInput"
+																	)
+																	.click()
+															}
+														>
+															<MdOutlineAddPhotoAlternate
+																size={40}
+																className="fill-primary-600"
+															/>
+															<p className="text-primary-600 font-medium">
+																Select Images
+															</p>
+														</div>
+													</div>
+													<div
+														className="mt-4"
+														onClick={() =>
+															handleRevert()
+														}
+													>
+														<p className="text-yellow-600 font-medium hover:cursor-pointer hover:underline">
+															Revert Images
+														</p>
+													</div>
 												</div>
 											)}
 										</>
@@ -684,6 +739,8 @@ const AdminEditProductPage = () => {
 							fullWidth
 							color="primary"
 							size="lg"
+							isLoading={isLoading}
+							spinner={<MySpinner />}
 							type="submit"
 						>
 							<p className="text-black font-medium">

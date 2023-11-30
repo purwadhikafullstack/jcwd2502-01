@@ -12,9 +12,8 @@ import {
 	Chip,
 	Image,
 } from "@nextui-org/react";
-import { IoSearch, IoTrashOutline } from "react-icons/io5";
+import { IoTrashOutline } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
-import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { fetchUser } from "../../../redux/features/manageUser";

@@ -14,6 +14,8 @@ import {
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminCreateNewBrandModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -26,7 +28,12 @@ const AdminCreateNewBrandModal = () => {
 			setIsLoading(true);
 
 			if (!brandName) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return; // Stop further execution
 			}
@@ -38,7 +45,12 @@ const AdminCreateNewBrandModal = () => {
 			});
 
 			if (addBrand.data.isError) {
-				alert(addBrand.data.message);
+				toast.error(addBrand.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return;
 			}
@@ -112,6 +124,7 @@ const AdminCreateNewBrandModal = () => {
 											color="primary"
 											className="text-center mb-4"
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											fullWidth
 											onPress={() => onSubmit(brandName)}
 										>

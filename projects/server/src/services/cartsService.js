@@ -56,7 +56,10 @@ module.exports = {
 				group: ["id"],
 			};
 
-			const dataProductsInCart = await db.cart.findAll(baseQuery);
+			const dataProductsInCart = await db.cart.findAll({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
 
 			const count = dataProductsInCart.length;
 

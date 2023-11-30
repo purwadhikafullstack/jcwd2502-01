@@ -20,6 +20,8 @@ import toast, { Toaster } from "react-hot-toast";
 import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import { onSetUserAddresses } from "../../../redux/features/users";
+import Media from "react-media";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 export default function App({ data }) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -189,148 +191,180 @@ export default function App({ data }) {
 		}
 	}, [getProvinces, getCities, selectedProvince]);
 	return (
-		<>
-			<Toaster />
-			<Button
-				onPress={onOpen}
-				className="text-md mr-2 text-green-500 font-medium"
-				color=""
-			>
-				ubah
-			</Button>
-			<Modal
-				isOpen={isOpen}
-				onOpenChange={onOpenChange}
-				placement="top-center"
-			>
-				<ModalContent>
-					{(onClose) => (
-						<>
-							<ModalHeader className="flex flex-col gap-1">
-								Change Address
-							</ModalHeader>
-							<ModalBody>
-								<div className="modal-body">
-									<form
-										// onSubmit={formik.handleSubmit}
-										className="flex flex-col justify-between gap-4 h-full"
-									>
-										<div className="form-control">
-											<Input
-												type="text"
-												name="recipient_name"
-												label="recipient's Name"
-												labelPlacement="outside"
-												variant="bordered"
-												radius="sm"
-												size="lg"
-												placeholder="Warehouse One"
-												defaultValue={"Warehouse 1"}
-												isRequired
-												value={
-													formik.values.recipient_name
-												}
-												onChange={formik.handleChange}
-											/>
+		<Media
+			queries={{
+				medium: "(min-width: 768px)",
+			}}
+		>
+			{(matches) => (
+				<>
+					<div
+						onClick={onOpen}
+						className="pr-4 border-r-1 border-neutral-400 border-opacity-20"
+					>
+						<span className="font-medium text-label-lg text-primary-600 hover:cursor-pointer hover:underline">
+							Edit
+						</span>
+					</div>
+					<Modal
+						isOpen={isOpen}
+						onOpenChange={onOpenChange}
+						size="full"
+						scrollBehavior="inside"
+					>
+						<ModalContent>
+							{(onClose) => (
+								<>
+									<ModalHeader className="flex flex-col gap-1">
+										Change Address
+									</ModalHeader>
+									<ModalBody>
+										<div className="modal-body">
+											<form className="flex flex-col justify-between gap-4 h-full">
+												<div className="form-control">
+													<Input
+														type="text"
+														name="recipient_name"
+														label="Recipient's Name"
+														labelPlacement="outside"
+														variant="bordered"
+														radius="sm"
+														size="lg"
+														placeholder="Warehouse One"
+														defaultValue={
+															"Warehouse 1"
+														}
+														isRequired
+														value={
+															formik.values
+																.recipient_name
+														}
+														onChange={
+															formik.handleChange
+														}
+													/>
+												</div>
+												<div className="form-control">
+													<Input
+														type="text"
+														name="address_name"
+														label="Label Address"
+														labelPlacement="outside"
+														variant="bordered"
+														radius="sm"
+														size="lg"
+														placeholder="Warehouse One"
+														defaultValue={
+															"Warehouse 1"
+														}
+														isRequired
+														value={
+															formik.values
+																.address_name
+														}
+														onChange={
+															formik.handleChange
+														}
+													/>
+												</div>
+												<div className="form-control">
+													<Select
+														name="province_id"
+														label="Province"
+														labelPlacement="outside"
+														variant="bordered"
+														radius="sm"
+														size="lg"
+														onChange={(e) =>
+															handleProvince(
+																e.target.value
+															)
+														}
+														placeholder="Select a province"
+														isRequired
+														selectedKeys={[
+															String(
+																selectedProvince
+															),
+														]}
+													>
+														{renderProvincesOption()}
+													</Select>
+												</div>
+												<div className="form-control">
+													<Select
+														name="city_id"
+														label="City"
+														labelPlacement="outside"
+														variant="bordered"
+														radius="sm"
+														size="lg"
+														onChange={(e) =>
+															handleCity(
+																e.target.value
+															)
+														}
+														placeholder="Select a City"
+														isRequired
+														selectedKeys={
+															selectedCity
+																? [
+																		String(
+																			selectedCity
+																		),
+																  ]
+																: ""
+														}
+													>
+														{renderCitiesOption()}
+													</Select>
+												</div>
+												<div className="form-control">
+													<Textarea
+														placeholder="Jl. Street Address"
+														name="address"
+														label="Full Address"
+														labelPlacement="outside"
+														variant="bordered"
+														radius="sm"
+														size="lg"
+														isRequired
+														value={
+															formik.values
+																.address
+														}
+														onChange={
+															formik.handleChange
+														}
+													/>
+												</div>
+												<div className="modal-footer pt-4">
+													<Button
+														isLoading={isLoading}
+														spinner={<MySpinner />}
+														color="primary"
+														className="text-center"
+														fullWidth
+														type="submit"
+														onClick={
+															formik.handleSubmit
+														}
+														onPress={onClose}
+													>
+														<span className="font-bold text-black">
+															Save changes
+														</span>
+													</Button>
+												</div>
+											</form>
 										</div>
-										<div className="form-control">
-											<Input
-												type="text"
-												name="address_name"
-												label="address's Name"
-												labelPlacement="outside"
-												variant="bordered"
-												radius="sm"
-												size="lg"
-												placeholder="Warehouse One"
-												defaultValue={"Warehouse 1"}
-												isRequired
-												value={
-													formik.values.address_name
-												}
-												onChange={formik.handleChange}
-											/>
-										</div>
-										<div className="form-control">
-											<Select
-												name="province_id"
-												label="Province"
-												labelPlacement="outside"
-												variant="bordered"
-												radius="sm"
-												size="lg"
-												onChange={(e) =>
-													handleProvince(
-														e.target.value
-													)
-												}
-												placeholder="Select a province"
-												isRequired
-												selectedKeys={[
-													String(selectedProvince),
-												]}
-											>
-												{renderProvincesOption()}
-											</Select>
-										</div>
-										<div className="form-control">
-											<Select
-												name="city_id"
-												label="City"
-												labelPlacement="outside"
-												variant="bordered"
-												radius="sm"
-												size="lg"
-												onChange={(e) =>
-													handleCity(e.target.value)
-												}
-												placeholder="Select a City"
-												isRequired
-												selectedKeys={
-													selectedCity
-														? [String(selectedCity)]
-														: ""
-												}
-											>
-												{renderCitiesOption()}
-											</Select>
-										</div>
-										<div className="form-control">
-											<Textarea
-												placeholder="Jl. Street Address"
-												name="address"
-												label="Full Address"
-												labelPlacement="outside"
-												variant="bordered"
-												radius="sm"
-												size="lg"
-												isRequired
-												value={formik.values.address}
-												onChange={formik.handleChange}
-											/>
-										</div>
-										<div className="modal-footer pt-4">
-											<Button
-												isLoading={isLoading}
-												color="primary"
-												className="text-center"
-												fullWidth
-												type="submit"
-												onClick={formik.handleSubmit}
-												onPress={onClose}
-											>
-												<span className="font-bold text-black">
-													Save changes
-												</span>
-											</Button>
-										</div>
-									</form>
-								</div>
-							</ModalBody>
-						</>
-					)}
-				</ModalContent>
-			</Modal>
-		</>
+									</ModalBody>
+								</>
+							)}
+						</ModalContent>
+					</Modal>
+				</>
+			)}
+		</Media>
 	);
 }

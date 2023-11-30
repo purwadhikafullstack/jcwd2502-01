@@ -32,6 +32,7 @@ const AdminSalesReportPage = () => {
 		takeFromQuery();
 		console.log(key);
 	}, [key, setKey, location]);
+
 	let tabs = [
 		{
 			id: "transactions",

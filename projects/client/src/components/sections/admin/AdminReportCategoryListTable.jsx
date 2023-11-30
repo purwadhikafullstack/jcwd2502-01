@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import {
 	Table,
@@ -126,7 +125,7 @@ const AdminReportCategoryListTable = () => {
 			dispatch(setSearchCategory(""));
 			// dispatch(setProductsForStocks([]));
 			dispatch(setTotalPageCategory(1));
-			dispatch(setWarehouse(null));
+			// dispatch(setWarehouse(null));
 			dispatch(setCountCategory(0));
 		};
 	}, []);
@@ -325,4 +324,3 @@ const AdminReportCategoryListTable = () => {
 };
 
 export default AdminReportCategoryListTable;
-

@@ -37,7 +37,7 @@ const AdminProductListPage = () => {
 				<Button
 					color="primary"
 					size="md"
-					onClick={() => onAdd}
+					onClick={() => onAdd()}
 					isDisabled={role !== "super"}
 				>
 					<p className="font-medium text-black flex items-center gap-1">

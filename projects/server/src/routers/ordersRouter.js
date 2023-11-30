@@ -9,6 +9,7 @@ const { verify } = require("./../lib/jwt");
 
 Router.get("/", verify, ordersController.getOrderList);
 Router.get("/:receipt_number", verify, ordersController.getOrderDetails);
+Router.patch("/complete/:order_id", verify, ordersController.completeOrder);
 Router.patch("/cancel/:order_id", verify, ordersController.cancelOrder);
 
 // Admins
@@ -17,14 +18,24 @@ Router.get(
 	verify,
 	ordersController.adminGetAllUserOrderList
 );
+Router.post(
+	"/admin/confirm-order/:order_id",
+	// verify,
+	ordersController.adminConfirmOrder
+);
 Router.patch(
 	"/admin/reject-order/:order_id",
 	verify,
 	ordersController.adminRejectOrder
 );
 Router.patch(
+	"/admin/send-order/:order_id",
+	// verify,
+	ordersController.adminSendOrder
+);
+Router.patch(
 	"/admin/cancel-order/:order_id",
-	verify,
+	// verify,
 	ordersController.adminCancelOrder
 );
 

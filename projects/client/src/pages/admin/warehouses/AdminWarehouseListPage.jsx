@@ -13,16 +13,13 @@ import {
 	Select,
 	SelectItem,
 } from "@nextui-org/react";
-
-import { IoEyeOutline, IoTrashOutline } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
+import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
 
 import AdminCreateNewWarehouseModal from "../../../components/layouts/admin/AdminCreateNewWarehouseModal";
 import AdminEditWarehouseModal from "../../../components/layouts/admin/AdminEditWarehouseModal";
-import { axiosInstance } from "../../../lib/axios";
 import AdminPageMainContainer from "../../../components/layouts/admin/AdminPageMainContainer";
 import { useStateContext } from "../../../contexts/ContextProvider";
-import SelectSortBy from "../../../components/uis/Selects/SelectSortBy";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -36,6 +33,7 @@ import {
 	setTotalPage,
 	setWarehouses,
 } from "../../../redux/features/products";
+import AdminDeleteWarehouseModal from "../../../components/sections/admin/AdminDeleteWarehouseModal";
 
 const AdminWarehouseListPage = () => {
 	const { openEditWarehouseModal, setOpenEditWarehouseModal } =
@@ -139,13 +137,6 @@ const AdminWarehouseListPage = () => {
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
-	const onDelete = async (warehouseId) => {
-		//confirm
-		const accessToken = localStorage.getItem("accessToken");
-		await axiosInstance(accessToken).delete(`warehouses/${warehouseId}`);
-		window.location.reload(false);
-	};
-
 	const renderCell = React.useCallback((warehouse, columnKey) => {
 		switch (columnKey) {
 			case "name":
@@ -182,7 +173,10 @@ const AdminWarehouseListPage = () => {
 								warehouse.users[0]?.username ||
 								"no admin assigned"
 							}
-						></User>
+							avatarProps={{
+								src: DefaultAvatar,
+							}}
+						/>
 					</div>
 				);
 			case "actions":
@@ -209,18 +203,7 @@ const AdminWarehouseListPage = () => {
 								<BiEdit size={24} />
 							</Button>
 						</Tooltip>
-						<Tooltip color="danger" content="Remove warehouse">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-danger cursor-pointer active:opacity-50"
-								onClick={() => {
-									onDelete(warehouse.id);
-								}}
-							>
-								<IoTrashOutline size={24} />
-							</Button>
-						</Tooltip>
+						<AdminDeleteWarehouseModal warehouseID={warehouse.id} />
 					</div>
 				);
 			default:

@@ -17,7 +17,7 @@ const orderStatuses = [
 	},
 	{
 		value: "5",
-		label: "Order Confirmed",
+		label: "Finished",
 	},
 	{
 		value: "6",

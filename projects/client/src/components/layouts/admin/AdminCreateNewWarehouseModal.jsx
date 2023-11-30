@@ -17,6 +17,8 @@ import {
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 import { IoAdd } from "react-icons/io5";
+import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminCreateNewWarehouseModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -37,7 +39,12 @@ const AdminCreateNewWarehouseModal = () => {
 			setIsLoading(true);
 			const { name, province, city, address } = data;
 			if (!name || !province || !city || !address) {
-				alert("Please fill out all the form");
+				toast.error("Please fill out all the form", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				return;
 			}
 
@@ -237,6 +244,7 @@ const AdminCreateNewWarehouseModal = () => {
 											color="primary"
 											className="text-center mb-4"
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											fullWidth
 											onPress={() => onCreate(data)}
 										>

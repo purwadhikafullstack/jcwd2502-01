@@ -3,6 +3,7 @@ const axios = require("axios");
 const { RAJA_ONGKIR_API_KEY, RAJA_ONGKIR_BASE_URL } = process.env;
 
 const respHandler = require("../utils/respHandler");
+const distanceUtils = require("../utils/distanceUtils");
 
 module.exports = {
 	getSelectedCheckoutProducts: async (req, res, next) => {
@@ -71,41 +72,7 @@ module.exports = {
 				},
 			});
 
-			function calculateDistance(lat1, lon1, lat2, lon2) {
-				const R = 6371; // Earth's radius in kilometers
-				const dLat = (lat2 - lat1) * (Math.PI / 180);
-				const dLon = (lon2 - lon1) * (Math.PI / 180);
-				const a =
-					Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-					Math.cos(lat1 * (Math.PI / 180)) *
-						Math.cos(lat2 * (Math.PI / 180)) *
-						Math.sin(dLon / 2) *
-						Math.sin(dLon / 2);
-				const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-				const distance = R * c; // Distance in kilometers
-				return distance;
-			}
-
-			// Find the nearest warehouse
-			function findNearestWarehouse(userLat, userLon, warehouses) {
-				let nearestWarehouse = null;
-				let minDistance = Number.MAX_VALUE;
-				for (const warehouse of warehouses) {
-					const distance = calculateDistance(
-						Number(userLat),
-						Number(userLon),
-						Number(warehouse.latitude),
-						Number(warehouse.longitude)
-					);
-					if (distance < minDistance) {
-						minDistance = distance;
-						nearestWarehouse = warehouse;
-					}
-				}
-				return nearestWarehouse;
-			}
-
-			const nearestWarehouse = findNearestWarehouse(
+			const nearestWarehouse = distanceUtils.findNearestWarehouse(
 				userLat,
 				userLon,
 				warehouses
@@ -217,6 +184,7 @@ module.exports = {
 			const checkOrderPayment = await db.order.findOne({
 				where: { id: order_id, user_id },
 			});
+
 			const paymentHasPaid = checkOrderPayment.proof_of_payment;
 
 			if (paymentHasPaid)
@@ -224,7 +192,6 @@ module.exports = {
 					message:
 						"Your transaction has already been settled with your payment.",
 				};
-			// respHandler(res, "Upload payment proof success", null, 201);
 
 			await db.order.update(
 				{

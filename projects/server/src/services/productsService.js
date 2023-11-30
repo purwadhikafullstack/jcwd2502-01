@@ -1,4 +1,3 @@
-
 const db = require("./../models");
 const { Op } = require("sequelize");
 const { sequelize } = require("./../models");
@@ -85,7 +84,10 @@ module.exports = {
 			}
 
 			const dataAllProducts = await db.product.findAll(baseQuery);
-			const count = await db.product.count(baseQuery);
+			const count = await db.product.count({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
 
 			return {
 				message: "Get products data success",
@@ -164,9 +166,11 @@ module.exports = {
 			});
 
 			if (checkProduct) {
-				images.map((image) => {
-					fs.unlinkSync(image.path);
-				});
+				if (images) {
+					images.map((image) => {
+						fs.unlinkSync(image.path);
+					});
+				}
 				return {
 					isError: true,
 					message: `${product_name} is already added`,
@@ -231,9 +235,11 @@ module.exports = {
 			}
 			const checkProduct1 = await db.product.findByPk(productId);
 			if (!checkProduct1) {
-				images.map((image) => {
-					fs.unlinkSync(image.path);
-				});
+				if (dataImages.action !== "keep") {
+					images.map((image) => {
+						fs.unlinkSync(image.path);
+					});
+				}
 				return {
 					isError: true,
 					message: `Product not found`,
@@ -244,16 +250,20 @@ module.exports = {
 			const checkProduct2 = await db.product.findOne({
 				where: { product_name },
 			});
-			if (checkProduct2 && checkProduct2.dataValues.id != productId) {
-				images.map((image) => {
-					fs.unlinkSync(image.path);
-				});
+
+			if (checkProduct2 && checkProduct2?.dataValues?.id != productId) {
+				if (dataImages.action !== "keep") {
+					images.map((image) => {
+						fs.unlinkSync(image.path);
+					});
+				}
 				return {
 					isError: true,
 					message: `${product_name} is already added`,
 					data: null,
 				};
 			}
+
 			const updateProduct = await db.product.update(
 				dataProduct,
 				{ where: { id: productId } },
@@ -285,7 +295,7 @@ module.exports = {
 				});
 			}
 			const updateImages = [];
-			if (images) {
+			if (images && dataImages.action !== "keep") {
 				for (const image of images) {
 					updateImages.push({
 						image: image.path.substring(4),
@@ -390,5 +400,85 @@ module.exports = {
 			return error;
 		}
 	},
-};
+	topSoldProducts: async () => {
+		try {
+			const categoryInclude = {
+				model: db.category,
+				attributes: ["category_type", "id"],
+			};
 
+			const brandInclude = {
+				model: db.brand,
+				attributes: ["brand_name", "id"],
+			};
+
+			const topSoldProducts = await db.product.findAll({
+				attributes: [
+					"id",
+					"product_name",
+					"product_price",
+					[
+						sequelize.fn(
+							"SUM",
+							sequelize.col("order_details.quantity")
+						),
+						"totalSold",
+					],
+				],
+				include: [
+					{
+						model: db.order_detail,
+						attributes: [
+							[
+								sequelize.fn("SUM", sequelize.col("quantity")),
+								"quantity",
+							],
+						],
+						where: {
+							quantity: {
+								[Op.gt]: 0,
+							},
+						},
+						include: [
+							{
+								model: db.order,
+								attributes: [],
+								where: {
+									status: {
+										[Op.in]: ["4", "5"],
+									},
+								},
+							},
+						],
+					},
+					{
+						model: db.product_image,
+						attributes: ["image", "id"],
+						limit: 1,
+					},
+					categoryInclude,
+					brandInclude,
+				],
+				order: [
+					[
+						sequelize.fn(
+							"SUM",
+							sequelize.col("order_details.quantity")
+						),
+						"DESC",
+					],
+				],
+				group: ["product.id"],
+			});
+
+			const soldTopProduct = topSoldProducts.filter((_, i) => i < 6);
+
+			return {
+				data: soldTopProduct,
+				message: "Get top sold products success",
+			};
+		} catch (error) {
+			return error;
+		}
+	},
+};

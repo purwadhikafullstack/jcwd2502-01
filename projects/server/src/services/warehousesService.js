@@ -98,7 +98,10 @@ module.exports = {
 				order: orderOptions,
 			};
 			const dataWarehouses = await db.warehouse.findAll(baseQuery);
-			const count = await db.warehouse.count(baseQuery);
+			const count = await db.warehouse.count({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
 			return {
 				message: "Get product's data success",
 				data: { count, warehouses: dataWarehouses },

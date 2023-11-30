@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import OrderCard from "../../components/uis/Cards/OrderCard";
-import { Pagination, Select, SelectItem } from "@nextui-org/react";
+import { Button, Pagination, Select, SelectItem } from "@nextui-org/react";
 import { axiosInstance } from "../../lib/axios";
 import { orderStatuses } from "../../data/constant";
 import { useLocation } from "react-router-dom";
@@ -70,6 +70,11 @@ const OrderListPage = () => {
 		);
 	};
 
+	const onClearFilter = () => {
+		setPage(1);
+		setStatus("");
+	};
+
 	useEffect(() => {
 		takeFromQuery();
 
@@ -77,7 +82,7 @@ const OrderListPage = () => {
 
 		const timeoutId = setTimeout(() => {
 			setIsPaginationVisible(true);
-		}, 400);
+		}, 500);
 
 		return () => clearTimeout(timeoutId);
 	}, [currentPage]);
@@ -133,23 +138,20 @@ const OrderListPage = () => {
 
 	return (
 		<main className="my-container min-h-screen py-4">
-			<div className="page-heading mb-4">
+			<div className="page-heading mb-6">
 				<h3 className="font-bold text-lg md:text-headline-sm">
 					Transaction History
 				</h3>
 			</div>
 			<section className="orders">
-				<div className="grid grid-cols-1 mb-4">
+				<div className="flex items-center gap-2 mb-4">
 					<Select
 						items={orderStatuses}
 						labelPlacement="outside-left"
 						placeholder="Order Status"
 						variant="bordered"
 						size="md"
-						className="md:col-span-2"
-						defaultSelectedKeys={
-							currentStatus ? [currentStatus.toString()] : []
-						}
+						selectedKeys={status ? [status.toString()] : []}
 					>
 						{(status) => (
 							<SelectItem
@@ -160,6 +162,9 @@ const OrderListPage = () => {
 							</SelectItem>
 						)}
 					</Select>
+					<Button variant="bordered" onPress={onClearFilter}>
+						<span className="">Clear Filter</span>
+					</Button>
 				</div>
 				<div className="order-list-wrapper flex flex-col gap-4">
 					{renderOrderList()}

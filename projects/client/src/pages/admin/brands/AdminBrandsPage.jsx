@@ -34,6 +34,7 @@ import {
 	setPagination,
 	setTotalPage,
 } from "../../../redux/features/products";
+import AdminDeleteBrandModal from "../../../components/sections/admin/AdminDeleteBrandModal";
 
 const AdminBrandsPage = () => {
 	const { openEditBrandModal, setOpenEditBrandModal } = useStateContext();
@@ -130,18 +131,18 @@ const AdminBrandsPage = () => {
 		setSelectedBrandName(brand_name);
 	};
 
-	const onDelete = async (brandId) => {
-		try {
-			const accessToken = localStorage.getItem("accessToken");
+	// const onDelete = async (brandId) => {
+	// 	try {
+	// 		const accessToken = localStorage.getItem("accessToken");
 
-			//confirm
+	// 		//confirm
 
-			await axiosInstance(accessToken).delete(`brands/${brandId}`);
-			window.location.reload(false);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	// 		await axiosInstance(accessToken).delete(`brands/${brandId}`);
+	// 		window.location.reload(false);
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+	// };
 
 	useEffect(() => {
 		if (openEditBrandModal) {
@@ -183,19 +184,7 @@ const AdminBrandsPage = () => {
 									<BiEdit size={24} />
 								</Button>
 							</Tooltip>
-							<Tooltip color="danger" content="Remove brand">
-								<Button
-									isIconOnly
-									variant="light"
-									className="text-lg text-danger cursor-pointer active:opacity-50"
-									onClick={() => {
-										onDelete(brand.id);
-									}}
-									isDisabled={role !== "super"}
-								>
-									<IoTrashOutline size={24} />
-								</Button>
-							</Tooltip>
+							<AdminDeleteBrandModal brandID={brand.id} />
 						</div>
 					);
 				default:

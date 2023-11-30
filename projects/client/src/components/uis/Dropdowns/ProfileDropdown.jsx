@@ -16,11 +16,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { onLogout } from "../../../redux/features/users";
 import { Link, useNavigate } from "react-router-dom";
 import TransactionList from "../../../assets/icons/TransactionList";
-import SelectLang from "../Selects/SelectLang";
 
 const ProfileDropdown = () => {
-	const { username } = useSelector((state) => state.user);
-	const { email, status } = useSelector((state) => state.user);
+	const { username, profileUser } = useSelector((state) => state.user);
+	const { email, status, role } = useSelector((state) => state.user);
+
+	const profilePicture = `${
+		process.env.REACT_APP_IMAGE_API
+	}${profileUser?.substring(7)}`;
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -37,7 +40,7 @@ const ProfileDropdown = () => {
 				<User
 					as="button"
 					avatarProps={{
-						src: DefaultAvatar,
+						src: profileUser ? profilePicture : DefaultAvatar,
 					}}
 					className="transition-transform font-bold"
 					name={`${username}`}
@@ -49,7 +52,7 @@ const ProfileDropdown = () => {
 						<Avatar
 							className="w-20 h-20 mr-2 text-large"
 							color="secondary"
-							src={DefaultAvatar}
+							src={profileUser ? profilePicture : DefaultAvatar}
 						/>
 						<div className="user-id">
 							<h1 className="user-username font-bold text-[18px]">
@@ -70,29 +73,33 @@ const ProfileDropdown = () => {
 						</div>
 					</div>
 				</DropdownItem>
-				<DropdownItem key="settings">
-					<Link to={"/profile/settings"}>
-						<div className="flex items-center gap-2 p-2">
-							<IoSettingsOutline size={24} />
-							<h4 className="font-medium text-body-lg">
-								Settings
-							</h4>
-						</div>
-					</Link>
-				</DropdownItem>
-				<DropdownItem key="settings">
-					<Link to={"/order-list"}>
-						<div className="flex items-center gap-2 p-2">
-							<TransactionList
-								fill={"fill-text -ml-[0.8px]"}
-								size={24}
-							/>
-							<h4 className="font-medium text-body-lg">
-								Transaction History
-							</h4>
-						</div>
-					</Link>
-				</DropdownItem>
+				{role === "user" && (
+					<DropdownItem key="settings">
+						<Link to={"/profile/settings"}>
+							<div className="flex items-center gap-2 p-2">
+								<IoSettingsOutline size={24} />
+								<h4 className="font-medium text-body-lg">
+									Settings
+								</h4>
+							</div>
+						</Link>
+					</DropdownItem>
+				)}
+				{role === "user" && (
+					<DropdownItem key="settings">
+						<Link to={"/order-list"}>
+							<div className="flex items-center gap-2 p-2">
+								<TransactionList
+									fill={"fill-text -ml-[0.8px]"}
+									size={24}
+								/>
+								<h4 className="font-medium text-body-lg">
+									Transaction History
+								</h4>
+							</div>
+						</Link>
+					</DropdownItem>
+				)}
 				<DropdownItem
 					key="logout"
 					color="danger"

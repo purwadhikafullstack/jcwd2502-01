@@ -14,6 +14,8 @@ import {
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminCreateNewCategoryModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -25,7 +27,12 @@ const AdminCreateNewCategoryModal = () => {
 			setIsLoading(true);
 
 			if (!categoryType) {
-				alert("Please fill in all form fields");
+				toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return; // Stop further execution
 			}
@@ -40,7 +47,12 @@ const AdminCreateNewCategoryModal = () => {
 			);
 
 			if (addCategory.data.isError) {
-				alert(addCategory.data.message);
+				toast.error(addCategory.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return;
 			}
@@ -114,6 +126,7 @@ const AdminCreateNewCategoryModal = () => {
 											color="primary"
 											className="text-center mb-4"
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											fullWidth
 											onPress={() =>
 												onSubmit(categoryType)

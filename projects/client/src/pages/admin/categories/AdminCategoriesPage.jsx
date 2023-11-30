@@ -10,24 +10,19 @@ import {
 	TableCell,
 	Tooltip,
 	Button,
-	Input,
 	Pagination,
 	Select,
 	SelectItem,
 } from "@nextui-org/react";
-import { IoTrashOutline, IoSearch } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import { useStateContext } from "../../../contexts/ContextProvider";
 import AdminEditCategoryModal from "../../../components/layouts/admin/AdminEditCategoryModal";
-import { axiosInstance } from "../../../lib/axios";
-import SelectSortBy from "../../../components/uis/Selects/SelectSortBy";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
 	fetchCategoriesAsync,
 	onClear,
 	onSort,
-	setBrands,
 	setCategories,
 	setCount,
 	setOrderDirection,
@@ -35,6 +30,7 @@ import {
 	setPagination,
 	setTotalPage,
 } from "../../../redux/features/products";
+import AdminDeleteCategoryModal from "../../../components/sections/admin/AdminDeleteCategoryModal";
 
 const AdminCategoriesPage = () => {
 	const { openEditCategoryModal, setOpenEditCategoryModal } =
@@ -135,19 +131,6 @@ const AdminCategoriesPage = () => {
 		setSelectedCategoryType(category_type);
 	};
 
-	const onDelete = async (categoryId) => {
-		try {
-			const accessToken = localStorage.getItem("accessToken");
-
-			//confirm
-
-			await axiosInstance(accessToken).delete(`categories/${categoryId}`);
-			window.location.reload(false);
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	useEffect(() => {
 		if (openEditCategoryModal) {
 			document.body.style.overflow = "hidden";
@@ -188,19 +171,9 @@ const AdminCategoriesPage = () => {
 									<BiEdit size={24} />
 								</Button>
 							</Tooltip>
-							<Tooltip color="danger" content="Remove category">
-								<Button
-									isIconOnly
-									variant="light"
-									className="text-lg text-danger cursor-pointer active:opacity-50"
-									onClick={() => {
-										onDelete(category.id);
-									}}
-									isDisabled={role !== "super"}
-								>
-									<IoTrashOutline size={24} />
-								</Button>
-							</Tooltip>
+							<AdminDeleteCategoryModal
+								categoryID={category.id}
+							/>
 						</div>
 					);
 				default:

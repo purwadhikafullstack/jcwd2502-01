@@ -20,6 +20,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { axiosInstance } from "../../../lib/axios";
 import { OnCheckIsLogin } from "../../../redux/features/users";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 export default function App() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -27,9 +28,7 @@ export default function App() {
 	const { username, gender, birth_date } = useSelector((state) => state.user);
 	const accessToken = localStorage.getItem("accessToken");
 	const dispatch = useDispatch();
-	// console.log(username);
-	// console.log(gender);
-	// console.log(birth_date);
+
 	const [selectedGender, setSelectedGender] = useState(null);
 	const [selectedBirth, setSelectedBirth] = useState(null);
 	const arrGender = [
@@ -96,8 +95,8 @@ export default function App() {
 	return (
 		<>
 			<Tooltip content={"Edit Personal Information"}>
-				<Button onPress={onOpen} color="">
-					<BiEdit size={24} />
+				<Button onPress={onOpen} isIconOnly variant="flat">
+					<BiEdit size={22} />
 				</Button>
 			</Tooltip>
 			<Modal
@@ -106,7 +105,7 @@ export default function App() {
 					onOpenChange();
 					resetFrom();
 				}}
-				placement="top-center"
+				placement="center"
 			>
 				<ModalContent>
 					{(onClose) => (
@@ -114,7 +113,7 @@ export default function App() {
 							<ModalHeader className="flex flex-col gap-1">
 								Personal Information
 							</ModalHeader>
-							<ModalBody>
+							<ModalBody className="pb-6">
 								<form
 									onSubmit={formik.handleSubmit}
 									className="flex flex-col justify-between gap-4 h-full"
@@ -123,7 +122,7 @@ export default function App() {
 										<Input
 											type="text"
 											name="username"
-											label="user's Name"
+											label="Username"
 											labelPlacement="outside"
 											variant="bordered"
 											radius="sm"
@@ -139,7 +138,7 @@ export default function App() {
 										<Input
 											type="date"
 											name="birth_date"
-											label="user's birth of date"
+											label="Birthdate"
 											labelPlacement="outside"
 											variant="bordered"
 											radius="sm"
@@ -193,6 +192,7 @@ export default function App() {
 									<div className="modal-footer pt-4">
 										<Button
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											color="primary"
 											className="text-center"
 											fullWidth

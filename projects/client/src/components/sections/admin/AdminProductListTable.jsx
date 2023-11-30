@@ -35,6 +35,8 @@ import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
 import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import AdminDeleteProductModal from "./AdminDeleteProductModal";
+import DefaultProductImg from "./../../../assets/logo/nexo_sqr.png";
 
 const AdminProductListTable = ({ props }) => {
 	const [oneTime, setOneTime] = useState(false);
@@ -109,18 +111,10 @@ const AdminProductListTable = ({ props }) => {
 	};
 
 	const onDelete = async (productId) => {
-		//confirm
 		const accessToken = localStorage.getItem("accessToken");
 		await axiosInstance(accessToken).delete(`products/${productId}`);
-		dispatch(
-			fetchProductAsync(
-				`?&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			)
-		);
+
+		window.location.reload(false);
 	};
 
 	const onEdit = (encodedProductName) => {
@@ -199,11 +193,16 @@ const AdminProductListTable = ({ props }) => {
 						<div className="flex items-center gap-4 w-[240px] md:w-full">
 							<div className="product-image aspect-square w-12 h-12 md:w-20 md:h-20 rounded-lg object-contain">
 								<Image
-									src={`${
-										process.env.REACT_APP_IMAGE_API
-									}${product?.product_images[0]?.image.substring(
-										7
-									)}`}
+									src={
+										product?.product_images?.length
+											? `${
+													process.env
+														.REACT_APP_IMAGE_API
+											  }${product?.product_images[0]?.image.substring(
+													7
+											  )}`
+											: DefaultProductImg
+									}
 									alt=""
 									className="product-image aspect-square w-full h-full object-contain bg-white"
 								/>
@@ -249,19 +248,10 @@ const AdminProductListTable = ({ props }) => {
 								</Button>
 							</Tooltip>
 							{/* </Link> */}
-							<Tooltip color="danger" content="Remove product">
-								<Button
-									isIconOnly
-									variant="light"
-									className="text-lg text-danger cursor-pointer active:opacity-50"
-									onClick={() => {
-										onDelete(product?.id);
-									}}
-									isDisabled={role !== "super"}
-								>
-									<IoTrashOutline size={24} />
-								</Button>
-							</Tooltip>
+							<AdminDeleteProductModal
+								productID={product?.id}
+								handleOnDelete={onDelete}
+							/>
 						</div>
 					);
 				default:

@@ -17,6 +17,8 @@ import { FaRegEye } from "react-icons/fa6";
 import PaymentProofModal from "../../uis/Modals/PaymentProofModal";
 import AdminRejectOrderModal from "./AdminRejectOrderModal";
 import AdminCancelOrderModal from "./AdminCancelOrderModal";
+import AdminConfirmOrderModal from "./AdminConfirmOrderModal";
+import AdminSendOrderModal from "./AdminSendOrderModal";
 
 const AdminReviewUserOrderModal = ({ orderDetailsData }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -57,7 +59,9 @@ const AdminReviewUserOrderModal = ({ orderDetailsData }) => {
 							fullWidth
 							startContent={<FaRegEye size={18} />}
 						>
-							Review Order
+							{orderDetailsData?.status === "3"
+								? "Review Accepted Order"
+								: "Review Order"}
 						</Button>
 					</Tooltip>
 					<Modal
@@ -347,18 +351,25 @@ const AdminReviewUserOrderModal = ({ orderDetailsData }) => {
 										<AdminCancelOrderModal
 											orderId={orderDetailsData.id}
 										/>
-										<AdminRejectOrderModal
-											orderId={orderDetailsData.id}
-										/>
-										<Button
-											fullWidth
-											onPress={onClose}
-											className="bg-primary-500"
-										>
-											<span className="font-medium text-black">
-												Accept Order
-											</span>
-										</Button>
+										{orderDetailsData?.status === "2" ? (
+											<>
+												<AdminRejectOrderModal
+													orderId={
+														orderDetailsData.id
+													}
+												/>
+												<AdminConfirmOrderModal
+													orderId={
+														orderDetailsData.id
+													}
+												/>
+											</>
+										) : null}
+										{orderDetailsData?.status === "3" ? (
+											<AdminSendOrderModal
+												orderId={orderDetailsData.id}
+											/>
+										) : null}
 									</ModalFooter>
 								</>
 							)}
