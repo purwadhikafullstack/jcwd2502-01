@@ -57,7 +57,7 @@ const ProfileSettingsPage = () => {
 							</h3>
 						</div>
 					)}
-					<section className="grid md:grid-cols-2 md:gap-x-4">
+					<section className="grid md:grid-cols-2 md:gap-x-4 md:mb-8">
 						{matches.medium ? (
 							<section className="profile-picture-section w-full h-full p-4 dark:bg-[#181818] rounded-xl border-2 border-neutral-600 border-opacity-20">
 								<section className="profile-picture-section flex flex-col items-center">
