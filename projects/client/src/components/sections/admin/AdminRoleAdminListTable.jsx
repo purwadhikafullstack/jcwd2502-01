@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 import {
 	Table,
 	TableHeader,
@@ -9,13 +10,166 @@ import {
 	User,
 	Chip,
 	Tooltip,
-	getKeyValue,
-	Pagination,
-	Input,
 	Button,
+	Input,
+	Pagination,
 } from "@nextui-org/react";
+import { RiUserSettingsLine } from "react-icons/ri";
+import {
+	fetchAdmin,
+	onClearAdmin,
+	onSearchAdmin,
+	onSortAdmin,
+	setCountAdmin,
+	setPaginationAdmin,
+	setSearchAdmin,
+	setTotalPageAdmin,
+} from "../../../redux/features/manageUser";
+import { useFormik } from "formik";
+import { useLocation, useNavigate } from "react-router-dom";
+import { IoTrashOutline, IoSearch } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import SelectSortByAdmin from "../../uis/Selects/SelectSortByAdmin";
+import EditAdminManageUser from "../../layouts/user/EditAdminManageUser";
+import CreateNewAdminModal from "../../layouts/user/CreateNewAdminModal";
+import { axiosInstance } from "../../../lib/axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const AdminRoleAdminListTable = () => {
+	const dispatch = useDispatch();
+	const location = useLocation();
+	const navigate = useNavigate();
+	const accessToken = localStorage.getItem("accessToken");
+	const [touchModal, setTouchModal] = useState(false);
+	const {
+		countAdmin,
+		totalPageAdmin,
+		pageAdmin,
+		admin,
+		offsetAdmin,
+		searchAdmin,
+		orderDirectionAdmin,
+		orderFieldAdmin,
+	} = useSelector((state) => state.manageUsers);
+
+	const formik = useFormik({
+		initialValues: {
+			searchQueryAdmin: "",
+		},
+		onSubmit: (values) => {
+			dispatch(onSearchAdmin(values.searchQueryAdmin));
+			navigate(`/admin/users`);
+		},
+	});
+
+	useEffect(() => {
+		// if (oneTime) {
+		navigate(
+			`/admin/users?${
+				searchAdmin && `&search=${searchAdmin}`
+			}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
+		);
+
+		dispatch(
+			fetchAdmin(
+				`?${
+					searchAdmin && `&search=${searchAdmin}`
+				}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
+			)
+		);
+	}, [
+		orderFieldAdmin,
+		orderDirectionAdmin,
+		searchAdmin,
+		pageAdmin,
+		touchModal,
+	]);
+
+	useEffect(() => {
+		formik.setFieldValue("searchQueryAdmin", searchAdmin);
+	}, [searchAdmin]);
+
+	const handleSubmitSearch = (e) => {
+		e.preventDefault();
+		formik.handleSubmit();
+		window.scrollTo({ top: 0 });
+	};
+
+	const clear = async () => {
+		await dispatch(onClearAdmin());
+		navigate(`/admin/users`);
+		// window.location.reload(false);
+	};
+
+	const handleDelete = async (id) => {
+		try {
+			console.log(id);
+			const deleteAdmin = await axiosInstance(accessToken).delete(
+				`/users/deleteAdminData/${id}`
+			);
+			if (!deleteAdmin.data.isError)
+				toast.success(deleteAdmin.data.message);
+			console.log(`/users/deleteAdminData/${id}`);
+			console.log(deleteAdmin);
+			dispatch(
+				fetchAdmin(
+					`?${
+						searchAdmin && `&search=${searchAdmin}`
+					}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
+				)
+			);
+		} catch (error) {
+			console.error();
+		}
+	};
+
+	const handleRequestChangePassword = async (id) => {
+		try {
+			console.log(id);
+			const sendRequest = await axiosInstance(accessToken).get(
+				`users/reqChangePassByAdmin/${id}`
+			);
+			console.log(sendRequest);
+			if (!sendRequest.data.isError)
+				toast.success(sendRequest.data.message);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
+	const takeFromQuery = () => {
+		const queryParams = new URLSearchParams(location.search);
+		const selectedSearch = queryParams.get("search");
+		const selectedOrderField = queryParams.get("orderField");
+		const selectedOrderDirection = queryParams.get("orderDirection");
+		const selectedOffset = queryParams.get("offset");
+		if (selectedSearch) {
+			dispatch(onSearchAdmin(selectedSearch));
+		}
+		if (selectedOrderDirection && selectedOrderField) {
+			dispatch(onSortAdmin(selectedOrderField, selectedOrderDirection));
+		}
+		if (selectedOffset) {
+			const selectedPage = Number(selectedOffset) / 12 + 1;
+			dispatch(setPaginationAdmin(selectedPage, Number(selectedOffset)));
+		}
+	};
+
+	useEffect(() => {
+		takeFromQuery();
+
+		window.scrollTo({ top: 0 });
+
+		return () => {
+			dispatch(onClearAdmin());
+			dispatch(setSearchAdmin(""));
+			// dispatch(setProductsForStocks([]));
+			dispatch(setTotalPageAdmin(1));
+			// dispatch(setWarehouse(null));
+			dispatch(setCountAdmin(0));
+		};
+	}, []);
+
 	const columns = [
 		{ name: "NAME", uid: "name" },
 		{ name: "EMAIL", uid: "email" },
@@ -24,157 +178,148 @@ const AdminRoleAdminListTable = () => {
 		{ name: "ACTIONS", uid: "actions" },
 	];
 
-	const users = [
-		{
-			id: 1,
-			name: "Tony Reichert",
-			role: "CEO",
-			team: "Management",
-			status: "active",
-			age: "29",
-			avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-			email: "tony.reichert@example.com",
-		},
-		{
-			id: 2,
-			name: "Zoey Lang",
-			role: "Technical Lead",
-			team: "Development",
-			status: "paused",
-			age: "25",
-			avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-			email: "zoey.lang@example.com",
-		},
-		{
-			id: 3,
-			name: "Jane Fisher",
-			role: "Senior Developer",
-			team: "Development",
-			status: "active",
-			age: "22",
-			avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-			email: "jane.fisher@example.com",
-		},
-		{
-			id: 4,
-			name: "William Howard",
-			role: "Community Manager",
-			team: "Marketing",
-			status: "vacation",
-			age: "28",
-			avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-			email: "william.howard@example.com",
-		},
-		{
-			id: 5,
-			name: "Kristen Copper",
-			role: "Sales Manager",
-			team: "Sales",
-			status: "active",
-			age: "24",
-			avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-			email: "kristen.cooper@example.com",
-		},
-	];
-
-	const renderCell = React.useCallback((user, columnKey) => {
-		const cellValue = user[columnKey];
+	const renderCell = React.useCallback((users, columnKey) => {
+		// const cellValue = user[columnKey];
 
 		switch (columnKey) {
 			case "name":
 				return (
 					<User
-						avatarProps={{ radius: "full", src: user.avatar }}
-						name={cellValue}
+						avatarProps={{
+							radius: "full",
+							src: users.profile_image,
+						}}
+						name={users.username}
 					>
-						{user.email}
+						{users.username}
 					</User>
 				);
 			case "email":
-				return <p className="font-medium">{user.email}</p>;
+				return <p className="font-medium">{users.email}</p>;
 			case "role":
 				return (
 					<div className="flex flex-col">
 						<p className="text-bold text-sm capitalize">
-							{cellValue}
+							{users.role}
 						</p>
 					</div>
 				);
 			case "status":
 				return (
 					<Chip className="capitalize" size="sm" variant="flat">
-						{cellValue}
+						{users.status}
 					</Chip>
 				);
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
-						<Button variant="faded" color="danger">
-							Delete User
-						</Button>
+						<EditAdminManageUser
+							data={users}
+							handleRefresh={setTouchModal}
+						/>
+						<Tooltip color="success" content="Reset Password">
+							<Button
+								isIconOnly
+								variant="flat"
+								className="text-lg cursor-pointer active:opacity-50"
+								onClick={() =>
+									handleRequestChangePassword(users.id)
+								}
+							>
+								<RiUserSettingsLine
+									className="text-green-600"
+									size={24}
+								/>
+							</Button>
+						</Tooltip>
+						<Tooltip color="danger" content="Remove Admin">
+							<Button
+								isIconOnly
+								variant="flat"
+								className="text-lg text-danger cursor-pointer active:opacity-50"
+								onClick={() => handleDelete(users.id)}
+							>
+								<IoTrashOutline size={24} />
+							</Button>
+						</Tooltip>
 					</div>
 				);
 			default:
-				return cellValue;
 		}
 	}, []);
 
-	const bottomContent = React.useMemo(
-		() => {
-			return (
-				<div className="py-2 px-2 flex justify-between items-center">
-					<Pagination
-						size="md"
-						showControls
-						// total={totalPage ? totalPage : 1}
-						// page={page ? page : 0}
-						color="secondary"
-						variant="flat"
-						className="z-0"
-						// onChange={(e) => {
-						// 	dispatch(setPagination(e, (e - 1) * 12));
-						// 	window.scrollTo({ top: 0, behavior: "smooth" });
-						// }}
-					/>
-				</div>
-			);
-		},
-		[
-			// totalPage,
-			// page
-		]
-	);
+	const bottomContent = React.useMemo(() => {
+		return (
+			<div className="py-2 px-2 flex justify-between items-center">
+				<Pagination
+					size="md"
+					showControls
+					total={totalPageAdmin ? totalPageAdmin : 1}
+					page={pageAdmin ? pageAdmin : 0}
+					color="secondary"
+					variant="flat"
+					className="z-0"
+					onChange={(e) => {
+						dispatch(setPaginationAdmin(e, (e - 1) * 12));
+						window.scrollTo({ top: 0, behavior: "smooth" });
+					}}
+				/>
+			</div>
+		);
+	}, [totalPageAdmin, pageAdmin]);
 
 	return (
 		<>
+			<Toaster />
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
-					<form
-						className="w-[30%]"
-						// onSubmit={handleSubmitSearch}
-					>
+					<form className="w-[30%]" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
-							placeholder="Search for user by name"
+							placeholder="Search for product by name"
 							isClearable
-							// onClear={() => dispatch(setSearch(""))}
-							// startContent={<IoSearch opacity={".5"} />}
+							onClear={() => dispatch(setSearchAdmin(""))}
+							startContent={<IoSearch opacity={".5"} />}
 							variant="bordered"
 							fullWidth
-							// onChange={(e) =>
-							// 	formik.setFieldValue(
-							// 		"searchQuery",
-							// 		e.target.value
-							// 	)
-							// }
-							// value={formik.values.searchQuery}
+							onChange={(e) =>
+								formik.setFieldValue(
+									"searchQueryAdmin",
+									e.target.value
+								)
+							}
+							value={formik.values.searchQueryAdmin}
 						/>
 					</form>
+					<div className="flex gap-3">
+						<CreateNewAdminModal handleRefresh={setTouchModal} />
+						<Button
+							variant="bordered"
+							className="border-neutral-200 dark:border-neutral-700 w-full"
+							onClick={() => clear()}
+						>{`Clear Filter(s)`}</Button>
+						<div className="sort-by flex items-center">
+							<SelectSortByAdmin placeholder="Sort" />
+						</div>
+					</div>
+				</div>
+				<div className="flex justify-between items-center">
+					<span className="text-default-400 text-small">
+						Showing
+						{admin?.length
+							? ` ${1 + offsetAdmin}-${
+									offsetAdmin + admin?.length
+							  } `
+							: ` 0 `}
+						out of {countAdmin} transaction.
+					</span>
 				</div>
 			</div>
 			<Table
 				aria-label="Example table with custom cells"
 				bottomContent={bottomContent}
+				bottomContentPlacement="outside"
+				topContentPlacement="outside"
 			>
 				<TableHeader columns={columns}>
 					{(column) => (
@@ -188,7 +333,7 @@ const AdminRoleAdminListTable = () => {
 						</TableColumn>
 					)}
 				</TableHeader>
-				<TableBody items={users}>
+				<TableBody emptyContent={"data not found"} items={admin}>
 					{(item) => (
 						<TableRow key={item.id}>
 							{(columnKey) => (

@@ -72,7 +72,7 @@ module.exports = {
 			const decodeData = jwt.verify(req.token, secret);
 			console.log(decodeData);
 			const checkAdmin = await db.user.findByPk(decodeData.id);
-			console.log(checkAdmin.dataValues);
+			console.log(checkAdmin.dataValues.role);
 			if (!checkAdmin)
 				throw {
 					message: "User not Found!",
