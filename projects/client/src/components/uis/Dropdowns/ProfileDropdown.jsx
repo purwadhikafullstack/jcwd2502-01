@@ -18,8 +18,12 @@ import { Link, useNavigate } from "react-router-dom";
 import TransactionList from "../../../assets/icons/TransactionList";
 
 const ProfileDropdown = () => {
-	const { username } = useSelector((state) => state.user);
+	const { username, profileUser } = useSelector((state) => state.user);
 	const { email, status, role } = useSelector((state) => state.user);
+
+	const profilePicture = `${
+		process.env.REACT_APP_IMAGE_API
+	}${profileUser?.substring(7)}`;
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -36,7 +40,7 @@ const ProfileDropdown = () => {
 				<User
 					as="button"
 					avatarProps={{
-						src: DefaultAvatar,
+						src: profileUser ? profilePicture : DefaultAvatar,
 					}}
 					className="transition-transform font-bold"
 					name={`${username}`}
@@ -48,7 +52,7 @@ const ProfileDropdown = () => {
 						<Avatar
 							className="w-20 h-20 mr-2 text-large"
 							color="secondary"
-							src={DefaultAvatar}
+							src={profileUser ? profilePicture : DefaultAvatar}
 						/>
 						<div className="user-id">
 							<h1 className="user-username font-bold text-[18px]">

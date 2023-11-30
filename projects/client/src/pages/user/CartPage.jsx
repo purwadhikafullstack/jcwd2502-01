@@ -58,7 +58,7 @@ const CartPage = () => {
 				</div>
 				<div className="page-body md:grid md:grid-cols-6">
 					<div className="product-cart-list w-full col-span-4 z-0">
-						{carts.length ? (
+						{carts?.length ? (
 							<div className="product-cart-list-wrapper">
 								<div>
 									{carts?.map((cart) => {

@@ -20,6 +20,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { axiosInstance } from "../../../lib/axios";
 import { OnCheckIsLogin } from "../../../redux/features/users";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 export default function App() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -85,7 +86,7 @@ export default function App() {
 								>
 									<div className="form-control">
 										<Input
-											type="text"
+											type="number"
 											name="phone"
 											label="Phone Number"
 											labelPlacement="outside"
@@ -104,6 +105,7 @@ export default function App() {
 									<div className="modal-footer pt-4">
 										<Button
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											color="primary"
 											className="text-center"
 											fullWidth

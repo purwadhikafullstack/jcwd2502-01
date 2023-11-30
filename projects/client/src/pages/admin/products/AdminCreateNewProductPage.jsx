@@ -15,9 +15,12 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import MySpinner from "../../../components/uis/Spinners/Spinner";
 
 const AdminCreateNewProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
+
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [productImages, setProductImages] = useState([]);
 	const [imagesToSend, setImagesToSend] = useState([]);
@@ -94,6 +97,8 @@ const AdminCreateNewProductPage = () => {
 
 	const onCreateProduct = async (values) => {
 		try {
+			setIsLoading(true);
+
 			const {
 				product_name,
 				product_desc,
@@ -159,9 +164,22 @@ const AdminCreateNewProductPage = () => {
 			);
 
 			if (createProduct.data.isError) {
-				toast.error(createProduct.data.message);
+				toast.error(createProduct.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				setIsLoading(false);
 				return;
 			}
+
+			toast.success("Create new product success", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
 			setTimeout(() => {
 				navigate(
@@ -555,6 +573,8 @@ const AdminCreateNewProductPage = () => {
 							color="primary"
 							size="lg"
 							type="submit"
+							isLoading={isLoading}
+							spinner={<MySpinner />}
 						>
 							<p className="text-black font-medium">
 								Add New Product

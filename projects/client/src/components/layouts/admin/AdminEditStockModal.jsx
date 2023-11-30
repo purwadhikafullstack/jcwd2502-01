@@ -16,6 +16,7 @@ import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchStockAsync } from "../../../redux/features/products";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 const AdminEditStockModal = ({ id }) => {
 	const [dataStock, setDataStock] = useState([]);
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -61,7 +62,12 @@ const AdminEditStockModal = ({ id }) => {
 			const { stocks } = values;
 
 			if (!stocks) {
-				toast.error("Please fill in all form fields");
+				toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				return; // Stop further execution
 			}
 
@@ -74,6 +80,13 @@ const AdminEditStockModal = ({ id }) => {
 				}
 			);
 
+			toast.success("Stock edited successfully", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
 			dispatch(
 				fetchStockAsync(
 					`?warehouse=${warehouse}&search=${search}&brand=${brand.join(
@@ -85,12 +98,9 @@ const AdminEditStockModal = ({ id }) => {
 			);
 
 			// window.location.reload(false);
-			setIsLoading(false);
 			return;
 		} catch (error) {
 			console.log(error);
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
@@ -192,11 +202,17 @@ const AdminEditStockModal = ({ id }) => {
 									<div className="modal-footer pt-4">
 										<Button
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											color="primary"
 											className="text-center"
 											fullWidth
 											type="submit"
-											onPress={onClose}
+											onPress={() => {
+												setTimeout(() => {
+													onClose();
+													setIsLoading(false);
+												}, 1200);
+											}}
 										>
 											<span className="font-bold text-black">
 												Save changes
@@ -205,19 +221,6 @@ const AdminEditStockModal = ({ id }) => {
 									</div>
 								</form>
 							</ModalBody>
-							{/* <ModalFooter className="justify-center">
-								<Button
-									color="primary"
-									className="text-center mb-4"
-									// isLoading={isLoading}
-									fullWidth
-									// onPress={() => onSubmit(brandName)}
-								>
-									<span className="font-bold text-black">
-										Save changes
-									</span>
-								</Button>
-							</ModalFooter> */}
 						</>
 					)}
 				</ModalContent>

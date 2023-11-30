@@ -24,7 +24,12 @@ const AdminDeleteCategoryModal = ({ categoryID }) => {
 			const accessToken = localStorage.getItem("accessToken");
 			await axiosInstance(accessToken).delete(`categories/${categoryId}`);
 
-			toast.success("Category successfully deleted");
+			toast.success("Category successfully deleted", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
 			setTimeout(() => {
 				window.location.reload(false);

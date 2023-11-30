@@ -102,6 +102,23 @@ module.exports = {
 			next(error);
 		}
 	},
+	uploadProfilePicture: async (req, res, next) => {
+		try {
+			const { id } = req.dataToken;
+			const fileImage = req.file;
+
+			await db.user.update(
+				{
+					profile_picture: `public/profile-pictures/${fileImage.filename}`,
+				},
+				{ where: { id } }
+			);
+
+			respHandler(res, "Upload profile picture success", null, 201);
+		} catch (error) {
+			next(error);
+		}
+	},
 	getAllUser: async (req, res, next) => {
 		try {
 			const result = await getAllData();

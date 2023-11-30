@@ -147,7 +147,7 @@ const updateStock = async (
 				const updatedStock = productStock.stocks + order.quantity;
 
 				const logData = {
-					change: "addittion",
+					change: "addition",
 					type: "transaction",
 					stock_id: productStock.id,
 					stock_before: productStock.stocks,

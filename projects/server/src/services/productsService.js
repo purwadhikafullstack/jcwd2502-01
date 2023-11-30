@@ -84,7 +84,10 @@ module.exports = {
 			}
 
 			const dataAllProducts = await db.product.findAll(baseQuery);
-			const count = await db.product.count(baseQuery);
+			const count = await db.product.count({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
 
 			return {
 				message: "Get products data success",
@@ -163,9 +166,11 @@ module.exports = {
 			});
 
 			if (checkProduct) {
-				images.map((image) => {
-					fs.unlinkSync(image.path);
-				});
+				if (images) {
+					images.map((image) => {
+						fs.unlinkSync(image.path);
+					});
+				}
 				return {
 					isError: true,
 					message: `${product_name} is already added`,
@@ -230,9 +235,11 @@ module.exports = {
 			}
 			const checkProduct1 = await db.product.findByPk(productId);
 			if (!checkProduct1) {
-				images.map((image) => {
-					fs.unlinkSync(image.path);
-				});
+				if (dataImages.action !== "keep") {
+					images.map((image) => {
+						fs.unlinkSync(image.path);
+					});
+				}
 				return {
 					isError: true,
 					message: `Product not found`,
@@ -243,16 +250,20 @@ module.exports = {
 			const checkProduct2 = await db.product.findOne({
 				where: { product_name },
 			});
-			if (checkProduct2 && checkProduct2.dataValues.id != productId) {
-				images.map((image) => {
-					fs.unlinkSync(image.path);
-				});
+
+			if (checkProduct2 && checkProduct2?.dataValues?.id != productId) {
+				if (dataImages.action !== "keep") {
+					images.map((image) => {
+						fs.unlinkSync(image.path);
+					});
+				}
 				return {
 					isError: true,
 					message: `${product_name} is already added`,
 					data: null,
 				};
 			}
+
 			const updateProduct = await db.product.update(
 				dataProduct,
 				{ where: { id: productId } },
@@ -284,7 +295,7 @@ module.exports = {
 				});
 			}
 			const updateImages = [];
-			if (images) {
+			if (images && dataImages.action !== "keep") {
 				for (const image of images) {
 					updateImages.push({
 						image: image.path.substring(4),

@@ -51,12 +51,9 @@ const AdminOrderListTable = () => {
 		search,
 	} = useSelector((state) => state.orders);
 
+	const [searchQuery, setSearchQuery] = useState("");
 	const [warehouses, setWarehouses] = useState([]);
 	const [isPaginationVisible, setIsPaginationVisible] = useState(false);
-
-	const queryParams = new URLSearchParams(location.search);
-	const currentStatus = +queryParams.get("status") || "";
-	const currentWarehouseId = +queryParams.get("warehouse") || "";
 
 	const fetchWarehouses = async () => {
 		try {
@@ -89,10 +86,11 @@ const AdminOrderListTable = () => {
 
 	const handleSearchChange = (e) => dispatch(setSearch(e?.target?.value));
 
-	const debounceSearch = debounce(handleSearchChange, 500);
+	const debounceSearch = debounce(handleSearchChange, 900);
 
 	const onClearSearch = () => {
 		dispatch(onClear(token));
+		setSearchQuery("");
 	};
 
 	const onClearRefresh = () => {
@@ -100,8 +98,9 @@ const AdminOrderListTable = () => {
 		dispatch(fetchAdminOrderListAsync(token, 1, "", "", ""));
 		dispatch(setPage(1));
 		dispatch(setStatus(""));
+		dispatch(setSearch(""));
 		dispatch(setWarehouseId(""));
-		window.location.reload(false);
+		setSearchQuery("");
 	};
 
 	const columns = [
@@ -121,6 +120,7 @@ const AdminOrderListTable = () => {
 		const currentStatus = +queryParams.get("status") || "";
 		const currentWarehouseId = +queryParams.get("warehouse") || "";
 		const currentSearchQuery = +queryParams.get("search") || "";
+
 		if (currentPage) {
 			dispatch(setPage(currentPage));
 		}
@@ -132,6 +132,7 @@ const AdminOrderListTable = () => {
 		}
 		if (currentSearchQuery) {
 			dispatch(setSearch(currentSearchQuery));
+			setSearchQuery(currentSearchQuery);
 		}
 	};
 
@@ -321,7 +322,11 @@ const AdminOrderListTable = () => {
 								startContent={<IoSearch opacity={".5"} />}
 								variant="bordered"
 								fullWidth
-								onChange={debounceSearch}
+								value={searchQuery}
+								onChange={(e) => {
+									setSearchQuery(e.target.value);
+									debounceSearch(e);
+								}}
 							/>
 						</form>
 					</div>
@@ -333,9 +338,7 @@ const AdminOrderListTable = () => {
 							variant="bordered"
 							size="md"
 							className="min-w-[240px]"
-							defaultSelectedKeys={
-								currentStatus ? [currentStatus.toString()] : []
-							}
+							selectedKeys={status ? [status.toString()] : []}
 						>
 							{(status) => (
 								<SelectItem
@@ -355,10 +358,8 @@ const AdminOrderListTable = () => {
 							variant="bordered"
 							size="md"
 							className="min-w-[240px]"
-							defaultSelectedKeys={
-								currentWarehouseId
-									? [currentWarehouseId.toString()]
-									: []
+							selectedKeys={
+								warehouseId ? [warehouseId.toString()] : []
 							}
 						>
 							{(warehouse) => (
@@ -377,7 +378,7 @@ const AdminOrderListTable = () => {
 							variant="bordered"
 							onClick={onClearRefresh}
 						>
-							Clear / Refresh
+							Clear Filter
 						</Button>
 					</div>
 				</div>

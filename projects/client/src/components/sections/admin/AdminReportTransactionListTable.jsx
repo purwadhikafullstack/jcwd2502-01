@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
 	Table,
@@ -130,7 +129,7 @@ const AdminReportTransactionListTable = () => {
 			dispatch(setSearchTransaction(""));
 			// dispatch(setProductsForStocks([]));
 			dispatch(setTotalPageTransaction(1));
-			dispatch(setWarehouse(null));
+			// dispatch(setWarehouse(null));
 			dispatch(setCountTransaction(0));
 		};
 	}, []);
@@ -353,4 +352,3 @@ const AdminReportTransactionListTable = () => {
 };
 
 export default AdminReportTransactionListTable;
-
