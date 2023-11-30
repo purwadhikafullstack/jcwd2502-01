@@ -15,6 +15,7 @@ const {
 	createAdmin,
 	updateDataAdmin,
 	deleteDataAdmin,
+	requestPasswordByAdmin,
 } = require("./../services/usersService");
 const respHandler = require("./../utils/respHandler");
 
@@ -163,6 +164,21 @@ module.exports = {
 	deleteAdminData: async (req, res, next) => {
 		try {
 			const result = await deleteDataAdmin(req.params);
+			// console.log(req.params);
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	reqChangePassByAdmin: async (req, res, next) => {
+		try {
+			const result = await requestPasswordByAdmin(req.params);
 			// console.log(req.params);
 			respHandler(
 				res,

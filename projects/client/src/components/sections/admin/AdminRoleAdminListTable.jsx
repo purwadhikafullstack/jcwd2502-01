@@ -122,6 +122,20 @@ const AdminRoleAdminListTable = () => {
 		}
 	};
 
+	const handleRequestChangePassword = async (id) => {
+		try {
+			console.log(id);
+			const sendRequest = await axiosInstance(accessToken).get(
+				`users/reqChangePassByAdmin/${id}`
+			);
+			console.log(sendRequest);
+			if (!sendRequest.data.isError)
+				toast.success(sendRequest.data.message);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedSearch = queryParams.get("search");
@@ -207,6 +221,9 @@ const AdminRoleAdminListTable = () => {
 								isIconOnly
 								variant="flat"
 								className="text-lg cursor-pointer active:opacity-50"
+								onClick={() =>
+									handleRequestChangePassword(users.id)
+								}
 							>
 								<RiUserSettingsLine
 									className="text-green-600"

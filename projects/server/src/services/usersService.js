@@ -525,4 +525,52 @@ module.exports = {
 			return error;
 		}
 	},
+	requestPasswordByAdmin: async (params) => {
+		try {
+			const { id } = params;
+			console.log(id);
+			const checkUser = await db.user.findOne({ where: { id } });
+			if (!checkUser)
+				throw { isError: true, message: "Account is not found!" };
+			console.log(checkUser.dataValues);
+
+			const token = createJWT(
+				{
+					id: checkUser.dataValues.id,
+					apiKey: "Approved",
+					tokentype: "reset",
+				},
+				"1d",
+				"reset"
+			);
+			const readTemplate = await fs.readFile(
+				path.join(__dirname, "../public/changePass.html"),
+				"utf-8"
+			);
+			const compiledTemplate = await handlebars.compile(readTemplate);
+			const newTemplate = compiledTemplate({
+				port: process.env.DB_PORT_changePass,
+				username: checkUser.dataValues.username,
+				token,
+			});
+
+			await transporter.sendMail({
+				from: {
+					name: "nexocomp",
+					email: "nexocomppurwadhika@gmail.com",
+				},
+				to: "andrean923@gmail.com", //checkUser.dataValues.email,
+				subject: "Request Change Password",
+				html: newTemplate,
+			});
+
+			return {
+				isError: false,
+				message: "Request for password change has been sent.",
+			};
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	},
 };

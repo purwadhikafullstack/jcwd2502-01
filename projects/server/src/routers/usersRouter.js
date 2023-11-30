@@ -27,5 +27,10 @@ Router.delete(
 	verifySuper,
 	usersController.deleteAdminData
 );
+Router.get(
+	"/reqChangePassByAdmin/:id",
+	verifySuper,
+	usersController.reqChangePassByAdmin
+);
 
 module.exports = Router;
