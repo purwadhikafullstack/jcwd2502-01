@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	Button,
 	Modal,
@@ -10,20 +10,31 @@ import {
 } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminCancelOrderModal = ({ orderId }) => {
 	const token = localStorage.getItem("accessToken");
+	const [isLoading, setIsLoading] = useState(false);
+
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const onCancelOrder = async () => {
 		try {
+			setIsLoading(true);
 			await axiosInstance(token).patch(
 				`orders/admin/cancel-order/${orderId}`
 			);
 
-			toast.success("Cancel Order Success");
+			toast.success("Cancel Order Success", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
-			window.location.reload(false);
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 		} catch (error) {
 			console.log(error);
 		}
@@ -54,7 +65,8 @@ const AdminCancelOrderModal = ({ orderId }) => {
 								</Button>
 								<Button
 									className="bg-red-600"
-									onPress={onClose}
+									isLoading={isLoading}
+									spinner={<MySpinner />}
 									onClick={onCancelOrder}
 								>
 									<p className="font-medium text-white">

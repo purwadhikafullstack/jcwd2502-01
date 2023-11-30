@@ -12,6 +12,7 @@ import {
 } from "@nextui-org/react";
 import { BsFillCloudArrowUpFill } from "react-icons/bs";
 import { axiosInstance } from "../../../lib/axios";
+import MySpinner from "../Spinners/Spinner";
 
 const PaymentProofFileUpload = ({ orderId }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -24,6 +25,18 @@ const PaymentProofFileUpload = ({ orderId }) => {
 		const fileImage = event.target.files[0];
 
 		if (event.target.files && event.target.files.length > 0) {
+			const fileSizeInMB = fileImage.size / (1024 * 1024); // Convert size to MB
+
+			if (fileSizeInMB > 3) {
+				toast.error("File size should not exceed 3 MB", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				return;
+			}
+
 			setSelectedImage(fileImage);
 			setPreviewImage(URL.createObjectURL(fileImage));
 		}
@@ -113,7 +126,10 @@ const PaymentProofFileUpload = ({ orderId }) => {
 										</ModalHeader>
 										<ModalBody className="flex justify-center items-center">
 											<div
-												className="form-input-wrapper relative flex justify-center items-center w-[320px] h-[284px] bg-background border-2 border-dashed rounded-xl cursor-pointer"
+												className={`form-input-wrapper relative flex justify-center items-center w-[320px] h-[284px] bg-background border-2 border-white border-opacity-50 ${
+													!previewImage &&
+													"border-dashed"
+												} rounded-xl cursor-pointer`}
 												onClick={() =>
 													document
 														.querySelector(
@@ -134,10 +150,13 @@ const PaymentProofFileUpload = ({ orderId }) => {
 															size={70}
 															className="text-neutral-300"
 														/>
-														<div className="file-input-instruction font-medium">
+														<div className="file-input-instruction font-medium text-center">
 															<p>
 																Browse to choose
 																a file
+															</p>
+															<p className="text-label-lg opacity-50">
+																(Max size: 3 mb)
 															</p>
 														</div>
 													</div>
@@ -172,6 +191,7 @@ const PaymentProofFileUpload = ({ orderId }) => {
 												color="primary"
 												isDisabled={!previewImage}
 												isLoading={isLoading}
+												spinner={<MySpinner />}
 												onPress={() =>
 													onUploadPaymentProof()
 												}

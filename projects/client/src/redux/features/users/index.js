@@ -18,6 +18,7 @@ const initialState = {
 	phone: "",
 	theme: "",
 	dataUser: [],
+	isLoading: false,
 };
 
 export const userSlice = createSlice({
@@ -57,6 +58,10 @@ export const userSlice = createSlice({
 		setDataUser: (initialState, { payload }) => {
 			initialState.dataUser = payload;
 		},
+		setIsLoading: (initialState, { payload }) => {
+			initialState.isLoading = payload;
+		},
+
 		login: (state, action) => {
 			return (state = {
 				...state,
@@ -74,28 +79,41 @@ export const userSlice = createSlice({
 
 export const onLoginAsync = (email, password) => async (dispatch) => {
 	try {
+		dispatch(setIsLoading(true));
+
 		const checkUser = await axiosInstance().post("/users/login", {
 			email: email,
 			password: password,
 		});
-		if (checkUser.data.isError)
-			return toast.error(`${checkUser.data.message}`);
+
+		if (checkUser.data.isError) {
+			dispatch(setIsLoading(false));
+
+			return toast.error(`${checkUser.data.message}`, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+		}
 
 		setTimeout(() => {
 			localStorage.setItem(
 				"accessToken",
 				checkUser.data.data.accessToken
 			);
-			// dispatch(setRole(checkUser.data.data.role));
-			// dispatch(setUsername(checkUser.data.data.username));
-			// dispatch(setProfileUser(checkUser.data.data.profileUser));
-			// dispatch(setEmail(checkUser.data.data.email));
+
 			dispatch(login(checkUser.data.data));
 			if (checkUser.data.data.role === "admin") {
 				dispatch(setWarehouse(checkUser.data.data.warehouse_id));
 			}
 		}, 1200);
-		toast.success(`${checkUser.data.message}`);
+		toast.success(`${checkUser.data.message}`, {
+			style: {
+				backgroundColor: "var(--background)",
+				color: "var(--text)",
+			},
+		});
 	} catch (error) {
 		console.log(error);
 	}
@@ -104,6 +122,7 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 export const onRegisterAsync =
 	(username, email, password) => async (dispatch) => {
 		try {
+			dispatch(setIsLoading(true));
 			console.log(username);
 			console.log(email);
 			console.log(password);
@@ -112,12 +131,31 @@ export const onRegisterAsync =
 			if (username < 6) {
 				return;
 			} else if (!email || !password || !username) {
-				return toast.error("Please fill out this field.");
+				dispatch(setIsLoading(false));
+				return toast.error("Please fill out this field.", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 			} else if (hasSymbol === -1 || hasDot === -1) {
-				return toast.error("Please provide a valid email address.");
+				dispatch(setIsLoading(false));
+				return toast.error("Please provide a valid email address.", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 			} else if (password.length < 6) {
+				dispatch(setIsLoading(false));
 				return toast.error(
-					"The Password must be at least 6 characters long"
+					"The Password must be at least 6 characters long",
+					{
+						style: {
+							backgroundColor: "var(--background)",
+							color: "var(--text)",
+						},
+					}
 				);
 			}
 
@@ -128,10 +166,22 @@ export const onRegisterAsync =
 			});
 			console.log(checkUser.data);
 			if (checkUser.data.isError) {
-				return toast.error(checkUser.data.message);
+				dispatch(setIsLoading(false));
+				return toast.error(checkUser.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 			} else {
 				toast.success(
-					"Registration successful. Please verify your account!"
+					"Registration successful. Please verify your account!",
+					{
+						style: {
+							backgroundColor: "var(--background)",
+							color: "var(--text)",
+						},
+					}
 				);
 				return setTimeout(() => {
 					dispatch(setIsLogin(true));
@@ -139,7 +189,13 @@ export const onRegisterAsync =
 			}
 		} catch (error) {
 			if (error.response.data.isError) {
-				return toast.error(`${error.response.data.message}`);
+				dispatch(setIsLoading(false));
+				return toast.error(`${error.response.data.message}`, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 			} else {
 				console.log(error);
 			}
@@ -154,10 +210,6 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 			"/users/verifyAccess"
 		);
 
-		// dispatch(setUsername(CheckToken.data.data.username));
-		// dispatch(setEmail(CheckToken.data.data.email));
-		// dispatch(setProfileUser(CheckToken.data.data.image));
-		// dispatch(setRole(CheckToken.data.data.role));
 		dispatch(login(CheckToken.data.data));
 		if (CheckToken.data.data.role === "admin") {
 			dispatch(setWarehouse(CheckToken.data.data.warehouse_id));
@@ -230,7 +282,12 @@ export const verifyUser = (password, token) => async (dispatch) => {
 		if (statusUser.data.isError)
 			return toast.error(`${statusUser.data.message}`);
 		dispatch(setStatus("verified"));
-		toast.success(`${statusUser.data.message}`);
+		toast.success(`${statusUser.data.message}`, {
+			style: {
+				backgroundColor: "var(--background)",
+				color: "var(--text)",
+			},
+		});
 		// setTimeout(() => {
 		// 	toast.success("Now try to login");
 		// }, 1000);
@@ -258,7 +315,12 @@ export const resetPassword = (token, newpass, conpass) => async (dispatch) => {
 			dispatch(reset());
 			dispatch(setIsLogin(true));
 		}, 1500);
-		toast.success(`${changePass.data.message}, now login!`);
+		toast.success(`${changePass.data.message}, now login!`, {
+			style: {
+				backgroundColor: "var(--background)",
+				color: "var(--text)",
+			},
+		});
 	} catch (error) {
 		console.log(error);
 	}
@@ -285,5 +347,6 @@ export const {
 	setSelectedUserAddressIdMain,
 	setStatus,
 	setDataUser,
+	setIsLoading,
 } = userSlice.actions;
 export default userSlice.reducer;

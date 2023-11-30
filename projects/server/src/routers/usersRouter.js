@@ -5,6 +5,7 @@ const Router = express.Router();
 const { usersController } = require("../controllers");
 const { checkLogin, checkRegister } = require("../middlewares/validator");
 const { verify } = require("./../lib/jwt");
+const { uploadProfilePicture } = require("../lib/multer");
 
 Router.post("/register", checkRegister, usersController.register);
 Router.post("/login", checkLogin, usersController.login);
@@ -14,5 +15,11 @@ Router.get("/reqPass", verify, usersController.requestChangePassword);
 Router.patch("/changePass", verify, usersController.changePasswordUser);
 Router.patch("/personalData", verify, usersController.updatePersonalData);
 Router.get("/allDataUser", verify, usersController.getAllUser);
+Router.post(
+	"/upload-pfp",
+	uploadProfilePicture.single("image"),
+	verify,
+	usersController.uploadProfilePicture
+);
 
 module.exports = Router;

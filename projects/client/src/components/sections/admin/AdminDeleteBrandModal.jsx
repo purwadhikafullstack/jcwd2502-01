@@ -12,6 +12,7 @@ import {
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
 import { IoTrashOutline } from "react-icons/io5";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminDeleteBrandModal = ({ brandID }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +25,12 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 			const accessToken = localStorage.getItem("accessToken");
 			await axiosInstance(accessToken).delete(`brands/${brandId}`);
 
-			toast.success("Category successfully deleted");
+			toast.success("Category successfully deleted", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
 			setTimeout(() => {
 				window.location.reload(false);
@@ -66,6 +72,7 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 								</Button>
 								<Button
 									isLoading={isLoading}
+									spinner={<MySpinner />}
 									className="bg-red-600"
 									onClick={() => {
 										onDelete(brandID);

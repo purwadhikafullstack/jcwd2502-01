@@ -15,9 +15,12 @@ import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import MySpinner from "../../../components/uis/Spinners/Spinner";
 
 const AdminEditProductPage = () => {
 	const { activeMenu, setActiveMenu } = useStateContext();
+
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [oldImages, setOldImages] = useState([]);
 
@@ -28,22 +31,6 @@ const AdminEditProductPage = () => {
 	const { productName } = useParams();
 
 	const navigate = useNavigate();
-
-	// const getFileImages = (event) => {
-	// 	const selectedImages = event.target.files;
-	// 	const selectedImagesArray = Array.from(selectedImages);
-
-	// 	if (selectedImagesArray.length > 3) {
-	// 		toast.error("Maximum of three images can be uploaded");
-	// 		return false;
-	// 	} else {
-	// 		const imagesArray = selectedImagesArray.map((image) => {
-	// 			return URL.createObjectURL(image);
-	// 		});
-	// 		setImagesToSend(selectedImages);
-	// 		setPreviewImages(imagesArray);
-	// 	}
-	// };
 
 	const getFileImages = (event) => {
 		const selectedImages = event.target.files;
@@ -150,6 +137,8 @@ const AdminEditProductPage = () => {
 
 	const onSaveChanges = async (values) => {
 		try {
+			setIsLoading(true);
+
 			const {
 				product_name,
 				product_desc,
@@ -201,12 +190,6 @@ const AdminEditProductPage = () => {
 			fd.append("dataProduct", newProductDataJSON);
 			fd.append("dataSpec", newSpecDataJSON);
 
-			// if (!imagesToSend) {
-			// 	fd.append("images", null);
-			// } else {
-			// 	fd.append("images", imagesToSend);
-			// }
-
 			const dataImages = {
 				action: "new",
 			};
@@ -235,9 +218,22 @@ const AdminEditProductPage = () => {
 			);
 
 			if (updateProduct.data.isError) {
-				toast.error(updateProduct.data.message);
+				toast.error(updateProduct.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				setIsLoading(false);
 				return;
 			}
+
+			toast.success("Edit product success", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
 			setTimeout(() => {
 				navigate(-1);
@@ -384,7 +380,7 @@ const AdminEditProductPage = () => {
 					<section className="product-information shadow-[0_0px_10px_1px_rgba(36,239,0,0.2)] bg-background p-8 rounded-xl flex flex-col gap-6">
 						<h2 className="font-bold text-lg">Product Detail</h2>
 						<div className="form-control-images flex">
-							<div className="product-image-info min-w-[180px]">
+							<div className="product-image-info min-w-[180px] min-h-[160px]">
 								<h3 className="font-bold">
 									Product Images (Max 3 Images)
 								</h3>
@@ -529,23 +525,37 @@ const AdminEditProductPage = () => {
 													</div>
 												</div>
 											) : (
-												<div
-													className="empty-image-0 w-full h-full cursor-pointer flex flex-col items-center justify-center"
-													onClick={() =>
-														document
-															.querySelector(
-																"#productImgInput"
-															)
-															.click()
-													}
-												>
-													<MdOutlineAddPhotoAlternate
-														size={40}
-														className="fill-primary-600"
-													/>
-													<p className="text-primary-600 font-medium">
-														Select Images
-													</p>
+												<div>
+													<div className="img-0 w-[132px] h-[132px] rounded-xl border-primary-600 border-2 border-dashed flex justify-center items-center">
+														<div
+															className="empty-image-0 w-full h-full cursor-pointer flex flex-col items-center justify-center"
+															onClick={() =>
+																document
+																	.querySelector(
+																		"#productImgInput"
+																	)
+																	.click()
+															}
+														>
+															<MdOutlineAddPhotoAlternate
+																size={40}
+																className="fill-primary-600"
+															/>
+															<p className="text-primary-600 font-medium">
+																Select Images
+															</p>
+														</div>
+													</div>
+													<div
+														className="mt-4"
+														onClick={() =>
+															handleRevert()
+														}
+													>
+														<p className="text-yellow-600 font-medium hover:cursor-pointer hover:underline">
+															Revert Images
+														</p>
+													</div>
 												</div>
 											)}
 										</>
@@ -729,6 +739,8 @@ const AdminEditProductPage = () => {
 							fullWidth
 							color="primary"
 							size="lg"
+							isLoading={isLoading}
+							spinner={<MySpinner />}
 							type="submit"
 						>
 							<p className="text-black font-medium">

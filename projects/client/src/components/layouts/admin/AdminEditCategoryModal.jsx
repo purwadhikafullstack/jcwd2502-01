@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminEditCategoryModal = ({
 	handleOpenEditCategoryModal,
@@ -43,7 +44,12 @@ const AdminEditCategoryModal = ({
 			const { category_type } = values;
 
 			if (!category_type) {
-				toast.error("Please fill in all form fields");
+				toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return; // Stop further execution
 			}
@@ -60,7 +66,12 @@ const AdminEditCategoryModal = ({
 			);
 
 			if (updateCategory.data.isError) {
-				toast.error(updateCategory.data.message);
+				toast.error(updateCategory.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return;
 			}
@@ -143,6 +154,7 @@ const AdminEditCategoryModal = ({
 								<div className="modal-footer pt-4">
 									<Button
 										isLoading={isLoading}
+										spinner={<MySpinner />}
 										color="primary"
 										className="text-center"
 										fullWidth

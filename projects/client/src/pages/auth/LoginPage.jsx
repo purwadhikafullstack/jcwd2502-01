@@ -9,6 +9,7 @@ import { onLoginAsync } from "../../redux/features/users";
 import { Button, Input } from "@nextui-org/react";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import MySpinner from "../../components/uis/Spinners/Spinner";
 
 const LoginPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -16,7 +17,7 @@ const LoginPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const { role } = useSelector((state) => state.user);
+	const { role, isLoading } = useSelector((state) => state.user);
 
 	const [click, setClick] = useState(true);
 
@@ -140,6 +141,8 @@ const LoginPage = () => {
 											fullWidth
 											size="lg"
 											type="submit"
+											isLoading={isLoading}
+											spinner={<MySpinner />}
 										>
 											Login
 										</Button>

@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminCreateRequestStockModal = ({ productName }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -80,16 +81,32 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 			} = values;
 
 			if (!warehouse_id_to) {
-				toast.error("Please choose a warehouse");
+				toast.error("Please choose a warehouse", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				return; // Stop further execution
 			}
 			if (quantity <= 0) {
-				toast.error("Quantity can not be 0 or less than 0");
+				toast.error("Quantity can not be 0 or less than 0", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				return; // Stop further execution
 			}
 			if (quantity > dataStock.stocks) {
 				toast.error(
-					"Quantity requested is more than what is available"
+					"Quantity requested is more than what is available",
+					{
+						style: {
+							backgroundColor: "var(--background)",
+							color: "var(--text)",
+						},
+					}
 				);
 				return; // Stop further execution
 			}
@@ -101,18 +118,25 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 				warehouse_id_from,
 				warehouse_id_to,
 			};
-			const accessToken = localStorage.getItem("accessToken");
-			const { data } = await axiosInstance(accessToken).post(
-				`stocks/mutation`,
-				dataToSend
-			);
-			setIsLoading(false);
-			window.location.reload(false);
-			return;
+
+			toast.success("Create stock request success", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
+			setTimeout(async () => {
+				const accessToken = localStorage.getItem("accessToken");
+				const { data } = await axiosInstance(accessToken).post(
+					`stocks/mutation`,
+					dataToSend
+				);
+				window.location.reload(false);
+				return;
+			}, 1200);
 		} catch (error) {
 			console.log(error);
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
@@ -244,11 +268,16 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 									<div className="modal-footer pt-4">
 										<Button
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											color="primary"
 											className="text-center"
 											fullWidth
 											type="submit"
-											// onPress={() => onClose}
+											onPress={() => {
+												setTimeout(() => {
+													onClose();
+												}, 1200);
+											}}
 										>
 											<span className="font-bold text-black">
 												Create Request

@@ -25,8 +25,9 @@ import { Link } from "react-router-dom";
 import PaymentProofFileUpload from "../FIleUpload/PaymentProofFileUpload";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import CompleteOrderModal from "../../sections/user/CompleteOrderModal";
 
-const OrderCard = ({ orderData, handleGetOrderList }) => {
+const OrderCard = ({ orderData }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
 	const {
@@ -36,6 +37,7 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 		invoice,
 		order_details,
 		status,
+		viewed,
 		receipt_number,
 		createdAt,
 	} = orderData;
@@ -126,6 +128,13 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 							{matches.medium && (
 								<div className="invoice">{invoice}</div>
 							)}
+							{matches.medium && viewed && status === "1" && (
+								<div className="ml-auto">
+									<p className="font-bold text-red-600">
+										Please reupload your payment.
+									</p>
+								</div>
+							)}
 						</section>
 						<section className="middle flex">
 							<div className="product-info w-[calc(100%-200px)] flex-grow">
@@ -178,7 +187,7 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 								</div>
 							</div>
 						</section>
-						<div className="bottom flex justify-between items-end md:justify-end mt-2 md:mt-4">
+						<section className="bottom flex justify-between items-end md:justify-end mt-2 md:mt-4">
 							<div className="right total-shopping block flex-[0_0_41%] text-label-md md:hidden">
 								<div className="px-1">
 									<div className="inline">Total Shopping</div>
@@ -187,16 +196,19 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 									</h4>
 								</div>
 							</div>
-							<div>
-								<div className="action-buttons flex items-center gap-2">
+							<div className="">
+								<div className="action-buttons w-full flex items-center gap-2">
 									{matches.medium ? (
-										<OrderDetailsModal
-											receiptNumber={receipt_number}
-										/>
+										<div>
+											<OrderDetailsModal
+												receiptNumber={receipt_number}
+											/>
+										</div>
 									) : null}
 									{status === "6" && !matches.medium ? (
 										<Link
 											to={`/order-details/${receipt_number}`}
+											className="w-full"
 										>
 											<Button
 												fullWidth
@@ -215,7 +227,7 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 											</Button>
 										</Link>
 									) : null}
-									{status !== "6" && (
+									{status !== "6" && status !== "4" && (
 										<div>
 											{status === "1" ? (
 												<div className="upload-payment-proof-modal">
@@ -234,11 +246,18 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 													}
 												>
 													<span className="font-medium text-black">
-														Uploaded
+														{status === "5"
+															? "Finished"
+															: status === "3"
+															? "Processed"
+															: "Uploaded"}
 													</span>
 												</Button>
 											)}
 										</div>
+									)}
+									{status !== "6" && status === "4" && (
+										<CompleteOrderModal orderId={id} />
 									)}
 									{status === "1" && matches.medium ? (
 										<div className="cancel-order">
@@ -310,7 +329,7 @@ const OrderCard = ({ orderData, handleGetOrderList }) => {
 									) : null}
 								</div>
 							</div>
-						</div>
+						</section>
 					</Card>
 					<Modal
 						isOpen={isOpen}

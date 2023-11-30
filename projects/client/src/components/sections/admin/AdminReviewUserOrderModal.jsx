@@ -18,6 +18,7 @@ import PaymentProofModal from "../../uis/Modals/PaymentProofModal";
 import AdminRejectOrderModal from "./AdminRejectOrderModal";
 import AdminCancelOrderModal from "./AdminCancelOrderModal";
 import AdminConfirmOrderModal from "./AdminConfirmOrderModal";
+import AdminSendOrderModal from "./AdminSendOrderModal";
 
 const AdminReviewUserOrderModal = ({ orderDetailsData }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -363,6 +364,11 @@ const AdminReviewUserOrderModal = ({ orderDetailsData }) => {
 													}
 												/>
 											</>
+										) : null}
+										{orderDetailsData?.status === "3" ? (
+											<AdminSendOrderModal
+												orderId={orderDetailsData.id}
+											/>
 										) : null}
 									</ModalFooter>
 								</>

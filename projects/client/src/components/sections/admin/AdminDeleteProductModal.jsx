@@ -11,6 +11,7 @@ import {
 } from "@nextui-org/react";
 import toast from "react-hot-toast";
 import { IoTrashOutline } from "react-icons/io5";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +19,12 @@ const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 
 	const onDelete = async (productId) => {
 		setIsLoading(true);
-		toast.success("Product successfully deleted");
+		toast.success("Product successfully deleted", {
+			style: {
+				backgroundColor: "var(--background)",
+				color: "var(--text)",
+			},
+		});
 		handleOnDelete(productId);
 	};
 
@@ -54,6 +60,7 @@ const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 								</Button>
 								<Button
 									isLoading={isLoading}
+									spinner={<MySpinner />}
 									className="bg-red-600"
 									onClick={() => {
 										onDelete(productID);
