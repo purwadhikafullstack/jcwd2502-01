@@ -22,7 +22,7 @@ import {
 	Tooltip,
 } from "@nextui-org/react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { onSetUserAddresses } from "../../../redux/features/users";
 import { BiEdit } from "react-icons/bi";
@@ -33,8 +33,7 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 	const [warehouses, setWarehouses] = useState([]);
 	const accessToken = localStorage.getItem("accessToken");
 	const { username } = useSelector((state) => state.user);
-	const dispatch = useDispatch();
-	const location = useLocation();
+	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
 	const [provinces, setProvinces] = useState([]);
 	const [warehouseAdmin, setWarehouseAdmin] = useState([]);
@@ -69,12 +68,18 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 			console.log(createNewAdmin);
 			if (!createNewAdmin.data.isError) {
 				toast.success(createNewAdmin.data.message);
-				handleRefresh(true);
+				// handleRefresh(true);
+				navigate(`/admin/users`);
 			}
 			// dispatch(onSetUserAddresses(accessToken));
 			formik.resetForm();
 		} catch (error) {
-			console.log(error);
+			if (error.response.data.isError) {
+				formik.resetForm();
+				return toast.error(error.response.data.message);
+			} else {
+				console.log(error);
+			}
 		}
 	};
 

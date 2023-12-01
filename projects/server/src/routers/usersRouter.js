@@ -19,7 +19,8 @@ Router.post(
 	uploadProfilePicture.single("image"),
 	verify,
 	usersController.uploadProfilePicture
-Router.get("/allDataUser", verifySuper, usersController.getAllUser);
+),
+	Router.get("/allDataUser", verifySuper, usersController.getAllUser);
 Router.get("/allDataAdmin", verifySuper, usersController.getAllAdmin);
 Router.post(
 	"/createAdmin",
