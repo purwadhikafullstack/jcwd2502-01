@@ -81,6 +81,7 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 			} = values;
 
 			if (!warehouse_id_to) {
+				setIsLoading(false);
 				toast.error("Please choose a warehouse", {
 					style: {
 						backgroundColor: "var(--background)",
@@ -90,6 +91,7 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 				return; // Stop further execution
 			}
 			if (quantity <= 0) {
+				setIsLoading(false);
 				toast.error("Quantity can not be 0 or less than 0", {
 					style: {
 						backgroundColor: "var(--background)",
@@ -99,6 +101,7 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 				return; // Stop further execution
 			}
 			if (quantity > dataStock.stocks) {
+				setIsLoading(false);
 				toast.error(
 					"Quantity requested is more than what is available",
 					{
@@ -119,22 +122,32 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 				warehouse_id_to,
 			};
 
-			toast.success("Create stock request success", {
+			const accessToken = localStorage.getItem("accessToken");
+			const addMutation = await axiosInstance(accessToken).post(
+				`stocks/mutation`,
+				dataToSend
+			);
+
+			if (addMutation.data.isError) {
+				setIsLoading(false);
+				toast.error(addMutation.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				return;
+			}
+
+			toast.success(addMutation.data.message, {
 				style: {
 					backgroundColor: "var(--background)",
 					color: "var(--text)",
 				},
 			});
 
-			setTimeout(async () => {
-				const accessToken = localStorage.getItem("accessToken");
-				const { data } = await axiosInstance(accessToken).post(
-					`stocks/mutation`,
-					dataToSend
-				);
-				window.location.reload(false);
-				return;
-			}, 1200);
+			onOpenChange();
+			setIsLoading(false);
 		} catch (error) {
 			console.log(error);
 		}
@@ -273,11 +286,6 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 											className="text-center"
 											fullWidth
 											type="submit"
-											onPress={() => {
-												setTimeout(() => {
-													onClose();
-												}, 1200);
-											}}
 										>
 											<span className="font-bold text-black">
 												Create Request

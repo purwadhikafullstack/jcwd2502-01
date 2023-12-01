@@ -89,17 +89,16 @@ const AdminEditWarehouseModal = ({
 				newWarehouseData
 			);
 
-			// if (updateWarehouse.status === 201) {
-			// 	toast.error("Warehouse updated successfully");
+			toast.success(updateWarehouse.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
-			// 	setTimeout(() => {
-			// 		window.location.reload(false);
-			// 	}, 1500);
-			// } else {
-			// 	toast.error("Error updating warehouse");
-			// }
-
-			window.location.reload(false);
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 			setIsLoading(false);
 			return;
 		} catch (error) {

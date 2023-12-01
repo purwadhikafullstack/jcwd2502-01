@@ -13,15 +13,20 @@ import {
 } from "@nextui-org/react";
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import MySpinner from "../../uis/Spinners/Spinner";
+import { fetchCategoriesAsync } from "../../../redux/features/products";
 
 const AdminCreateNewCategoryModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [categoryType, setCategoryType] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const role = useSelector((state) => state.user.role);
+	const { orderField, orderDirection, offset } = useSelector(
+		(state) => state.products
+	);
+	const dispatch = useDispatch();
 	const onSubmit = async (categoryType) => {
 		try {
 			setIsLoading(true);
@@ -57,7 +62,19 @@ const AdminCreateNewCategoryModal = () => {
 				return;
 			}
 
-			window.location.reload(false);
+			toast.success(addCategory.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
+			dispatch(
+				fetchCategoriesAsync(
+					`?orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+			onOpenChange();
 			setIsLoading(false);
 			return;
 		} catch (error) {
