@@ -61,17 +61,17 @@ const AdminEditCategoryModal = ({
 				return;
 			}
 
-			// if (updateCategory.status === 201) {
-			// 	toast.error("Warehouse updated successfully");
+			toast.success(updateCategory.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
-			// 	setTimeout(() => {
-			// 		window.location.reload(false);
-			// 	}, 1500);
-			// } else {
-			// 	toast.error("Error updating warehouse");
-			// }
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 
-			window.location.reload(false);
 			setIsLoading(false);
 			return;
 		} catch (error) {

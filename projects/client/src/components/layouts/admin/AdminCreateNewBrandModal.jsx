@@ -54,8 +54,16 @@ const AdminCreateNewBrandModal = () => {
 				setIsLoading(false);
 				return;
 			}
+			toast.success(addBrand.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
-			window.location.reload(false);
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 			setIsLoading(false);
 			return;
 		} catch (error) {

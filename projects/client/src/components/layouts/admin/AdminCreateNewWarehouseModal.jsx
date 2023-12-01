@@ -56,8 +56,31 @@ const AdminCreateNewWarehouseModal = () => {
 			};
 
 			const accessToken = localStorage.getItem("accessToken");
-			await axiosInstance(accessToken).post(`warehouses`, dataToSend);
-			window.location.reload(false);
+			const addWarehouse = await axiosInstance(accessToken).post(
+				`warehouses`,
+				dataToSend
+			);
+			if (addWarehouse.data.isError) {
+				toast.error(addWarehouse.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				setIsLoading(false);
+				return;
+			}
+
+			toast.success(addWarehouse.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 			setIsLoading(false);
 		} catch (error) {
 			console.log(error);
