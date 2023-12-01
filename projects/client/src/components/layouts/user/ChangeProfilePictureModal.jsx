@@ -73,10 +73,6 @@ const ChangeProfilePictureModal = ({ orderId }) => {
 						color: "var(--text)",
 					},
 				});
-
-				setTimeout(() => {
-					window.location.reload(false);
-				}, 1500);
 			}
 
 			return true;
@@ -91,6 +87,8 @@ const ChangeProfilePictureModal = ({ orderId }) => {
 				});
 			}, 1500);
 			console.log(error);
+		} finally {
+			window.location.reload(false);
 		}
 	};
 

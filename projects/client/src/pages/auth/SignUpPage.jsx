@@ -4,7 +4,7 @@ import NexocompLogo from "../../assets/logo/NexocompLogo";
 import LoopLogo from "../../assets/images/loop-logo.svg";
 import { Button, Input } from "@nextui-org/react";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import { onRegisterAsync } from "../../redux/features/users";
+import { OnCheckIsLogin, onRegisterAsync } from "../../redux/features/users";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -13,7 +13,7 @@ import MySpinner from "../../components/uis/Spinners/Spinner";
 const SignupPage = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-	const { isLogin, isLoading } = useSelector((state) => state.user);
+	const { isLogin, role, isLoading } = useSelector((state) => state.user);
 
 	const [showPassword, setShowPassword] = useState(false);
 	const [click, setClick] = useState(true);
@@ -41,6 +41,18 @@ const SignupPage = () => {
 		setClick(false);
 		setTimeout(() => setClick(true), 2000);
 	};
+
+	useEffect(() => {
+		dispatch(OnCheckIsLogin());
+	}, []);
+
+	useEffect(() => {
+		if (role === "user") {
+			navigate("/");
+		} else if (role === "admin" || role === "super") {
+			navigate("/admin");
+		}
+	}, [role]);
 
 	useEffect(() => {
 		if (isLogin) {

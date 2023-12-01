@@ -11,7 +11,7 @@ module.exports = {
 					product_name:
 						"PRO X SUPERLIGHT 2 LIGHTSPEED Wireless Gaming Mouse",
 					product_desc:
-						"The next evolution of our champion mouse. Welcome the new weapon of choice for the world's top esports athletes. Tenkeyless design inspired by pro players LIGHTSYNC RGB lighting Advanced features require Logitech G HUB software. Download at LogitechG.com/GHUB Onboard lighting profile 2Advanced features require Logitech G HUB software. Download at LogitechG.com/GHUB 6ft detachable data and charging cable Report rate 1 ms. PACKAGING CONTENTS PRO X SUPERLIGHT 2 Wireless Gaming Mouse LIGHTSPEED USB Adapter USB A to C data/charging cable Adapter extension Optional grip tape Optional aperture door with PTFE backing User documentation.",
+						"The next evolution of our champion mouse. Welcome the new weapon of choice for the world's top esports athletes. Tenkeyless design inspired by pro players LIGHTSYNC RGB lighting Advanced features require Logitech G HUB software. Download at LogitechG.com/GHUB Onboard lighting profile. Advanced features require Logitech G HUB software. Download at LogitechG.com/GHUB 6ft detachable data and charging cable Report rate 1 ms. PACKAGING CONTENTS PRO X SUPERLIGHT 2 Wireless Gaming Mouse LIGHTSPEED USB Adapter USB A to C data/charging cable Adapter extension Optional grip tape Optional aperture door with PTFE backing User documentation.",
 					product_price: "2399000",
 					brand_id: 1,
 					category_id: 1,
@@ -638,14 +638,14 @@ module.exports = {
 					product_price: "350000",
 					brand_id: 5,
 					category_id: 3,
-					weight: 280,
+					weight: 580,
 				},
 				{
 					id: 63,
-					product_name: "Fantech SHOOTER GP11",
+					product_name: "Fantech SHOOTER GP12",
 					product_desc:
-						"Introducing the SHOOTER GP11 Gaming Controller, specially designed for both PC and PS3 gaming platforms. Apart from its vibration feature that elevates the gameplay experience, the GP11 ensures hassle-free connections through its plug & play design. Designed with the esports professional in mind, the SHOOTER GP11 boasts of ULTIMATE CONTROL. It’s not just about the gameplay; it's about having a controller that melds seamlessly with the player's instincts. To achieve this, the GP11 has been optimized for comfort and integrated with a plethora of advanced features. For those keen on aesthetics, it comes in a sleek black color. Its top cover is crafted from steel with a magnetic PVC filter, ensuring durability. The front panel is made from sturdy plastic while the left panel flaunts a tempered glass finish, offering a sneak peek into your gaming rig. The right panel, however, is made from steel. One of the notable features is the inclusion of a dust filter at the bottom. The chassis is constructed from SPCC 0.45mm in a black finish. Its input/output panel is equipped with a 3.5mm audio jack, a 3.5mm mic jack, an RGB controller, a USB 2.0 port, and a USB 3.0 port. The SHOOTER GP11 supports a bottom-mounted ATX power supply, inclusive of a PSU cover. For those looking to further customize, it can house multiple fans, though they are not included.",
-					product_price: "350000",
+						"Introducing the SHOOTER GP12 Gaming Controller, specially designed for both PC and PS3 gaming platforms. Apart from its vibration feature that elevates the gameplay experience, the GP11 ensures hassle-free connections through its plug & play design. Designed with the esports professional in mind, the SHOOTER GP11 boasts of ULTIMATE CONTROL. It’s not just about the gameplay; it's about having a controller that melds seamlessly with the player's instincts. To achieve this, the GP11 has been optimized for comfort and integrated with a plethora of advanced features. For those keen on aesthetics, it comes in a sleek black color. Its top cover is crafted from steel with a magnetic PVC filter, ensuring durability. The front panel is made from sturdy plastic while the left panel flaunts a tempered glass finish, offering a sneak peek into your gaming rig. The right panel, however, is made from steel. One of the notable features is the inclusion of a dust filter at the bottom. The chassis is constructed from SPCC 0.45mm in a black finish. Its input/output panel is equipped with a 3.5mm audio jack, a 3.5mm mic jack, an RGB controller, a USB 2.0 port, and a USB 3.0 port. The SHOOTER GP11 supports a bottom-mounted ATX power supply, inclusive of a PSU cover. For those looking to further customize, it can house multiple fans, though they are not included.",
+					product_price: "360000",
 					brand_id: 5,
 					category_id: 3,
 					weight: 600,

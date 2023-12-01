@@ -46,6 +46,7 @@ const SwiperBestSellingGears = ({ topSoldProducts }) => {
 					</>
 				);
 			})}
+			<MySwiperButtonNext />
 		</Swiper>
 	);
 };

@@ -38,6 +38,7 @@ import AdminStocksLogPage from "./pages/admin/stocks/AdminStocksLogPage";
 import AdminUserListPage from "./pages/admin/users/AdminUserListPage";
 import AdminSalesReportPage from "./pages/admin/reports/AdminSalesReportPage";
 import AdminOrderListPage from "./pages/admin/orders/AdminOrderListPage";
+import Layout from "./routes/Layout";
 
 function App() {
 	const location = useLocation();
@@ -115,76 +116,93 @@ function App() {
 				display={"hidden md:flex"}
 			/>
 			<Routes>
-				{/* //* PUBLIC */}
-				<Route path="/" element={<HomePage />} />
-				<Route path="/explore" element={<ExploreProductsPage />} />
-				<Route path="/product/:productName" element={<ProductPage />} />
+				<Route path="/" element={<Layout />}>
+					{/* //* PUBLIC */}
+					<Route path="/" element={<HomePage />} />
+					<Route path="/explore" element={<ExploreProductsPage />} />
+					<Route
+						path="/product/:productName"
+						element={<ProductPage />}
+					/>
 
-				{/* //* AUTH */}
-				<Route
-					path="/verify/:token/:email"
-					element={<AccountVerificationPage />}
-				/>
-				<Route
-					path="/reset_password/:token"
-					element={<ResetPasswordPage />}
-				/>
-				<Route path="/login" element={<LoginPage />} />
-				<Route path="/signup" element={<SignupPage />} />
+					{/* //* AUTH */}
+					<Route
+						path="/verify/:token/:email"
+						element={<AccountVerificationPage />}
+					/>
+					<Route
+						path="/reset_password/:token"
+						element={<ResetPasswordPage />}
+					/>
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/signup" element={<SignupPage />} />
 
-				{/* //* USER */}
-				<Route
-					path="/profile/settings"
-					element={<ProfileSettingsPage />}
-				/>
-				<Route path="/order-list" element={<OrderListPage />} />
-				<Route
-					path="/order-details/:receiptNumber"
-					element={<OrderDetailsPage />}
-				/>
-				<Route path="/cart" element={<CartPage />} />
-				<Route path="/cart/checkout" element={<CheckoutPage />} />
+					{/* //* USER */}
+					<Route
+						path="/profile/settings"
+						element={<ProfileSettingsPage />}
+					/>
+					<Route path="/order-list" element={<OrderListPage />} />
+					<Route
+						path="/order-details/:receiptNumber"
+						element={<OrderDetailsPage />}
+					/>
+					<Route path="/cart" element={<CartPage />} />
+					<Route path="/cart/checkout" element={<CheckoutPage />} />
 
-				{/* //* ADMIN */}
-				<Route path="/admin" element={<Navigate to="/admin/home" />} />
-				<Route
-					path="/admin/home"
-					element={<AdminOverviewDashboardPage />}
-				/>
-				<Route
-					path="/admin/warehouses"
-					element={<AdminWarehouseListPage />}
-				/>
-				<Route path="/admin/users" element={<AdminUserListPage />} />
-				<Route path="/admin/orders" element={<AdminOrderListPage />} />
-				<Route
-					path="/admin/products"
-					element={<AdminProductListPage />}
-				/>
-				<Route
-					path="/admin/add-product"
-					element={<AdminCreateNewProductPage />}
-				/>
-				<Route
-					path="/admin/edit-product/:productName"
-					element={<AdminEditProductPage />}
-				/>
-				<Route path="/admin/stocks" element={<AdminStocksListPage />} />
-				<Route
-					path="/admin/stock-history"
-					element={<AdminStocksLogPage />}
-				/>
-				<Route
-					path="/admin/categories"
-					element={<AdminCategoriesPage />}
-				/>
-				<Route path="/admin/brands" element={<AdminBrandsPage />} />
-				<Route
-					path="/admin/reports"
-					element={<AdminSalesReportPage />}
-				/>
+					{/* //* ADMIN */}
+					<Route
+						path="/admin"
+						element={<Navigate to="/admin/home" />}
+					/>
+					<Route
+						path="/admin/home"
+						element={<AdminOverviewDashboardPage />}
+					/>
+					<Route
+						path="/admin/warehouses"
+						element={<AdminWarehouseListPage />}
+					/>
+					<Route
+						path="/admin/users"
+						element={<AdminUserListPage />}
+					/>
+					<Route
+						path="/admin/orders"
+						element={<AdminOrderListPage />}
+					/>
+					<Route
+						path="/admin/products"
+						element={<AdminProductListPage />}
+					/>
+					<Route
+						path="/admin/add-product"
+						element={<AdminCreateNewProductPage />}
+					/>
+					<Route
+						path="/admin/edit-product/:productName"
+						element={<AdminEditProductPage />}
+					/>
+					<Route
+						path="/admin/stocks"
+						element={<AdminStocksListPage />}
+					/>
+					<Route
+						path="/admin/stock-history"
+						element={<AdminStocksLogPage />}
+					/>
+					<Route
+						path="/admin/categories"
+						element={<AdminCategoriesPage />}
+					/>
+					<Route path="/admin/brands" element={<AdminBrandsPage />} />
+					<Route
+						path="/admin/reports"
+						element={<AdminSalesReportPage />}
+					/>
 
-				<Route path="*" element={<NotFoundPage />} />
+					<Route path="*" element={<NotFoundPage />} />
+				</Route>
 			</Routes>
 			{isExcludedFooter ? null : <Footer />}
 		</>

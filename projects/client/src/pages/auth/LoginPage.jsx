@@ -5,7 +5,7 @@ import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { FcGoogle } from "react-icons/fc";
-import { onLoginAsync } from "../../redux/features/users";
+import { OnCheckIsLogin, onLoginAsync } from "../../redux/features/users";
 import { Button, Input } from "@nextui-org/react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -43,8 +43,10 @@ const LoginPage = () => {
 	});
 
 	useEffect(() => {
-		console.log("test");
-		console.log(role);
+		dispatch(OnCheckIsLogin());
+	}, []);
+
+	useEffect(() => {
 		if (role === "user") {
 			navigate("/");
 		} else if (role === "admin" || role === "super") {

@@ -22,10 +22,6 @@ const BestSellingGears = () => {
 		fetchTopSoldProducts();
 	}, []);
 
-	useEffect(() => {
-		console.log(topSoldProducts);
-	}, [topSoldProducts]);
-
 	return (
 		<section className="top-deals my-container rounded-[20px] relative">
 			<div className="py-8">

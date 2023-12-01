@@ -183,7 +183,9 @@ export const onRegisterAsync =
 						},
 					}
 				);
+
 				return setTimeout(() => {
+					dispatch(setIsLoading(false));
 					dispatch(setIsLogin(true));
 				}, 2500);
 			}

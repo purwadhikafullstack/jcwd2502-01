@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./redux/app/store.js";
 import { NextUIProvider } from "@nextui-org/react";
@@ -18,7 +18,9 @@ root.render(
 			<NextUIProvider>
 				<ContextProvider>
 					<Suspense fallback={<h1>Loading...</h1>}>
-						<App />
+						<Routes>
+							<Route path="/*" element={<App />} />
+						</Routes>
 					</Suspense>
 				</ContextProvider>
 			</NextUIProvider>
