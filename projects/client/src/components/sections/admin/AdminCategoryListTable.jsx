@@ -62,9 +62,6 @@ const AdminCategoryListTable = () => {
 								isIconOnly
 								variant="light"
 								className="text-lg text-default-400 cursor-pointer active:opacity-50"
-								// onPress={() => {
-								// 	onOpenEditWarehouseModal(warehouse.id);
-								// }}
 							>
 								<BiEdit size={24} />
 							</Button>
@@ -74,9 +71,6 @@ const AdminCategoryListTable = () => {
 								isIconOnly
 								variant="light"
 								className="text-lg text-danger cursor-pointer active:opacity-50"
-								// onClick={() => {
-								// 	onDelete(warehouse.id);
-								// }}
 							>
 								<IoTrashOutline size={24} />
 							</Button>

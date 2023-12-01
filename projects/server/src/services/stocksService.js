@@ -271,7 +271,7 @@ module.exports = {
 
 			const count = await db.stock_history.count({
 				where: baseQuery.where,
-				include: baseQuery,
+				include: baseQuery.include,
 			});
 
 			return {

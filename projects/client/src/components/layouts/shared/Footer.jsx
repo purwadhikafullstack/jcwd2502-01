@@ -35,7 +35,7 @@ const Footer = () => {
 			<div className="my-container px-6">
 				<div className="footer-body md:flex block pt-12">
 					<div className="download-column mb-2 w-full text-left">
-						<h3 className="font-bold text-lg md:mb-4">
+						{/* <h3 className="font-bold text-lg md:mb-4">
 							{t("download_the_app")}
 						</h3>
 						<div className="download-links flex gap-2 py-2 items-center w-[300px] md:w-[360px] md:mt-2">
@@ -57,7 +57,7 @@ const Footer = () => {
 									/>
 								</a>
 							</div>
-						</div>
+						</div> */}
 					</div>
 					<div className="menus-column w-full h-auto grid grid-cols-2 grid-rows-2 gap-x-6 my-4 md:mt-0 md:flex md:justify-between md:pl-20">
 						<div className="footer-developer mt-2 md:mt-0 text-left order-last md:order-first">
@@ -123,8 +123,8 @@ const Footer = () => {
 						</div>
 					</div>
 				</div>
-				<div className="footer-bottom md:pt-4 mt-4 md:mt-14 gap-y-4 grid md:grid-cols-2 grid-cols-1 grid-rows-2 grid-flow-dense pb-12 md:pb-0">
-					<span className="legal-logo flex items-center gap-6 w-full">
+				<div className="footer-bottom md:pt-4 md:pb-12 mt-4 pb-12">
+					<span className="legal-logo flex justify-center items-center gap-6 w-full">
 						<a href="/" className="-mb-1.5">
 							<NexocompLogo
 								width={140}
@@ -135,7 +135,7 @@ const Footer = () => {
 							{t("rights")}
 						</h3>
 					</span>
-					<span className="legal-links w-full">
+					{/* <span className="legal-links w-full">
 						<ul className="flex flex-wrap md:justify-between items-center gap-4 font-medium text-gray-500">
 							<li>
 								<button className="flex items-center">
@@ -155,7 +155,7 @@ const Footer = () => {
 								<a href="">{t("site_map")}</a>
 							</li>
 						</ul>
-					</span>
+					</span> */}
 				</div>
 			</div>
 		</footer>

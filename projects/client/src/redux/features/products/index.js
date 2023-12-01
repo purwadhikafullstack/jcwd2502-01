@@ -123,11 +123,6 @@ export const fetchProductAsync = (query) => async (dispatchEvent) => {
 			`products/all${query ? query : ""}`
 		);
 
-		console.log(
-			"🚀 ~ file: index.js:123 ~ fetchProductAsync ~ data:",
-			data
-		);
-
 		const totalPage = await Math.ceil(data.data.count / 12);
 		dispatchEvent(setTotalPage(totalPage));
 		dispatchEvent(setProducts(data.data.products));

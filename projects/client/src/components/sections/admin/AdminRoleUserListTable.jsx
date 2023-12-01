@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import {
 	Table,
@@ -30,6 +29,7 @@ import { useFormik } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoSearch } from "react-icons/io5";
 import SelectSortByUser from "../../uis/Selects/SelectSortByUser";
+import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
 
 const AdminRoleUserListTable = () => {
 	const dispatch = useDispatch();
@@ -129,12 +129,13 @@ const AdminRoleUserListTable = () => {
 	const clear = async () => {
 		await dispatch(onClearUser());
 		navigate(`/admin/users`);
-		// window.location.reload(false);
 	};
 
 	console.log(user);
 	const renderCell = React.useCallback((users, columnKey) => {
-		// const cellValue = user[columnKey];
+		const profilePicture = `${
+			process.env.REACT_APP_IMAGE_API
+		}${users?.profile_picture?.substring(7)}`;
 
 		switch (columnKey) {
 			case "name":
@@ -142,7 +143,9 @@ const AdminRoleUserListTable = () => {
 					<User
 						avatarProps={{
 							radius: "full",
-							src: users?.profile_picture,
+							src: users?.profile_picture
+								? profilePicture
+								: DefaultAvatar,
 						}}
 						name={users?.username}
 					>
@@ -151,40 +154,12 @@ const AdminRoleUserListTable = () => {
 				);
 			case "email":
 				return <p className="font-medium">{users?.email}</p>;
-			// case "role":
-			// 	return (
-			// 		<div className="flex flex-col">
-			// 			<p className="text-bold text-sm capitalize">
-			// 				{cellValue}
-			// 			</p>
-			// 		</div>
-			// 	);
 			case "status":
 				return (
 					<Chip className="capitalize" size="sm" variant="flat">
 						{users?.status}
 					</Chip>
 				);
-			// case "actions":
-			// 	return (
-			// 		<div className="relative flex items-center gap-2">
-			// 			<Tooltip content="Details">
-			// 				<span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-			// 					{/* <EyeIcon /> */}
-			// 				</span>
-			// 			</Tooltip>
-			// 			<Tooltip content="Edit user">
-			// 				<span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-			// 					{/* <EditIcon /> */}
-			// 				</span>
-			// 			</Tooltip>
-			// 			<Tooltip color="danger" content="Delete user">
-			// 				<span className="text-lg text-danger cursor-pointer active:opacity-50">
-			// 					{/* <DeleteIcon /> */}
-			// 				</span>
-			// 			</Tooltip>
-			// 		</div>
-			// 	);
 			default:
 		}
 	}, []);

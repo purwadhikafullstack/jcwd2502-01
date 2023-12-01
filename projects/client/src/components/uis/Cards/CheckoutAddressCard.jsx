@@ -84,7 +84,7 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 							: "border-neutral-300 dark:border-neutral-700"
 					}  rounded-xl p-4`}
 				>
-					<section className="address-content w-[80%]">
+					<section className="address-content pr-6 md:w-[80%]">
 						<div className="address-title flex items-center">
 							<p className="font-bold text-label-lg md:text-body-lg text-gray-600 dark:text-[#dedede] mr-2">
 								{address_name}
@@ -141,7 +141,9 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 											"hidden"
 										}`}
 									>
-										<span className="font-bold text-label-lg text-black">
+										<span
+											className={`font-bold text-label-md md:text-label-lg text-black`}
+										>
 											{location.pathname ===
 											"/profile/settings"
 												? "Set as main"

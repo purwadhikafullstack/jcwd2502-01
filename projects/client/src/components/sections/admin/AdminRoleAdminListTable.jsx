@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
 	Table,
@@ -9,12 +8,10 @@ import {
 	TableCell,
 	User,
 	Chip,
-	Tooltip,
 	Button,
 	Input,
 	Pagination,
 } from "@nextui-org/react";
-import { RiUserSettingsLine } from "react-icons/ri";
 import {
 	fetchAdmin,
 	onClearAdmin,
@@ -27,13 +24,15 @@ import {
 } from "../../../redux/features/manageUser";
 import { useFormik } from "formik";
 import { useLocation, useNavigate } from "react-router-dom";
-import { IoTrashOutline, IoSearch } from "react-icons/io5";
+import { IoSearch } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import SelectSortByAdmin from "../../uis/Selects/SelectSortByAdmin";
-import EditAdminManageUser from "../../layouts/user/EditAdminManageUser";
-import CreateNewAdminModal from "../../layouts/user/CreateNewAdminModal";
 import { axiosInstance } from "../../../lib/axios";
 import toast, { Toaster } from "react-hot-toast";
+import AdminRequestResetPasswordModal from "./AdminRequestResetPasswordModal";
+import AdminDeleteUserAdminModal from "./AdminDeleteUserAdminModal";
+import AdminCreateNewAdminModal from "./AdminCreateNewAdminModal";
+import AdminEditAdminManageUser from "./AdminEditAdminManageUser";
 
 const AdminRoleAdminListTable = () => {
 	const dispatch = useDispatch();
@@ -101,42 +100,6 @@ const AdminRoleAdminListTable = () => {
 		// window.location.reload(false);
 	};
 
-	const handleDelete = async (id) => {
-		try {
-			console.log(id);
-			const deleteAdmin = await axiosInstance(accessToken).delete(
-				`/users/deleteAdminData/${id}`
-			);
-			if (!deleteAdmin.data.isError)
-				toast.success(deleteAdmin.data.message);
-			console.log(`/users/deleteAdminData/${id}`);
-			console.log(deleteAdmin);
-			dispatch(
-				fetchAdmin(
-					`?${
-						searchAdmin && `&search=${searchAdmin}`
-					}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
-				)
-			);
-		} catch (error) {
-			console.error();
-		}
-	};
-
-	const handleRequestChangePassword = async (id) => {
-		try {
-			console.log(id);
-			const sendRequest = await axiosInstance(accessToken).get(
-				`users/reqChangePassByAdmin/${id}`
-			);
-			console.log(sendRequest);
-			if (!sendRequest.data.isError)
-				toast.success(sendRequest.data.message);
-		} catch (error) {
-			console.error(error);
-		}
-	};
-
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedSearch = queryParams.get("search");
@@ -163,9 +126,7 @@ const AdminRoleAdminListTable = () => {
 		return () => {
 			dispatch(onClearAdmin());
 			dispatch(setSearchAdmin(""));
-			// dispatch(setProductsForStocks([]));
 			dispatch(setTotalPageAdmin(1));
-			// dispatch(setWarehouse(null));
 			dispatch(setCountAdmin(0));
 		};
 	}, []);
@@ -179,8 +140,6 @@ const AdminRoleAdminListTable = () => {
 	];
 
 	const renderCell = React.useCallback((users, columnKey) => {
-		// const cellValue = user[columnKey];
-
 		switch (columnKey) {
 			case "name":
 				return (
@@ -213,35 +172,12 @@ const AdminRoleAdminListTable = () => {
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
-						<EditAdminManageUser
+						<AdminEditAdminManageUser
 							data={users}
 							handleRefresh={setTouchModal}
 						/>
-						<Tooltip color="success" content="Reset Password">
-							<Button
-								isIconOnly
-								variant="flat"
-								className="text-lg cursor-pointer active:opacity-50"
-								onClick={() =>
-									handleRequestChangePassword(users.id)
-								}
-							>
-								<RiUserSettingsLine
-									className="text-green-600"
-									size={24}
-								/>
-							</Button>
-						</Tooltip>
-						<Tooltip color="danger" content="Remove Admin">
-							<Button
-								isIconOnly
-								variant="flat"
-								className="text-lg text-danger cursor-pointer active:opacity-50"
-								onClick={() => handleDelete(users.id)}
-							>
-								<IoTrashOutline size={24} />
-							</Button>
-						</Tooltip>
+						<AdminRequestResetPasswordModal userID={users.id} />
+						<AdminDeleteUserAdminModal userID={users.id} />
 					</div>
 				);
 			default:
@@ -292,7 +228,9 @@ const AdminRoleAdminListTable = () => {
 						/>
 					</form>
 					<div className="flex gap-3">
-						<CreateNewAdminModal handleRefresh={setTouchModal} />
+						<AdminCreateNewAdminModal
+							handleRefresh={setTouchModal}
+						/>
 						<Button
 							variant="bordered"
 							className="border-neutral-200 dark:border-neutral-700 w-full"
