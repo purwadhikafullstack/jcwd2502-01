@@ -99,6 +99,15 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 
 			formik.resetForm();
 		} catch (error) {
+			if (error.response.data.isError) {
+				formik.resetForm();
+				return toast.error(error.response.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+			}
 			console.log(error);
 		} finally {
 			setIsLoading(false);
