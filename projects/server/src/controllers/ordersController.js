@@ -302,7 +302,7 @@ module.exports = {
 						],
 					},
 				],
-				order: [["createdAt", "ASC"]],
+				order: [["createdAt", "DESC"]],
 				limit: itemsPerPage,
 				distinct: true,
 				paranoid: false,

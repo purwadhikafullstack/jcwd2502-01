@@ -174,6 +174,7 @@ module.exports = {
 			const dataOrder = await db.order_detail.findAll(baseQuery2);
 			const count = await db.order_detail.count({
 				where: baseQuery2.where,
+				include: baseQuery2.include,
 			});
 
 			return {
@@ -256,7 +257,7 @@ module.exports = {
 									"product_name",
 									"product_price",
 								],
-								include: [
+								lude: [
 									{
 										model: db.product_image,
 										attributes: ["id", "image"],
@@ -405,6 +406,7 @@ module.exports = {
 			const getData = await db.category.findAll(baseQuery);
 			const getCountData = await db.category.count({
 				where: baseQuery.where,
+				include: baseQuery.include,
 			});
 
 			const getDataTransaction = await db.order_detail.findAll(
@@ -540,6 +542,7 @@ module.exports = {
 			const getBrand = await db.brand.findAll(baseQuery);
 			const getCountData = await db.brand.count({
 				where: baseQuery.where,
+				include: baseQuery.include,
 			});
 			const getDataTransaction = await db.order_detail.findAll(
 				getTotalBrand

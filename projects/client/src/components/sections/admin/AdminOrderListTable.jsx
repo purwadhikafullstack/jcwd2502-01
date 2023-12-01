@@ -39,6 +39,8 @@ const AdminOrderListTable = () => {
 	const location = useLocation();
 	const dispatch = useDispatch();
 	const [oneTime, setOneTime] = useState(false);
+	const warehouse = useSelector((state) => state.products.warehouse);
+	const role = useSelector((state) => state.user.role);
 
 	const {
 		orders,
@@ -94,13 +96,23 @@ const AdminOrderListTable = () => {
 	};
 
 	const onClearRefresh = () => {
-		dispatch(updateUrl(1, "", "", ""));
-		dispatch(fetchAdminOrderListAsync(token, 1, "", "", ""));
-		dispatch(setPage(1));
-		dispatch(setStatus(""));
-		dispatch(setSearch(""));
-		dispatch(setWarehouseId(""));
-		setSearchQuery("");
+		if (role === "super") {
+			dispatch(setWarehouseId(""));
+			dispatch(updateUrl(1, "", "", ""));
+			dispatch(fetchAdminOrderListAsync(token, 1, "", "", ""));
+			dispatch(setPage(1));
+			dispatch(setStatus(""));
+			dispatch(setSearch(""));
+			setSearchQuery("");
+		}
+		if (role === "admin") {
+			dispatch(updateUrl(1, "", "", warehouseId));
+			dispatch(fetchAdminOrderListAsync(token, 1, "", "", warehouseId));
+			dispatch(setPage(1));
+			dispatch(setStatus(""));
+			dispatch(setSearch(""));
+			setSearchQuery("");
+		}
 	};
 
 	const columns = [
@@ -361,6 +373,7 @@ const AdminOrderListTable = () => {
 							selectedKeys={
 								warehouseId ? [warehouseId.toString()] : []
 							}
+							isDisabled={role !== "super"}
 						>
 							{(warehouse) => (
 								<SelectItem
@@ -369,10 +382,31 @@ const AdminOrderListTable = () => {
 										handleWarehouseChange(warehouse.id)
 									}
 								>
-									{`Warehouse ${warehouse.warehouse_name}`}
+									{warehouse.warehouse_name}
 								</SelectItem>
 							)}
 						</Select>
+						{/* <Select
+							items={warehouses}
+							variant="bordered"
+							className="min-w-[240px]"
+							labelPlacement="outside-left"
+							placeholder="Select warehouse"
+							selectedKeys={warehouse ? [String(warehouse)] : []}
+							isDisabled={role !== "super"}
+						>
+							{(warehouse) => (
+								<SelectItem
+									key={warehouse.id}
+									value={warehouse.id}
+									onClick={() =>
+										dispatch(setWarehouse(warehouse.id))
+									}
+								>
+									{warehouse.warehouse_name}
+								</SelectItem>
+							)}
+						</Select> */}
 						<Button
 							fullWidth
 							variant="bordered"
