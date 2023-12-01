@@ -119,7 +119,7 @@ module.exports = {
 			const checkBrand2 = await db.brand.findOne({
 				where: { brand_name: brandName },
 			});
-			if (checkBrand2) {
+			if (checkBrand2 && checkBrand2.dataValues.id != brandId) {
 				return {
 					isError: true,
 					message: `${brandName} brand is already added`,

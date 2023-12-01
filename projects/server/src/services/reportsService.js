@@ -174,7 +174,6 @@ module.exports = {
 			const dataOrder = await db.order_detail.findAll(baseQuery2);
 			const count = await db.order_detail.count({
 				where: baseQuery2.where,
-				include: baseQuery2.include,
 			});
 
 			return {
@@ -299,7 +298,7 @@ module.exports = {
 			}
 			const getOrder = await db.order.findAll(baseQuery);
 			console.log(getOrder);
-			const count = await db.order.count(baseQuery);
+			const count = await db.order.count({ where: baseQuery.where });
 			return {
 				data: { count, order: getOrder },
 			};
@@ -406,7 +405,6 @@ module.exports = {
 			const getData = await db.category.findAll(baseQuery);
 			const getCountData = await db.category.count({
 				where: baseQuery.where,
-				include: baseQuery.include,
 			});
 
 			const getDataTransaction = await db.order_detail.findAll(
@@ -542,7 +540,6 @@ module.exports = {
 			const getBrand = await db.brand.findAll(baseQuery);
 			const getCountData = await db.brand.count({
 				where: baseQuery.where,
-				include: baseQuery.include,
 			});
 			const getDataTransaction = await db.order_detail.findAll(
 				getTotalBrand

@@ -252,7 +252,7 @@ const AdminWarehouseListPage = () => {
 								variant="bordered"
 								className="min-w-[178px]"
 								selectedKeys={
-									keyOrder ? [String(keyOrder)] : null
+									keyOrder ? [String(keyOrder)] : []
 								}
 							>
 								<SelectItem

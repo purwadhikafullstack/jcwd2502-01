@@ -24,7 +24,7 @@ const SelectSortByAdmin = ({ placeholder = "Options" }) => {
 
 	const selectedKeys = useMemo(() => {
 		// console.log(">>>>>DISINI");
-		return keyOrder ? [String(keyOrder)] : null;
+		return keyOrder ? [String(keyOrder)] : [];
 	}, [orderField, orderDirection]);
 
 	useEffect(() => {

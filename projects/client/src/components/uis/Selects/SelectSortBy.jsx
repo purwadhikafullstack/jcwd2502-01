@@ -36,7 +36,7 @@ const SelectSortBy = ({ admin, placeholder = "Options" }) => {
 			size="md"
 			variant="bordered"
 			className="min-w-[178px]"
-			selectedKeys={keyOrder ? [String(keyOrder)] : null}
+			selectedKeys={keyOrder ? [String(keyOrder)] : []}
 		>
 			<SelectItem
 				key={"az"}

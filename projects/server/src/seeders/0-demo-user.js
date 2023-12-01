@@ -20,8 +20,8 @@ module.exports = {
 				},
 				{
 					id: 2,
-					username: "adidu",
-					email: "adidu@gmail.com",
+					username: "admin_warehouse1",
+					email: "adminwarehouse1@gmail.com",
 					password:
 						"$2b$10$A889twpbSM4/aLgWuRlkXOjby3.G0wsQRhjzw4LulfPCgWx22TN32",
 					birth_date: null,
@@ -32,8 +32,8 @@ module.exports = {
 				},
 				{
 					id: 3,
-					username: "rafael",
-					email: "rafael@gmail.com",
+					username: "admin_warehouse2",
+					email: "adminwarehouse2@gmail.com",
 					password:
 						"$2b$10$x1URhTbSNJk1DHk.fUzNeecIewi3vhfkwdjFH8zQL/pFJRNx0nAxa",
 					birth_date: null,
@@ -44,8 +44,8 @@ module.exports = {
 				},
 				{
 					id: 4,
-					username: "albert",
-					email: "albert@gmail.com",
+					username: "admin_warehouse3",
+					email: "adminwarehouse3@gmail.com",
 					password:
 						"$2b$10$/kW7aDmE2BlhG3IZ6K8RCetwYKlNHg/QLkdGut7uDfdKWtbGENTQa",
 					birth_date: null,
@@ -56,8 +56,8 @@ module.exports = {
 				},
 				{
 					id: 5,
-					username: "admin",
-					email: "admin@gmail.com",
+					username: "super_admin",
+					email: "superadmin@gmail.com",
 					password:
 						"$2b$10$/kW7aDmE2BlhG3IZ6K8RCetwYKlNHg/QLkdGut7uDfdKWtbGENTQa",
 					birth_date: null,
@@ -68,7 +68,7 @@ module.exports = {
 				},
 				{
 					id: 6,
-					username: "adudaa",
+					username: "albert",
 					email: "noobman514@gmail.com",
 					password:
 						"$2b$10$/kW7aDmE2BlhG3IZ6K8RCetwYKlNHg/QLkdGut7uDfdKWtbGENTQa",

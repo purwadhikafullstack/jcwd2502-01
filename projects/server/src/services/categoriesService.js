@@ -126,7 +126,10 @@ module.exports = {
 			const checkCategory2 = await db.category.findOne({
 				where: { category_type: categoryType },
 			});
-			if (checkCategory2) {
+			if (
+				checkCategory2 &&
+				checkCategory2?.dataValues?.id != categoryId
+			) {
 				return {
 					isError: true,
 					message: `${categoryType} category is already added`,
