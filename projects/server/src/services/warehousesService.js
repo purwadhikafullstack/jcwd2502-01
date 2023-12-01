@@ -50,16 +50,6 @@ module.exports = {
 				message: "Get product's data success",
 				data: dataWarehouses,
 			};
-
-			const dataCategoriesWithProducts = await db.category.findAll(
-				baseQuery
-			);
-			const count = await db.category.count();
-
-			return {
-				message: "Get categories success",
-				data: { count, categories: dataCategoriesWithProducts },
-			};
 		} catch (error) {
 			return error;
 		}
@@ -100,7 +90,6 @@ module.exports = {
 			const dataWarehouses = await db.warehouse.findAll(baseQuery);
 			const count = await db.warehouse.count({
 				where: baseQuery.where,
-				include: baseQuery.include,
 			});
 			return {
 				message: "Get product's data success",

@@ -16,7 +16,7 @@ module.exports = {
 					invoice: "INV/20231114/NXCMP/101183",
 					total_amount: 5107000,
 					total_item: 3,
-					proof_of_payment: "image",
+					proof_of_payment: null,
 					status: "1",
 					viewed: null,
 				},

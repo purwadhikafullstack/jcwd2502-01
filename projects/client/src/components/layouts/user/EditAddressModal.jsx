@@ -313,7 +313,7 @@ export default function App({ data }) {
 																			selectedCity
 																		),
 																  ]
-																: ""
+																: null
 														}
 													>
 														{renderCitiesOption()}

@@ -79,7 +79,11 @@ const AdminCreateNewWarehouseModal = () => {
 	const renderProvincesOption = () => {
 		return provinces?.map((province) => {
 			return (
-				<SelectItem key={province.id} value={province.province}>
+				<SelectItem
+					onClick={() => handleProvince(province.id)}
+					key={province.id}
+					value={province.province}
+				>
 					{province.province}
 				</SelectItem>
 			);
@@ -109,7 +113,11 @@ const AdminCreateNewWarehouseModal = () => {
 	const renderCitiesOption = () => {
 		return cities?.map((city) => {
 			return (
-				<SelectItem key={city.id} value={city.id}>
+				<SelectItem
+					onClick={() => setCity(city.id)}
+					key={city.id}
+					value={city.id}
+				>
 					{`${city.type} ${city.city_name}`}
 				</SelectItem>
 			);
@@ -156,6 +164,14 @@ const AdminCreateNewWarehouseModal = () => {
 						placement={matches.medium ? "center" : "bottom"}
 						scrollBehavior="inside"
 						size={matches.medium ? "2xl" : "full"}
+						onClose={() => {
+							setSelectedProvince(null);
+							setSelectedCity(null);
+							setName("");
+							setAddress("");
+							setProvince(null);
+							setCity(null);
+						}}
 					>
 						<ModalContent>
 							{(onClose) => (
@@ -176,8 +192,7 @@ const AdminCreateNewWarehouseModal = () => {
 													variant="bordered"
 													radius="sm"
 													size="lg"
-													placeholder="Warehouse One"
-													defaultValue={"Warehouse 1"}
+													placeholder="Warehouse Name"
 													isRequired
 													onChange={(e) =>
 														setName(e.target.value)
@@ -192,11 +207,6 @@ const AdminCreateNewWarehouseModal = () => {
 													variant="bordered"
 													radius="sm"
 													size="lg"
-													onChange={(e) =>
-														handleProvince(
-															e.target.value
-														)
-													}
 													placeholder="Select a province"
 													isRequired
 												>
@@ -211,14 +221,22 @@ const AdminCreateNewWarehouseModal = () => {
 													variant="bordered"
 													radius="sm"
 													size="lg"
-													onChange={(e) =>
-														setCity(e.target.value)
+													placeholder={
+														"Select a city"
 													}
-													placeholder="Select a city"
 													isRequired
+													isDisabled={
+														!selectedProvince
+													}
 												>
 													{renderCitiesOption()}
 												</Select>
+												{!selectedProvince && (
+													<p className="mt-2 opacity-50">
+														* Please select a
+														province first
+													</p>
+												)}
 											</div>
 											<div className="form-control">
 												<Textarea

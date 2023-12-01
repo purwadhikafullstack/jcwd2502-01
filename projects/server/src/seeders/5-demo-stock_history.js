@@ -10,10 +10,9 @@ module.exports = {
 					id: 1,
 					stock_id: 1,
 					stock_before: 100,
-					change: "-10",
+					change: "subtraction",
 					quantity_change: 90,
-					type: "manual, mutation, transaksi",
-					user_id: 2,
+					type: "manual",
 				},
 			],
 			{}

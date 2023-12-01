@@ -176,7 +176,7 @@ export default function App() {
 											selectedKeys={
 												selectedGender
 													? [selectedGender]
-													: ""
+													: null
 											}
 										>
 											{arrGender.map((value, index) => (

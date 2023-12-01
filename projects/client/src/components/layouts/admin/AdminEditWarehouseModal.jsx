@@ -127,7 +127,13 @@ const AdminEditWarehouseModal = ({
 	const renderProvincesOption = () => {
 		return provinces?.map((province) => {
 			return (
-				<SelectItem key={province.id} value={province.province}>
+				<SelectItem
+					onClick={() => {
+						handleProvince(province.id);
+					}}
+					key={province.id}
+					value={province.province}
+				>
 					{province.province}
 				</SelectItem>
 			);
@@ -156,7 +162,13 @@ const AdminEditWarehouseModal = ({
 	const renderCitiesOption = () => {
 		return cities?.map((city) => {
 			return (
-				<SelectItem key={city.id} value={city.id}>
+				<SelectItem
+					onClick={() => {
+						handleCity(city.id);
+					}}
+					key={city.id}
+					value={city.id}
+				>
 					{`${city.type} ${city.city_name}`}
 				</SelectItem>
 			);
@@ -252,9 +264,6 @@ const AdminEditWarehouseModal = ({
 										variant="bordered"
 										radius="sm"
 										size="lg"
-										onChange={(e) =>
-											handleProvince(e.target.value)
-										}
 										placeholder="Select a province"
 										isRequired
 										selectedKeys={[
@@ -272,15 +281,12 @@ const AdminEditWarehouseModal = ({
 										variant="bordered"
 										radius="sm"
 										size="lg"
-										onChange={(e) =>
-											handleCity(e.target.value)
-										}
 										placeholder="Select a City"
 										isRequired
 										selectedKeys={
 											selectedCity
 												? [String(selectedCity)]
-												: ""
+												: []
 										}
 									>
 										{renderCitiesOption()}

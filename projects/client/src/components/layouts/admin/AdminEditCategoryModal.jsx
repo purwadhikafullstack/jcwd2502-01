@@ -14,21 +14,6 @@ const AdminEditCategoryModal = ({
 	categoryType,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
-
-	// useEffect(() => {
-	// 	if (warehouse) {
-	// 		formik.setValues({
-	// 			warehouse_name: warehouse.warehouse_name || "",
-	// 			warehouse_location: warehouse.warehouse_location || "",
-	// 			warehouse_address: warehouse.warehouse_address || "",
-	// 			province_id: warehouse.province.id || null,
-	// 			city_id: warehouse.city.id || null,
-	// 		});
-	// 		setSelectedProvince(warehouse.province.id);
-	// 		setSelectedCity(warehouse.city.id);
-	// 	}
-	// }, [warehouse]);
-
 	const formik = useFormik({
 		initialValues: {
 			category_type: categoryType,

@@ -48,7 +48,7 @@ const AdminStocksLogPage = () => {
 						onChange={(e) => {
 							dispatch(setWarehouse(e.target.value));
 						}}
-						selectedKeys={warehouse ? [String(warehouse)] : null}
+						selectedKeys={warehouse ? [String(warehouse)] : []}
 					>
 						{(warehouse) => (
 							<SelectItem key={warehouse.id}>
