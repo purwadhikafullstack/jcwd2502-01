@@ -91,16 +91,6 @@ const AdminReportTransactionListTable = () => {
 		window.scrollTo({ top: 0 });
 	};
 
-	// useEffect(() => {
-	// 	// const fetchData = async () => {
-	// 	dispatch(getTransaction());
-	// 	// };
-	// }, []);
-
-	// useEffect(() => {
-	// 	console.log(transaction);
-	// }, [transaction]);
-
 	useEffect(() => {
 		formik.setFieldValue("searchQuery2", search);
 	}, [search]);
@@ -129,25 +119,12 @@ const AdminReportTransactionListTable = () => {
 			dispatch(setSearchTransaction(""));
 			// dispatch(setProductsForStocks([]));
 			dispatch(setTotalPageTransaction(1));
-			// dispatch(setWarehouse(null));
+			dispatch(setWarehouse(null));
 			dispatch(setCountTransaction(0));
 		};
 	}, []);
 
 	useEffect(() => {
-		// if (warehouse) {
-		// 	console.log(search);
-		// 	navigate(
-		// 		`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		// 	);
-
-		// 	dispatch(
-		// 		getTransaction(
-		// 			`?warehouse=${warehouse}&search=${search}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		// 		)
-		// 	);
-		// } else {
-		console.log(search);
 		// if (oneTime) {
 		navigate(
 			`/admin/reports?tab=transactions&${
@@ -168,9 +145,6 @@ const AdminReportTransactionListTable = () => {
 				}${year && `&year=${year}`}`
 			)
 		);
-		// }
-		console.log(year, month);
-		// }
 	}, [orderField, orderDirection, search, page, warehouse, year, month]);
 
 	const columns = [
@@ -178,7 +152,7 @@ const AdminReportTransactionListTable = () => {
 		{ name: "INVOICE", uid: "invoice" },
 		{ name: "RECEIPT NUMBER", uid: "receipt_number" },
 		{ name: "TOTAL AMOUNT", uid: "total_amount" },
-		{ name: "ACTION", uid: "action" },
+		// { name: "ACTION", uid: "action" },
 	];
 
 	const renderCell = React.useCallback((product, columnKey) => {
@@ -233,14 +207,14 @@ const AdminReportTransactionListTable = () => {
 						</p>
 					</div>
 				);
-			case "action":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`view detail`}
-						</p>
-					</div>
-				);
+			// case "action":
+			// 	return (
+			// 		<div className="flex items-center gap-4 w-full">
+			// 			<p className="font-bold text-base w-full">
+			// 				{`view detail`}
+			// 			</p>
+			// 		</div>
+			// 	);
 			default:
 		}
 	}, []);
