@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DefaultAvatar from "../../assets/avatars/default_avatar.png";
 import { Input, Image, Chip, Button } from "@nextui-org/react";
@@ -13,10 +13,14 @@ import Media from "react-media";
 import ChangeProfilePictureModal from "../../components/layouts/user/ChangeProfilePictureModal";
 import { axiosInstance } from "../../lib/axios";
 import toast, { Toaster } from "react-hot-toast";
+import MySpinner from "../../components/uis/Spinners/Spinner";
 
 const ProfileSettingsPage = () => {
 	const dispatch = useDispatch();
 	const token = localStorage.getItem("accessToken");
+
+	const [isLoading, setIsLoading] = useState(false);
+
 	const {
 		username,
 		email,
@@ -40,12 +44,24 @@ const ProfileSettingsPage = () => {
 
 	const handleRequestChangePassword = async () => {
 		try {
+			setIsLoading(true);
+
 			const sendRequest = await axiosInstance(token).get(`users/reqPass`);
-			console.log(sendRequest);
-			if (!sendRequest.data.isError)
-				toast.success(sendRequest.data.message);
+
+			if (!sendRequest.data.isError) {
+				setIsLoading(false);
+
+				toast.success(sendRequest.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+			}
 		} catch (error) {
 			console.error(error);
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -97,6 +113,10 @@ const ProfileSettingsPage = () => {
 													onClick={() =>
 														handleRequestChangePassword()
 													}
+													isLoading={isLoading}
+													spinner={
+														<MySpinner color="white" />
+													}
 												>
 													<span className="font-medium">
 														Reset Password
@@ -119,19 +139,24 @@ const ProfileSettingsPage = () => {
 													{email}
 												</h4>
 											</div>
-											<Chip
-												radius="sm"
-												size="sm"
-												className={`${
-													status === "verified"
-														? "bg-primary-600"
-														: "bg-red-600"
-												}`}
-											>
-												<span className="font-white font-medium uppercase">
-													{status}
-												</span>
-											</Chip>
+											<div className="pt-2">
+												<Button
+													fullWidth
+													size="sm"
+													variant="bordered"
+													onClick={() =>
+														handleRequestChangePassword()
+													}
+													isLoading={isLoading}
+													spinner={
+														<MySpinner color="white" />
+													}
+												>
+													<span className="font-medium">
+														Reset Password
+													</span>
+												</Button>
+											</div>
 										</div>
 									</div>
 								</section>
