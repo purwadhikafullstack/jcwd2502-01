@@ -1,30 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import AdminPageMainContainer from "../../../components/layouts/admin/AdminPageMainContainer";
-import { useDispatch, useSelector } from "react-redux";
-import { setWarehouse } from "../../../redux/features/products";
-import { Button, Select, SelectItem, Tab, Tabs } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
 import AdminStocksListTable from "../../../components/sections/admin/AdminStocksListTable";
-import { Link } from "react-router-dom";
-import { axiosInstance } from "../../../lib/axios";
 import AdminIncomingStocksTable from "../../../components/sections/admin/AdminIncomingStocksTable";
 import AdminOutgoingStocksTable from "../../../components/sections/admin/AdminOutgoingStocksTable";
 import SelectWarehouses from "../../../components/uis/Selects/SelectWarehouses";
 
 const AdminStocksListPage = () => {
-	// const [warehouses, setWarehouses] = useState([]);
-	// const warehouse = useSelector((state) => state.products.warehouse);
-
-	// const dispatch = useDispatch();
-
-	// const fetchWarehouses = async () => {
-	// 	try {
-	// 		const { data } = await axiosInstance().get(`warehouses/all`);
-	// 		setWarehouses(data.data);
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
-
 	let tabs = [
 		{
 			id: "stocks",
@@ -42,10 +24,6 @@ const AdminStocksListPage = () => {
 			content: <AdminOutgoingStocksTable />,
 		},
 	];
-
-	// useEffect(() => {
-	// 	fetchWarehouses();
-	// }, []);
 
 	return (
 		<AdminPageMainContainer>

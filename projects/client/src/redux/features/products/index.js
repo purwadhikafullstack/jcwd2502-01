@@ -194,7 +194,9 @@ export const fetchStockHistoryAsync = (query) => async (dispatchEvent) => {
 		const { data } = await axiosInstance(accessToken).get(
 			`stocks/history${query ? query : ""}`
 		);
+
 		const totalPage = await Math.ceil(data.data.count / 12);
+
 		dispatchEvent(setTotalPage(totalPage));
 		dispatchEvent(setStockHistory(data.data.history));
 		dispatchEvent(setCount(data.data.count));

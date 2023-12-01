@@ -92,8 +92,12 @@ export default function App({ data }) {
 				!province_id ||
 				!city_id
 			) {
-				return toast.error("Please fill in all form fields");
-				// Stop further execution
+				return toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 			}
 
 			const newWarehouseData = {

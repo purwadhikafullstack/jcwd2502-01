@@ -44,7 +44,12 @@ const NavigationBar = () => {
 		if (role === "") {
 			navigate("/login");
 		} else if (status === "unverified") {
-			toast.error("Must verify your email first!");
+			toast.error("Must verify your email first!", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 		} else {
 			navigate("/cart");
 		}

@@ -27,7 +27,6 @@ import {
 	selectProductCart,
 } from "../../../redux/features/carts";
 import { Link } from "react-router-dom";
-import Media from "react-media";
 
 const ProductCartCard = ({ dataCart }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -105,24 +104,32 @@ const ProductCartCard = ({ dataCart }) => {
 			<div>
 				<div className="product-cart-actions">
 					<div className="bottom-right flex items-center justify-end md:justify-end gap-24 md:gap-8 mt-2">
-						<Button
-							isIconOnly
-							variant="light"
-							size="sm"
-							radius="full"
-							onPress={onOpen}
-						>
-							<IoTrashOutline size={24} color="#f00" />
-						</Button>
-
+						<div className="hidden md:block">
+							<Button
+								isIconOnly
+								variant="light"
+								size="sm"
+								radius="full"
+								onPress={onOpen}
+							>
+								<IoTrashOutline size={24} color="#f00" />
+							</Button>
+						</div>
 						<div className="quantity-controller flex items-center w-[120px]">
 							<Button
-								onClick={() =>
-									dispatch(
-										changeQuantity(token, id, "subtract")
-									)
-								}
-								isDisabled={quantity <= 1 ? true : false}
+								onClick={() => {
+									if (quantity <= 1) {
+										onOpen();
+									} else {
+										dispatch(
+											changeQuantity(
+												token,
+												id,
+												"subtract"
+											)
+										);
+									}
+								}}
 								isIconOnly
 								color="primary"
 								size="sm"

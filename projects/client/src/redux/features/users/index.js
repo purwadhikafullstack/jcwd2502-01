@@ -2,6 +2,7 @@ import { axiosInstance } from "./../../../lib/axios";
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 import { setWarehouse } from "../products";
+import { setWarehouseId } from "../orders";
 
 const initialState = {
 	username: "",
@@ -106,6 +107,7 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 			dispatch(login(checkUser.data.data));
 			if (checkUser.data.data.role === "admin") {
 				dispatch(setWarehouse(checkUser.data.data.warehouse_id));
+				dispatch(setWarehouseId(checkUser.data.data.warehouse_id));
 			}
 		}, 1200);
 		toast.success(`${checkUser.data.message}`, {
@@ -215,6 +217,7 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 		dispatch(login(CheckToken.data.data));
 		if (CheckToken.data.data.role === "admin") {
 			dispatch(setWarehouse(CheckToken.data.data.warehouse_id));
+			dispatch(setWarehouseId(CheckToken.data.data.warehouse_id));
 		}
 	} catch (error) {
 		if (error.response.data.isError && localStorage.getItem("tokenLogin")) {

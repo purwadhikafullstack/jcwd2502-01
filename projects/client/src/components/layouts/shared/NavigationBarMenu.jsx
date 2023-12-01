@@ -66,11 +66,13 @@ const NavigationBarMenu = () => {
 							color="secondary"
 							src={profileUser ? profilePicture : DefaultAvatar}
 						/>
-						<div className="user-id">
-							<h1 className="user-username font-bold text-[18px] leading-3">
+						<div className="user-id max-w-[164px]">
+							<h1 className="user-username font-bold text-[18px] max-w-[164px] leading-3 truncate">
 								{username}
 							</h1>
-							<h3 className="user-email text-body-md">{email}</h3>
+							<h3 className="user-email text-body-md truncate">
+								{email}
+							</h3>
 							<Chip className="bg-green-600" size="sm">
 								<span className="text-label-md text-white uppercase">{`verified`}</span>
 							</Chip>
