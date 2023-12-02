@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
 	Table,
@@ -32,6 +31,8 @@ import {
 	setPaginationBrand,
 	setCountBrand,
 	onSortB,
+	setMonth,
+	setYear,
 } from "../../../redux/features/report";
 
 const AdminReportBrandListTable = () => {
@@ -40,8 +41,6 @@ const AdminReportBrandListTable = () => {
 	const location = useLocation();
 	const [oneTime, setOneTime] = useState(true);
 
-	let month = "";
-	let year = "";
 	const transactionByBrand = useSelector(
 		(state) => state.report.transactionByBrand
 	);
@@ -59,14 +58,16 @@ const AdminReportBrandListTable = () => {
 	const search = useSelector((state) => state.report.searchBrand);
 	const page = useSelector((state) => state.report.pageBrand);
 	const offset = useSelector((state) => state.report.offsetBrand);
+	const month = useSelector((state) => state.report.month);
+	const year = useSelector((state) => state.report.year);
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedWarehouse = queryParams.get("warehouse");
-		const selectedSearch = queryParams.get("search");
-		const selectedOrderField = queryParams.get("orderField");
-		const selectedOrderDirection = queryParams.get("orderDirection");
-		const selectedOffset = queryParams.get("offset");
+		const selectedSearch = queryParams.get("searchBrand");
+		const selectedOrderField = queryParams.get("orderFieldBrand");
+		const selectedOrderDirection = queryParams.get("orderDirectionBrand");
+		const selectedOffset = queryParams.get("offsetBrand");
 		const selectedMonth = queryParams.get("month");
 		const selectedYear = queryParams.get("year");
 		if (selectedWarehouse) {
@@ -82,9 +83,10 @@ const AdminReportBrandListTable = () => {
 			const selectedPage = Number(selectedOffset) / 12 + 1;
 			dispatch(setPaginationBrand(selectedPage, Number(selectedOffset)));
 		}
-		// if (selectedMonth) {
-		// 	dispatch();
-		// }
+		if (selectedMonth && selectedYear) {
+			dispatch(setMonth(selectedMonth));
+			dispatch(setYear(selectedYear));
+		}
 	};
 
 	const formik = useFormik({
@@ -92,7 +94,19 @@ const AdminReportBrandListTable = () => {
 		onSubmit: (values) => {
 			// Handle the search query submission here
 			dispatch(onSearchBrand(values.searchQuery1));
-			navigate("/admin/reports");
+			navigate(
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchBrand=${
+					search !== null ? `${search}` : ""
+				}&orderFieldBrand=${
+					orderFieldBrand !== null ? `${orderFieldBrand}` : ""
+				}&orderDirectionBrand=${
+					orderDirectionBrand !== null ? `${orderDirectionBrand}` : ""
+				}&offsetBrand=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
+			);
 		},
 	});
 
@@ -111,15 +125,33 @@ const AdminReportBrandListTable = () => {
 		if (role === "super") {
 			dispatch(setWarehouse(null));
 			// window.location.reload();
-			navigate(
-				`/admin/reports?search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
+			return navigate(
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchBrand=${
+					search !== null ? `${search}` : ""
+				}&orderFieldBrand=${
+					orderFieldBrand !== null ? `${orderFieldBrand}` : ""
+				}&orderDirectionBrand=${
+					orderDirectionBrand !== null ? `${orderDirectionBrand}` : ""
+				}&offsetBrand=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
 			);
-			return takeFromQuery();
+			// return takeFromQuery();
 		}
 		navigate(
-			`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
+			`/admin/reports?warehouse=${
+				warehouse !== null ? `${warehouse}` : ""
+			}&search=${search !== null ? `${search}` : ""}&orderField=${
+				orderFieldBrand !== null ? `${orderFieldBrand}` : ""
+			}&orderDirection=${
+				orderDirectionBrand !== null ? `${orderDirectionBrand}` : ""
+			}&offset=${offset}&month=${month !== null ? `${month}` : ""}&year=${
+				year !== null ? `${year}` : ""
+			}`
 		);
-		return takeFromQuery();
+		// return takeFromQuery();
 		// window.location.reload();
 	};
 	// console.log(role);
@@ -128,36 +160,47 @@ const AdminReportBrandListTable = () => {
 
 		window.scrollTo({ top: 0 });
 
-		return () => {
-			dispatch(onClearBrand());
-			dispatch(setSearchBrand(""));
-			// dispatch(setProductsForStocks([]));
-			dispatch(setTotalPageBrand(1));
-			dispatch(setWarehouse(null));
-			dispatch(setCountBrand(0));
-		};
+		// return () => {
+		// 	dispatch(onClearBrand());
+		// 	dispatch(setSearchBrand(""));
+		// 	// dispatch(setProductsForStocks([]));
+		// 	dispatch(setTotalPageBrand(1));
+		// 	// dispatch(setWarehouse(null));
+		// 	dispatch(setCountBrand(0));
+		// };
 	}, []);
 	console.log(warehouse);
 	useEffect(() => {
-		if (warehouse) {
+		if (oneTime) {
 			console.log(
 				`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
 			);
 			navigate(
-				`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchBrand=${
+					search !== null ? `${search}` : ""
+				}&orderFieldBrand=${
+					orderFieldBrand !== null ? `${orderFieldBrand}` : ""
+				}&orderDirectionBrand=${
+					orderDirectionBrand !== null ? `${orderDirectionBrand}` : ""
+				}&offsetBrand=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
 			);
 			dispatch(
 				getTransactionByBrand(
-					`?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
-				)
-			);
-		} else {
-			navigate(
-				`/admin/reports?search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
-			);
-			dispatch(
-				getTransactionByBrand(
-					`?search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
+					`?warehouse=${
+						warehouse !== null ? `${warehouse}` : ""
+					}&search=${search !== null ? `${search}` : ""}&orderField=${
+						orderFieldBrand !== null ? `${orderFieldBrand}` : ""
+					}&orderDirection=${
+						orderDirectionBrand !== null
+							? `${orderDirectionBrand}`
+							: ""
+					}&offset=${offset}&month=${
+						month !== null ? `${month}` : ""
+					}&year=${year !== null ? `${year}` : ""}`
 				)
 			);
 		}
@@ -177,6 +220,7 @@ const AdminReportBrandListTable = () => {
 		warehouse,
 		month,
 		year,
+		oneTime,
 	]);
 
 	const columns = [
@@ -333,4 +377,3 @@ const AdminReportBrandListTable = () => {
 };
 
 export default AdminReportBrandListTable;
-

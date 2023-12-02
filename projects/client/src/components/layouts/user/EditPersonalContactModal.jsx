@@ -4,15 +4,10 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalBody,
-	ModalFooter,
 	Button,
 	useDisclosure,
-	Checkbox,
 	Input,
-	Link,
 	Tooltip,
-	Select,
-	SelectItem,
 } from "@nextui-org/react";
 import { BiEdit } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +15,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { axiosInstance } from "../../../lib/axios";
 import { OnCheckIsLogin } from "../../../redux/features/users";
+import MySpinner from "../../uis/Spinners/Spinner";
+import toast from "react-hot-toast";
 
 export default function App() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -27,26 +24,43 @@ export default function App() {
 	const { phone } = useSelector((state) => state.user);
 	const accessToken = localStorage.getItem("accessToken");
 	const dispatch = useDispatch();
-	// console.log(username);
-	// console.log(gender);
-	// console.log(birth_date);
-	const [selectedGender, setSelectedGender] = useState(null);
-	const arrGender = [
-		{ value: "male", label: "Male" },
-		{ value: "female", label: "Female" },
-	];
 
 	const formik = useFormik({
 		initialValues: {
 			phone: "",
 		},
 		onSubmit: async (values) => {
-			const updateData = await axiosInstance(accessToken).patch(
-				"/users/personalData",
-				values
-			);
-			console.log(updateData);
-			dispatch(OnCheckIsLogin());
+			try {
+				setIsLoading(true);
+
+				await axiosInstance(accessToken).patch(
+					"/users/personalData",
+					values
+				);
+
+				toast.success("Phone number updated successfully", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+
+				setIsLoading(false);
+				onOpenChange();
+
+				dispatch(OnCheckIsLogin());
+			} catch (error) {
+				setIsLoading(false);
+
+				toast.error("Failed to update the phone number", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+
+				console.log(error);
+			}
 		},
 		validationSchema: yup.object().shape({
 			phone: yup.string().required(),
@@ -57,7 +71,6 @@ export default function App() {
 		formik.setValues({
 			phone: phone || "",
 		});
-		// gender ? setSelectedGender(gender):
 	}, [phone]);
 
 	return (
@@ -85,7 +98,7 @@ export default function App() {
 								>
 									<div className="form-control">
 										<Input
-											type="text"
+											type="number"
 											name="phone"
 											label="Phone Number"
 											labelPlacement="outside"
@@ -104,12 +117,11 @@ export default function App() {
 									<div className="modal-footer pt-4">
 										<Button
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											color="primary"
 											className="text-center"
 											fullWidth
 											type="submit"
-											// onClick={formik.handleSubmit}
-											onPress={onClose}
 										>
 											<span className="font-bold text-black">
 												Save changes

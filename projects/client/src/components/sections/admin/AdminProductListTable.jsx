@@ -111,18 +111,10 @@ const AdminProductListTable = ({ props }) => {
 	};
 
 	const onDelete = async (productId) => {
-		//confirm
 		const accessToken = localStorage.getItem("accessToken");
 		await axiosInstance(accessToken).delete(`products/${productId}`);
-		dispatch(
-			fetchProductAsync(
-				`?&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			)
-		);
+
+		window.location.reload(false);
 	};
 
 	const onEdit = (encodedProductName) => {

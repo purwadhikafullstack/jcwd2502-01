@@ -4,10 +4,10 @@ const { Op } = require("sequelize");
 const {
 	adminCancelOrderService,
 	adminConfirmOrderService,
+	adminSendingOrder,
 } = require("../services/ordersService");
-const { findNearestWarehouses } = require("../utils/distanceUtils");
+
 const respHandler = require("../utils/respHandler");
-const { createMutation, updateStock } = require("../utils/orderUtils");
 
 module.exports = {
 	getOrderList: async (req, res, next) => {
@@ -162,17 +162,53 @@ module.exports = {
 			const { id: user_id } = req.dataToken;
 			const { order_id: id } = req.params;
 
-			await db.order.update(
-				{ status: 6 },
-				{
-					where: {
-						user_id,
-						id,
-					},
-				}
-			);
+			const checkOrder = await db.order.findOne({
+				where: { user_id, id },
+			});
 
-			respHandler(res, "Cancel order success");
+			if (checkOrder.status === "1") {
+				await db.order.update(
+					{ status: 6 },
+					{
+						where: {
+							user_id,
+							id,
+						},
+					}
+				);
+
+				return respHandler(res, "Cancel order success");
+			}
+
+			respHandler(res, "Cancel order failed");
+		} catch (error) {
+			next(error);
+		}
+	},
+	completeOrder: async (req, res, next) => {
+		try {
+			const { id: user_id } = req.dataToken;
+			const { order_id: id } = req.params;
+
+			const checkOrder = await db.order.findOne({
+				where: { user_id, id },
+			});
+
+			if (checkOrder.status === "4") {
+				await db.order.update(
+					{ status: 5 },
+					{
+						where: {
+							user_id,
+							id,
+						},
+					}
+				);
+
+				return respHandler(res, "Complete order success");
+			}
+
+			respHandler(res, "Complete order failed");
 		} catch (error) {
 			next(error);
 		}
@@ -266,7 +302,7 @@ module.exports = {
 						],
 					},
 				],
-				order: [["createdAt", "ASC"]],
+				order: [["createdAt", "DESC"]],
 				limit: itemsPerPage,
 				distinct: true,
 				paranoid: false,
@@ -320,6 +356,17 @@ module.exports = {
 			}
 
 			respHandler(res, "Reject order failed. User have not pay yet.");
+		} catch (error) {
+			next(error);
+		}
+	},
+	adminSendOrder: async (req, res, next) => {
+		try {
+			const { order_id: id } = req.params;
+
+			const result = await adminSendingOrder(id);
+
+			respHandler(res, result.message);
 		} catch (error) {
 			next(error);
 		}

@@ -21,6 +21,7 @@ import * as yup from "yup";
 import { useDispatch } from "react-redux";
 import { onSetUserAddresses } from "../../../redux/features/users";
 import Media from "react-media";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 export default function App({ data }) {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -91,8 +92,12 @@ export default function App({ data }) {
 				!province_id ||
 				!city_id
 			) {
-				return toast.error("Please fill in all form fields");
-				// Stop further execution
+				return toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 			}
 
 			const newWarehouseData = {
@@ -312,7 +317,7 @@ export default function App({ data }) {
 																			selectedCity
 																		),
 																  ]
-																: ""
+																: null
 														}
 													>
 														{renderCitiesOption()}
@@ -340,6 +345,7 @@ export default function App({ data }) {
 												<div className="modal-footer pt-4">
 													<Button
 														isLoading={isLoading}
+														spinner={<MySpinner />}
 														color="primary"
 														className="text-center"
 														fullWidth

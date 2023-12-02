@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminCreateRequestStockModal = ({ productName }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -80,16 +81,35 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 			} = values;
 
 			if (!warehouse_id_to) {
-				toast.error("Please choose a warehouse");
+				setIsLoading(false);
+				toast.error("Please choose a warehouse", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				return; // Stop further execution
 			}
 			if (quantity <= 0) {
-				toast.error("Quantity can not be 0 or less than 0");
+				setIsLoading(false);
+				toast.error("Quantity can not be 0 or less than 0", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				return; // Stop further execution
 			}
 			if (quantity > dataStock.stocks) {
+				setIsLoading(false);
 				toast.error(
-					"Quantity requested is more than what is available"
+					"Quantity requested is more than what is available",
+					{
+						style: {
+							backgroundColor: "var(--background)",
+							color: "var(--text)",
+						},
+					}
 				);
 				return; // Stop further execution
 			}
@@ -101,18 +121,35 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 				warehouse_id_from,
 				warehouse_id_to,
 			};
+
 			const accessToken = localStorage.getItem("accessToken");
-			const { data } = await axiosInstance(accessToken).post(
+			const addMutation = await axiosInstance(accessToken).post(
 				`stocks/mutation`,
 				dataToSend
 			);
+
+			if (addMutation.data.isError) {
+				setIsLoading(false);
+				toast.error(addMutation.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				return;
+			}
+
+			toast.success(addMutation.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
+			onOpenChange();
 			setIsLoading(false);
-			window.location.reload(false);
-			return;
 		} catch (error) {
 			console.log(error);
-		} finally {
-			setIsLoading(false);
 		}
 	};
 
@@ -244,11 +281,11 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 									<div className="modal-footer pt-4">
 										<Button
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											color="primary"
 											className="text-center"
 											fullWidth
 											type="submit"
-											// onPress={() => onClose}
 										>
 											<span className="font-bold text-black">
 												Create Request

@@ -10,10 +10,14 @@ const {
 	requestPassword,
 	changePassword,
 	updateData,
-	getAllData,
+	getAllDataUser,
+	getAllDataAdmin,
+	createAdmin,
+	updateDataAdmin,
+	deleteDataAdmin,
+	requestPasswordByAdmin,
 } = require("./../services/usersService");
 const respHandler = require("./../utils/respHandler");
-const e = require("express");
 
 module.exports = {
 	register: async (req, res, next) => {
@@ -102,9 +106,97 @@ module.exports = {
 			next(error);
 		}
 	},
+	uploadProfilePicture: async (req, res, next) => {
+		try {
+			const { id } = req.dataToken;
+			const fileImage = req.file;
+
+			await db.user.update(
+				{
+					profile_picture: `public/profile-pictures/${fileImage.filename}`,
+				},
+				{ where: { id } }
+			);
+
+			respHandler(res, "Upload profile picture success", null, 201);
+		} catch (error) {
+			next(error);
+		}
+	},
 	getAllUser: async (req, res, next) => {
 		try {
-			const result = await getAllData();
+			const result = await getAllDataUser(req.query);
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	getAllAdmin: async (req, res, next) => {
+		try {
+			const result = await getAllDataAdmin(req.query);
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	registAdmin: async (req, res, next) => {
+		try {
+			const getUsername = await createAdmin(req.body);
+			if (getUsername.message) {
+				respHandler(res, getUsername.message, null, 200, true);
+			} else {
+				respHandler(res, "Register Successed");
+			}
+		} catch (error) {
+			console.log(error);
+			next(error);
+		}
+	},
+	updateAdminData: async (req, res, next) => {
+		try {
+			const result = await updateDataAdmin(req.body);
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	deleteAdminData: async (req, res, next) => {
+		try {
+			const result = await deleteDataAdmin(req.params);
+			// console.log(req.params);
+			respHandler(
+				res,
+				result.message,
+				result.data ? result.data : null,
+				null,
+				result.isError
+			);
+		} catch (error) {
+			next(error);
+		}
+	},
+	reqChangePassByAdmin: async (req, res, next) => {
+		try {
+			const result = await requestPasswordByAdmin(req.params);
+			// console.log(req.params);
 			respHandler(
 				res,
 				result.message,

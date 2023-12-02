@@ -38,7 +38,12 @@ const OrderAction = () => {
 		if (role === "") {
 			navigate("/login");
 		} else if (status === "unverified") {
-			toast.error("Must verify your email first!");
+			toast.error("Must verify your email first!", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 		} else {
 			try {
 				const result = await dispatch(
@@ -67,6 +72,11 @@ const OrderAction = () => {
 				setSelectedAmount(selectedAmount + 1);
 			}
 		}
+	};
+
+	const handleQuantityInput = (e) => {
+		const inputValue = parseInt(e.target.value, 10);
+		setSelectedAmount(isNaN(inputValue) ? 1 : Math.min(inputValue, stocks));
 	};
 
 	useEffect(() => {
@@ -116,16 +126,20 @@ const OrderAction = () => {
 										name="quantity"
 										size="sm"
 										value={selectedAmount}
+										onChange={handleQuantityInput}
 										min={1}
-										max={99999}
-										className="text-text w-full"
+										max={200}
+										isDisabled={!stocks}
+										className="text-text w-full min-w-[72px]"
 									/>
 									<Button
 										isIconOnly
 										color="primary"
 										size="sm"
 										variant="light"
-										isDisabled={selectedAmount >= stocks}
+										isDisabled={
+											selectedAmount >= stocks || !stocks
+										}
 										radius="full"
 										onClick={() => {
 											onChangeAmount("plus");
@@ -163,13 +177,19 @@ const OrderAction = () => {
 								<Button
 									fullWidth
 									color="primary"
-									disabled={!stocks}
+									isDisabled={!stocks}
 									onClick={() => handleOrder()}
 								>
-									<span className="text-black font-bold text-base flex items-center gap-2">
-										<span className="text-xl">+</span>
-										<span>Add to cart</span>
-									</span>
+									{stocks ? (
+										<span className="text-black font-bold text-base flex items-center gap-2">
+											<span className="text-xl">+</span>
+											<span>Add to cart</span>
+										</span>
+									) : (
+										<span className="text-black font-bold text-base flex items-center gap-2">
+											Out of stock
+										</span>
+									)}
 								</Button>
 							</div>
 						</div>

@@ -98,7 +98,10 @@ module.exports = {
 			}
 
 			const dataProducts = await db.product.findAll(baseQuery);
-			const count = await db.product.count(baseQuery);
+			const count = await db.product.count({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
 			const productIds = dataProducts.map((product) => product.id);
 
 			const dataStocks = await db.stock.findAll({
@@ -233,8 +236,6 @@ module.exports = {
 					"quantity_change",
 					"type",
 					"createdAt",
-					"user_id",
-					"stock_mutation_id",
 				],
 				include: [
 					{
@@ -266,7 +267,9 @@ module.exports = {
 				};
 			}
 
-			const count = await db.stock_history.count(baseQuery);
+			const count = await db.stock_history.count({
+				where: baseQuery.where,
+			});
 
 			return {
 				message: "Get stock change log success",
@@ -287,7 +290,6 @@ module.exports = {
 					exclude: ["updatedAt", "deletedAt", "warehouse_id_from"],
 				},
 				include: [
-					// { model: db.user, as: "admin_from" },
 					{
 						model: db.product,
 						attributes: ["id", "product_name"],
@@ -316,7 +318,10 @@ module.exports = {
 				baseQuery.where = { warehouse_id_to: warehouse, status };
 			}
 			const dataMutation = await db.stock_mutation.findAll(baseQuery);
-			const count = await db.stock_mutation.count(baseQuery);
+			const count = await db.stock_mutation.count({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
 			return {
 				message: "Get incoming mutation success",
 				data: { count, mutations: dataMutation },
@@ -365,7 +370,10 @@ module.exports = {
 				baseQuery.where = { warehouse_id_from: warehouse, status };
 			}
 			const dataMutation = await db.stock_mutation.findAll(baseQuery);
-			const count = await db.stock_mutation.count(baseQuery);
+			const count = await db.stock_mutation.count({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
 			return {
 				message: "Get outgoing mutation success",
 				data: { count, mutations: dataMutation },

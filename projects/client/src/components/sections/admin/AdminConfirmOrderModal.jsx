@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
 	Button,
 	Modal,
@@ -10,20 +10,30 @@ import {
 } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminConfirmOrderModal = ({ orderId }) => {
 	const token = localStorage.getItem("accessToken");
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const [isLoading, setIsLoading] = useState(false);
 
 	const onConfirmOrder = async () => {
 		try {
+			setIsLoading(true);
 			await axiosInstance(token).post(
 				`orders/admin/confirm-order/${orderId}`
 			);
 
-			toast.success("Confirm Order Success");
+			toast.success("Confirm Order Success", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
-			window.location.reload(false);
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 		} catch (error) {
 			console.log(error);
 		}
@@ -53,8 +63,9 @@ const AdminConfirmOrderModal = ({ orderId }) => {
 									<p className="font-medium">No</p>
 								</Button>
 								<Button
+									isLoading={isLoading}
+									spinner={<MySpinner />}
 									className="bg-primary-500"
-									onPress={onClose}
 									onClick={onConfirmOrder}
 								>
 									<p className="font-medium text-black">

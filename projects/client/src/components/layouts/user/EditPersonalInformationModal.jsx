@@ -4,12 +4,9 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalBody,
-	ModalFooter,
 	Button,
 	useDisclosure,
-	Checkbox,
 	Input,
-	Link,
 	Tooltip,
 	Select,
 	SelectItem,
@@ -20,6 +17,8 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { axiosInstance } from "../../../lib/axios";
 import { OnCheckIsLogin } from "../../../redux/features/users";
+import MySpinner from "../../uis/Spinners/Spinner";
+import toast from "react-hot-toast";
 
 export default function App() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -29,6 +28,7 @@ export default function App() {
 	const dispatch = useDispatch();
 
 	const [selectedGender, setSelectedGender] = useState(null);
+	const [selectedBirth, setSelectedBirth] = useState(null);
 	const arrGender = [
 		{ value: "Male", label: "Male" },
 		{ value: "Female", label: "Female" },
@@ -39,6 +39,11 @@ export default function App() {
 		formik.setFieldValue("gender", selecGen);
 		console.log(selecGen);
 	};
+	const handleBirthChange = (selecGen) => {
+		setSelectedBirth(selecGen);
+		formik.setFieldValue("birth_date", selecGen);
+		console.log(selecGen);
+	};
 
 	const formik = useFormik({
 		initialValues: {
@@ -47,39 +52,62 @@ export default function App() {
 			gender: gender,
 		},
 		onSubmit: async (values) => {
-			// onSubmitEdit(values);
-			const updateData = await axiosInstance(accessToken).patch(
-				"/users/personalData",
-				values
-			);
-			console.log(updateData);
-			dispatch(OnCheckIsLogin());
+			try {
+				setIsLoading(true);
+
+				await axiosInstance(accessToken).patch(
+					"/users/personalData",
+					values
+				);
+
+				toast.success("Biodata updated successfully", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+
+				setIsLoading(false);
+				onOpenChange();
+
+				dispatch(OnCheckIsLogin());
+			} catch (error) {
+				setIsLoading(false);
+
+				toast.error("Failed to update the biodata", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+
+				console.log(error);
+			}
 		},
 		validationSchema: yup.object().shape({
 			username: yup.string().required(),
 			birth_date: yup.string().required(),
-			// gender: yup.string().required(),
 		}),
 	});
 
 	const resetFrom = () => {
 		formik.setValues({
 			username: username || "",
-			birth_date: birth_date || "",
+			birth_date: selectedBirth || "",
 			gender: selectedGender || "",
 		});
 	};
 
 	useEffect(() => {
 		setSelectedGender(gender);
+		setSelectedBirth(birth_date);
 		formik.setValues({
 			username: username || "",
-			birth_date: birth_date || "",
+			birth_date: selectedBirth || "",
 			gender: selectedGender || "",
 		});
 		console.log(typeof gender);
 		console.log(selectedGender);
-		// gender ? setSelectedGender(gender):
 	}, [username, birth_date, gender]);
 
 	return (
@@ -134,10 +162,17 @@ export default function App() {
 											radius="sm"
 											size="lg"
 											placeholder="a"
-											defaultValue={"Warehouse 1"}
+											onChange={(e) =>
+												handleBirthChange(
+													e.target.value
+												)
+											}
 											isRequired
-											value={formik.values.birth_date}
-											onChange={formik.handleChange}
+											defaultValue={
+												selectedBirth
+													? [selectedBirth]
+													: ""
+											}
 										/>
 									</div>
 									<div className="form-control">
@@ -158,7 +193,7 @@ export default function App() {
 											selectedKeys={
 												selectedGender
 													? [selectedGender]
-													: ""
+													: null
 											}
 										>
 											{arrGender.map((value, index) => (
@@ -174,12 +209,11 @@ export default function App() {
 									<div className="modal-footer pt-4">
 										<Button
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											color="primary"
 											className="text-center"
 											fullWidth
 											type="submit"
-											// onClick={formik.handleSubmit}
-											onPress={onClose}
 										>
 											<span className="font-bold text-black">
 												Save changes

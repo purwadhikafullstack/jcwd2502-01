@@ -15,9 +15,9 @@ module.exports = {
 				year,
 			} = query;
 
-			const currentDate = new Date();
-			const defaultYear = currentDate.getFullYear();
-			const defaultMonth = currentDate.getMonth() + 1;
+			// const currentDate = new Date();
+			// const defaultYear = currentDate.getFullYear();
+			// const defaultMonth = currentDate.getMonth() + 1;
 
 			if (idWarehouse && idWarehouse !== warehouse)
 				return {
@@ -115,15 +115,16 @@ module.exports = {
 						attributes: ["warehouse_name"],
 					},
 				],
-				// where: {
-				// 	status: "6",
-				// },
+				where: {
+					status: "5",
+				},
 				// order: orderOptions,
 			};
 
 			if (warehouse) {
 				orderInclude.where = {
 					// status:"5",
+					...orderInclude.where,
 					warehouse_id: warehouse,
 				};
 			}
@@ -146,20 +147,21 @@ module.exports = {
 						],
 					},
 				],
-				where: {
-					// status: "6",
-					[Op.and]: Sequelize.literal(
-						`MONTH(order.createdAt) = ${
-							month || defaultMonth
-						} AND YEAR(order.createdAt)= ${year || defaultYear}`
-					),
-				},
 				order: orderOptions,
 				limit: 12,
 			};
 
 			if (offset) {
 				baseQuery2.offset = Number(offset);
+			}
+
+			if (month && year) {
+				baseQuery2.where = {
+					...baseQuery2.where,
+					[Op.and]: Sequelize.literal(
+						`MONTH(order.createdAt) = ${month} AND YEAR(order.createdAt)= ${year}`
+					),
+				};
 			}
 
 			if (productIds.length) {
@@ -170,8 +172,11 @@ module.exports = {
 			}
 
 			const dataOrder = await db.order_detail.findAll(baseQuery2);
-			const count = await db.order_detail.count(baseQuery2);
-			console.log(dataOrder);
+			const count = await db.order_detail.count({
+				where: baseQuery2.where,
+				include: baseQuery2.include,
+			});
+
 			return {
 				message: "Get order_detail data success",
 				data: { count, order: dataOrder },
@@ -191,7 +196,15 @@ module.exports = {
 				month,
 				year,
 			} = query;
-
+			console.log(
+				">>>> INII",
+				warehouse,
+				idWarehouse,
+				typeof warehouse,
+				typeof idWarehouse,
+				idWarehouse !== warehouse,
+				"1" !== null
+			);
 			if (idWarehouse && idWarehouse !== warehouse) {
 				return {
 					isError: true,
@@ -209,7 +222,7 @@ module.exports = {
 
 			const currentDate = new Date();
 			const defaultYear = currentDate.getFullYear();
-			const defaultMonth = currentDate.getMonth() + 1;
+			const defaultMonth = currentDate.getMonth();
 
 			// const selectedAttributes = ["id", "product_name", "product_price"];
 
@@ -244,7 +257,7 @@ module.exports = {
 									"product_name",
 									"product_price",
 								],
-								include: [
+								lude: [
 									{
 										model: db.product_image,
 										attributes: ["id", "image"],
@@ -256,19 +269,23 @@ module.exports = {
 					},
 				],
 				where: {
-					// status: "6",
-					[Op.and]: Sequelize.literal(
-						`MONTH(order.createdAt) = ${
-							month || defaultMonth
-						} AND YEAR(order.createdAt)= ${year || defaultYear}`
-					),
+					status: "5",
 				},
 				order: orderOptions,
-				limit: 15,
+				limit: 12,
 			};
 
 			if (warehouse) {
 				baseQuery.where.warehouse_id = warehouse;
+			}
+
+			if (month && year) {
+				baseQuery.where = {
+					...baseQuery.where,
+					[Op.and]: Sequelize.literal(
+						`MONTH(order.createdAt) = ${month} AND YEAR(order.createdAt)= ${year}`
+					),
+				};
 			}
 
 			if (search) {
@@ -281,7 +298,8 @@ module.exports = {
 				baseQuery.offset = Number(offset);
 			}
 			const getOrder = await db.order.findAll(baseQuery);
-			const count = await db.order.count();
+			console.log(getOrder);
+			const count = await db.order.count({ where: baseQuery.where });
 			return {
 				data: { count, order: getOrder },
 			};
@@ -294,8 +312,6 @@ module.exports = {
 			const {
 				warehouse,
 				search,
-				category,
-				brand,
 				orderField,
 				orderDirection,
 				offset,
@@ -319,10 +335,6 @@ module.exports = {
 
 			const selectedAttributes = ["id", "category_type", "createdAt"];
 
-			const currentDate = new Date();
-			const defaultYear = currentDate.getFullYear();
-			const defaultMonth = currentDate.getMonth() + 1;
-			console.log(defaultMonth);
 			const orderOptions = [];
 			if (orderField && orderDirection) {
 				orderOptions.push([orderField, orderDirection]);
@@ -352,47 +364,51 @@ module.exports = {
 						Sequelize.fn("SUM", Sequelize.col("quantity")),
 						"total_items",
 					],
-					// [
-					// 	Sequelize.fn(
-					// 		"SUM",
-					// 		Sequelize.col("quantity") *
-					// 			Number(Sequelize.col("checked_out_price"))
-					// 	),
-					// 	"total_sales",
-					// ],
+					"quantity",
 					[Sequelize.literal("order.warehouse_id"), "warehouse_id"],
 					[Sequelize.literal("product.category_id"), "category_id"],
 				],
 				include: [
 					{
 						model: db.product,
-						attributes: [],
+						attributes: ["product_name"],
 					},
 					{
 						model: db.order,
-						attributes: [],
+						attributes: ["status", "invoice"],
+						where: {
+							status: "5",
+						},
 					},
 				],
-				where: {
-					[Op.and]: Sequelize.literal(
-						`MONTH(order_detail.createdAt) = ${
-							month || defaultMonth
-						} AND YEAR(order_detail.createdAt)= ${
-							year || defaultYear
-						}`
-					),
-				},
+				// where: {
+				// 	status: Sequelize.literal(`order.status= 5`),
+				// },
 				group: ["product.category_id"],
 			};
 
 			if (warehouse) {
 				getTotalTransaction.include[1].where = {
+					...getTotalTransaction.include[1].where,
 					warehouse_id: warehouse,
 				};
 			}
 
+			if (month && year) {
+				getTotalTransaction.where = {
+					...getTotalTransaction.where,
+					[Op.and]: Sequelize.literal(
+						`MONTH(order.createdAt) = ${month} AND YEAR(order.createdAt)= ${year}`
+					),
+				};
+			}
+
 			const getData = await db.category.findAll(baseQuery);
-			const getCountData = await db.category.count(baseQuery);
+			const getCountData = await db.category.count({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
+
 			const getDataTransaction = await db.order_detail.findAll(
 				getTotalTransaction
 			);
@@ -419,7 +435,11 @@ module.exports = {
 			console.log(mergedData);
 
 			return {
-				data: { count: getCountData, dataBrand: mergedData },
+				data: {
+					count: getCountData,
+					dataBrand: mergedData,
+					test: getDataTransaction,
+				},
 			};
 		} catch (error) {
 			return error;
@@ -452,9 +472,9 @@ module.exports = {
 					data: null,
 				};
 			}
-			const currentDate = new Date();
-			const defaultYear = currentDate.getFullYear();
-			const defaultMonth = currentDate.getMonth() + 1;
+			// const currentDate = new Date();
+			// const defaultYear = currentDate.getFullYear();
+			// const defaultMonth = currentDate.getMonth() + 1;
 			const selectedAttributes = ["id", "brand_name"];
 
 			const orderOptions = [];
@@ -495,28 +515,35 @@ module.exports = {
 					{
 						model: db.order,
 						attributes: [],
+						where: {
+							status: "5",
+						},
 					},
 				],
-				where: {
-					[Op.and]: Sequelize.literal(
-						`MONTH(order_detail.createdAt) = ${
-							month || defaultMonth
-						} AND YEAR(order_detail.createdAt)= ${
-							year || defaultYear
-						}`
-					),
-				},
 				group: ["product.brand_id"],
 			};
 
 			if (warehouse) {
 				getTotalBrand.include[1].where = {
+					...getTotalBrand.include[1].where,
 					warehouse_id: warehouse,
 				};
 			}
 
+			if (month && year) {
+				getTotalBrand.where = {
+					...getTotalBrand.where,
+					[Op.and]: Sequelize.literal(
+						`MONTH(order.createdAt) = ${month} AND YEAR(order.createdAt)= ${year}`
+					),
+				};
+			}
+
 			const getBrand = await db.brand.findAll(baseQuery);
-			const getCountData = await db.brand.count(baseQuery);
+			const getCountData = await db.brand.count({
+				where: baseQuery.where,
+				include: baseQuery.include,
+			});
 			const getDataTransaction = await db.order_detail.findAll(
 				getTotalBrand
 			);

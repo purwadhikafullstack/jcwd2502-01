@@ -18,6 +18,7 @@ import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
 import { IoAdd } from "react-icons/io5";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminCreateNewWarehouseModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -38,7 +39,12 @@ const AdminCreateNewWarehouseModal = () => {
 			setIsLoading(true);
 			const { name, province, city, address } = data;
 			if (!name || !province || !city || !address) {
-				toast.error("Please fill out all the form");
+				toast.error("Please fill out all the form", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				return;
 			}
 
@@ -50,8 +56,31 @@ const AdminCreateNewWarehouseModal = () => {
 			};
 
 			const accessToken = localStorage.getItem("accessToken");
-			await axiosInstance(accessToken).post(`warehouses`, dataToSend);
-			window.location.reload(false);
+			const addWarehouse = await axiosInstance(accessToken).post(
+				`warehouses`,
+				dataToSend
+			);
+			if (addWarehouse.data.isError) {
+				toast.error(addWarehouse.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				setIsLoading(false);
+				return;
+			}
+
+			toast.success(addWarehouse.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 			setIsLoading(false);
 		} catch (error) {
 			console.log(error);
@@ -73,7 +102,11 @@ const AdminCreateNewWarehouseModal = () => {
 	const renderProvincesOption = () => {
 		return provinces?.map((province) => {
 			return (
-				<SelectItem key={province.id} value={province.province}>
+				<SelectItem
+					onClick={() => handleProvince(province.id)}
+					key={province.id}
+					value={province.province}
+				>
 					{province.province}
 				</SelectItem>
 			);
@@ -103,7 +136,11 @@ const AdminCreateNewWarehouseModal = () => {
 	const renderCitiesOption = () => {
 		return cities?.map((city) => {
 			return (
-				<SelectItem key={city.id} value={city.id}>
+				<SelectItem
+					onClick={() => setCity(city.id)}
+					key={city.id}
+					value={city.id}
+				>
 					{`${city.type} ${city.city_name}`}
 				</SelectItem>
 			);
@@ -150,6 +187,14 @@ const AdminCreateNewWarehouseModal = () => {
 						placement={matches.medium ? "center" : "bottom"}
 						scrollBehavior="inside"
 						size={matches.medium ? "2xl" : "full"}
+						onClose={() => {
+							setSelectedProvince(null);
+							setSelectedCity(null);
+							setName("");
+							setAddress("");
+							setProvince(null);
+							setCity(null);
+						}}
 					>
 						<ModalContent>
 							{(onClose) => (
@@ -170,8 +215,7 @@ const AdminCreateNewWarehouseModal = () => {
 													variant="bordered"
 													radius="sm"
 													size="lg"
-													placeholder="Warehouse One"
-													defaultValue={"Warehouse 1"}
+													placeholder="Warehouse Name"
 													isRequired
 													onChange={(e) =>
 														setName(e.target.value)
@@ -186,11 +230,6 @@ const AdminCreateNewWarehouseModal = () => {
 													variant="bordered"
 													radius="sm"
 													size="lg"
-													onChange={(e) =>
-														handleProvince(
-															e.target.value
-														)
-													}
 													placeholder="Select a province"
 													isRequired
 												>
@@ -205,14 +244,22 @@ const AdminCreateNewWarehouseModal = () => {
 													variant="bordered"
 													radius="sm"
 													size="lg"
-													onChange={(e) =>
-														setCity(e.target.value)
+													placeholder={
+														"Select a city"
 													}
-													placeholder="Select a city"
 													isRequired
+													isDisabled={
+														!selectedProvince
+													}
 												>
 													{renderCitiesOption()}
 												</Select>
+												{!selectedProvince && (
+													<p className="mt-2 opacity-50">
+														* Please select a
+														province first
+													</p>
+												)}
 											</div>
 											<div className="form-control">
 												<Textarea
@@ -238,6 +285,7 @@ const AdminCreateNewWarehouseModal = () => {
 											color="primary"
 											className="text-center mb-4"
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											fullWidth
 											onPress={() => onCreate(data)}
 										>

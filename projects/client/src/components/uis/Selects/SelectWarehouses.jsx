@@ -1,4 +1,3 @@
-
 import { Select, SelectItem } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,10 +23,6 @@ const SelectWarehouses = () => {
 	useEffect(() => {
 		fetchWarehouses();
 	}, []);
-	useEffect(() => {
-		console.log(">>", role);
-		console.log(warehouse);
-	}, [role, warehouse]);
 
 	return (
 		<Select
@@ -36,7 +31,7 @@ const SelectWarehouses = () => {
 			className="min-w-[240px]"
 			labelPlacement="outside-left"
 			placeholder="Select warehouse"
-			selectedKeys={warehouse ? [String(warehouse)] : null}
+			selectedKeys={warehouse ? [String(warehouse)] : []}
 			isDisabled={role !== "super"}
 		>
 			{(warehouse) => (
@@ -53,4 +48,3 @@ const SelectWarehouses = () => {
 };
 
 export default SelectWarehouses;
-

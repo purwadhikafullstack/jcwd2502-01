@@ -12,7 +12,7 @@ module.exports = {
 					is_default: true,
 					recipient_name: "andrean",
 					user_id: 1,
-					address: "Jalan something",
+					address: "Jalan Menceng No. 9",
 					province_id: "6",
 					city_id: "151",
 					latitude: "-6.161569",

@@ -30,7 +30,7 @@ const SelectWarehouseInOrderPage = () => {
 			className="min-w-[240px]"
 			labelPlacement="outside-left"
 			placeholder="Select warehouse"
-			selectedKeys={warehouse ? [String(warehouse)] : null}
+			selectedKeys={warehouse ? [String(warehouse)] : []}
 		>
 			{(warehouse) => (
 				<SelectItem

@@ -20,8 +20,14 @@ import { onLogout } from "../../../redux/features/users";
 import SelectLang from "../../uis/Selects/SelectLang";
 
 const NavigationBarMenu = () => {
-	const { username, email, role } = useSelector((state) => state.user);
+	const { username, email, role, profileUser } = useSelector(
+		(state) => state.user
+	);
 	const count = useSelector((state) => state.carts.count);
+
+	const profilePicture = `${
+		process.env.REACT_APP_IMAGE_API
+	}${profileUser?.substring(7)}`;
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -58,13 +64,15 @@ const NavigationBarMenu = () => {
 						<Avatar
 							className="w-20 h-20 mr-4 text-large"
 							color="secondary"
-							src={DefaultAvatar}
+							src={profileUser ? profilePicture : DefaultAvatar}
 						/>
-						<div className="user-id">
-							<h1 className="user-username font-bold text-[18px] leading-3">
+						<div className="user-id max-w-[164px]">
+							<h1 className="user-username font-bold text-[18px] max-w-[164px] leading-3 truncate">
 								{username}
 							</h1>
-							<h3 className="user-email text-body-md">{email}</h3>
+							<h3 className="user-email text-body-md truncate">
+								{email}
+							</h3>
 							<Chip className="bg-green-600" size="sm">
 								<span className="text-label-md text-white uppercase">{`verified`}</span>
 							</Chip>
@@ -123,7 +131,7 @@ const NavigationBarMenu = () => {
 						{role && (
 							<Chip size="sm" className="bg-red-500">
 								<span className="text-label-md text-white">
-									{count}
+									{count || 0}
 								</span>
 							</Chip>
 						)}

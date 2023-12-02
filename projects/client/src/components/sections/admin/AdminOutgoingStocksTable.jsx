@@ -161,7 +161,11 @@ const AdminOutgoingStocksTable = () => {
 					</p>
 				);
 			case "status":
-				return <Chip>{request?.status}</Chip>;
+				return (
+					<Chip>
+						<span className="capitalize">{request?.status}</span>
+					</Chip>
+				);
 			case "action":
 				return (
 					request?.status === "pending" && (
@@ -170,12 +174,10 @@ const AdminOutgoingStocksTable = () => {
 								onClick={() =>
 									handleAction("canceled", request.id)
 								}
-								variant="flat"
-								className="bg-primary-600"
+								variant="faded"
+								color="danger"
 							>
-								<span className="font-medium text-white">
-									CANCEL
-								</span>
+								<span className="font-medium">Cancel</span>
 							</Button>
 						</div>
 					)

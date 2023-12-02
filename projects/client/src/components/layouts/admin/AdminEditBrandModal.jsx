@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminEditBrandModal = ({
 	handleOpenEditBrandModal,
@@ -29,7 +30,12 @@ const AdminEditBrandModal = ({
 			const { brand_name } = values;
 
 			if (!brand_name) {
-				toast.error("Please fill in all form fields");
+				toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return; // Stop further execution
 			}
@@ -46,22 +52,26 @@ const AdminEditBrandModal = ({
 			);
 
 			if (updateBrand.data.isError) {
-				toast.error(updateBrand.data.message);
+				toast.error(updateBrand.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return;
 			}
 
-			// if (updateBrand.status === 201) {
-			// 	toast.error("Warehouse updated successfully");
+			toast.success(updateBrand.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
-			// 	setTimeout(() => {
-			// 		window.location.reload(false);
-			// 	}, 1500);
-			// } else {
-			// 	toast.error("Error updating warehouse");
-			// }
-
-			window.location.reload(false);
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 			setIsLoading(false);
 			return;
 		} catch (error) {
@@ -129,6 +139,7 @@ const AdminEditBrandModal = ({
 								<div className="modal-footer pt-4">
 									<Button
 										isLoading={isLoading}
+										spinner={<MySpinner />}
 										color="primary"
 										className="text-center"
 										fullWidth

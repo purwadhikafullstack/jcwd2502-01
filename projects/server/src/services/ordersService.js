@@ -6,6 +6,9 @@ const Sequelize = require("sequelize");
 const { updateStock, createMutation } = require("../utils/orderUtils");
 const { findNearestWarehouses } = require("../utils/distanceUtils");
 
+const moment = require("moment");
+const schedule = require("node-schedule");
+
 module.exports = {
 	adminCancelOrderService: async (orderId) => {
 		try {
@@ -180,6 +183,32 @@ module.exports = {
 				await updateStock(userOrderItems, selectedWarehouseId, false);
 				return { message: "Confirm order 111111 success" };
 			}
+		} catch (error) {
+			return error;
+		}
+	},
+	adminSendingOrder: async (id) => {
+		try {
+			const checkOrder = await db.order.findByPk(id);
+
+			if (Number(checkOrder.status) === 3) {
+				await db.order.update({ status: 4 }, { where: { id } });
+
+				const scheduledDate = moment().add(7, "days").toDate();
+				schedule.scheduleJob(scheduledDate, async function () {
+					await db.order.update({ status: 5 }, { where: { id } });
+				});
+
+				return {
+					message:
+						"Order rejected successfully. If not confirmed within 7 days, it will be marked as confirmed/finished.",
+				};
+			}
+
+			return {
+				message:
+					"Unable to proceed with sending the order. The user has not completed the payment process.",
+			};
 		} catch (error) {
 			return error;
 		}

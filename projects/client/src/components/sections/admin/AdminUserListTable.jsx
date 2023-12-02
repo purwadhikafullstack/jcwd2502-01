@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
 	Table,
 	TableHeader,
@@ -15,6 +15,8 @@ import {
 import { IoTrashOutline } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { fetchUser } from "../../../redux/features/manageUser";
 
 const rows = [
 	{
@@ -67,7 +69,8 @@ const columns = [
 	},
 ];
 
-export default function App() {
+export default function AdminUserListTable() {
+	const dispatch = useDispatch();
 	const renderCell = React.useCallback((product, columnKey) => {
 		const productPrice = product?.product_price.toLocaleString("id-ID", {
 			style: "currency",
@@ -146,8 +149,35 @@ export default function App() {
 			default:
 		}
 	}, []);
+
+	// const bottomContent = React.useMemo(() => {
+	// 	return (
+	// 		<div className="py-2 px-2 flex justify-between items-center">
+	// 			<Pagination
+	// 				size="md"
+	// 				showControls
+	// 				total={totalPage ? totalPage : 1}
+	// 				page={page ? page : 0}
+	// 				color="secondary"
+	// 				variant="flat"
+	// 				className="z-0"
+	// 				onChange={(e) => {
+	// 					dispatch(setPaginationTransaction(e, (e - 1) * 15));
+	// 					window.scrollTo({ top: 0, behavior: "smooth" });
+	// 				}}
+	// 			/>
+	// 		</div>
+	// 	);
+	// }, [totalPage, page]);
+	useEffect(() => {
+		dispatch(fetchUser());
+	}, []);
 	return (
-		<Table aria-label="Example table with dynamic content">
+		<Table
+			aria-label="Example table with dynamic content"
+			// bottomContent={bottomContent}
+			// bottomContentPlacement="outside"
+		>
 			<TableHeader columns={columns}>
 				{(column) => (
 					<TableColumn key={column.key}>{column.label}</TableColumn>

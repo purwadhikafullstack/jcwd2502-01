@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminEditCategoryModal = ({
 	handleOpenEditCategoryModal,
@@ -13,21 +14,6 @@ const AdminEditCategoryModal = ({
 	categoryType,
 }) => {
 	const [isLoading, setIsLoading] = useState(false);
-
-	// useEffect(() => {
-	// 	if (warehouse) {
-	// 		formik.setValues({
-	// 			warehouse_name: warehouse.warehouse_name || "",
-	// 			warehouse_location: warehouse.warehouse_location || "",
-	// 			warehouse_address: warehouse.warehouse_address || "",
-	// 			province_id: warehouse.province.id || null,
-	// 			city_id: warehouse.city.id || null,
-	// 		});
-	// 		setSelectedProvince(warehouse.province.id);
-	// 		setSelectedCity(warehouse.city.id);
-	// 	}
-	// }, [warehouse]);
-
 	const formik = useFormik({
 		initialValues: {
 			category_type: categoryType,
@@ -43,7 +29,12 @@ const AdminEditCategoryModal = ({
 			const { category_type } = values;
 
 			if (!category_type) {
-				toast.error("Please fill in all form fields");
+				toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return; // Stop further execution
 			}
@@ -60,22 +51,27 @@ const AdminEditCategoryModal = ({
 			);
 
 			if (updateCategory.data.isError) {
-				toast.error(updateCategory.data.message);
+				toast.error(updateCategory.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				setIsLoading(false);
 				return;
 			}
 
-			// if (updateCategory.status === 201) {
-			// 	toast.error("Warehouse updated successfully");
+			toast.success(updateCategory.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
-			// 	setTimeout(() => {
-			// 		window.location.reload(false);
-			// 	}, 1500);
-			// } else {
-			// 	toast.error("Error updating warehouse");
-			// }
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 
-			window.location.reload(false);
 			setIsLoading(false);
 			return;
 		} catch (error) {
@@ -143,6 +139,7 @@ const AdminEditCategoryModal = ({
 								<div className="modal-footer pt-4">
 									<Button
 										isLoading={isLoading}
+										spinner={<MySpinner />}
 										color="primary"
 										className="text-center"
 										fullWidth

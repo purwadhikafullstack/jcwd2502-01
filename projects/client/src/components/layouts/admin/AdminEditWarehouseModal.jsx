@@ -6,6 +6,7 @@ import { IoClose } from "react-icons/io5";
 import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminEditWarehouseModal = ({
 	handleOpenEditWarehouseModal,
@@ -64,7 +65,12 @@ const AdminEditWarehouseModal = ({
 				!province_id ||
 				!city_id
 			) {
-				toast.error("Please fill in all form fields");
+				toast.error("Please fill in all form fields", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 				return; // Stop further execution
 			}
 
@@ -83,17 +89,16 @@ const AdminEditWarehouseModal = ({
 				newWarehouseData
 			);
 
-			// if (updateWarehouse.status === 201) {
-			// 	toast.error("Warehouse updated successfully");
+			toast.success(updateWarehouse.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
-			// 	setTimeout(() => {
-			// 		window.location.reload(false);
-			// 	}, 1500);
-			// } else {
-			// 	toast.error("Error updating warehouse");
-			// }
-
-			window.location.reload(false);
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 			setIsLoading(false);
 			return;
 		} catch (error) {
@@ -121,7 +126,13 @@ const AdminEditWarehouseModal = ({
 	const renderProvincesOption = () => {
 		return provinces?.map((province) => {
 			return (
-				<SelectItem key={province.id} value={province.province}>
+				<SelectItem
+					onClick={() => {
+						handleProvince(province.id);
+					}}
+					key={province.id}
+					value={province.province}
+				>
 					{province.province}
 				</SelectItem>
 			);
@@ -150,7 +161,13 @@ const AdminEditWarehouseModal = ({
 	const renderCitiesOption = () => {
 		return cities?.map((city) => {
 			return (
-				<SelectItem key={city.id} value={city.id}>
+				<SelectItem
+					onClick={() => {
+						handleCity(city.id);
+					}}
+					key={city.id}
+					value={city.id}
+				>
 					{`${city.type} ${city.city_name}`}
 				</SelectItem>
 			);
@@ -246,9 +263,6 @@ const AdminEditWarehouseModal = ({
 										variant="bordered"
 										radius="sm"
 										size="lg"
-										onChange={(e) =>
-											handleProvince(e.target.value)
-										}
 										placeholder="Select a province"
 										isRequired
 										selectedKeys={[
@@ -266,15 +280,12 @@ const AdminEditWarehouseModal = ({
 										variant="bordered"
 										radius="sm"
 										size="lg"
-										onChange={(e) =>
-											handleCity(e.target.value)
-										}
 										placeholder="Select a City"
 										isRequired
 										selectedKeys={
 											selectedCity
 												? [String(selectedCity)]
-												: ""
+												: []
 										}
 									>
 										{renderCitiesOption()}
@@ -297,6 +308,7 @@ const AdminEditWarehouseModal = ({
 								<div className="modal-footer pt-4">
 									<Button
 										isLoading={isLoading}
+										spinner={<MySpinner />}
 										color="primary"
 										className="text-center"
 										fullWidth

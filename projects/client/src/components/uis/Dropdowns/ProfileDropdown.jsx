@@ -18,8 +18,15 @@ import { Link, useNavigate } from "react-router-dom";
 import TransactionList from "../../../assets/icons/TransactionList";
 
 const ProfileDropdown = () => {
-	const { username } = useSelector((state) => state.user);
-	const { email, status, role } = useSelector((state) => state.user);
+	const { username, profileUser, email, status, role } = useSelector(
+		(state) => state.user
+	);
+
+	const firstName = username?.split(" ")[0];
+
+	const profilePicture = `${
+		process.env.REACT_APP_IMAGE_API
+	}${profileUser?.substring(7)}`;
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -36,10 +43,10 @@ const ProfileDropdown = () => {
 				<User
 					as="button"
 					avatarProps={{
-						src: DefaultAvatar,
+						src: profileUser ? profilePicture : DefaultAvatar,
 					}}
 					className="transition-transform font-bold"
-					name={`${username}`}
+					name={`${firstName}`}
 				/>
 			</DropdownTrigger>
 			<DropdownMenu aria-label="User Actions" variant="flat">
@@ -48,13 +55,13 @@ const ProfileDropdown = () => {
 						<Avatar
 							className="w-20 h-20 mr-2 text-large"
 							color="secondary"
-							src={DefaultAvatar}
+							src={profileUser ? profilePicture : DefaultAvatar}
 						/>
-						<div className="user-id">
-							<h1 className="user-username font-bold text-[18px]">
+						<div className="user-id ml-2 max-w-[164px]">
+							<h1 className="user-username font-bold text-[18px]  truncate">
 								{`${username}`}
 							</h1>
-							<h3 className="user-email text-body-md mb-2">
+							<h3 className="user-email text-body-md mb-2 truncate">
 								{`${email}`}
 							</h3>
 							{status === "unverified" ? (

@@ -12,6 +12,7 @@ import {
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
 import { IoTrashOutline } from "react-icons/io5";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const AdminDeleteWarehouseModal = ({ warehouseID }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +26,12 @@ const AdminDeleteWarehouseModal = ({ warehouseID }) => {
 				`warehouses/${warehouseId}`
 			);
 
-			toast.success("Warehouse successfully deleted");
+			toast.success("Warehouse successfully deleted", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
 
 			setTimeout(() => {
 				window.location.reload(false);
@@ -69,6 +75,7 @@ const AdminDeleteWarehouseModal = ({ warehouseID }) => {
 								</Button>
 								<Button
 									isLoading={isLoading}
+									spinner={<MySpinner />}
 									className="bg-red-600"
 									onClick={() => {
 										onDelete(warehouseID);

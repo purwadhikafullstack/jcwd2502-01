@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
 	Table,
@@ -28,6 +27,8 @@ import {
 	onClearTransaction,
 	onSearchTransaction,
 	onSortT,
+	setMonth,
+	setYear,
 } from "../../../redux/features/report";
 
 const AdminReportTransactionListTable = () => {
@@ -56,10 +57,14 @@ const AdminReportTransactionListTable = () => {
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedWarehouse = queryParams.get("warehouse");
-		const selectedSearch = queryParams.get("search");
-		const selectedOrderField = queryParams.get("orderField");
-		const selectedOrderDirection = queryParams.get("orderDirection");
-		const selectedOffset = queryParams.get("offset");
+		const selectedSearch = queryParams.get("searchTransaction");
+		const selectedOrderField = queryParams.get("orderFieldTransaction");
+		const selectedOrderDirection = queryParams.get(
+			"orderDirectionTransaction"
+		);
+		const selectedOffset = queryParams.get("offsetTransaction");
+		const selectedMonth = queryParams.get("month");
+		const selectedYear = queryParams.get("year");
 		if (selectedWarehouse) {
 			dispatch(setWarehouse(selectedWarehouse));
 		}
@@ -75,6 +80,10 @@ const AdminReportTransactionListTable = () => {
 				setPaginationTransaction(selectedPage, Number(selectedOffset))
 			);
 		}
+		if (selectedMonth && selectedYear) {
+			dispatch(setMonth(selectedMonth));
+			dispatch(setYear(selectedYear));
+		}
 	};
 
 	const formik = useFormik({
@@ -82,7 +91,15 @@ const AdminReportTransactionListTable = () => {
 		onSubmit: (values) => {
 			// Handle the search query submission here
 			dispatch(onSearchTransaction(values.searchQuery2));
-			navigate("/admin/reports?tab=transactions");
+			navigate(
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchTransaction=${
+					search !== null ? `${search}` : ""
+				}&orderFieldTransaction=${orderField}&orderDirectionTransaction=${orderDirection}&offsetTransaction=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
+			);
 		},
 	});
 
@@ -91,16 +108,6 @@ const AdminReportTransactionListTable = () => {
 		formik.handleSubmit();
 		window.scrollTo({ top: 0 });
 	};
-
-	// useEffect(() => {
-	// 	// const fetchData = async () => {
-	// 	dispatch(getTransaction());
-	// 	// };
-	// }, []);
-
-	// useEffect(() => {
-	// 	console.log(transaction);
-	// }, [transaction]);
 
 	useEffect(() => {
 		formik.setFieldValue("searchQuery2", search);
@@ -113,73 +120,91 @@ const AdminReportTransactionListTable = () => {
 			// window.location.reload();
 		}
 		navigate(
-			`/admin/reports?tab=transactions&warehouse=${
-				warehouse && `&warehouse=${warehouse}`
-			}${search && `&search=${search}`}`
+			`/admin/reports?warehouse=${
+				warehouse !== null ? `${warehouse}` : ""
+			}&searchTransaction=${
+				search !== null ? `${search}` : ""
+			}&orderFieldTransaction=${orderField}&orderDirectionTransaction=${orderDirection}&offsetTransaction=${offset}&month=${
+				month !== null ? `${month}` : ""
+			}&year=${year !== null ? `${year}` : ""}`
 		);
-		window.location.reload(false);
+		// window.location.reload(false);
 	};
 
 	useEffect(() => {
 		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
-
-		return () => {
-			dispatch(onClearTransaction());
-			dispatch(setSearchTransaction(""));
-			// dispatch(setProductsForStocks([]));
-			dispatch(setTotalPageTransaction(1));
-			dispatch(setWarehouse(null));
-			dispatch(setCountTransaction(0));
-		};
+		setOneTime(true);
+		// return () => {
+		// 	dispatch(onClearTransaction());
+		// 	dispatch(setSearchTransaction(""));
+		// 	// dispatch(setProductsForStocks([]));
+		// 	dispatch(setTotalPageTransaction(1));
+		// 	dispatch(setWarehouse(null));
+		// 	dispatch(setCountTransaction(0));
+		// };
 	}, []);
 
 	useEffect(() => {
-		// if (warehouse) {
-		// 	console.log(search);
-		// 	navigate(
-		// 		`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		// 	);
-
-		// 	dispatch(
-		// 		getTransaction(
-		// 			`?warehouse=${warehouse}&search=${search}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-		// 		)
-		// 	);
-		// } else {
-		console.log(search);
-		// if (oneTime) {
-		navigate(
-			`/admin/reports?tab=transactions&${
-				warehouse && `warehouse=${warehouse}`
-			}${
-				search && `&search=${search}`
-			}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}${
-				month && `&month=${month}`
-			}${year && `&year=${year}`}`
-		);
-
-		dispatch(
-			getTransaction(
-				`?${warehouse && `warehouse=${warehouse}`}${
-					search && `&search=${search}`
-				}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}${
-					month && `&month=${month}`
-				}${year && `&year=${year}`}`
-			)
-		);
-		// }
-		console.log(year, month);
-		// }
-	}, [orderField, orderDirection, search, page, warehouse, year, month]);
+		console.log(">>>tidak");
+		if (oneTime) {
+			console.log(">>>iniii");
+			navigate(
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchTransaction=${
+					search !== null ? `${search}` : ""
+				}&orderFieldTransaction=${orderField}&orderDirectionTransaction=${orderDirection}&offsetTransaction=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
+			);
+			console.log(
+				`/admin/reports?${warehouse ? `warehouse=${warehouse}` : ""}${
+					search && `&searchTransaction=${search}`
+				}&orderFieldTransaction=${orderField}&orderDirectionTransaction=${orderDirection}&offsetTransaction=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
+			);
+			console.log("pembatas");
+			dispatch(
+				getTransaction(
+					`?warehouse=${
+						warehouse !== null ? `${warehouse}` : ""
+					}&search=${
+						search !== null ? `${search}` : ""
+					}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}&month=${
+						month !== null ? `${month}` : ""
+					}&year=${year !== null ? `${year}` : ""}`
+				)
+			);
+			console.log(
+				`?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&search=${
+					search !== null ? `${search}` : ""
+				}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
+			);
+		}
+	}, [
+		orderField,
+		orderDirection,
+		search,
+		page,
+		warehouse,
+		year,
+		month,
+		oneTime,
+	]);
 
 	const columns = [
 		{ name: "DATE", uid: "date" },
 		{ name: "INVOICE", uid: "invoice" },
 		{ name: "RECEIPT NUMBER", uid: "receipt_number" },
 		{ name: "TOTAL AMOUNT", uid: "total_amount" },
-		{ name: "ACTION", uid: "action" },
+		// { name: "ACTION", uid: "action" },
 	];
 
 	const renderCell = React.useCallback((product, columnKey) => {
@@ -234,14 +259,14 @@ const AdminReportTransactionListTable = () => {
 						</p>
 					</div>
 				);
-			case "action":
-				return (
-					<div className="flex items-center gap-4 w-full">
-						<p className="font-bold text-base w-full">
-							{`view detail`}
-						</p>
-					</div>
-				);
+			// case "action":
+			// 	return (
+			// 		<div className="flex items-center gap-4 w-full">
+			// 			<p className="font-bold text-base w-full">
+			// 				{`view detail`}
+			// 			</p>
+			// 		</div>
+			// 	);
 			default:
 		}
 	}, []);
@@ -353,4 +378,3 @@ const AdminReportTransactionListTable = () => {
 };
 
 export default AdminReportTransactionListTable;
-

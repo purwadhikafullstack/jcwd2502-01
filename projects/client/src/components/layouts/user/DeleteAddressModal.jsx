@@ -12,6 +12,7 @@ import {
 import toast from "react-hot-toast";
 import { IoTrashOutline } from "react-icons/io5";
 import Media from "react-media";
+import MySpinner from "../../uis/Spinners/Spinner";
 
 const DeleteAddressModal = ({ addressID, handleOnDelete }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +20,12 @@ const DeleteAddressModal = ({ addressID, handleOnDelete }) => {
 
 	const onDelete = async (addressId) => {
 		setIsLoading(true);
-		toast.success("Address deleted");
+		toast.success("Address deleted", {
+			style: {
+				backgroundColor: "var(--background)",
+				color: "var(--text)",
+			},
+		});
 		handleOnDelete(addressId);
 	};
 
@@ -61,6 +67,7 @@ const DeleteAddressModal = ({ addressID, handleOnDelete }) => {
 										</Button>
 										<Button
 											isLoading={isLoading}
+											spinner={<MySpinner />}
 											className="bg-red-600"
 											onClick={() => {
 												onDelete(addressID);

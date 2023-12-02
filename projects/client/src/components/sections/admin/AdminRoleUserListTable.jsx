@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Table,
 	TableHeader,
@@ -10,198 +10,298 @@ import {
 	Chip,
 	Tooltip,
 	getKeyValue,
-	Pagination,
-	Input,
 	Button,
+	Input,
+	Pagination,
 } from "@nextui-org/react";
-import SelectWarehouses from "../../uis/Selects/SelectWarehouses";
-import SelectSortBy from "../../uis/Selects/SelectSortBy";
+import { useDispatch, useSelector } from "react-redux";
+import {
+	fetchUser,
+	onClearUser,
+	onSearchUser,
+	onSortUser,
+	setCountUser,
+	setPaginationUser,
+	setSearchUser,
+	setTotalPageUser,
+} from "../../../redux/features/manageUser";
+import { useFormik } from "formik";
+import { useLocation, useNavigate } from "react-router-dom";
+import { IoSearch } from "react-icons/io5";
+import SelectSortByUser from "../../uis/Selects/SelectSortByUser";
+import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
 
 const AdminRoleUserListTable = () => {
+	const [oneTime, setOneTime] = useState(false);
+	const dispatch = useDispatch();
+	const location = useLocation();
+	const navigate = useNavigate();
+	const user = useSelector((state) => state.manageUsers.user);
+	const {
+		countUser,
+		totalPageUser,
+		pageUser,
+		offsetUser,
+		searchUser,
+		orderDirectionUser,
+		orderFieldUser,
+	} = useSelector((state) => state.manageUsers);
+
+	const formik = useFormik({
+		initialValues: {
+			searchQueryUser: "",
+		},
+		onSubmit: (values) => {
+			dispatch(onSearchUser(values.searchQueryUser));
+			navigate(
+				`/admin/users?searchUser=${
+					searchUser !== null ? `${searchUser}` : ""
+				}&orderFieldUser=${
+					orderFieldUser !== null ? `${orderFieldUser}` : ""
+				}&orderDirectionUser=${
+					orderDirectionUser !== null ? `${orderDirectionUser}` : ""
+				}&offsetUser=${offsetUser}`
+			);
+		},
+	});
+
+	const takeFromQuery = () => {
+		const queryParams = new URLSearchParams(location.search);
+		const selectedSearch = queryParams.get("searchUser");
+		const selectedOrderField = queryParams.get("orderFieldUser");
+		const selectedOrderDirection = queryParams.get("orderDirectionUser");
+		const selectedOffset = queryParams.get("offsetUser");
+		if (selectedSearch) {
+			dispatch(onSearchUser(selectedSearch));
+		}
+		if (selectedOrderDirection && selectedOrderField) {
+			dispatch(onSortUser(selectedOrderField, selectedOrderDirection));
+		}
+		if (selectedOffset) {
+			const selectedPage = Number(selectedOffset) / 12 + 1;
+			dispatch(setPaginationUser(selectedPage, Number(selectedOffset)));
+		}
+	};
+
+	useEffect(() => {
+		takeFromQuery();
+
+		window.scrollTo({ top: 0 });
+		setOneTime(true);
+		// return () => {
+		// 	dispatch(onClearUser());
+		// 	dispatch(setSearchUser(""));
+		// 	dispatch(setTotalPageUser(1));
+		// 	dispatch(setCountUser(0));
+		// };
+	}, []);
+
+	useEffect(() => {
+		if (oneTime) {
+			navigate(
+				`/admin/users?searchUser=${
+					searchUser !== null ? `${searchUser}` : ""
+				}&orderFieldUser=${
+					orderFieldUser !== null ? `${orderFieldUser}` : ""
+				}&orderDirectionUser=${
+					orderDirectionUser !== null ? `${orderDirectionUser}` : ""
+				}&offsetUser=${offsetUser}`
+			);
+			console.log(
+				`/admin/users?searchUser=${
+					searchUser !== null ? `${searchUser}` : ""
+				}&orderFieldUser=${
+					orderFieldUser !== null ? `${orderFieldUser}` : ""
+				}&orderDirectionUser=${
+					orderDirectionUser !== null ? `${orderDirectionUser}` : ""
+				}&offsetUser=${offsetUser}`
+			);
+			dispatch(
+				fetchUser(
+					`?
+				search=${searchUser !== null ? `${searchUser}` : ""}&orderField=${
+						orderFieldUser !== null ? `${orderFieldUser}` : ""
+					}&orderDirection=${
+						orderDirectionUser !== null
+							? `${orderDirectionUser}`
+							: ""
+					}&offset=${offsetUser}`
+				)
+			);
+		}
+	}, [orderFieldUser, orderDirectionUser, searchUser, pageUser, oneTime]);
+
+	useEffect(() => {
+		// dispatch(fetchUser());
+		console.log("ini user list >>>", user);
+	}, []);
+
 	const columns = [
 		{ name: "NAME", uid: "name" },
 		{ name: "EMAIL", uid: "email" },
-		{ name: "ROLE", uid: "role" },
 		{ name: "STATUS", uid: "status" },
-		{ name: "ACTIONS", uid: "actions" },
+		// { name: "ACTIONS", uid: "actions" },
 	];
 
-	const users = [
-		{
-			id: 1,
-			name: "Tony Reichert",
-			role: "CEO",
-			team: "Management",
-			status: "active",
-			age: "29",
-			avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-			email: "tony.reichert@example.com",
-		},
-		{
-			id: 2,
-			name: "Zoey Lang",
-			role: "Technical Lead",
-			team: "Development",
-			status: "paused",
-			age: "25",
-			avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-			email: "zoey.lang@example.com",
-		},
-		{
-			id: 3,
-			name: "Jane Fisher",
-			role: "Senior Developer",
-			team: "Development",
-			status: "active",
-			age: "22",
-			avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-			email: "jane.fisher@example.com",
-		},
-		{
-			id: 4,
-			name: "William Howard",
-			role: "Community Manager",
-			team: "Marketing",
-			status: "vacation",
-			age: "28",
-			avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-			email: "william.howard@example.com",
-		},
-		{
-			id: 5,
-			name: "Kristen Copper",
-			role: "Sales Manager",
-			team: "Sales",
-			status: "active",
-			age: "24",
-			avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-			email: "kristen.cooper@example.com",
-		},
-	];
+	const handleSubmitSearch = (e) => {
+		e.preventDefault();
+		formik.handleSubmit();
+		window.scrollTo({ top: 0 });
+	};
 
-	const renderCell = React.useCallback((user, columnKey) => {
-		const cellValue = user[columnKey];
+	useEffect(() => {
+		formik.setFieldValue("searchQueryUser", searchUser);
+	}, [searchUser]);
+
+	const clear = async () => {
+		await dispatch(onClearUser());
+		navigate(
+			`/admin/users?searchUser=${
+				searchUser !== null ? `${searchUser}` : ""
+			}&orderFieldUser=${
+				orderFieldUser !== null ? `${orderFieldUser}` : ""
+			}&orderDirectionUser=${
+				orderDirectionUser !== null ? `${orderDirectionUser}` : ""
+			}&offsetUser=${offsetUser}`
+		);
+	};
+
+	console.log(user);
+	const renderCell = React.useCallback((users, columnKey) => {
+		const profilePicture = `${
+			process.env.REACT_APP_IMAGE_API
+		}${users?.profile_picture?.substring(7)}`;
 
 		switch (columnKey) {
 			case "name":
 				return (
 					<User
-						avatarProps={{ radius: "full", src: user.avatar }}
-						name={cellValue}
+						avatarProps={{
+							radius: "full",
+							src: users?.profile_picture
+								? profilePicture
+								: DefaultAvatar,
+						}}
+						name={users?.username}
 					>
-						{user.email}
+						{users?.username}
 					</User>
 				);
 			case "email":
-				return <p className="font-medium">{user.email}</p>;
-			case "role":
-				return (
-					<div className="flex flex-col">
-						<p className="text-bold text-sm capitalize">
-							{cellValue}
-						</p>
-					</div>
-				);
+				return <p className="font-medium">{users?.email}</p>;
 			case "status":
 				return (
 					<Chip className="capitalize" size="sm" variant="flat">
-						{cellValue}
+						{users?.status}
 					</Chip>
 				);
-			case "actions":
-				return (
-					<div className="relative flex items-center gap-2">
-						<Button variant="faded" color="danger">
-							Delete User
-						</Button>
-					</div>
-				);
 			default:
-				return cellValue;
 		}
 	}, []);
 
-	const bottomContent = React.useMemo(
-		() => {
-			return (
-				<div className="py-2 px-2 flex justify-between items-center">
-					<Pagination
-						size="md"
-						showControls
-						// total={totalPage ? totalPage : 1}
-						// page={page ? page : 0}
-						color="secondary"
-						variant="flat"
-						className="z-0"
-						// onChange={(e) => {
-						// 	dispatch(setPagination(e, (e - 1) * 12));
-						// 	window.scrollTo({ top: 0, behavior: "smooth" });
-						// }}
-					/>
-				</div>
-			);
-		},
-		[
-			// totalPage,
-			// page
-		]
-	);
+	const bottomContent = React.useMemo(() => {
+		return (
+			<div className="py-2 px-2 flex justify-between items-center">
+				<Pagination
+					size="md"
+					showControls
+					total={totalPageUser ? totalPageUser : 1}
+					page={pageUser ? pageUser : 0}
+					color="secondary"
+					variant="flat"
+					className="z-0"
+					onChange={(e) => {
+						dispatch(setPaginationUser(e, (e - 1) * 12));
+						window.scrollTo({ top: 0, behavior: "smooth" });
+					}}
+				/>
+			</div>
+		);
+	}, [totalPageUser, pageUser]);
+
+	// useEffect(() => {
+	// 	dispatch(fetchUser());
+	// }, []);
 
 	return (
 		<>
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
-					<form
-						className="w-[30%]"
-						// onSubmit={handleSubmitSearch}
-					>
+					<form className="w-[30%]" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
-							placeholder="Search for user by name"
+							placeholder="Search for product by name"
 							isClearable
-							// onClear={() => dispatch(setSearch(""))}
-							// startContent={<IoSearch opacity={".5"} />}
+							onClear={() => dispatch(setSearchUser(""))}
+							startContent={<IoSearch opacity={".5"} />}
 							variant="bordered"
 							fullWidth
-							// onChange={(e) =>
-							// 	formik.setFieldValue(
-							// 		"searchQuery",
-							// 		e.target.value
-							// 	)
-							// }
-							// value={formik.values.searchQuery}
+							onChange={(e) =>
+								formik.setFieldValue(
+									"searchQueryUser",
+									e.target.value
+								)
+							}
+							value={formik.values.searchQueryUser}
 						/>
 					</form>
+					<div className="flex gap-3">
+						<Button
+							variant="bordered"
+							className="border-neutral-200 dark:border-neutral-700 w-full"
+							onClick={() => clear()}
+						>{`Clear Filter(s)`}</Button>
+						<div className="sort-by flex items-center">
+							<SelectSortByUser placeholder="Sort" />
+						</div>
+					</div>
+				</div>
+				<div className="flex justify-between items-center">
+					<span className="text-default-400 text-small">
+						Showing
+						{user?.length
+							? ` ${1 + offsetUser}-${offsetUser + user?.length} `
+							: ` 0 `}
+						out of {countUser} transaction.
+					</span>
 				</div>
 			</div>
-			<Table
-				aria-label="Example table with custom cells"
-				bottomContent={bottomContent}
-			>
-				<TableHeader columns={columns}>
-					{(column) => (
-						<TableColumn
-							key={column.uid}
-							align={
-								column.uid === "actions" ? "center" : "start"
-							}
-						>
-							{column.name}
-						</TableColumn>
-					)}
-				</TableHeader>
-				<TableBody items={users}>
-					{(item) => (
-						<TableRow key={item.id}>
-							{(columnKey) => (
-								<TableCell>
-									{renderCell(item, columnKey)}
-								</TableCell>
-							)}
-						</TableRow>
-					)}
-				</TableBody>
-			</Table>
+			{user && user.length > 0 ? (
+				<Table
+					aria-label="Example table with custom cells"
+					bottomContent={bottomContent}
+					bottomContentPlacement="outside"
+					topContentPlacement="outside"
+				>
+					<TableHeader columns={columns}>
+						{(column) => (
+							<TableColumn
+								key={column.uid}
+								align={
+									column.uid === "actions"
+										? "center"
+										: "start"
+								}
+							>
+								{column.name}
+							</TableColumn>
+						)}
+					</TableHeader>
+					<TableBody emptyContent={"data not found"} items={user}>
+						{(item) => (
+							<TableRow key={item.id}>
+								{(columnKey) => (
+									<TableCell>
+										{renderCell(item, columnKey)}
+									</TableCell>
+								)}
+							</TableRow>
+						)}
+					</TableBody>
+				</Table>
+			) : (
+				<p>Loading...</p>
+			)}
 		</>
 	);
 };

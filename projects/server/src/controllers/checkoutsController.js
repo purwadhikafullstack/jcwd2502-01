@@ -184,6 +184,7 @@ module.exports = {
 			const checkOrderPayment = await db.order.findOne({
 				where: { id: order_id, user_id },
 			});
+
 			const paymentHasPaid = checkOrderPayment.proof_of_payment;
 
 			if (paymentHasPaid)
@@ -191,7 +192,6 @@ module.exports = {
 					message:
 						"Your transaction has already been settled with your payment.",
 				};
-			// respHandler(res, "Upload payment proof success", null, 201);
 
 			await db.order.update(
 				{
