@@ -9,29 +9,20 @@ import {
 	Input,
 	Button,
 	Pagination,
-	Tooltip,
-	Image,
-	Chip,
 } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
-import { BiEdit } from "react-icons/bi";
 import SelectSortByP from "../../uis/Selects/SelectSortByP";
 import {
-	onClear,
 	setBrand,
 	setCategory,
-	setPagination,
-	setSearch,
 	setWarehouse,
 } from "../../../redux/features/products";
 import { axiosInstance } from "../../../lib/axios";
 import { useDispatch, useSelector } from "react-redux";
 import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
 import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
-import AdminEditStockModal from "../../layouts/admin/AdminEditStockModal";
-import AdminCreateRequestStockModal from "../../layouts/admin/AdminCreateRequestStockModal";
 import MyMonthPicker from "../../uis/MyMonthPicker/MyMonthPicker";
 import {
 	getTransactionByProduct,
@@ -39,15 +30,18 @@ import {
 	onSearchProduct,
 	onSortP,
 	setCountProduct,
+	setMonth,
 	setPaginationProduct,
 	setSearchProduct,
 	setTotalPageProduct,
+	setYear,
 } from "../../../redux/features/report";
 
 const AdminReportProductListTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
+	const [oneTime, setOneTime] = useState(false);
 
 	const transactionByProduct = useSelector(
 		(state) => state.report.transactionByProduct
@@ -55,7 +49,7 @@ const AdminReportProductListTable = () => {
 	const year = useSelector((state) => state.report.year);
 	const month = useSelector((state) => state.report.month);
 	const warehouse = useSelector((state) => state.products.warehouse);
-	const products = useSelector((state) => state.products.productsForStocks);
+	const role = useSelector((state) => state.user.role);
 	const count = useSelector((state) => state.report.countProduct);
 	const totalPage = useSelector((state) => state.report.totalPageProduct);
 	const orderField = useSelector((state) => state.report.orderFieldProduct);
@@ -71,12 +65,14 @@ const AdminReportProductListTable = () => {
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedWarehouse = queryParams.get("warehouse");
-		const selectedSearch = queryParams.get("search");
-		const selectedCategory = queryParams.get("category");
-		const selectedBrand = queryParams.get("brand");
-		const selectedOrderField = queryParams.get("orderField");
-		const selectedOrderDirection = queryParams.get("orderDirection");
-		const selectedOffset = queryParams.get("offset");
+		const selectedSearch = queryParams.get("searchProduct");
+		const selectedCategory = queryParams.get("categoryProduct");
+		const selectedBrand = queryParams.get("brandProduct");
+		const selectedOrderField = queryParams.get("orderFieldProduct");
+		const selectedOrderDirection = queryParams.get("orderDirectionProduct");
+		const selectedOffset = queryParams.get("offsetProduct");
+		const selectedMonth = queryParams.get("month");
+		const selectedYear = queryParams.get("year");
 		if (selectedWarehouse) {
 			dispatch(setWarehouse(selectedWarehouse));
 		}
@@ -98,6 +94,10 @@ const AdminReportProductListTable = () => {
 				setPaginationProduct(selectedPage, Number(selectedOffset))
 			);
 		}
+		if (selectedMonth && selectedYear) {
+			dispatch(setMonth(selectedMonth));
+			dispatch(setYear(selectedYear));
+		}
 	};
 
 	const formik = useFormik({
@@ -105,7 +105,21 @@ const AdminReportProductListTable = () => {
 		onSubmit: (values) => {
 			// Handle the search query submission here
 			dispatch(onSearchProduct(values.searchQuery3));
-			navigate("/admin/reports?tab=products");
+			navigate(
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchProduct=${
+					search !== null ? `${search}` : ""
+				}&brandProduct=${brand.join(
+					","
+				)}&categoryProduct=${category.join(",")}&orderFieldProduct=${
+					orderField !== null ? `${orderField}` : ""
+				}&orderDirectionProduct=${
+					orderDirection !== null ? `${orderDirection}` : ""
+				}&offsetProduct=${offset !== null ? `${offset}` : ""}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
+			);
 		},
 	});
 
@@ -120,56 +134,81 @@ const AdminReportProductListTable = () => {
 	}, [search]);
 
 	const clear = async () => {
-		await dispatch(onClearProduct());
+		dispatch(onClearProduct());
+		dispatch(setBrand([]));
+		dispatch(setCategory([]));
+		if (role === "super") {
+			dispatch(setWarehouse(null));
+		}
 		navigate(
-			`/admin/reports?tab=products&${
-				warehouse && `warehouse=${warehouse}`
-			}${search && `&search=${search}`}`
+			`/admin/reports?warehouse=${
+				warehouse !== null ? `${warehouse}` : ""
+			}&searchProduct=${
+				search !== null ? `${search}` : ""
+			}&brandProduct=${brand.join(",")}&categoryProduct=${category.join(
+				","
+			)}&orderFieldProduct=${
+				orderField !== null ? `${orderField}` : ""
+			}&orderDirectionProduct=${
+				orderDirection !== null ? `${orderDirection}` : ""
+			}&offsetProduct=${offset !== null ? `${offset}` : ""}&month=${
+				month !== null ? `${month}` : ""
+			}&year=${year !== null ? `${year}` : ""}`
 		);
-		window.location.reload(false);
+		// window.location.reload(false);
 	};
 
 	useEffect(() => {
 		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
-
-		return () => {
-			dispatch(onClearProduct());
-			dispatch(setSearchProduct(""));
-			// dispatch(setProductsForStocks([]));
-			dispatch(setTotalPageProduct(1));
-			// dispatch(setWarehouse(null));
-			dispatch(setCountProduct(0));
-		};
+		setOneTime(true);
+		// return () => {
+		// 	dispatch(onClearProduct());
+		// 	dispatch(setSearchProduct(""));
+		// 	// dispatch(setProductsForStocks([]));
+		// 	dispatch(setTotalPageProduct(1));
+		// 	// dispatch(setWarehouse(null));
+		// 	dispatch(setCountProduct(0));
+		// };
 	}, []);
 
 	useEffect(() => {
-		// if (warehouse) {
-		navigate(
-			`/admin/reports?tab=products&${
-				warehouse && `warehouse=${warehouse}`
-			}${search && `&search=${search}`}&brand=${brand.join(
-				","
-			)}&category=${category.join(
-				","
-			)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}${
-				month && `&month=${month}`
-			}${year && `&year=${year}`}`
-		);
-
-		dispatch(
-			getTransactionByProduct(
-				`?${warehouse && `warehouse=${warehouse}`}${
-					search && `&search=${search}`
-				}&brand=${brand.join(",")}&category=${category.join(
+		if (oneTime) {
+			navigate(
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchProduct=${
+					search !== null ? `${search}` : ""
+				}&brandProduct=${brand.join(
 					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}${
-					month && `&month=${month}`
-				} ${year && `&year=${year}`}`
-			)
-		);
-		// }
+				)}&categoryProduct=${category.join(",")}&orderFieldProduct=${
+					orderField !== null ? `${orderField}` : ""
+				}&orderDirectionProduct=${
+					orderDirection !== null ? `${orderDirection}` : ""
+				}&offsetProduct=${offset !== null ? `${offset}` : ""}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
+			);
+
+			dispatch(
+				getTransactionByProduct(
+					`?warehouse=${
+						warehouse !== null ? `${warehouse}` : ""
+					}&search=${
+						search !== null ? `${search}` : ""
+					}&brand=${brand.join(",")}&category=${category.join(
+						","
+					)}&orderField=${
+						orderField !== null ? `${orderField}` : ""
+					}&orderDirection=${
+						orderDirection !== null ? `${orderDirection}` : ""
+					}&offset=${offset !== null ? `${offset}` : ""}&month=${
+						month !== null ? `${month}` : ""
+					}&year=${year !== null ? `${year}` : ""}`
+				)
+			);
+		}
 	}, [
 		orderField,
 		orderDirection,
@@ -180,6 +219,7 @@ const AdminReportProductListTable = () => {
 		warehouse,
 		month,
 		year,
+		oneTime,
 	]);
 
 	// useEffect(() => {
@@ -347,7 +387,7 @@ const AdminReportProductListTable = () => {
 						<div className="sort-by flex items-center">
 							<SelectSortByP placeholder="Sort" />
 						</div>
-						<MyMonthPicker />
+						{/* <MyMonthPicker /> */}
 					</div>
 				</div>
 				<div className="flex justify-between items-center">

@@ -29,6 +29,7 @@ import {
 	onSortT,
 	setMonth,
 	setYear,
+	setIsChildComponent,
 } from "../../../redux/features/report";
 
 const AdminReportTransactionListTable = () => {
@@ -114,7 +115,8 @@ const AdminReportTransactionListTable = () => {
 	}, [search]);
 
 	const clear = async () => {
-		await dispatch(onClearTransaction());
+		dispatch(onClearTransaction());
+		// dispatch(setIsChildComponent(true));
 		if (role === "super") {
 			dispatch(setWarehouse(null));
 			// window.location.reload();
@@ -147,9 +149,10 @@ const AdminReportTransactionListTable = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(">>>tidak");
+		// console.log(">>>tidak");
+		console.log(month);
+		console.log(year);
 		if (oneTime) {
-			console.log(">>>iniii");
 			navigate(
 				`/admin/reports?warehouse=${
 					warehouse !== null ? `${warehouse}` : ""
@@ -166,7 +169,6 @@ const AdminReportTransactionListTable = () => {
 					month !== null ? `${month}` : ""
 				}&year=${year !== null ? `${year}` : ""}`
 			);
-			console.log("pembatas");
 			dispatch(
 				getTransaction(
 					`?warehouse=${
@@ -177,15 +179,6 @@ const AdminReportTransactionListTable = () => {
 						month !== null ? `${month}` : ""
 					}&year=${year !== null ? `${year}` : ""}`
 				)
-			);
-			console.log(
-				`?warehouse=${
-					warehouse !== null ? `${warehouse}` : ""
-				}&search=${
-					search !== null ? `${search}` : ""
-				}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}&month=${
-					month !== null ? `${month}` : ""
-				}&year=${year !== null ? `${year}` : ""}`
 			);
 		}
 	}, [
@@ -319,11 +312,11 @@ const AdminReportTransactionListTable = () => {
 							className="border-neutral-200 dark:border-neutral-700 w-full"
 							onClick={() => clear()}
 						>{`Clear Filter(s)`}</Button>
-						<SelectWarehouses />
+						{/* <SelectWarehouses /> */}
 						<div className="sort-by flex items-center">
 							<SelectSortByT placeholder="Sort" />
 						</div>
-						<MyMonthPicker />
+						{/* <MyMonthPicker /> */}
 					</div>
 				</div>
 				<div className="flex justify-between items-center">

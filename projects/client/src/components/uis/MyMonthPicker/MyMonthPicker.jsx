@@ -5,29 +5,33 @@ import { setDate, setMonth, setYear } from "../../../redux/features/report";
 import { useDispatch, useSelector } from "react-redux";
 const MyMonthPicker = () => {
 	const dispatch = useDispatch();
-	const month = useSelector((state) => state.report.month);
+	const isChildComponent = useSelector(
+		(state) => state.report.isChildComponent
+	);
+	// const year = useSelector((state) => state.report.month);
+	const date = useSelector((state) => state.report.date);
 	const [oneTime, setOneTime] = useState(false);
-	const [startDate, setStartDate] = useState();
-	// console.log(startDate.getMonth() + 1);
-	// console.log(startDate.getFullYear());
+	const [startDate, setStartDate] = useState(null);
 	useEffect(() => {
-		// if (oneTime) {
-		dispatch(setDate(startDate));
-		console.log(startDate);
-		// setOneTime(false);
-		// }
-		// console.log(startDate.getMonth() + 1);
-		console.log(month);
-	}, [startDate, oneTime]);
+		if (date) {
+			dispatch(setMonth(date.getMonth() + 1));
+			dispatch(setYear(date.getFullYear()));
+		} else {
+			setStartDate(date);
+		}
+		console.log(date);
+	}, [date, startDate]);
 	return (
 		<DatePicker
 			className="bg-transparent border-2 border-white border-opacity-20 pl-4 max-w-[160px] p-[6px] rounded-xl text-md"
-			selected={startDate}
+			selected={date}
+			// value={date}
 			placeholderText="Select Month"
 			showMonthYearPicker
 			dateFormat="MMM y"
 			onChange={(date) => {
-				setStartDate(date);
+				console.log(date);
+				dispatch(setDate(date));
 			}}
 		/>
 	);

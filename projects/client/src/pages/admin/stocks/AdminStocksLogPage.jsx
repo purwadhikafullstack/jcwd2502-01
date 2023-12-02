@@ -9,6 +9,7 @@ import { Button, Select, SelectItem } from "@nextui-org/react";
 import AdminStockLogTable from "../../../components/sections/admin/AdminStockLogTable";
 import { Link } from "react-router-dom";
 import { axiosInstance } from "../../../lib/axios";
+import MyMonthPicker from "../../../components/uis/MyMonthPicker/MyMonthPicker";
 
 const AdminStocksLogPage = () => {
 	const [warehouses, setWarehouses] = useState([]);
@@ -56,6 +57,9 @@ const AdminStocksLogPage = () => {
 							</SelectItem>
 						)}
 					</Select>
+					<div className="ml-4">
+						<MyMonthPicker className="min-w-[240px]" />
+					</div>
 				</div>
 			</div>
 			<div className="pb-12">
