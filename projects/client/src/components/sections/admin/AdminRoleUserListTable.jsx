@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Table,
 	TableHeader,
@@ -32,6 +32,7 @@ import SelectSortByUser from "../../uis/Selects/SelectSortByUser";
 import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
 
 const AdminRoleUserListTable = () => {
+	const [oneTime, setOneTime] = useState(false);
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const navigate = useNavigate();
@@ -52,16 +53,24 @@ const AdminRoleUserListTable = () => {
 		},
 		onSubmit: (values) => {
 			dispatch(onSearchUser(values.searchQueryUser));
-			navigate(`/admin/users`);
+			navigate(
+				`/admin/users?searchUser=${
+					searchUser !== null ? `${searchUser}` : ""
+				}&orderFieldUser=${
+					orderFieldUser !== null ? `${orderFieldUser}` : ""
+				}&orderDirectionUser=${
+					orderDirectionUser !== null ? `${orderDirectionUser}` : ""
+				}&offsetUser=${offsetUser}`
+			);
 		},
 	});
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
-		const selectedSearch = queryParams.get("search");
-		const selectedOrderField = queryParams.get("orderField");
-		const selectedOrderDirection = queryParams.get("orderDirection");
-		const selectedOffset = queryParams.get("offset");
+		const selectedSearch = queryParams.get("searchUser");
+		const selectedOrderField = queryParams.get("orderFieldUser");
+		const selectedOrderDirection = queryParams.get("orderDirectionUser");
+		const selectedOffset = queryParams.get("offsetUser");
 		if (selectedSearch) {
 			dispatch(onSearchUser(selectedSearch));
 		}
@@ -78,31 +87,49 @@ const AdminRoleUserListTable = () => {
 		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
-
-		return () => {
-			dispatch(onClearUser());
-			dispatch(setSearchUser(""));
-			dispatch(setTotalPageUser(1));
-			dispatch(setCountUser(0));
-		};
+		setOneTime(true);
+		// return () => {
+		// 	dispatch(onClearUser());
+		// 	dispatch(setSearchUser(""));
+		// 	dispatch(setTotalPageUser(1));
+		// 	dispatch(setCountUser(0));
+		// };
 	}, []);
 
 	useEffect(() => {
-		// if (oneTime) {
-		navigate(
-			`/admin/users?${
-				searchUser && `&search=${searchUser}`
-			}&orderField=${orderFieldUser}&orderDirection=${orderDirectionUser}&offset=${offsetUser}`
-		);
-		console.log(location.pathname);
-		dispatch(
-			fetchUser(
-				`?
-				${searchUser && `&search=${searchUser}`}
-				&orderField=${orderFieldUser}&orderDirection=${orderDirectionUser}&offset=${offsetUser}`
-			)
-		);
-	}, [orderFieldUser, orderDirectionUser, searchUser, pageUser]);
+		if (oneTime) {
+			navigate(
+				`/admin/users?searchUser=${
+					searchUser !== null ? `${searchUser}` : ""
+				}&orderFieldUser=${
+					orderFieldUser !== null ? `${orderFieldUser}` : ""
+				}&orderDirectionUser=${
+					orderDirectionUser !== null ? `${orderDirectionUser}` : ""
+				}&offsetUser=${offsetUser}`
+			);
+			console.log(
+				`/admin/users?searchUser=${
+					searchUser !== null ? `${searchUser}` : ""
+				}&orderFieldUser=${
+					orderFieldUser !== null ? `${orderFieldUser}` : ""
+				}&orderDirectionUser=${
+					orderDirectionUser !== null ? `${orderDirectionUser}` : ""
+				}&offsetUser=${offsetUser}`
+			);
+			dispatch(
+				fetchUser(
+					`?
+				search=${searchUser !== null ? `${searchUser}` : ""}&orderField=${
+						orderFieldUser !== null ? `${orderFieldUser}` : ""
+					}&orderDirection=${
+						orderDirectionUser !== null
+							? `${orderDirectionUser}`
+							: ""
+					}&offset=${offsetUser}`
+				)
+			);
+		}
+	}, [orderFieldUser, orderDirectionUser, searchUser, pageUser, oneTime]);
 
 	useEffect(() => {
 		// dispatch(fetchUser());
@@ -128,7 +155,15 @@ const AdminRoleUserListTable = () => {
 
 	const clear = async () => {
 		await dispatch(onClearUser());
-		navigate(`/admin/users`);
+		navigate(
+			`/admin/users?searchUser=${
+				searchUser !== null ? `${searchUser}` : ""
+			}&orderFieldUser=${
+				orderFieldUser !== null ? `${orderFieldUser}` : ""
+			}&orderDirectionUser=${
+				orderDirectionUser !== null ? `${orderDirectionUser}` : ""
+			}&offsetUser=${offsetUser}`
+		);
 	};
 
 	console.log(user);

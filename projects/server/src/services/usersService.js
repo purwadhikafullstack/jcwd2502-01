@@ -330,6 +330,7 @@ module.exports = {
 				],
 				where: { role: "user" },
 				order: orderOptions,
+				limit: 12,
 			};
 
 			if (search) {
@@ -343,7 +344,9 @@ module.exports = {
 			}
 			const allData = await db.user.findAll(baseQuery);
 			// console.log(allData);
-			const count = await db.user.count({ where: { role: "user" } });
+			const count = await db.user.count({
+				where: baseQuery.where,
+			});
 			return {
 				message: "success!",
 				data: { count: count, data: allData },
@@ -373,6 +376,7 @@ module.exports = {
 				],
 				where: { role: { [Op.in]: ["admin", "super"] } },
 				order: orderOptions,
+				limit: 12,
 			};
 
 			if (search) {
@@ -387,7 +391,7 @@ module.exports = {
 			const allData = await db.user.findAll(baseQuery);
 			// console.log(allData);
 			const count = await db.user.count({
-				where: { role: { [Op.in]: ["admin", "super"] } },
+				where: baseQuery.where,
 			});
 			// console.log(allData.dataValues.password);
 			return {

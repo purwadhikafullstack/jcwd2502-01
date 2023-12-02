@@ -63,32 +63,53 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 			setIsLoading(true);
 			const { username, email, password, warehouse_id, role } = values;
 
-			const updateDataAdmin = await axiosInstance(accessToken).post(
+			const updateDataAdmin = await axiosInstance(accessToken).patch(
 				"/users/updateAdminData",
 				values
 			);
+			console.log(updateDataAdmin);
 
-			toast.success("Add new admin success", {
-				style: {
-					backgroundColor: "var(--background)",
-					color: "var(--text)",
-				},
-			});
+			if (!updateDataAdmin.data.isError) {
+				toast.success("Add new admin success", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
 
-			handleRefresh(true);
+				handleRefresh(true);
 
-			dispatch(
-				fetchAdmin(
-					`?${
-						searchAdmin && `&search=${searchAdmin}`
-					}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
-				)
-			);
+				dispatch(
+					fetchAdmin(
+						`?search=${
+							searchAdmin !== null ? `${searchAdmin}` : ""
+						}&orderField=${
+							orderFieldAdmin !== null ? `${orderFieldAdmin}` : ""
+						}&orderDirection=${
+							orderDirectionAdmin !== null
+								? `${orderDirectionAdmin}`
+								: ""
+						}&offset=${
+							offsetAdmin !== null ? `${offsetAdmin}` : ""
+						}`
+					)
+				);
+				onOpenChange();
+			}
 		} catch (error) {
+			if (error.response.data.isError) {
+				// formik.resetForm();
+				return toast.error(error.response.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+			}
 			console.log(error);
 		} finally {
 			setIsLoading(false);
-			onOpenChange();
+			// onOpenChange();
 		}
 	};
 

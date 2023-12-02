@@ -22,26 +22,23 @@ import {
 	Tooltip,
 } from "@nextui-org/react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { onSetUserAddresses } from "../../../redux/features/users";
 import { BiEdit } from "react-icons/bi";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import SelectSortByAdmin from "../../uis/Selects/SelectSortByAdmin";
-import { fetchAdmin } from "../../../redux/features/manageUser";
-const AdminCreateNewAdminModal = ({ handleRefresh }) => {
+const CreateNewAdminModal = ({ handleRefresh }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [warehouses, setWarehouses] = useState([]);
 	const accessToken = localStorage.getItem("accessToken");
-	const { offsetAdmin, searchAdmin, orderDirectionAdmin, orderFieldAdmin } =
-		useSelector((state) => state.manageUsers);
-
-	const dispatch = useDispatch();
-
+	const { username } = useSelector((state) => state.user);
+	const navigate = useNavigate();
 	const [showPassword, setShowPassword] = useState(false);
+	const [provinces, setProvinces] = useState([]);
+	const [warehouseAdmin, setWarehouseAdmin] = useState([]);
+	// const [selectedProvince, setSelectedProvince] = useState();
 	const [selectedWarehouse, setSelectedWarehouse] = useState();
-	const [isLoading, setIsLoading] = useState(false);
-
 	const formik = useFormik({
 		initialValues: {
 			username: "",
@@ -60,60 +57,29 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 	});
 	const handleSubmit = async (values) => {
 		try {
-			setIsLoading(true);
-
 			const { username, email, password, warehouse_id, role } = values;
-
-			if (!username || !email || !password || !role) {
-				setIsLoading(false);
-
-				return toast.error("please Insert Field!", {
-					style: {
-						backgroundColor: "var(--background)",
-						color: "var(--text)",
-					},
-				});
-			}
-
+			console.log(values);
+			if (!username || !email || !password || !role)
+				return toast.error("please Insert Field!");
 			const createNewAdmin = await axiosInstance(accessToken).post(
 				"/users/createAdmin",
 				values
 			);
-
+			console.log(createNewAdmin);
 			if (!createNewAdmin.data.isError) {
-				toast.success("Add new admin success", {
-					style: {
-						backgroundColor: "var(--background)",
-						color: "var(--text)",
-					},
-				});
-
-				handleRefresh(true);
-
-				dispatch(
-					fetchAdmin(
-						`?${
-							searchAdmin && `&search=${searchAdmin}`
-						}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
-					)
-				);
-				onOpenChange();
-				formik.resetForm();
+				toast.success(createNewAdmin.data.message);
+				// handleRefresh(true);
+				navigate(`/admin/users`);
 			}
+			// dispatch(onSetUserAddresses(accessToken));
+			formik.resetForm();
 		} catch (error) {
 			if (error.response.data.isError) {
-				// formik.resetForm();
-				return toast.error(error.response.data.message, {
-					style: {
-						backgroundColor: "var(--background)",
-						color: "var(--text)",
-					},
-				});
+				formik.resetForm();
+				return toast.error(error.response.data.message);
+			} else {
+				console.log(error);
 			}
-			console.log(error);
-		} finally {
-			setIsLoading(false);
-			// onOpenChange();
 		}
 	};
 
@@ -181,28 +147,26 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 			>
 				{(matches) => (
 					<>
-						<div>
-							<Tooltip content="Edit Admin">
-								<Button
-									color="primary"
-									size="md"
-									onPress={onOpen}
-									fullWidth
-								>
-									<p className="font-medium text-black flex items-center gap-1">
-										<span className="text-[20px]">+</span>
-										<span>Add New Admin</span>
-									</p>
-								</Button>
-							</Tooltip>
-						</div>
+						<Tooltip content="Edit Admin">
+							<Button
+								onPress={onOpen}
+								color="primary"
+								className="text-center text-black font-bold"
+								fullWidth
+							>
+								Add New Admin
+							</Button>
+						</Tooltip>
 
 						<Modal
 							isOpen={isOpen}
 							onOpenChange={onOpenChange}
-							onClose={() => formik.resetForm()}
 							placement={matches.medium ? "center" : "bottom"}
 							scrollBehavior="inside"
+							// onOpenChange={()=>{onClose();}}
+							onClose={() => formik.resetForm()}
+							size={matches.medium ? "2xl" : "full"}
+							backdrop={matches.medium ? "blur" : ""}
 						>
 							<ModalContent>
 								{(onClose) => (
@@ -243,7 +207,7 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
-														placeholder="johndoe@gmail.com"
+														placeholder="Home"
 														value={
 															formik.values.email
 														}
@@ -334,29 +298,33 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 										</ModalBody>
 										<ModalFooter className="justify-center">
 											<Button
-												type="reset"
-												onClick={(e) => {
-													formik.resetForm();
-													// onClose();
-												}}
-												fullWidth
-											>
-												<span className="font-medium">
-													Cancel
-												</span>
-											</Button>
-											<Button
 												color="primary"
 												className="text-center mb-4"
 												type="submit"
 												onClick={(e) => {
 													formik.handleSubmit(e);
+													onClose();
 												}}
 												fullWidth
-												isLoading={isLoading}
+												// onPress={onClose}
 											>
-												<span className="font-medium text-black">
-													Add New Admin
+												<span className="font-bold text-black">
+													Create New Admin
+												</span>
+											</Button>
+											<Button
+												color="danger"
+												className="text-center mb-4"
+												type="reset"
+												onClick={(e) => {
+													formik.resetForm();
+													onClose();
+												}}
+												fullWidth
+												// onPress={onClose}
+											>
+												<span className="font-bold text-black">
+													Cancle
 												</span>
 											</Button>
 										</ModalFooter>
@@ -371,4 +339,4 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 	);
 };
 
-export default AdminCreateNewAdminModal;
+export default CreateNewAdminModal;
