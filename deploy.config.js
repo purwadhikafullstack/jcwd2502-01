@@ -2,7 +2,7 @@ module.exports = {
     apps: [
         {
             name: "JCWD-2502-01", // Format JCWD-{batchcode}-{groupnumber}
-            script: "./projects/server/src/index.js",
+            script: "./src/index.js",
             env: {
                 NODE_ENV: "production",
                 PORT: 2501,
@@ -26,6 +26,7 @@ module.exports = {
                 OPENCAGE_API_KEY: "74a5d6e01d534b94a005a2a6c1453a72",
                 OPENCAGE_BASE_URL: "https://api.opencagedata.com/geocode/v1/json?",
             },
+            cwd: "/var/www/html/jcwd250201.purwadhikabootcamp.com/projects/server",
             time: true,
         },
     ],
