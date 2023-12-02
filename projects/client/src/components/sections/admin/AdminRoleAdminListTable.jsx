@@ -38,6 +38,7 @@ const AdminRoleAdminListTable = () => {
 	const dispatch = useDispatch();
 	const location = useLocation();
 	const navigate = useNavigate();
+	const [oneTime, setOneTime] = useState(false);
 	const accessToken = localStorage.getItem("accessToken");
 	const [touchModal, setTouchModal] = useState(false);
 	const {
@@ -57,32 +58,17 @@ const AdminRoleAdminListTable = () => {
 		},
 		onSubmit: (values) => {
 			dispatch(onSearchAdmin(values.searchQueryAdmin));
-			navigate(`/admin/users`);
+			navigate(
+				`/admin/users?searchAdmin=${
+					searchAdmin !== null ? `${searchAdmin}` : ""
+				}&orderFieldAdmin=${
+					orderFieldAdmin !== null ? `${orderFieldAdmin}` : ""
+				}&orderDirectionAdmin=${
+					orderDirectionAdmin !== null ? `${orderDirectionAdmin}` : ""
+				}&offsetAdmin=${offsetAdmin !== null ? `${offsetAdmin}` : ""}`
+			);
 		},
 	});
-
-	useEffect(() => {
-		// if (oneTime) {
-		navigate(
-			`/admin/users?${
-				searchAdmin && `&search=${searchAdmin}`
-			}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
-		);
-
-		dispatch(
-			fetchAdmin(
-				`?${
-					searchAdmin && `&search=${searchAdmin}`
-				}&orderField=${orderFieldAdmin}&orderDirection=${orderDirectionAdmin}&offset=${offsetAdmin}`
-			)
-		);
-	}, [
-		orderFieldAdmin,
-		orderDirectionAdmin,
-		searchAdmin,
-		pageAdmin,
-		touchModal,
-	]);
 
 	useEffect(() => {
 		formik.setFieldValue("searchQueryAdmin", searchAdmin);
@@ -96,16 +82,24 @@ const AdminRoleAdminListTable = () => {
 
 	const clear = async () => {
 		await dispatch(onClearAdmin());
-		navigate(`/admin/users`);
+		navigate(
+			`/admin/users?searchAdmin=${
+				searchAdmin !== null ? `${searchAdmin}` : ""
+			}&orderFieldAdmin=${
+				orderFieldAdmin !== null ? `${orderFieldAdmin}` : ""
+			}&orderDirectionAdmin=${
+				orderDirectionAdmin !== null ? `${orderDirectionAdmin}` : ""
+			}&offsetAdmin=${offsetAdmin !== null ? `${offsetAdmin}` : ""}`
+		);
 		// window.location.reload(false);
 	};
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
-		const selectedSearch = queryParams.get("search");
-		const selectedOrderField = queryParams.get("orderField");
-		const selectedOrderDirection = queryParams.get("orderDirection");
-		const selectedOffset = queryParams.get("offset");
+		const selectedSearch = queryParams.get("searchAdmin");
+		const selectedOrderField = queryParams.get("orderFieldAdmin");
+		const selectedOrderDirection = queryParams.get("orderDirectionAdmin");
+		const selectedOffset = queryParams.get("offsetAdmin");
 		if (selectedSearch) {
 			dispatch(onSearchAdmin(selectedSearch));
 		}
@@ -122,14 +116,49 @@ const AdminRoleAdminListTable = () => {
 		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
-
-		return () => {
-			dispatch(onClearAdmin());
-			dispatch(setSearchAdmin(""));
-			dispatch(setTotalPageAdmin(1));
-			dispatch(setCountAdmin(0));
-		};
+		setOneTime(true);
+		// return () => {
+		// 	dispatch(onClearAdmin());
+		// 	dispatch(setSearchAdmin(""));
+		// 	dispatch(setTotalPageAdmin(1));
+		// 	dispatch(setCountAdmin(0));
+		// };
 	}, []);
+
+	useEffect(() => {
+		if (oneTime) {
+			navigate(
+				`/admin/users?searchAdmin=${
+					searchAdmin !== null ? `${searchAdmin}` : ""
+				}&orderFieldAdmin=${
+					orderFieldAdmin !== null ? `${orderFieldAdmin}` : ""
+				}&orderDirectionAdmin=${
+					orderDirectionAdmin !== null ? `${orderDirectionAdmin}` : ""
+				}&offsetAdmin=${offsetAdmin !== null ? `${offsetAdmin}` : ""}`
+			);
+
+			dispatch(
+				fetchAdmin(
+					`?search=${
+						searchAdmin !== null ? `${searchAdmin}` : ""
+					}&orderField=${
+						orderFieldAdmin !== null ? `${orderFieldAdmin}` : ""
+					}&orderDirection=${
+						orderDirectionAdmin !== null
+							? `${orderDirectionAdmin}`
+							: ""
+					}&offset=${offsetAdmin !== null ? `${offsetAdmin}` : ""}`
+				)
+			);
+		}
+	}, [
+		orderFieldAdmin,
+		orderDirectionAdmin,
+		searchAdmin,
+		pageAdmin,
+		touchModal,
+		oneTime,
+	]);
 
 	const columns = [
 		{ name: "NAME", uid: "name" },

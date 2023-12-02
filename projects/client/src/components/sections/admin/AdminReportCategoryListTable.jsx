@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
 	Table,
 	TableHeader,
@@ -27,9 +27,12 @@ import {
 	setPaginationCategory,
 	onSortC,
 	setCountCategory,
+	setMonth,
+	setYear,
 } from "../../../redux/features/report";
 
 const AdminReportCategoryListTable = () => {
+	const [oneTime, setOneTime] = useState(false);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -56,10 +59,14 @@ const AdminReportCategoryListTable = () => {
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
 		const selectedWarehouse = queryParams.get("warehouse");
-		const selectedSearch = queryParams.get("search");
-		const selectedOrderField = queryParams.get("orderField");
-		const selectedOrderDirection = queryParams.get("orderDirection");
-		const selectedOffset = queryParams.get("offset");
+		const selectedSearch = queryParams.get("searchCategory");
+		const selectedOrderField = queryParams.get("orderFieldCategory");
+		const selectedOrderDirection = queryParams.get(
+			"orderDirectionCategory"
+		);
+		const selectedOffset = queryParams.get("offsetCategory");
+		const selectedMonth = queryParams.get("month");
+		const selectedYear = queryParams.get("year");
 		if (selectedWarehouse) {
 			dispatch(setWarehouse(selectedWarehouse));
 		}
@@ -75,6 +82,10 @@ const AdminReportCategoryListTable = () => {
 				setPaginationCategory(selectedPage, Number(selectedOffset))
 			);
 		}
+		if (selectedMonth && selectedYear) {
+			dispatch(setMonth(selectedMonth));
+			dispatch(setYear(selectedYear));
+		}
 	};
 
 	const formik = useFormik({
@@ -82,7 +93,21 @@ const AdminReportCategoryListTable = () => {
 		onSubmit: (values) => {
 			// Handle the search query submission here
 			dispatch(onSearchCategory(values.searchQuery));
-			navigate("/admin/reports");
+			navigate(
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchCategory=${
+					search !== null ? `${search}` : ""
+				}&orderFieldCategory=${
+					orderFieldCategory !== null ? `${orderFieldCategory}` : ""
+				}&orderDirectionCategory=${
+					orderDirectionCategory !== null
+						? `${orderDirectionCategory}`
+						: ""
+				}&offsetCategory=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
+			);
 		},
 	});
 
@@ -102,15 +127,35 @@ const AdminReportCategoryListTable = () => {
 			dispatch(setWarehouse(null));
 			// window.location.reload();
 			return navigate(
-				`/admin/reports?search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
-					month && `&month=${month}`
-				}${year && `&year=${year}`}`
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchCategory=${
+					search !== null ? `${search}` : ""
+				}&orderFieldCategory=${
+					orderFieldCategory !== null ? `${orderFieldCategory}` : ""
+				}&orderDirectionCategory=${
+					orderDirectionCategory !== null
+						? `${orderDirectionCategory}`
+						: ""
+				}&offsetCategory=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
 			);
 		}
 		navigate(
-			`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
-				month && `&month=${month}`
-			}${year && `&year=${year}`}`
+			`/admin/reports?warehouse=${
+				warehouse !== null ? `${warehouse}` : ""
+			}&searchCategory=${
+				search !== null ? `${search}` : ""
+			}&orderFieldCategory=${
+				orderFieldCategory !== null ? `${orderFieldCategory}` : ""
+			}&orderDirectionCategory=${
+				orderDirectionCategory !== null
+					? `${orderDirectionCategory}`
+					: ""
+			}&offsetCategory=${offset}&month=${
+				month !== null ? `${month}` : ""
+			}&year=${year !== null ? `${year}` : ""}`
 		);
 		// window.location.reload();
 	};
@@ -119,46 +164,52 @@ const AdminReportCategoryListTable = () => {
 		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
-
-		return () => {
-			dispatch(onClearCategory());
-			dispatch(setSearchCategory(""));
-			// dispatch(setProductsForStocks([]));
-			dispatch(setTotalPageCategory(1));
-			// dispatch(setWarehouse(null));
-			dispatch(setCountCategory(0));
-		};
+		setOneTime(true);
+		// return () => {
+		// 	dispatch(onClearCategory());
+		// 	dispatch(setSearchCategory(""));
+		// 	// dispatch(setProductsForStocks([]));
+		// 	dispatch(setTotalPageCategory(1));
+		// 	// dispatch(setWarehouse(null));
+		// 	dispatch(setCountCategory(0));
+		// };
 	}, []);
 
 	useEffect(() => {
-		if (warehouse) {
+		if (oneTime) {
 			navigate(
-				`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
-					month && `&month=${month}`
-				}${year && `&year=${year}`}`
+				`/admin/reports?warehouse=${
+					warehouse !== null ? `${warehouse}` : ""
+				}&searchCategory=${
+					search !== null ? `${search}` : ""
+				}&orderFieldCategory=${
+					orderFieldCategory !== null ? `${orderFieldCategory}` : ""
+				}&orderDirectionCategory=${
+					orderDirectionCategory !== null
+						? `${orderDirectionCategory}`
+						: ""
+				}&offsetCategory=${offset}&month=${
+					month !== null ? `${month}` : ""
+				}&year=${year !== null ? `${year}` : ""}`
 			);
 
 			dispatch(
 				getTransactionByCategory(
-					`?warehouse=${warehouse}&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
-						month && `&month=${month}`
-					}${year && `&year=${year}`}`
+					`?warehouse=${
+						warehouse !== null ? `${warehouse}` : ""
+					}&search=${search !== null ? `${search}` : ""}&orderField=${
+						orderFieldCategory !== null
+							? `${orderFieldCategory}`
+							: ""
+					}&orderDirection=${
+						orderDirectionCategory !== null
+							? `${orderDirectionCategory}`
+							: ""
+					}&offset=${offset}&month=${
+						month !== null ? `${month}` : ""
+					}&year=${year !== null ? `${year}` : ""}`
 				)
 				// getTransactionByCategory()
-			);
-		} else {
-			navigate(
-				`/admin/reports?&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
-					month && `&month=${month}`
-				}${year && `&year=${year}`}`
-			);
-
-			dispatch(
-				getTransactionByCategory(
-					`?&search=${search}&orderField=${orderFieldCategory}&orderDirection=${orderDirectionCategory}&offset=${offset}${
-						month && `&month=${month}`
-					}${year && `&year=${year}`}`
-				)
 			);
 		}
 		console.log(orderFieldCategory, orderDirectionCategory);
@@ -170,6 +221,7 @@ const AdminReportCategoryListTable = () => {
 		warehouse,
 		month,
 		year,
+		oneTime,
 	]);
 	// useEffect(() => {
 	// 	dispatch(getTransactionByCategory());

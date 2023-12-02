@@ -20,6 +20,8 @@ const SelectSortByC = ({ placeholder = "Options" }) => {
 			orderDirection === "desc"
 		) {
 			setKeyOrder("za");
+		} else if (orderField === "" && orderDirection === "") {
+			setKeyOrder(null);
 		}
 	}, [orderField, orderDirection]);
 
