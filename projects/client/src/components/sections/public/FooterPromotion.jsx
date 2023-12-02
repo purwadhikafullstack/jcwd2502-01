@@ -12,7 +12,7 @@ const FooterPromotion = () => {
 
 	return (
 		<section className="footer-promotion my-container select-none">
-			<div className="py-8">
+			<div className="py-8 pb-16">
 				<span className="section-title">
 					<h2 className="font-bold text-headline-md md:text-headline-lg w-[240px] md:w-full mx-auto uppercase text-center text-primary-500">
 						{t("why_buy")}

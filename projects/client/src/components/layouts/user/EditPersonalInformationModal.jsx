@@ -4,12 +4,9 @@ import {
 	ModalContent,
 	ModalHeader,
 	ModalBody,
-	ModalFooter,
 	Button,
 	useDisclosure,
-	Checkbox,
 	Input,
-	Link,
 	Tooltip,
 	Select,
 	SelectItem,
@@ -21,6 +18,7 @@ import * as yup from "yup";
 import { axiosInstance } from "../../../lib/axios";
 import { OnCheckIsLogin } from "../../../redux/features/users";
 import MySpinner from "../../uis/Spinners/Spinner";
+import toast from "react-hot-toast";
 
 export default function App() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -54,20 +52,41 @@ export default function App() {
 			gender: gender,
 		},
 		onSubmit: async (values) => {
-			// onSubmitEdit(values);
-			console.log("BERJALAN DISNI");
-			console.log(values);
-			const updateData = await axiosInstance(accessToken).patch(
-				"/users/personalData",
-				values
-			);
-			console.log(updateData);
-			dispatch(OnCheckIsLogin());
+			try {
+				setIsLoading(true);
+
+				await axiosInstance(accessToken).patch(
+					"/users/personalData",
+					values
+				);
+
+				toast.success("Biodata updated successfully", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+
+				setIsLoading(false);
+				onOpenChange();
+
+				dispatch(OnCheckIsLogin());
+			} catch (error) {
+				setIsLoading(false);
+
+				toast.error("Failed to update the biodata", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+
+				console.log(error);
+			}
 		},
 		validationSchema: yup.object().shape({
 			username: yup.string().required(),
 			birth_date: yup.string().required(),
-			// gender: yup.string().required(),
 		}),
 	});
 
@@ -89,7 +108,6 @@ export default function App() {
 		});
 		console.log(typeof gender);
 		console.log(selectedGender);
-		// gender ? setSelectedGender(gender):
 	}, [username, birth_date, gender]);
 
 	return (
@@ -155,7 +173,6 @@ export default function App() {
 													? [selectedBirth]
 													: ""
 											}
-											// onChange={formik.handleChange}
 										/>
 									</div>
 									<div className="form-control">
@@ -197,8 +214,6 @@ export default function App() {
 											className="text-center"
 											fullWidth
 											type="submit"
-											// onClick={formik.handleSubmit}
-											onPress={onClose}
 										>
 											<span className="font-bold text-black">
 												Save changes

@@ -61,9 +61,17 @@ const ProductCard = (props) => {
 							</p>
 						</Chip>
 					</div>
-					<p className="price text-price-xs md:text-price-md font-bold">
+					<p
+						className={`price text-price-xs md:text-price-md font-bold`}
+					>
 						{productPrice}
 					</p>
+					{props.admin && (
+						<div className="mt-auto">
+							{" "}
+							Total sold: {data?.totalSold}{" "}
+						</div>
+					)}
 				</div>
 			</div>
 		</Link>

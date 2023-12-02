@@ -91,7 +91,7 @@ const ProfileSettingsPage = () => {
 								</h3>
 							</div>
 						)}
-						<section className="grid md:grid-cols-2 md:gap-x-4">
+						<section className="grid md:grid-cols-2 md:gap-x-4 md:pb-8">
 							{matches.medium ? (
 								<section className="profile-picture-section w-full h-full p-4 dark:bg-[#181818] rounded-xl border-2 border-neutral-600 border-opacity-20">
 									<section className="profile-picture-section flex flex-col items-center">
@@ -130,12 +130,12 @@ const ProfileSettingsPage = () => {
 								<section className="flex justify-center dark:bg-[#181818] rounded-xl p-4 border-2 border-neutral-600 border-opacity-20">
 									<div className="flex flex-col items-center">
 										<ChangeProfilePictureModal />
-										<div className="text-center mt-2">
+										<div className="text-center mt-2 w-[180px]">
 											<div className="leading-none mb-2">
-												<h2 className="font-bold mb-1 text-[18px] capitalize">
+												<h2 className="font-bold mb-1 text-[18px] capitalize truncate">
 													{username}
 												</h2>
-												<h4 className="text-body-md opacity-60">
+												<h4 className="text-body-md opacity-60 truncate">
 													{email}
 												</h4>
 											</div>
@@ -151,6 +151,7 @@ const ProfileSettingsPage = () => {
 													spinner={
 														<MySpinner color="white" />
 													}
+													className="max-w-[160px]"
 												>
 													<span className="font-medium">
 														Reset Password
@@ -169,27 +170,27 @@ const ProfileSettingsPage = () => {
 										</h4>
 										<EditPersonalInformationModal />
 									</div>
-									<div className="flex w-full text-body-md overflow-hidden">
-										<div className="min-w-[140px] w-[140px]">
-											<p>Username</p>
+									<div className="flex w-full text-body-md md:text-body-lg overflow-hidden">
+										<div className="md:min-w-[140px] md:w-[140px] min-w-[110px] w-[110px]">
+											<p>Fullname</p>
 										</div>
-										<div className="flex-[1_1_100%] min-w-0 truncate">
+										<div className="flex-[1_1_100%] min-w-0 truncate font-bold">
 											<p>{username}</p>
 										</div>
 									</div>
-									<div className="flex w-full text-body-md overflow-hidden">
-										<div className="min-w-[140px] w-[140px]">
+									<div className="flex w-full text-body-md md:text-body-lg overflow-hidden">
+										<div className="md:min-w-[140px] md:w-[140px] min-w-[110px] w-[110px]">
 											<p>Birthdate</p>
 										</div>
-										<div className="flex-[1_1_100%] min-w-0 truncate">
+										<div className="flex-[1_1_100%] min-w-0 truncate font-bold">
 											<p>{birth_date || "-"}</p>
 										</div>
 									</div>
-									<div className="flex w-full text-body-md overflow-hidden">
-										<div className="min-w-[140px] w-[140px]">
+									<div className="flex w-full text-body-md md:text-body-lg overflow-hidden">
+										<div className="md:min-w-[140px] md:w-[140px] min-w-[110px] w-[110px]">
 											<p>Gender</p>
 										</div>
-										<div className="flex-[1_1_100%] min-w-0 truncate">
+										<div className="flex-[1_1_100%] min-w-0 truncate font-bold">
 											<p>{gender || "-"}</p>
 										</div>
 									</div>
@@ -201,19 +202,19 @@ const ProfileSettingsPage = () => {
 										</h4>
 										<EditPersonalContactModal />
 									</div>
-									<div className="flex w-full text-body-md overflow-hidden">
-										<div className="min-w-[140px] w-[140px]">
+									<div className="flex w-full text-body-md md:text-body-lg overflow-hidden">
+										<div className="md:min-w-[140px] md:w-[140px] min-w-[110px] w-[110px]">
 											<p>Email</p>
 										</div>
-										<div className="flex-[1_1_100%] min-w-0 truncate">
+										<div className="flex-[1_1_100%] min-w-0 truncate font-bold">
 											<p className="truncate">{email}</p>
 										</div>
 									</div>
-									<div className="flex w-full text-body-md overflow-hidden">
-										<div className="min-w-[140px] w-[140px]">
+									<div className="flex w-full text-body-md md:text-body-lg overflow-hidden">
+										<div className="md:min-w-[140px] md:w-[140px] min-w-[110px] w-[110px]">
 											<p>Status</p>
 										</div>
-										<div className="flex-[1_1_100%] min-w-0 truncate">
+										<div className="flex-[1_1_100%] min-w-0 truncate font-bold">
 											<Chip
 												radius="sm"
 												size="sm"
@@ -229,31 +230,32 @@ const ProfileSettingsPage = () => {
 											</Chip>
 										</div>
 									</div>
-									<div className="flex w-full text-body-md overflow-hidden">
-										<div className="min-w-[140px] w-[140px]">
+									<div className="flex w-full text-body-md md:text-body-lg overflow-hidden">
+										<div className="md:min-w-[140px] md:w-[140px] min-w-[110px] w-[110px]">
 											<p>Phone</p>
 										</div>
-										<div className="flex-[1_1_100%] min-w-0 truncate">
-											<p>{phone || "-"}</p>
+										<div className="flex-[1_1_100%] min-w-0 truncate font-bold">
+											<p>
+												{phone ? `+62 ${phone}` : "-"}
+											</p>
 										</div>
 									</div>
 								</section>
 							</section>
 						</section>
-						<section className="">
+						<section className="address-list-section">
 							<div className="mb-2">
 								<h1 className="font-bold text-xl">
 									Address List
 								</h1>
 							</div>
-							<div>
-								<div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+							<div className="address-list">
+								<div className="grid md:grid-cols-12 md:gap-x-4 gap-y-2">
 									<Input
 										type="text"
 										placeholder="Search Address"
-										className=""
+										className="md:col-span-9"
 										isClearable
-										size="md"
 										startContent={
 											<IoSearch opacity={".5"} />
 										}

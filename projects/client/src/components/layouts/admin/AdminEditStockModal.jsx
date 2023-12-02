@@ -80,7 +80,18 @@ const AdminEditStockModal = ({ id }) => {
 				}
 			);
 
-			toast.success("Stock edited successfully", {
+			if (updateStocks.data.isError) {
+				toast.error(updateStocks.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				setIsLoading(false);
+				return;
+			}
+
+			toast.success(updateStocks.data.message, {
 				style: {
 					backgroundColor: "var(--background)",
 					color: "var(--text)",
@@ -96,7 +107,9 @@ const AdminEditStockModal = ({ id }) => {
 					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 				)
 			);
+			setIsLoading(false);
 
+			onOpenChange();
 			// window.location.reload(false);
 			return;
 		} catch (error) {
@@ -139,6 +152,7 @@ const AdminEditStockModal = ({ id }) => {
 				placement="center"
 				scrollBehavior="inside"
 				size="2xl"
+				onClose={() => fetchStock()}
 			>
 				<ModalContent>
 					{(onClose) => (
@@ -207,12 +221,6 @@ const AdminEditStockModal = ({ id }) => {
 											className="text-center"
 											fullWidth
 											type="submit"
-											onPress={() => {
-												setTimeout(() => {
-													onClose();
-													setIsLoading(false);
-												}, 1200);
-											}}
 										>
 											<span className="font-bold text-black">
 												Save changes

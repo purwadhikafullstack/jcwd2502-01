@@ -23,10 +23,6 @@ const SelectWarehouses = () => {
 	useEffect(() => {
 		fetchWarehouses();
 	}, []);
-	useEffect(() => {
-		console.log(">>", role);
-		console.log(warehouse);
-	}, [role, warehouse]);
 
 	return (
 		<Select
