@@ -324,6 +324,8 @@ export const onClearBrand = () => async (dispatchEvent) => {
 		dispatchEvent(setOrderFieldBrand(""));
 		dispatchEvent(setOrderDirectionBrand(""));
 		dispatchEvent(setSearchBrand(""));
+		dispatchEvent(setMonth(""));
+		dispatchEvent(setYear(""));
 	} catch (error) {
 		console.log(error);
 	}
@@ -335,6 +337,8 @@ export const onClearCategory = () => async (dispatchEvent) => {
 		dispatchEvent(setOrderFieldCategory(""));
 		dispatchEvent(setOrderDirectionCategory(""));
 		dispatchEvent(setSearchCategory(""));
+		dispatchEvent(setMonth(""));
+		dispatchEvent(setYear(""));
 	} catch (error) {
 		console.log(error);
 	}
@@ -347,6 +351,8 @@ export const onClearTransaction = () => async (dispatchEvent) => {
 		dispatchEvent(setOrderFieldTransaction(""));
 		dispatchEvent(setOrderDirectionTransaction(""));
 		dispatchEvent(setSearchTransaction(""));
+		dispatchEvent(setMonth(""));
+		dispatchEvent(setYear(""));
 	} catch (error) {
 		console.log(error);
 	}

@@ -28,9 +28,6 @@ const MyMonthPicker = () => {
 			dateFormat="MMM y"
 			onChange={(date) => {
 				setStartDate(date);
-				// console.log(date);
-				// setDate(startDate);
-				// setOneTime(true);
 			}}
 		/>
 	);

@@ -19,6 +19,8 @@ const SelectSortByP = ({ placeholder = "Options" }) => {
 			setKeyOrder("az");
 		} else if (orderField === "total_amount" && orderDirection === "desc") {
 			setKeyOrder("za");
+		} else if (orderField === "" && orderDirection === "") {
+			setKeyOrder(null);
 		}
 	}, [orderField, orderDirection]);
 
