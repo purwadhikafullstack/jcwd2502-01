@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DefaultAvatar from "../../assets/avatars/default_avatar.png";
-import { Input, Image, Chip, Button } from "@nextui-org/react";
+import { Input, Image, Chip, Button, Card, CardBody } from "@nextui-org/react";
 import { IoSearch } from "react-icons/io5";
 import CheckoutAddressCard from "../../components/uis/Cards/CheckoutAddressCard";
 import CreateNewAddressModal from "../../components/layouts/user/CreateNewAddressModal";
@@ -37,9 +37,24 @@ const ProfileSettingsPage = () => {
 	}${profileUser?.substring(7)}`;
 
 	const renderUserAddresses = () => {
-		return userAddresses?.map((user_address) => {
-			return <CheckoutAddressCard userAddressData={user_address} />;
-		});
+		if (userAddresses.length) {
+			return userAddresses?.map((user_address) => {
+				return <CheckoutAddressCard userAddressData={user_address} />;
+			});
+		}
+		return (
+			<Card>
+				<CardBody className="p-12">
+					<h4 className="font-bold text-lg text-center">
+						<span className="text-[22px]">
+							Where should we send the goodies?
+						</span>
+						<br /> Drop your address here. <br /> We promise not to
+						send a herd of elephants with your package!
+					</h4>
+				</CardBody>
+			</Card>
+		);
 	};
 
 	const handleRequestChangePassword = async () => {
@@ -261,7 +276,9 @@ const ProfileSettingsPage = () => {
 										}
 										variant="bordered"
 									/>
-									<CreateNewAddressModal />
+									<CreateNewAddressModal
+										userAddressesData={userAddresses}
+									/>
 								</div>
 								<div className="mt-5">
 									{renderUserAddresses()}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import {
 	Modal,
@@ -37,7 +37,12 @@ const ChooseAddressModal = ({ resetShippingCost }) => {
 				</Button>
 			</div>
 			<div className="desktop-address-modal-button hidden md:block md:mt-4">
-				<Button color="secondary" size="md" onPress={onOpen}>
+				<Button
+					color="primary"
+					variant="faded"
+					size="md"
+					onPress={onOpen}
+				>
 					<span className="font-medium">Select other address</span>
 				</Button>
 			</div>
@@ -70,7 +75,9 @@ const ChooseAddressModal = ({ resetShippingCost }) => {
 											className="mb-2"
 											placeholder="Search for label address or recipient's name"
 										/>
-										<CreateNewAddressModal />
+										<CreateNewAddressModal
+											userAddressesData={userAddresses}
+										/>
 									</ModalHeader>
 									<ModalBody className="p-4">
 										{renderUserAddresses()}
