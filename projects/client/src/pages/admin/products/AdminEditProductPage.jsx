@@ -89,9 +89,8 @@ const AdminEditProductPage = () => {
 		if (productData?.product_images.length) {
 			setOldImages(productData?.product_images);
 		}
-		console.log("prod", productData);
+
 		if (productData) {
-			console.log("masuk");
 			formik.setValues({
 				product_name: productData?.product_name,
 				product_desc: productData?.product_desc,
@@ -205,9 +204,7 @@ const AdminEditProductPage = () => {
 
 			if (imagesToSend) {
 				for (const image of imagesToSend) {
-					console.log("sblm append", image);
 					fd.append("images", image);
-					console.log("sesudah append");
 				}
 			}
 			const accessToken = localStorage.getItem("accessToken");
@@ -228,7 +225,7 @@ const AdminEditProductPage = () => {
 				return;
 			}
 
-			toast.success("Edit product success", {
+			toast.success(updateProduct.data.message, {
 				style: {
 					backgroundColor: "var(--background)",
 					color: "var(--text)",
@@ -241,6 +238,13 @@ const AdminEditProductPage = () => {
 
 			return;
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		}
 	};
@@ -546,16 +550,18 @@ const AdminEditProductPage = () => {
 															</p>
 														</div>
 													</div>
-													<div
-														className="mt-4"
-														onClick={() =>
-															handleRevert()
-														}
-													>
-														<p className="text-yellow-600 font-medium hover:cursor-pointer hover:underline">
-															Revert Images
-														</p>
-													</div>
+													{oldImages.length ? (
+														<div
+															className="mt-4"
+															onClick={() =>
+																handleRevert()
+															}
+														>
+															<p className="text-yellow-600 font-medium hover:cursor-pointer hover:underline">
+																Revert Images
+															</p>
+														</div>
+													) : null}
 												</div>
 											)}
 										</>

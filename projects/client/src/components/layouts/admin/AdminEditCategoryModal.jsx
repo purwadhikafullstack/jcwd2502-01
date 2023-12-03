@@ -1,19 +1,36 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { useFormik } from "formik";
-
-import { IoClose } from "react-icons/io5";
-import { Button, Input, Select, SelectItem, Textarea } from "@nextui-org/react";
+import {
+	Button,
+	Input,
+	Modal,
+	ModalBody,
+	ModalContent,
+	ModalHeader,
+	Tooltip,
+	useDisclosure,
+} from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
 import MySpinner from "../../uis/Spinners/Spinner";
+import { BiEdit } from "react-icons/bi";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategoriesAsync } from "../../../redux/features/products";
 
-const AdminEditCategoryModal = ({
-	handleOpenEditCategoryModal,
-	categoryId,
-	categoryType,
-}) => {
+const AdminEditCategoryModal = ({ categoryId, categoryType }) => {
 	const [isLoading, setIsLoading] = useState(false);
+
+	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+	const { role } = useSelector((state) => state.user);
+
+	const { offset, orderField, orderDirection } = useSelector(
+		(state) => state.products
+	);
+
+	const dispatch = useDispatch();
+
 	const formik = useFormik({
 		initialValues: {
 			category_type: categoryType,
@@ -68,13 +85,24 @@ const AdminEditCategoryModal = ({
 				},
 			});
 
-			setTimeout(() => {
-				window.location.reload(false);
-			}, 1200);
+			dispatch(
+				fetchCategoriesAsync(
+					`?orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
 
 			setIsLoading(false);
+			onOpenChange();
+
 			return;
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		} finally {
 			setIsLoading(false);
@@ -87,78 +115,66 @@ const AdminEditCategoryModal = ({
 	};
 
 	return (
-		<div className={`edit-product z-[999999] block`}>
-			<div
-				className={`z-[99999] absolute top-0 right-0 bottom-0 left-0 h-full`}
-			>
-				<section className="admin-edit-warehouse-product w-[820px] h-full m-auto flex justify-center items-center">
-					<div className="admin-create-product-container w-full bg-background p-8 rounded-xl">
-						<div className="modal-header mb-8 flex justify-center relative w-full">
-							<div className="heading-title">
-								<h1 className="font-bold text-xl">
-									Update Category
-								</h1>
-							</div>
-							<div className="close-button absolute top-0 right-0">
-								<Button
-									onClick={() => {
-										handleOpenEditCategoryModal();
-									}}
-									isIconOnly
-									variant="light"
-									radius="full"
-									size="sm"
+		<>
+			<Tooltip content="Edit category">
+				<Button
+					isIconOnly
+					variant="light"
+					className="text-lg text-default-400 cursor-pointer active:opacity-50"
+					onPress={onOpen}
+					isDisabled={role !== "super"}
+				>
+					<BiEdit size={24} />
+				</Button>
+			</Tooltip>
+			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+				<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader className="flex flex-col gap-1">
+								Edit category
+							</ModalHeader>
+							<ModalBody>
+								<form
+									onSubmit={formik.handleSubmit}
+									className="flex flex-col justify-between gap-4 h-full"
 								>
-									<IoClose
-										size={20}
-										className="fill-neutral-500"
-									/>
-								</Button>
-							</div>
-						</div>
-						<div className="modal-body">
-							<form
-								onSubmit={formik.handleSubmit}
-								className="flex flex-col justify-between gap-4 h-full"
-							>
-								<div className="form-control">
-									<Input
-										type="text"
-										name="category_type"
-										label="Category Name"
-										labelPlacement="outside"
-										variant="bordered"
-										radius="sm"
-										size="lg"
-										placeholder="Laptop"
-										isRequired
-										value={formik.values.category_type}
-										onChange={handleFormInput}
-									/>
-								</div>
-								<div className="modal-footer pt-4">
-									<Button
-										isLoading={isLoading}
-										spinner={<MySpinner />}
-										color="primary"
-										className="text-center"
-										fullWidth
-										type="submit"
-									>
-										<span className="font-bold text-black">
-											Save changes
-										</span>
-									</Button>
-								</div>
-							</form>
-						</div>
-					</div>
-				</section>
-			</div>
-			<div
-				className={`z-[9999] absolute top-0 right-0 left-0 bottom-0 bg-black/50 flex justify-center items-center`}
-			></div>
-		</div>
+									<div className="form-control">
+										<Input
+											type="text"
+											name="category_type"
+											label="Category Name"
+											labelPlacement="outside"
+											variant="bordered"
+											radius="sm"
+											size="lg"
+											placeholder="Laptop"
+											isRequired
+											value={formik.values.category_type}
+											onChange={handleFormInput}
+										/>
+									</div>
+									<div className="modal-footer pt-4">
+										<Button
+											isLoading={isLoading}
+											spinner={<MySpinner />}
+											color="primary"
+											className="text-center"
+											fullWidth
+											type="submit"
+										>
+											<span className="font-bold text-black">
+												Save changes
+											</span>
+										</Button>
+									</div>
+								</form>
+							</ModalBody>
+						</>
+					)}
+				</ModalContent>
+			</Modal>
+		</>
 	);
 };
 

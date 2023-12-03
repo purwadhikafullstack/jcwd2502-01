@@ -1,5 +1,4 @@
 import {
-	Button,
 	Chip,
 	Pagination,
 	Select,
@@ -10,48 +9,38 @@ import {
 	TableColumn,
 	TableHeader,
 	TableRow,
-	Tooltip,
 } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
-import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
-import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
-import SelectSortBy from "../../uis/Selects/SelectSortBy";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-	fetchStockAsync,
 	fetchStockMutationsAsync,
 	onClear,
-	onSearch,
-	onSort,
-	setBrand,
-	setCategory,
 	setCount,
 	setPagination,
-	setProductsForStocks,
 	setSearch,
 	setStatus,
 	setStockMutations,
 	setTotalPage,
 	setWarehouse,
 } from "../../../redux/features/products";
-import { axiosInstance } from "../../../lib/axios";
+import AdminRejectStockRequestModal from "./AdminRejectStockRequestModal";
+import AdminAcceptStockRequestModal from "./AdminAcceptStockRequestModal";
 
 const AdminIncomingStocksTable = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const warehouse = useSelector((state) => state.products.warehouse);
-	const stockMutations = useSelector(
-		(state) => state.products.stockMutations
-	);
-	const count = useSelector((state) => state.products.count);
-	const totalPage = useSelector((state) => state.products.totalPage);
-
-	const page = useSelector((state) => state.products.page);
-	const offset = useSelector((state) => state.products.offset);
-	const status = useSelector((state) => state.products.status);
+	const {
+		warehouse,
+		stockMutations,
+		count,
+		totalPage,
+		page,
+		offset,
+		status,
+	} = useSelector((state) => state.products);
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
@@ -70,26 +59,6 @@ const AdminIncomingStocksTable = () => {
 		}
 	};
 
-	const handleAction = async (action, mutationId) => {
-		try {
-			const accessToken = localStorage.getItem("accessToken");
-
-			await axiosInstance(accessToken).patch(
-				`stocks/mutation/${mutationId}`,
-				{
-					status: action,
-				}
-			);
-			dispatch(
-				fetchStockMutationsAsync(
-					"in",
-					`?warehouse=${warehouse}&status=${status}&offset=${offset}`
-				)
-			);
-		} catch (error) {
-			console.log(error);
-		}
-	};
 	useEffect(() => {
 		takeFromQuery();
 
@@ -175,24 +144,12 @@ const AdminIncomingStocksTable = () => {
 				return (
 					request?.status === "pending" && (
 						<div className="relative flex justify-start items-center gap-2">
-							<Button
-								onClick={() =>
-									handleAction("rejected", request.id)
-								}
-								variant="faded"
-								color="danger"
-							>
-								<span className="font-medium">Reject</span>
-							</Button>
-							<Button
-								onClick={() =>
-									handleAction("accepted", request.id)
-								}
-								variant="faded"
-								color="primary"
-							>
-								<span className="font-medium">Accept</span>
-							</Button>
+							<AdminRejectStockRequestModal
+								requestID={request.id}
+							/>
+							<AdminAcceptStockRequestModal
+								requestID={request.id}
+							/>
 						</div>
 					)
 				);
@@ -225,17 +182,6 @@ const AdminIncomingStocksTable = () => {
 			<div className="flex flex-col gap-4">
 				<div className="flex justify-between gap-3 items-center">
 					<div className="flex gap-3 w-full">
-						{/* <div className="select-brands">
-							<SelectProductBrands />
-						</div>
-						<div className="select-categories">
-							<SelectProductCategories />
-						</div> */}
-						{/* <Button
-							variant="bordered"
-							className="border-neutral-200 dark:border-neutral-700"
-							onClick={() => clear()}
-						>{`Clear Filter(s)`}</Button> */}
 						<div className="sort-by ml-auto flex items-center">
 							<div className="w-full mr-2 font-medium">
 								Status:

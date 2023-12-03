@@ -16,9 +16,10 @@ import {
 
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
-import { IoAdd } from "react-icons/io5";
 import toast from "react-hot-toast";
 import MySpinner from "../../uis/Spinners/Spinner";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWarehousesAsync } from "../../../redux/features/products";
 
 const AdminCreateNewWarehouseModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -33,6 +34,11 @@ const AdminCreateNewWarehouseModal = () => {
 	const [city, setCity] = useState(0);
 	const [address, setAddress] = useState("");
 	const [data, setData] = useState({});
+
+	const { offset, orderField, orderDirection } = useSelector(
+		(state) => state.products
+	);
+	const dispatch = useDispatch();
 
 	const onCreate = async (data) => {
 		try {
@@ -78,11 +84,25 @@ const AdminCreateNewWarehouseModal = () => {
 				},
 			});
 
-			setTimeout(() => {
-				window.location.reload(false);
-			}, 1200);
 			setIsLoading(false);
+
+			dispatch(
+				fetchWarehousesAsync(
+					`?orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+
+			onOpenChange();
+
+			return;
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		} finally {
 			setIsLoading(false);
@@ -114,10 +134,8 @@ const AdminCreateNewWarehouseModal = () => {
 	};
 
 	const handleProvince = (province) => {
-		// const splittedProvince = province?.split(",");
 		setSelectedProvince(province);
 		setProvince(province);
-		// formik.setFieldValue("province_id", province);
 	};
 
 	const getCities = useCallback(async () => {
@@ -127,7 +145,6 @@ const AdminCreateNewWarehouseModal = () => {
 			);
 
 			setCities(data.data);
-			console.log(data.data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -146,13 +163,6 @@ const AdminCreateNewWarehouseModal = () => {
 			);
 		});
 	};
-
-	// const handleCity = (city) => {
-	// 	const splittedCity = city?.split(",");
-	// 	setSelectedCity(city);
-	// 	console.log("CITY>>>", city);
-	// 	formik.setFieldValue("city_id", city);
-	// };
 
 	useEffect(() => {
 		getProvinces();

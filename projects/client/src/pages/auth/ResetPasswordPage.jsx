@@ -8,21 +8,25 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { resetPassword } from "../../redux/features/users";
 import { useDispatch, useSelector } from "react-redux";
+import MySpinner from "../../components/uis/Spinners/Spinner";
 
 const ResetPasswordPage = () => {
 	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [showConPassword, setShowConPassword] = useState(false);
-	const { isLogin } = useSelector((state) => state.user);
+	const [isLogin, setIsLogin] = useState(false);
+
+	const { isLoading } = useSelector((state) => state.user);
+
+	const { token } = useParams();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const { token } = useParams();
 
 	const formik = useFormik({
 		initialValues: {
 			newpassword: "",
 			confirmpassword: "",
 		},
-		onSubmit: (values) => {
+		onSubmit: async (values) => {
 			handleResetPassword(
 				token,
 				values.newpassword,
@@ -35,12 +39,24 @@ const ResetPasswordPage = () => {
 		}),
 	});
 
-	const handleResetPassword = (token, newpassword, confirmpassword) => {
-		dispatch(resetPassword(token, newpassword, confirmpassword));
+	const handleResetPassword = async (token, newpassword, confirmpassword) => {
+		const { navigate } = await dispatch(
+			resetPassword(token, newpassword, confirmpassword)
+		);
+
+		if (navigate === true) {
+			setIsLogin(true);
+		} else {
+			setIsLogin(false);
+		}
 	};
 
 	useEffect(() => {
-		if (isLogin) return navigate("/login");
+		if (isLogin) {
+			setTimeout(() => {
+				navigate("/login");
+			}, 1200);
+		}
 	}, [isLogin]);
 
 	return (
@@ -147,6 +163,8 @@ const ResetPasswordPage = () => {
 											className="bg-primary-500 text-black font-bold hover"
 											fullWidth
 											size="lg"
+											isLoading={isLoading}
+											spinner={<MySpinner />}
 											onClick={formik.handleSubmit}
 										>
 											Reset Password

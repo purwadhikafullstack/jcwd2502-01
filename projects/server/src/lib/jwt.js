@@ -18,7 +18,6 @@ module.exports = {
 	},
 	verify: (req, res, next) => {
 		try {
-			console.log(req.token);
 			const { authorization, tokentype } = req.headers;
 
 			if (!authorization) throw { message: "token was not found" };
@@ -45,9 +44,9 @@ module.exports = {
 			if (!authorization) throw { message: "token was not found" };
 			let secret = process.env.access_secret;
 			const decodeData = jwt.verify(req.token, secret);
-			console.log(decodeData);
+
 			const checkAdmin = await db.user.findByPk(decodeData.id);
-			// console.log(checkAdmin.dataValues);
+
 			if (!checkAdmin)
 				throw {
 					message: "User not Found!",
@@ -70,9 +69,9 @@ module.exports = {
 			if (!authorization) throw { message: "token was not found" };
 			let secret = process.env.access_secret;
 			const decodeData = jwt.verify(req.token, secret);
-			console.log(decodeData);
+
 			const checkAdmin = await db.user.findByPk(decodeData.id);
-			console.log(checkAdmin.dataValues.role);
+
 			if (!checkAdmin)
 				throw {
 					message: "User not Found!",
@@ -80,7 +79,6 @@ module.exports = {
 			if (checkAdmin.dataValues.role === "super") {
 				next();
 			} else {
-				console.log("masuk verify super");
 				throw {
 					message: "User is not authorized!",
 				};

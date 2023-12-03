@@ -6,27 +6,48 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	Tooltip,
 	useDisclosure,
 } from "@nextui-org/react";
 import toast from "react-hot-toast";
-import { IoTrashOutline } from "react-icons/io5";
 import Media from "react-media";
 import MySpinner from "../../uis/Spinners/Spinner";
+import { axiosInstance } from "../../../lib/axios";
+import { useDispatch } from "react-redux";
+import { onSetUserAddresses } from "../../../redux/features/users";
 
-const DeleteAddressModal = ({ addressID, handleOnDelete }) => {
+const DeleteAddressModal = ({ addressID }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+	const accessToken = localStorage.getItem("accessToken");
+
+	const dispatch = useDispatch();
 
 	const onDelete = async (addressId) => {
-		setIsLoading(true);
-		toast.success("Address deleted", {
-			style: {
-				backgroundColor: "var(--background)",
-				color: "var(--text)",
-			},
-		});
-		handleOnDelete(addressId);
+		try {
+			setIsLoading(true);
+
+			await axiosInstance(accessToken).delete(
+				"/user-addresses/deleteAddress",
+				{ data: { id: addressId } }
+			);
+
+			setIsLoading(false);
+
+			toast.success("Address deleted successfully", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
+			onOpenChange();
+
+			dispatch(onSetUserAddresses(accessToken));
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
@@ -71,9 +92,6 @@ const DeleteAddressModal = ({ addressID, handleOnDelete }) => {
 											className="bg-red-600"
 											onClick={() => {
 												onDelete(addressID);
-												setTimeout(() => {
-													onClose();
-												}, 2000);
 											}}
 										>
 											<p className="font-medium text-white">

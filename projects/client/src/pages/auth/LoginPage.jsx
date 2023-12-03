@@ -46,13 +46,13 @@ const LoginPage = () => {
 		dispatch(OnCheckIsLogin());
 	}, []);
 
-	useEffect(() => {
-		if (role === "user") {
-			navigate("/");
-		} else if (role === "admin" || role === "super") {
-			navigate("/admin");
-		}
-	}, [role]);
+	// useEffect(() => {
+	// 	if (role === "user") {
+	// 		navigate("/");
+	// 	} else if (role === "admin" || role === "super") {
+	// 		navigate("/admin");
+	// 	}
+	// }, [role]);
 
 	return (
 		<main className="login-page w-full h-[100vh]">

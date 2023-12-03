@@ -166,10 +166,6 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 	useEffect(() => {
 		fetchWarehouses();
 	}, [selectedWarehouse]);
-	useEffect(() => {
-		// formik.setFieldValue("recipient_name", username);
-		console.log(selectedWarehouse);
-	}, [selectedWarehouse]);
 
 	return (
 		<>
@@ -320,12 +316,8 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 															handleWarehouse(
 																e.target.value
 															);
-															console.log(
-																e.target.value
-															);
 														}}
 														placeholder="Select a warehouse"
-														// isRequired
 													>
 														{renderWarehouseOption()}
 													</Select>
@@ -337,7 +329,6 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 												type="reset"
 												onClick={(e) => {
 													formik.resetForm();
-													// onClose();
 												}}
 												fullWidth
 											>

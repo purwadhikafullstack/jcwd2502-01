@@ -84,14 +84,6 @@ const ProductListFeed = (props) => {
 				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
 			);
 
-			console.log(
-				`?&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			);
-
 			dispatch(
 				fetchProductAsync(
 					`?&search=${search}&brand=${brand.join(
@@ -103,10 +95,6 @@ const ProductListFeed = (props) => {
 			);
 		}
 	}, [orderField, orderDirection, search, page, category, brand, oneTime]);
-
-	useEffect(() => {
-		console.log(">>>", products);
-	}, [products]);
 
 	return (
 		<div className="product-list md:w-full md:h-full md:pl-8">

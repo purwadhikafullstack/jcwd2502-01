@@ -1,5 +1,4 @@
 import {
-	Button,
 	Chip,
 	Pagination,
 	Select,
@@ -10,32 +9,22 @@ import {
 	TableColumn,
 	TableHeader,
 	TableRow,
-	Tooltip,
 } from "@nextui-org/react";
 import React, { useEffect } from "react";
-import SelectProductBrands from "../../uis/Selects/SelectProductBrands";
-import SelectProductCategories from "../../uis/Selects/SelectProductCategories";
-import SelectSortBy from "../../uis/Selects/SelectSortBy";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
-	fetchStockAsync,
 	fetchStockMutationsAsync,
 	onClear,
-	onSearch,
-	onSort,
-	setBrand,
-	setCategory,
 	setCount,
 	setPagination,
-	setProductsForStocks,
 	setSearch,
 	setStatus,
 	setStockMutations,
 	setTotalPage,
 	setWarehouse,
 } from "../../../redux/features/products";
-import { axiosInstance } from "../../../lib/axios";
+import AdminCancelStockRequestModal from "./AdminCancelStockRequestModal";
 
 const AdminOutgoingStocksTable = () => {
 	const dispatch = useDispatch();
@@ -70,21 +59,6 @@ const AdminOutgoingStocksTable = () => {
 		}
 	};
 
-	const handleAction = async (action, mutationId) => {
-		const accessToken = localStorage.getItem("accessToken");
-		await axiosInstance(accessToken).patch(
-			`stocks/mutation/${mutationId}`,
-			{
-				status: action,
-			}
-		);
-		dispatch(
-			fetchStockMutationsAsync(
-				"out",
-				`?warehouse=${warehouse}&status=${status}&offset=${offset}`
-			)
-		);
-	};
 	useEffect(() => {
 		takeFromQuery();
 
@@ -170,15 +144,9 @@ const AdminOutgoingStocksTable = () => {
 				return (
 					request?.status === "pending" && (
 						<div className="relative flex justify-start items-center gap-2">
-							<Button
-								onClick={() =>
-									handleAction("canceled", request.id)
-								}
-								variant="faded"
-								color="danger"
-							>
-								<span className="font-medium">Cancel</span>
-							</Button>
+							<AdminCancelStockRequestModal
+								requestID={request.id}
+							/>
 						</div>
 					)
 				);

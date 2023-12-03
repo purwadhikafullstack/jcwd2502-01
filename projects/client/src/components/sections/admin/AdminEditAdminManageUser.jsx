@@ -51,7 +51,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		},
 		onSubmit: (values) => {
 			handleSubmit(values);
-			// console.log(values.idUser);
 		},
 		validationSchema: yup.object().shape({
 			username: yup.string().required(),
@@ -67,7 +66,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 				"/users/updateAdminData",
 				values
 			);
-			console.log(updateDataAdmin);
 
 			if (!updateDataAdmin.data.isError) {
 				toast.success("Add new admin success", {
@@ -157,17 +155,15 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		setSelectedWarehouse(item);
 		formik.setFieldValue("warehouse_id", item);
 	};
+
 	const handleRole = (item) => {
 		setSelectedRole(item);
 		formik.setFieldValue("role", item);
 	};
+
 	useEffect(() => {
 		fetchWarehouses();
 	}, []);
-	// useEffect(() => {
-	// 	// formik.setFieldValue("recipient_name", username);
-	// 	// console.log(formik.values);
-	// }, [formik]);
 
 	useEffect(() => {
 		formik.setValues({
@@ -177,8 +173,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 			warehouse_id: data?.warehouse_id || "",
 			role: data?.role || "",
 		});
-
-		// gender ? setSelectedGender(gender):
 	}, [data]);
 
 	return (

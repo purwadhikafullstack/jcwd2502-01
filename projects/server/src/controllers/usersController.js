@@ -181,7 +181,6 @@ module.exports = {
 	deleteAdminData: async (req, res, next) => {
 		try {
 			const result = await deleteDataAdmin(req.params);
-			// console.log(req.params);
 			respHandler(
 				res,
 				result.message,
@@ -196,7 +195,6 @@ module.exports = {
 	reqChangePassByAdmin: async (req, res, next) => {
 		try {
 			const result = await requestPasswordByAdmin(req.params);
-			// console.log(req.params);
 			respHandler(
 				res,
 				result.message,

@@ -107,15 +107,7 @@ const AdminRoleUserListTable = () => {
 					orderDirectionUser !== null ? `${orderDirectionUser}` : ""
 				}&offsetUser=${offsetUser}`
 			);
-			console.log(
-				`/admin/users?searchUser=${
-					searchUser !== null ? `${searchUser}` : ""
-				}&orderFieldUser=${
-					orderFieldUser !== null ? `${orderFieldUser}` : ""
-				}&orderDirectionUser=${
-					orderDirectionUser !== null ? `${orderDirectionUser}` : ""
-				}&offsetUser=${offsetUser}`
-			);
+
 			dispatch(
 				fetchUser(
 					`?
@@ -131,16 +123,10 @@ const AdminRoleUserListTable = () => {
 		}
 	}, [orderFieldUser, orderDirectionUser, searchUser, pageUser, oneTime]);
 
-	useEffect(() => {
-		// dispatch(fetchUser());
-		console.log("ini user list >>>", user);
-	}, []);
-
 	const columns = [
 		{ name: "NAME", uid: "name" },
 		{ name: "EMAIL", uid: "email" },
 		{ name: "STATUS", uid: "status" },
-		// { name: "ACTIONS", uid: "actions" },
 	];
 
 	const handleSubmitSearch = (e) => {
@@ -166,7 +152,6 @@ const AdminRoleUserListTable = () => {
 		);
 	};
 
-	console.log(user);
 	const renderCell = React.useCallback((users, columnKey) => {
 		const profilePicture = `${
 			process.env.REACT_APP_IMAGE_API

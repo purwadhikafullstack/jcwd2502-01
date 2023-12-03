@@ -28,12 +28,7 @@ Router.post(
 	checkRegister,
 	usersController.registAdmin
 );
-Router.patch(
-	"/updateAdminData",
-	verifySuper,
-	checkRegister,
-	usersController.updateAdminData
-);
+Router.patch("/updateAdminData", verifySuper, usersController.updateAdminData);
 Router.delete(
 	"/deleteAdminData/:id",
 	verifySuper,

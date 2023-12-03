@@ -7,19 +7,15 @@ import {
 	TableRow,
 	TableCell,
 	User,
-	Tooltip,
-	Button,
 	Pagination,
 	Select,
 	SelectItem,
 } from "@nextui-org/react";
-import { BiEdit } from "react-icons/bi";
 import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
 
 import AdminCreateNewWarehouseModal from "../../../components/layouts/admin/AdminCreateNewWarehouseModal";
 import AdminEditWarehouseModal from "../../../components/layouts/admin/AdminEditWarehouseModal";
 import AdminPageMainContainer from "../../../components/layouts/admin/AdminPageMainContainer";
-import { useStateContext } from "../../../contexts/ContextProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -36,10 +32,6 @@ import {
 import AdminDeleteWarehouseModal from "../../../components/sections/admin/AdminDeleteWarehouseModal";
 
 const AdminWarehouseListPage = () => {
-	const { openEditWarehouseModal, setOpenEditWarehouseModal } =
-		useStateContext();
-	const [selectedWarehouseId, setSelectedWarehouseId] = useState(null);
-
 	const [oneTime, setOneTime] = useState(false);
 	const [keyOrder, setKeyOrder] = useState("");
 
@@ -47,16 +39,15 @@ const AdminWarehouseListPage = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 
-	const warehouses = useSelector((state) => state.products.warehouses);
-	const count = useSelector((state) => state.products.count);
-	const totalPage = useSelector((state) => state.products.totalPage);
-
-	const page = useSelector((state) => state.products.page);
-	const offset = useSelector((state) => state.products.offset);
-	const orderField = useSelector((state) => state.products.orderField);
-	const orderDirection = useSelector(
-		(state) => state.products.orderDirection
-	);
+	const {
+		warehouses,
+		count,
+		totalPage,
+		page,
+		offset,
+		orderField,
+		orderDirection,
+	} = useSelector((state) => state.products);
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
@@ -116,19 +107,6 @@ const AdminWarehouseListPage = () => {
 		}
 	}, [orderField, orderDirection, offset, oneTime]);
 
-	const onOpenEditWarehouseModal = (warehouse_id) => {
-		setOpenEditWarehouseModal(!openEditWarehouseModal);
-		setSelectedWarehouseId(warehouse_id);
-	};
-
-	useEffect(() => {
-		if (openEditWarehouseModal) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "scroll";
-		}
-	}, [openEditWarehouseModal]);
-
 	const columns = [
 		{ name: "NAME", uid: "name" },
 		{ name: "PROVINCE", uid: "province" },
@@ -182,32 +160,11 @@ const AdminWarehouseListPage = () => {
 			case "actions":
 				return (
 					<div className="relative flex items-center gap-2">
-						{/* <Tooltip content="Details">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-default-400 cursor-pointer active:opacity-50"
-							>
-								<IoEyeOutline size={24} />
-							</Button>
-						</Tooltip> */}
-						<Tooltip content="Edit warehouse">
-							<Button
-								isIconOnly
-								variant="light"
-								className="text-lg text-default-400 cursor-pointer active:opacity-50"
-								onPress={() => {
-									onOpenEditWarehouseModal(warehouse.id);
-								}}
-							>
-								<BiEdit size={24} />
-							</Button>
-						</Tooltip>
+						<AdminEditWarehouseModal warehouseId={warehouse.id} />
 						<AdminDeleteWarehouseModal warehouseID={warehouse.id} />
 					</div>
 				);
 			default:
-			// return cellValue;
 		}
 	}, []);
 
@@ -232,98 +189,79 @@ const AdminWarehouseListPage = () => {
 	}, [totalPage, page]);
 
 	return (
-		<>
-			<AdminPageMainContainer pageName={"admin-warehouse-list-page"}>
-				<div className="flex justify-between mb-4">
-					<h1 className="font-bold text-title-lg">Warehouses</h1>
-				</div>
-				<div className="w-full flex justify-between mb-4">
+		<AdminPageMainContainer pageName={"admin-warehouse-list-page"}>
+			<div className="flex justify-between mb-4">
+				<h1 className="font-bold text-title-lg">Warehouses</h1>
+			</div>
+			<div className="w-full flex justify-between mb-4">
+				<div className="sort-by flex items-center w-1/4">
 					<div className="sort-by flex items-center w-1/4">
-						{/* <div className="min-w-[80px] font-medium">Sort by:</div>
-						<SelectSortBy admin={true} /> */}
-						<div className="sort-by flex items-center w-1/4">
-							<div className="min-w-[80px] font-medium">
-								Sort by:
-							</div>
-							<Select
-								labelPlacement={"outside-left"}
-								placeholder="Options"
-								size="md"
-								variant="bordered"
-								className="min-w-[178px]"
-								selectedKeys={
-									keyOrder ? [String(keyOrder)] : []
+						<div className="min-w-[80px] font-medium">Sort by:</div>
+						<Select
+							labelPlacement={"outside-left"}
+							placeholder="Options"
+							size="md"
+							variant="bordered"
+							className="min-w-[178px]"
+							selectedKeys={keyOrder ? [String(keyOrder)] : []}
+						>
+							<SelectItem
+								key={"last_updated"}
+								value={"last_updated"}
+								onClick={() =>
+									dispatch(onSort("updatedAt", "desc"))
 								}
 							>
-								<SelectItem
-									key={"last_updated"}
-									value={"last_updated"}
-									onClick={() =>
-										dispatch(onSort("updatedAt", "desc"))
-									}
-								>
-									Last updated
-								</SelectItem>
-								<SelectItem
-									key={"az"}
-									value={"az"}
-									onClick={() =>
-										dispatch(
-											onSort("warehouse_name", "asc")
-										)
-									}
-								>
-									A-Z
-								</SelectItem>
-								<SelectItem
-									key={"za"}
-									value={"za"}
-									onClick={() =>
-										dispatch(
-											onSort("warehouse_name", "desc")
-										)
-									}
-								>
-									Z-A
-								</SelectItem>
-							</Select>
-						</div>
+								Last updated
+							</SelectItem>
+							<SelectItem
+								key={"az"}
+								value={"az"}
+								onClick={() =>
+									dispatch(onSort("warehouse_name", "asc"))
+								}
+							>
+								A-Z
+							</SelectItem>
+							<SelectItem
+								key={"za"}
+								value={"za"}
+								onClick={() =>
+									dispatch(onSort("warehouse_name", "desc"))
+								}
+							>
+								Z-A
+							</SelectItem>
+						</Select>
 					</div>
-					<AdminCreateNewWarehouseModal />
 				</div>
-				<Table
-					aria-label="Example table with custom cells"
-					bottomContent={bottomContent}
-					bottomContentPlacement="outside"
-				>
-					<TableHeader columns={columns}>
-						{(column) => (
-							<TableColumn key={column.uid} align={"center"}>
-								{column.name}
-							</TableColumn>
-						)}
-					</TableHeader>
-					<TableBody items={warehouses}>
-						{(item) => (
-							<TableRow key={item.id}>
-								{(columnKey) => (
-									<TableCell>
-										{renderCell(item, columnKey)}
-									</TableCell>
-								)}
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>
-			</AdminPageMainContainer>
-
-			{openEditWarehouseModal ? (
-				<AdminEditWarehouseModal
-					handleOpenEditWarehouseModal={onOpenEditWarehouseModal}
-					warehouseId={selectedWarehouseId}
-				/>
-			) : null}
-		</>
+				<AdminCreateNewWarehouseModal />
+			</div>
+			<Table
+				aria-label="Example table with custom cells"
+				bottomContent={bottomContent}
+				bottomContentPlacement="outside"
+			>
+				<TableHeader columns={columns}>
+					{(column) => (
+						<TableColumn key={column.uid} align={"center"}>
+							{column.name}
+						</TableColumn>
+					)}
+				</TableHeader>
+				<TableBody items={warehouses}>
+					{(item) => (
+						<TableRow key={item.id}>
+							{(columnKey) => (
+								<TableCell>
+									{renderCell(item, columnKey)}
+								</TableCell>
+							)}
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+		</AdminPageMainContainer>
 	);
 };
 

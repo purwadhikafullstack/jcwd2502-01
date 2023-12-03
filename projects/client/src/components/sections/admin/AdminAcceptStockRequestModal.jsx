@@ -6,37 +6,38 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	Tooltip,
 	useDisclosure,
 } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
-import { IoTrashOutline } from "react-icons/io5";
 import MySpinner from "../../uis/Spinners/Spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchBrandsAsync } from "../../../redux/features/products";
+import { fetchStockMutationsAsync } from "../../../redux/features/products";
 
-const AdminDeleteBrandModal = ({ brandID }) => {
+const AdminAcceptStockRequestModal = ({ requestID }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-	const { offset, orderField, orderDirection } = useSelector(
+	const dispatch = useDispatch();
+
+	const { warehouse, offset, status } = useSelector(
 		(state) => state.products
 	);
 
-	const dispatch = useDispatch();
-
-	const onDelete = async (brandId) => {
+	const onAcceptStockRequest = async (mutationId) => {
 		try {
 			setIsLoading(true);
 
 			const accessToken = localStorage.getItem("accessToken");
-			const deleteBrand = await axiosInstance(accessToken).delete(
-				`brands/${brandId}`
+			const acceptMutation = await axiosInstance(accessToken).patch(
+				`stocks/mutation/${mutationId}`,
+				{
+					status: "accepted",
+				}
 			);
 
-			if (deleteBrand.data.isError) {
-				toast.error(deleteBrand.data.message, {
+			if (acceptMutation.data.isError) {
+				toast.error(acceptMutation.data.message, {
 					style: {
 						backgroundColor: "var(--background)",
 						color: "var(--text)",
@@ -45,21 +46,22 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 				setIsLoading(false);
 				return;
 			}
-
-			toast.success(deleteBrand.data.message, {
+			toast.success(acceptMutation.data.message, {
 				style: {
 					backgroundColor: "var(--background)",
 					color: "var(--text)",
 				},
 			});
 
+			setIsLoading(false);
+
 			dispatch(
-				fetchBrandsAsync(
-					`?orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				fetchStockMutationsAsync(
+					"in",
+					`?warehouse=${warehouse}&status=${status}&offset=${offset}`
 				)
 			);
 
-			setIsLoading(false);
 			onOpenChange();
 		} catch (error) {
 			toast.error("Network error", {
@@ -75,16 +77,9 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 
 	return (
 		<>
-			<Tooltip color="danger" content="Remove Brand">
-				<Button
-					isIconOnly
-					variant="light"
-					className="text-lg text-danger cursor-pointer active:opacity-50"
-					onPress={onOpen}
-				>
-					<IoTrashOutline size={24} />
-				</Button>
-			</Tooltip>
+			<Button onPress={onOpen} variant="faded" color="primary">
+				<span className="font-medium">Accept</span>
+			</Button>
 			<Modal
 				isOpen={isOpen}
 				onOpenChange={onOpenChange}
@@ -97,7 +92,7 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 								Warning
 							</ModalHeader>
 							<ModalBody>
-								<p>Are you sure to delete this brand?</p>
+								<p>Are you sure to accept this request?</p>
 							</ModalBody>
 							<ModalFooter>
 								<Button variant="ghost" onPress={onClose}>
@@ -106,9 +101,9 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 								<Button
 									isLoading={isLoading}
 									spinner={<MySpinner />}
-									className="bg-red-600"
+									className="bg-primary-600"
 									onClick={() => {
-										onDelete(brandID);
+										onAcceptStockRequest(requestID);
 									}}
 								>
 									<p className="font-medium text-white">
@@ -124,4 +119,4 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 	);
 };
 
-export default AdminDeleteBrandModal;
+export default AdminAcceptStockRequestModal;

@@ -169,7 +169,6 @@ const AdminReportProductListTable = () => {
 				} ${year && `&year=${year}`}`
 			)
 		);
-		// }
 	}, [
 		orderField,
 		orderDirection,
@@ -181,14 +180,6 @@ const AdminReportProductListTable = () => {
 		month,
 		year,
 	]);
-
-	// useEffect(() => {
-	// 	dispatch(getTransactionByProduct());
-	// }, []);
-
-	useEffect(() => {
-		console.log(transactionByProduct);
-	}, [transactionByProduct]);
 
 	const columns = [
 		{ name: "DATE", uid: "date" },

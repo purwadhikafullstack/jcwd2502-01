@@ -10,7 +10,12 @@ import {
 } from "@nextui-org/react";
 import { axiosInstance } from "../../../lib/axios";
 import { useDispatch } from "react-redux";
-import { onClear, setSearch } from "../../../redux/features/products";
+import {
+	onClear,
+	setOrderDirection,
+	setOrderField,
+	setSearch,
+} from "../../../redux/features/products";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
@@ -174,7 +179,7 @@ const AdminCreateNewProductPage = () => {
 				return;
 			}
 
-			toast.success("Create new product success", {
+			toast.success(createProduct.data.message, {
 				style: {
 					backgroundColor: "var(--background)",
 					color: "var(--text)",
@@ -182,6 +187,9 @@ const AdminCreateNewProductPage = () => {
 			});
 
 			setTimeout(() => {
+				dispatch(setOrderField("updatedAt"));
+				dispatch(setOrderDirection("desc"));
+
 				navigate(
 					"/admin/products?orderField=updatedAt&orderDirection=desc"
 				);
@@ -189,6 +197,13 @@ const AdminCreateNewProductPage = () => {
 
 			return;
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		}
 	};
