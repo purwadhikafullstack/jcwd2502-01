@@ -174,8 +174,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 			role: data?.role || "",
 		});
 		setSelectedRole(data.role);
-		console.log(formik.values);
-		// gender ? setSelectedGender(gender):
 	}, [data]);
 
 	useEffect(() => {
@@ -300,45 +298,48 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 														{renderRoleOption()}
 													</Select>
 												</div>
-												<div className="form-control">
-													<Select
-														name="warehouse_id"
-														label="Warehouse"
-														labelPlacement="outside"
-														variant="bordered"
-														radius="sm"
-														size="lg"
-														isDisabled={
-															selectedRole !==
-															"admin"
-														}
-														onChange={(e) =>
-															handleWarehouse(
-																e.target.value
-															)
-														}
-														placeholder="Select a warehouse"
-														// isRequired
-														selectedKeys={
-															formik.values
-																.warehouse_id
-																? [
-																		String(
-																			formik
-																				.values
-																				.warehouse_id
-																		),
-																  ]
-																: null
-														}
-														// value={
-														// 	formik.values
-														// 		.warehouse_id
-														// }
-													>
-														{renderWarehouseOption()}
-													</Select>
-												</div>
+												{selectedRole === "admin" ? (
+													<div className="form-control">
+														<Select
+															name="warehouse"
+															label="Warehouse"
+															labelPlacement="outside"
+															variant="bordered"
+															radius="sm"
+															size="lg"
+															isDisabled={
+																selectedRole !==
+																"admin"
+															}
+															onChange={(e) => {
+																handleWarehouse(
+																	e.target
+																		.value
+																);
+																console.log(
+																	e.target
+																		.value
+																);
+															}}
+															selectedKeys={
+																formik.values
+																	.warehouse_id
+																	? [
+																			String(
+																				formik
+																					.values
+																					.warehouse_id
+																			),
+																	  ]
+																	: null
+															}
+															placeholder="Select a warehouse"
+															// isRequired
+														>
+															{renderWarehouseOption()}
+														</Select>
+													</div>
+												) : null}
 											</form>
 										</ModalBody>
 										<ModalFooter className="justify-center">
