@@ -113,9 +113,12 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		}
 	};
 
-	const fetchWarehouses = async () => {
+	const fetchWarehouses = async (id) => {
 		try {
-			const { data } = await axiosInstance().get(`warehouses/all`);
+			const { data } = await axiosInstance().get(
+				`warehouses/unassignedWarehouse?id=${id ? id : ""}`
+			);
+			console.log(data.data);
 			setWarehouses(data.data);
 		} catch (error) {
 			console.log(error);
@@ -161,13 +164,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		setSelectedRole(item);
 		formik.setFieldValue("role", item);
 	};
-	useEffect(() => {
-		fetchWarehouses();
-	}, []);
-	// useEffect(() => {
-	// 	// formik.setFieldValue("recipient_name", username);
-	// 	// console.log(formik.values);
-	// }, [formik]);
 
 	useEffect(() => {
 		formik.setValues({
@@ -177,9 +173,24 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 			warehouse_id: data?.warehouse_id || "",
 			role: data?.role || "",
 		});
-
+		setSelectedRole(data.role);
+		console.log(formik.values);
 		// gender ? setSelectedGender(gender):
 	}, [data]);
+
+	useEffect(() => {
+		if (data?.warehouse_id) {
+			fetchWarehouses(data?.warehouse_id ? data?.warehouse_id : "");
+		} else {
+			fetchWarehouses();
+		}
+		console.log(data?.warehouse_id);
+		console.log(warehouses);
+	}, []);
+	// useEffect(() => {
+	// 	// formik.setFieldValue("recipient_name", username);
+	// 	// console.log(formik.values);
+	// }, [formik]);
 
 	return (
 		<>
@@ -269,9 +280,11 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
-														onChange={
-															formik.handleChange
-														}
+														onChange={(e) => {
+															handleRole(
+																e.target.value
+															);
+														}}
 														placeholder="Select a Role"
 														isRequired
 														selectedKeys={
@@ -295,6 +308,10 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
+														isDisabled={
+															selectedRole !==
+															"admin"
+														}
 														onChange={(e) =>
 															handleWarehouse(
 																e.target.value
@@ -314,10 +331,10 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 																  ]
 																: null
 														}
-														value={
-															formik.values
-																.warehouse_id
-														}
+														// value={
+														// 	formik.values
+														// 		.warehouse_id
+														// }
 													>
 														{renderWarehouseOption()}
 													</Select>

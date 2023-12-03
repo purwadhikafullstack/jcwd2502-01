@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../../lib/axios";
-import toast from "react-hot-toast";
 
 const initialState = {
 	transaction: [],

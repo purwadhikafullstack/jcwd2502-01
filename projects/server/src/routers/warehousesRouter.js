@@ -8,6 +8,10 @@ const { warehousesController } = require("../controllers"); // otomatis baca ind
 // const upload = require("./../middlewares/upload");
 // const { verify } = require("./../lib/jwt");
 
+Router.get(
+	"/unassignedWarehouse",
+	warehousesController.fetchUnassignedWarehouse
+);
 Router.get("/all", warehousesController.getAllWarehouses);
 Router.get("/list", warehousesController.getWarehouseList);
 Router.get("/others/:warehouseId", warehousesController.getOtherWarehouses);

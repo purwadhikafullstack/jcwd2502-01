@@ -9,6 +9,7 @@ const {
 	findWarehouse,
 	findOtherWarehouses,
 	findWarehouseList,
+	getUnassignedWarehouse,
 } = require("./../services/warehousesService");
 
 const respHandler = require("../utils/respHandler");
@@ -70,6 +71,15 @@ module.exports = {
 		try {
 			const { warehouseId } = req.params;
 			const result = await removeWarehouse(warehouseId);
+			respHandler(res, result.message, result.data);
+		} catch (error) {
+			next(error);
+		}
+	},
+	fetchUnassignedWarehouse: async (req, res, next) => {
+		try {
+			console.log(req.query.id);
+			const result = await getUnassignedWarehouse(req.query);
 			respHandler(res, result.message, result.data);
 		} catch (error) {
 			next(error);
