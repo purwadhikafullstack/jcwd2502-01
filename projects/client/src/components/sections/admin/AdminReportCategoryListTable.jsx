@@ -212,7 +212,6 @@ const AdminReportCategoryListTable = () => {
 				// getTransactionByCategory()
 			);
 		}
-		console.log(orderFieldCategory, orderDirectionCategory);
 	}, [
 		orderFieldCategory,
 		orderDirectionCategory,
@@ -223,30 +222,14 @@ const AdminReportCategoryListTable = () => {
 		year,
 		oneTime,
 	]);
-	// useEffect(() => {
-	// 	dispatch(getTransactionByCategory());
-	// }, []);
-
-	// useEffect(() => {
-	// 	console.log(transactionByCategory);
-	// }, [transactionByCategory]);
 
 	const columns = [
-		// { name: "NO", uid: "number" },
 		{ name: "CATEGORY NAME", uid: "category_name" },
 		{ name: "TOTAL", uid: "total" },
 	];
 
 	const renderCell = React.useCallback((TBCategory, columnKey) => {
 		switch (columnKey) {
-			// case "number":
-			// 	return (
-			// 		<div className="flex items-center gap-4 w-full">
-			// 			<p className="font-bold text-base w-full">
-			// 				{`${TBCategory.id}`}{" "}
-			// 			</p>
-			// 		</div>
-			// 	);
 			case "category_name":
 				return (
 					<div className="flex items-center gap-4 w-full">

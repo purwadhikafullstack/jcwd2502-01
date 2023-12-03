@@ -18,21 +18,16 @@ const AdminSalesReportPage = () => {
 		const selectedTabs = queryParams.get("tab");
 		if (selectedTabs) {
 			setKey(selectedTabs);
-			console.log(selectedTabs);
 		}
 	};
 
 	const onTab = (value) => {
-		console.log(value);
 		navigate(`/admin/reports?tab=${value}`);
 		setKey(value);
 	};
 
-	console.log(location.pathname);
-
 	useEffect(() => {
 		takeFromQuery();
-		console.log(key);
 	}, [key, setKey, location]);
 
 	let tabs = [
@@ -78,15 +73,6 @@ const AdminSalesReportPage = () => {
 					aria-label="Dynamic tabs"
 					items={tabs}
 					defaultSelectedKey={key}
-					// selectedKey={key}
-					onClick={() => {
-						// onTab(item.id);
-						console.log(">>>>> ini ya", tabs);
-					}}
-					// onClick={(newKey) => {
-					// 	// setKey(newKey.key);
-					// 	console.log(newKey);
-					// }}
 				>
 					{(item) => (
 						<Tab

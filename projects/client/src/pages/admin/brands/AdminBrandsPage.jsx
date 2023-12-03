@@ -7,20 +7,12 @@ import {
 	TableBody,
 	TableRow,
 	TableCell,
-	Tooltip,
-	Button,
-	Input,
 	Pagination,
 	Select,
 	SelectItem,
 } from "@nextui-org/react";
-import { IoTrashOutline, IoSearch } from "react-icons/io5";
-import { BiEdit } from "react-icons/bi";
-import { useStateContext } from "../../../contexts/ContextProvider";
-import { axiosInstance } from "../../../lib/axios";
 import AdminEditBrandModal from "../../../components/layouts/admin/AdminEditBrandModal";
 import AdminCreateNewBrandModal from "../../../components/layouts/admin/AdminCreateNewBrandModal";
-import SelectSortBy from "../../../components/uis/Selects/SelectSortBy";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
@@ -37,10 +29,6 @@ import {
 import AdminDeleteBrandModal from "../../../components/sections/admin/AdminDeleteBrandModal";
 
 const AdminBrandsPage = () => {
-	const { openEditBrandModal, setOpenEditBrandModal } = useStateContext();
-	const [selectedBrandId, setSelectedBrandId] = useState(null);
-	const [selectedBrandName, setSelectedBrandName] = useState(null);
-	// const [brands, setBrands] = useState([]);
 	const [oneTime, setOneTime] = useState(false);
 	const [keyOrder, setKeyOrder] = useState("");
 
@@ -49,16 +37,15 @@ const AdminBrandsPage = () => {
 	const location = useLocation();
 
 	const role = useSelector((state) => state.user.role);
-	const brands = useSelector((state) => state.products.brands);
-	const count = useSelector((state) => state.products.count);
-	const totalPage = useSelector((state) => state.products.totalPage);
-
-	const page = useSelector((state) => state.products.page);
-	const offset = useSelector((state) => state.products.offset);
-	const orderField = useSelector((state) => state.products.orderField);
-	const orderDirection = useSelector(
-		(state) => state.products.orderDirection
-	);
+	const {
+		brands,
+		count,
+		totalPage,
+		page,
+		offset,
+		orderField,
+		orderDirection,
+	} = useSelector((state) => state.products);
 
 	const takeFromQuery = () => {
 		const queryParams = new URLSearchParams(location.search);
@@ -125,33 +112,6 @@ const AdminBrandsPage = () => {
 		}
 	}, [orderField, orderDirection, offset, oneTime]);
 
-	const onOpenEditBrandModal = (brand_id, brand_name) => {
-		setOpenEditBrandModal(!openEditBrandModal);
-		setSelectedBrandId(brand_id);
-		setSelectedBrandName(brand_name);
-	};
-
-	// const onDelete = async (brandId) => {
-	// 	try {
-	// 		const accessToken = localStorage.getItem("accessToken");
-
-	// 		//confirm
-
-	// 		await axiosInstance(accessToken).delete(`brands/${brandId}`);
-	// 		window.location.reload(false);
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
-
-	useEffect(() => {
-		if (openEditBrandModal) {
-			document.body.style.overflow = "hidden";
-		} else {
-			document.body.style.overflow = "scroll";
-		}
-	}, [openEditBrandModal]);
-
 	const columns = [
 		{ name: "BRAND NAME", uid: "brand_name" },
 		{ name: "TOTAL PRODUCTS", uid: "total_products" },
@@ -168,22 +128,10 @@ const AdminBrandsPage = () => {
 				case "actions":
 					return (
 						<div className="relative flex items-center gap-2">
-							<Tooltip content="Edit brand">
-								<Button
-									isIconOnly
-									variant="light"
-									className="text-lg text-default-400 cursor-pointer active:opacity-50"
-									onPress={() => {
-										onOpenEditBrandModal(
-											brand.id,
-											brand.brand_name
-										);
-									}}
-									isDisabled={role !== "super"}
-								>
-									<BiEdit size={24} />
-								</Button>
-							</Tooltip>
+							<AdminEditBrandModal
+								brandId={brand.id}
+								brandName={brand.brand_name}
+							/>
 							<AdminDeleteBrandModal brandID={brand.id} />
 						</div>
 					);
@@ -214,123 +162,100 @@ const AdminBrandsPage = () => {
 	}, [totalPage, page]);
 
 	return (
-		<>
-			<AdminPageMainContainer>
-				<div className="admin-page-header flex justify-between gap-4 mb-6">
-					<h1 className="font-bold text-title-lg">Brands</h1>
-				</div>
-				<div className="w-full flex justify-between mb-4">
+		<AdminPageMainContainer>
+			<div className="admin-page-header flex justify-between gap-4 mb-6">
+				<h1 className="font-bold text-title-lg">Brands</h1>
+			</div>
+			<div className="w-full flex justify-between mb-4">
+				<div className="sort-by flex items-center w-1/4">
 					<div className="sort-by flex items-center w-1/4">
-						{/* <div className="min-w-[80px] font-medium">Sort by:</div>
-						<SelectSortBy admin={true} /> */}
-
-						<div className="sort-by flex items-center w-1/4">
-							<div className="min-w-[80px] font-medium">
-								Sort by:
-							</div>
-							<Select
-								labelPlacement={"outside-left"}
-								placeholder="Options"
-								size="md"
-								variant="bordered"
-								className="min-w-[178px]"
-								selectedKeys={
-									keyOrder ? [String(keyOrder)] : []
+						<div className="min-w-[80px] font-medium">Sort by:</div>
+						<Select
+							labelPlacement={"outside-left"}
+							placeholder="Options"
+							size="md"
+							variant="bordered"
+							className="min-w-[178px]"
+							selectedKeys={keyOrder ? [String(keyOrder)] : []}
+						>
+							<SelectItem
+								key={"last_updated"}
+								value={"last_updated"}
+								onClick={() =>
+									dispatch(onSort("updatedAt", "desc"))
 								}
 							>
-								<SelectItem
-									key={"last_updated"}
-									value={"last_updated"}
-									onClick={() =>
-										dispatch(onSort("updatedAt", "desc"))
-									}
-								>
-									Last updated
-								</SelectItem>
-								<SelectItem
-									key={"az"}
-									value={"az"}
-									onClick={() =>
-										dispatch(onSort("brand_name", "asc"))
-									}
-								>
-									A-Z
-								</SelectItem>
-								<SelectItem
-									key={"za"}
-									value={"za"}
-									onClick={() =>
-										dispatch(onSort("brand_name", "desc"))
-									}
-								>
-									Z-A
-								</SelectItem>
-								<SelectItem
-									key={"most"}
-									value={"most"}
-									onClick={() =>
-										dispatch(
-											onSort("total_products", "desc")
-										)
-									}
-								>
-									Most products
-								</SelectItem>
-								<SelectItem
-									key={"least"}
-									value={"least"}
-									onClick={() =>
-										dispatch(
-											onSort("total_products", "asc")
-										)
-									}
-								>
-									Least products
-								</SelectItem>
-							</Select>
-						</div>
+								Last updated
+							</SelectItem>
+							<SelectItem
+								key={"az"}
+								value={"az"}
+								onClick={() =>
+									dispatch(onSort("brand_name", "asc"))
+								}
+							>
+								A-Z
+							</SelectItem>
+							<SelectItem
+								key={"za"}
+								value={"za"}
+								onClick={() =>
+									dispatch(onSort("brand_name", "desc"))
+								}
+							>
+								Z-A
+							</SelectItem>
+							<SelectItem
+								key={"most"}
+								value={"most"}
+								onClick={() =>
+									dispatch(onSort("total_products", "desc"))
+								}
+							>
+								Most products
+							</SelectItem>
+							<SelectItem
+								key={"least"}
+								value={"least"}
+								onClick={() =>
+									dispatch(onSort("total_products", "asc"))
+								}
+							>
+								Least products
+							</SelectItem>
+						</Select>
 					</div>
-					<AdminCreateNewBrandModal />
 				</div>
-				<Table
-					aria-label="Example table with custom cells"
-					bottomContent={bottomContent}
-					bottomContentPlacement="outside"
-				>
-					<TableHeader columns={columns}>
-						{(column) => (
-							<TableColumn
-								key={column.uid}
-								align={
-									column.uid === "actions" ? "end" : "start"
-								}
-							>
-								{column.name}
-							</TableColumn>
-						)}
-					</TableHeader>
-					<TableBody items={brands}>
-						{(item) => (
-							<TableRow key={item.id}>
-								{(columnKey) => (
-									<TableCell>
-										{renderCell(item, columnKey)}
-									</TableCell>
-								)}
-							</TableRow>
-						)}
-					</TableBody>
-				</Table>{" "}
-			</AdminPageMainContainer>
-
-			{openEditBrandModal ? (
-				<AdminEditBrandModal
-					handleOpenEditBrandModal={onOpenEditBrandModal}
-					brandId={selectedBrandId}
-					brandName={selectedBrandName}
-				/>
-			) : null}
-		</>
+				<AdminCreateNewBrandModal />
+			</div>
+			<Table
+				aria-label="Example table with custom cells"
+				bottomContent={bottomContent}
+				bottomContentPlacement="outside"
+			>
+				<TableHeader columns={columns}>
+					{(column) => (
+						<TableColumn
+							key={column.uid}
+							align={column.uid === "actions" ? "end" : "start"}
+						>
+							{column.name}
+						</TableColumn>
+					)}
+				</TableHeader>
+				<TableBody items={brands}>
+					{(item) => (
+						<TableRow key={item.id}>
+							{(columnKey) => (
+								<TableCell>
+									{renderCell(item, columnKey)}
+								</TableCell>
+							)}
+						</TableRow>
+					)}
+				</TableBody>
+			</Table>
+		</AdminPageMainContainer>
 	);
 };
 

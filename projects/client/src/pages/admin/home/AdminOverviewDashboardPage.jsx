@@ -10,10 +10,6 @@ const AdminOverviewDashboardPage = () => {
 	const fetchTopSoldProducts = async () => {
 		try {
 			const { data } = await axiosInstance().get("products/top");
-			console.log(
-				"🚀 ~ file: AdminOverviewDashboardPage.jsx:13 ~ fetchTopSoldProducts ~ data:",
-				data
-			);
 
 			SetTopSoldProducts(data.data);
 		} catch (error) {

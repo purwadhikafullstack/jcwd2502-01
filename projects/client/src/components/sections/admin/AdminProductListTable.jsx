@@ -37,6 +37,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import AdminDeleteProductModal from "./AdminDeleteProductModal";
 import DefaultProductImg from "./../../../assets/logo/nexo_sqr.png";
+import toast from "react-hot-toast";
 
 const AdminProductListTable = ({ props }) => {
 	const [oneTime, setOneTime] = useState(false);
@@ -111,10 +112,46 @@ const AdminProductListTable = ({ props }) => {
 	};
 
 	const onDelete = async (productId) => {
-		const accessToken = localStorage.getItem("accessToken");
-		await axiosInstance(accessToken).delete(`products/${productId}`);
+		try {
+			const accessToken = localStorage.getItem("accessToken");
+			const deleteProduct = await axiosInstance(accessToken).delete(
+				`products/${productId}`
+			);
 
-		window.location.reload(false);
+			if (deleteProduct.data.isError) {
+				toast.error(deleteProduct.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				return;
+			}
+			toast.success(deleteProduct.data.message, {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
+			dispatch(
+				fetchProductAsync(
+					`?&search=${search}&brand=${brand.join(
+						","
+					)}&category=${category.join(
+						","
+					)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			console.log(error);
+		}
 	};
 
 	const onEdit = (encodedProductName) => {
@@ -158,10 +195,6 @@ const AdminProductListTable = ({ props }) => {
 			);
 		}
 	}, [orderField, orderDirection, search, page, category, brand, oneTime]);
-
-	useEffect(() => {
-		console.log("products >>> ", products);
-	}, [products]);
 
 	const columns = [
 		{ name: "PRODUCT INFO", uid: "product_info" },

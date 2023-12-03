@@ -70,8 +70,6 @@ export const fetchAdminOrderListAsync =
 	(token, page = 1, status = "", search = "", warehouse = "") =>
 	async (dispatch) => {
 		try {
-			console.log(page, status, search, warehouse);
-
 			const { data } = await axiosInstance(token).get(
 				`orders/admin/order-list?page=${page}&status=${status}&search=${search}&warehouse_id=${warehouse}`
 			);

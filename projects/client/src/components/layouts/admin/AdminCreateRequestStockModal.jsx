@@ -149,6 +149,13 @@ const AdminCreateRequestStockModal = ({ productName }) => {
 			onOpenChange();
 			setIsLoading(false);
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		}
 	};

@@ -19,7 +19,7 @@ const upload = async (req, res, next) => {
 					};
 				}
 			});
-			console.log("mulupload>>>>", req.files);
+
 			next();
 		} catch (error) {
 			deleteFiles(error.files);

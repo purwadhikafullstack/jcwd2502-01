@@ -175,6 +175,7 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 	useEffect(() => {
 		fetchWarehouses();
 	}, [selectedWarehouse]);
+
 	useEffect(() => {
 		// formik.setFieldValue("recipient_name", username);
 		if (selectedRole === "super") {
@@ -316,10 +317,8 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 															handleRole(
 																e.target.value
 															);
-															console.log(
-																e.target.value
-															);
 														}}
+
 														placeholder="Select a role"
 														isRequired
 													>
@@ -375,7 +374,6 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 												type="reset"
 												onClick={(e) => {
 													formik.resetForm();
-													// onClose();
 												}}
 												fullWidth
 											>

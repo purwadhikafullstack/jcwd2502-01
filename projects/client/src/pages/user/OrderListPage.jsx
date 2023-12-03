@@ -137,7 +137,7 @@ const OrderListPage = () => {
 	};
 
 	return (
-		<main className="my-container min-h-screen py-4">
+		<main className="order-list-page min-h-screen mx-4 md:max-w-[1000px] md:min-h-[90vh] md:mx-auto py-6">
 			<div className="page-heading mb-6">
 				<h3 className="font-bold text-lg md:text-headline-sm">
 					Transaction History

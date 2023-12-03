@@ -149,6 +149,7 @@ const AdminReportTransactionListTable = () => {
 	}, []);
 
 	useEffect(() => {
+
 		// console.log(">>>tidak");
 		console.log(month);
 		console.log(year);
@@ -162,6 +163,7 @@ const AdminReportTransactionListTable = () => {
 					month !== null ? `${month}` : ""
 				}&year=${year !== null ? `${year}` : ""}`
 			);
+
 			console.log(
 				`/admin/reports?${warehouse ? `warehouse=${warehouse}` : ""}${
 					search && `&searchTransaction=${search}`
@@ -169,6 +171,7 @@ const AdminReportTransactionListTable = () => {
 					month !== null ? `${month}` : ""
 				}&year=${year !== null ? `${year}` : ""}`
 			);
+
 			dispatch(
 				getTransaction(
 					`?warehouse=${

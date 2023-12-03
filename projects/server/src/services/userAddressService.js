@@ -31,37 +31,54 @@ module.exports = {
 				province_id,
 			} = body;
 
-			console.log(body);
-			console.log(id);
-
 			const checkIdCity = await db.city.findOne({
 				where: { id: city_id },
 			});
-			console.log(checkIdCity.dataValues.city_name);
+
+			const checkUserAlreadyHadAddress = await db.user_address.findAll({
+				where: { user_id: id },
+			});
+
 			const { latitude, longitude } = await getLatitudeLongitude(
 				checkIdCity.dataValues.city_name
 			);
-			console.log(latitude, longitude);
 
-			const addAddress = await db.user_address.create({
-				address_name: address_name,
-				is_default: false,
-				recipient_name: recipient_name,
-				user_id: id,
-				address: address,
-				province_id: province_id,
-				city_id: city_id,
-				latitude: latitude,
-				longitude: longitude,
-			});
-			console.log(addAddress);
+			if (!checkUserAlreadyHadAddress.length) {
+				await db.user_address.create({
+					address_name: address_name,
+					is_default: true,
+					recipient_name: recipient_name,
+					user_id: id,
+					address: address,
+					province_id: province_id,
+					city_id: city_id,
+					latitude: latitude,
+					longitude: longitude,
+				});
 
-			return {
-				isError: false,
-				message: "Success Added New Address!",
-			};
+				return {
+					isError: false,
+					message: "Success Added New Address!",
+				};
+			} else {
+				await db.user_address.create({
+					address_name: address_name,
+					is_default: false,
+					recipient_name: recipient_name,
+					user_id: id,
+					address: address,
+					province_id: province_id,
+					city_id: city_id,
+					latitude: latitude,
+					longitude: longitude,
+				});
+
+				return {
+					isError: false,
+					message: "Success Added New Address!",
+				};
+			}
 		} catch (error) {
-			console.log(error);
 			return error;
 		}
 	},
@@ -79,7 +96,6 @@ module.exports = {
 			const checkAddress = await db.user_address.findByPk(address_id);
 			if (!checkAddress)
 				return { isError: true, message: "Address not found!" };
-			console.log(checkAddress.dataValues);
 
 			if (city_id === checkAddress.dataValues.city_id) {
 				data = {
@@ -89,7 +105,7 @@ module.exports = {
 				const updateData = await db.user_address.update(data, {
 					where: { id: address_id },
 				});
-				console.log(updateData);
+
 				if (!updateData)
 					return { isError: true, message: "Failed Update Address!" };
 			} else {
@@ -106,7 +122,6 @@ module.exports = {
 				const updateData = await db.user_address.update(body, {
 					where: { id: address_id },
 				});
-				console.log(updateData);
 
 				if (!updateData)
 					return { isError: true, message: "Failed Update Address!" };
@@ -123,7 +138,7 @@ module.exports = {
 	deleteAddress: async (body) => {
 		try {
 			const { id } = body;
-			console.log(id);
+
 			const deleteData = await db.user_address.destroy({ where: { id } });
 			if (!deleteData)
 				return { isError: true, message: "Failed Delete Address!" };
@@ -137,7 +152,7 @@ module.exports = {
 		try {
 			const { id } = dataToken;
 			const { id: address_id } = body;
-			// console.log(id);
+
 			const setAllFalse = await db.user_address.update(
 				{
 					is_default: false,
@@ -148,7 +163,6 @@ module.exports = {
 					},
 				}
 			);
-			console.log(setAllFalse);
 
 			const setMainAddress = await db.user_address.update(
 				{

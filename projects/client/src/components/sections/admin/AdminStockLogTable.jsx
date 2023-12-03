@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import {
 	Table,
@@ -427,3 +428,4 @@ const AdminStockLogTable = () => {
 };
 
 export default AdminStockLogTable;
+

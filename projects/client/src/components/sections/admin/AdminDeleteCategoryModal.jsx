@@ -12,29 +12,61 @@ import {
 import { axiosInstance } from "../../../lib/axios";
 import toast from "react-hot-toast";
 import { IoTrashOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategoriesAsync } from "../../../redux/features/products";
 
 const AdminDeleteCategoryModal = ({ categoryID }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+	const { offset, orderField, orderDirection } = useSelector(
+		(state) => state.products
+	);
+
+	const dispatch = useDispatch();
 
 	const onDelete = async (categoryId) => {
 		try {
 			setIsLoading(true);
 
 			const accessToken = localStorage.getItem("accessToken");
-			await axiosInstance(accessToken).delete(`categories/${categoryId}`);
+			const deleteCategory = await axiosInstance(accessToken).delete(
+				`categories/${categoryId}`
+			);
 
-			toast.success("Category successfully deleted", {
+			if (deleteCategory.data.isError) {
+				toast.error(deleteCategory.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+				setIsLoading(false);
+				return;
+			}
+			toast.success(deleteCategory.data.message, {
 				style: {
 					backgroundColor: "var(--background)",
 					color: "var(--text)",
 				},
 			});
 
-			setTimeout(() => {
-				window.location.reload(false);
-			}, 1200);
+			dispatch(
+				fetchCategoriesAsync(
+					`?orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+
+			setIsLoading(false);
+			onOpenChange();
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		}
 	};

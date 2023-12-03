@@ -185,8 +185,9 @@ export const getTransaction = (query) => async (dispatch) => {
 		const getData = await axiosInstance(token).get(
 			`reports/getTransaction${query ? query : ""}`
 		);
-		console.log(getData.data);
+
 		const totalPage = await Math.ceil(getData.data.data.count / 12);
+
 		dispatch(setTotalPageTransaction(totalPage));
 		dispatch(setTransaction(getData.data.data.order));
 		dispatch(setCountTransaction(getData.data.data.count));
@@ -201,10 +202,10 @@ export const getTransactionByCategory = (query) => async (dispatch) => {
 		const getData = await axiosInstance(token).get(
 			`reports/getCategory${query ? query : ""}`
 		);
-		console.log(getData.data.data);
+
 		const totalPage = await Math.ceil(getData.data.data.count / 12);
+
 		dispatch(setTotalPageCategory(totalPage));
-		// dispatch(setTBCategory(getData.data.data));
 		dispatch(setTBCategory(getData.data.data.dataBrand));
 		dispatch(setCountCategory(getData.data.data.count));
 	} catch (error) {
@@ -218,8 +219,9 @@ export const getTransactionByBrand = (query) => async (dispatch) => {
 		const getData = await axiosInstance(token).get(
 			`reports/getBrand${query ? query : ""}`
 		);
-		console.log(getData.data.data);
+
 		const totalPage = await Math.ceil(getData.data.data.count / 12);
+
 		dispatch(setTotalPageBrand(totalPage));
 		dispatch(setTBBrand(getData.data.data.dataBrand));
 		dispatch(setCountBrand(getData.data.data.count));
@@ -234,9 +236,10 @@ export const getTransactionByProduct = (query) => async (dispatch) => {
 		const getData = await axiosInstance(token).get(
 			`reports${query ? query : ""}`
 		);
+
 		const totalPage = await Math.ceil(getData.data.data.count / 12);
+
 		dispatch(setTotalPageProduct(totalPage));
-		console.log(getData.data.data.order);
 		dispatch(setTBProduct(getData.data.data.order));
 		dispatch(setCountProduct(getData.data.data.count));
 	} catch (error) {
