@@ -83,11 +83,6 @@ export const adminSidebarMenuLinks = (role) => {
 				path: "/admin/products",
 			},
 			{
-				name: "Categories",
-				icon: <TbCategory2 size={24} />,
-				path: "/admin/categories",
-			},
-			{
 				name: "Stocks",
 				icon: <BiHash size={24} />,
 				path: "/admin/stocks",

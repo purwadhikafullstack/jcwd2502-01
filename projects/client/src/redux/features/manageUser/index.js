@@ -95,10 +95,9 @@ export const fetchUser = (query) => async (dispatch) => {
 		);
 		const totalPage = Math.ceil(data.data.count / 12);
 		dispatch(setTotalPageUser(totalPage));
-		console.log(data.data.data);
+
 		dispatch(setUser(data.data.data));
 		dispatch(setCountUser(data.data.count));
-		console.log(data);
 	} catch (error) {
 		console.log(error);
 	}
@@ -111,10 +110,9 @@ export const fetchAdmin = (query) => async (dispatch) => {
 		);
 		const totalPage = Math.ceil(data.data.count / 12);
 		dispatch(setTotalPageAdmin(totalPage));
-		console.log(data.data.data);
+
 		dispatch(setAdmin(data.data.data));
 		dispatch(setCountAdmin(data.data.count));
-		console.log(data);
 	} catch (error) {
 		console.log(error);
 	}

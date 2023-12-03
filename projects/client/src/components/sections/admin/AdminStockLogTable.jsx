@@ -109,9 +109,6 @@ const AdminStockLogTable = () => {
 	useEffect(() => {
 		formik.setFieldValue("searchQuery", search);
 	}, [search]);
-	useEffect(() => {
-		console.log("iini>>", history);
-	}, [history]);
 
 	const clear = async () => {
 		await dispatch(onClear());

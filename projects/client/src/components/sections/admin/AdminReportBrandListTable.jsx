@@ -44,7 +44,7 @@ const AdminReportBrandListTable = () => {
 	const transactionByBrand = useSelector(
 		(state) => state.report.transactionByBrand
 	);
-	console.log(transactionByBrand);
+
 	const role = useSelector((state) => state.user.role);
 	const warehouse = useSelector((state) => state.products.warehouse);
 	const count = useSelector((state) => state.report.countBrand);
@@ -151,30 +151,16 @@ const AdminReportBrandListTable = () => {
 				year !== null ? `${year}` : ""
 			}`
 		);
-		// return takeFromQuery();
-		// window.location.reload();
 	};
-	// console.log(role);
+
 	useEffect(() => {
 		takeFromQuery();
 
 		window.scrollTo({ top: 0 });
-
-		// return () => {
-		// 	dispatch(onClearBrand());
-		// 	dispatch(setSearchBrand(""));
-		// 	// dispatch(setProductsForStocks([]));
-		// 	dispatch(setTotalPageBrand(1));
-		// 	// dispatch(setWarehouse(null));
-		// 	dispatch(setCountBrand(0));
-		// };
 	}, []);
-	console.log(warehouse);
+
 	useEffect(() => {
 		if (oneTime) {
-			console.log(
-				`/admin/reports?warehouse=${warehouse}&search=${search}&orderField=${orderFieldBrand}&orderDirection=${orderDirectionBrand}&offset=${offset}`
-			);
 			navigate(
 				`/admin/reports?warehouse=${
 					warehouse !== null ? `${warehouse}` : ""
@@ -204,14 +190,6 @@ const AdminReportBrandListTable = () => {
 				)
 			);
 		}
-		console.log(
-			orderFieldBrand,
-			orderDirectionBrand,
-			search,
-			page,
-			warehouse
-		);
-		// }
 	}, [
 		orderFieldBrand,
 		orderDirectionBrand,
@@ -224,28 +202,12 @@ const AdminReportBrandListTable = () => {
 	]);
 
 	const columns = [
-		// { name: "NO", uid: "number" },
 		{ name: "BRAND NAME", uid: "brand_name" },
 		{ name: "TOTAL", uid: "total" },
 	];
-	// useEffect(() => {
-	// 	dispatch(getTransactionByBrand());
-	// }, []);
-
-	useEffect(() => {
-		console.log(transactionByBrand);
-	}, [transactionByBrand]);
 
 	const renderCell = React.useCallback((TBBrand, columnKey, index) => {
 		switch (columnKey) {
-			// case "number":
-			// 	// const nextTAbleIndex = rowIndex + 1;
-			// 	console.log(index);
-			// 	return (
-			// 		<div className="flex items-center gap-4 w-full">
-			// 			<p className="font-bold text-base w-full">{index}</p>
-			// 		</div>
-			// 	);
 			case "brand_name":
 				return (
 					<div className="flex items-center gap-4 w-full">

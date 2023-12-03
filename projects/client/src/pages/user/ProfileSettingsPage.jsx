@@ -94,7 +94,7 @@ const ProfileSettingsPage = () => {
 				}}
 			>
 				{(matches) => (
-					<main className="profile-settings-page min-h-screen mx-4 md:max-w-[1000px] md:min-h-[90vh] md:mx-auto py-4">
+					<main className="profile-settings-page min-h-screen mx-4 md:max-w-[1000px] md:min-h-[90vh] md:mx-auto py-6">
 						{matches.medium && (
 							<div className="page-heading mb-4">
 								<h3 className="font-bold text-headline-sm">
@@ -258,7 +258,7 @@ const ProfileSettingsPage = () => {
 								</section>
 							</section>
 						</section>
-						<section className="address-list-section">
+						<section className="address-list-section pt-8 pb-20">
 							<div className="mb-2">
 								<h1 className="font-bold text-xl">
 									Address List

@@ -6,11 +6,6 @@ import { Card, CardBody } from "@nextui-org/react";
 import CreateNewAddressModal from "../../layouts/user/CreateNewAddressModal";
 
 const CheckoutAddress = ({ selectedUserAddressData, resetShippingCost }) => {
-	console.log(
-		"🚀 ~ file: CheckoutAddress.jsx:7 ~ CheckoutAddress ~ selectedUserAddressData:",
-		selectedUserAddressData
-	);
-
 	const renderSelectedAddress = () => {
 		if (selectedUserAddressData) {
 			return (

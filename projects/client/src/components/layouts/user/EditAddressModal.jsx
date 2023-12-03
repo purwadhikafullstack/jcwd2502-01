@@ -31,7 +31,6 @@ export default function App({ data }) {
 	const [selectedProvince, setSelectedProvince] = useState();
 	const [selectedCity, setSelectedCity] = useState();
 	const [cities, setCities] = useState([]);
-	// console.log(data);
 
 	useEffect(() => {
 		if (data) {
@@ -44,8 +43,6 @@ export default function App({ data }) {
 			});
 			setSelectedProvince(data.province.id);
 			setSelectedCity(data.city.id);
-			// console.log(data.province.id);
-			// console.log(data.city.id);
 		}
 	}, [data]);
 
@@ -115,10 +112,10 @@ export default function App({ data }) {
 				`/user-addresses/updateAddress`,
 				newWarehouseData
 			);
-			console.log(updateAddress);
-			// window.location.reload(false);
+
 			setIsLoading(false);
 			dispatch(onSetUserAddresses(accessToken));
+
 			return;
 		} catch (error) {
 			console.log(error);
@@ -126,11 +123,6 @@ export default function App({ data }) {
 			setIsLoading(false);
 		}
 	};
-
-	// const handleFormInput = (event) => {
-	// 	const { target } = event;
-	// 	formik.setFieldValue(target.name, target.value);
-	// };
 
 	const getProvinces = useCallback(async () => {
 		try {
@@ -182,8 +174,6 @@ export default function App({ data }) {
 	};
 
 	const handleCity = (city) => {
-		// const splittedCity = city?.split(",");
-		console.log(city);
 		setSelectedCity(city);
 		formik.setFieldValue("city_id", city);
 	};
@@ -194,6 +184,7 @@ export default function App({ data }) {
 			getCities();
 		}
 	}, [getProvinces, getCities, selectedProvince]);
+
 	return (
 		<Media
 			queries={{

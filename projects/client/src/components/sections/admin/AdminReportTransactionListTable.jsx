@@ -147,9 +147,7 @@ const AdminReportTransactionListTable = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(">>>tidak");
 		if (oneTime) {
-			console.log(">>>iniii");
 			navigate(
 				`/admin/reports?warehouse=${
 					warehouse !== null ? `${warehouse}` : ""
@@ -159,14 +157,7 @@ const AdminReportTransactionListTable = () => {
 					month !== null ? `${month}` : ""
 				}&year=${year !== null ? `${year}` : ""}`
 			);
-			console.log(
-				`/admin/reports?${warehouse ? `warehouse=${warehouse}` : ""}${
-					search && `&searchTransaction=${search}`
-				}&orderFieldTransaction=${orderField}&orderDirectionTransaction=${orderDirection}&offsetTransaction=${offset}&month=${
-					month !== null ? `${month}` : ""
-				}&year=${year !== null ? `${year}` : ""}`
-			);
-			console.log("pembatas");
+
 			dispatch(
 				getTransaction(
 					`?warehouse=${
@@ -177,15 +168,6 @@ const AdminReportTransactionListTable = () => {
 						month !== null ? `${month}` : ""
 					}&year=${year !== null ? `${year}` : ""}`
 				)
-			);
-			console.log(
-				`?warehouse=${
-					warehouse !== null ? `${warehouse}` : ""
-				}&search=${
-					search !== null ? `${search}` : ""
-				}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}&month=${
-					month !== null ? `${month}` : ""
-				}&year=${year !== null ? `${year}` : ""}`
 			);
 		}
 	}, [

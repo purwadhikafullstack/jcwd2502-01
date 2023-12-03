@@ -23,8 +23,6 @@ const SwiperProductImages = () => {
 	const productDetail = useSelector((state) => state.products.productDetail);
 
 	const renderProductImages = () => {
-		console.log(">>>>>>>>", productImages);
-
 		if (productImages?.length) {
 			return productImages?.map((image) => {
 				return (

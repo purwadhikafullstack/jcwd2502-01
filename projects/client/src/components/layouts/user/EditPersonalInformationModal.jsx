@@ -37,12 +37,10 @@ export default function App() {
 	const handleGenderChange = (selecGen) => {
 		setSelectedGender(selecGen);
 		formik.setFieldValue("gender", selecGen);
-		console.log(selecGen);
 	};
 	const handleBirthChange = (selecGen) => {
 		setSelectedBirth(selecGen);
 		formik.setFieldValue("birth_date", selecGen);
-		console.log(selecGen);
 	};
 
 	const formik = useFormik({
@@ -101,13 +99,12 @@ export default function App() {
 	useEffect(() => {
 		setSelectedGender(gender);
 		setSelectedBirth(birth_date);
+
 		formik.setValues({
 			username: username || "",
 			birth_date: selectedBirth || "",
 			gender: selectedGender || "",
 		});
-		console.log(typeof gender);
-		console.log(selectedGender);
 	}, [username, birth_date, gender]);
 
 	return (

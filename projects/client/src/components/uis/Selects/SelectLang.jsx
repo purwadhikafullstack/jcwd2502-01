@@ -33,7 +33,6 @@ const SelectLang = () => {
 	const handleLangToggle = (e) => {
 		const lang = Object.entries(e)[0][1];
 
-		console.log(lang);
 		setSelectedLang([lang]);
 		i18next.changeLanguage(lang);
 		localStorage.setItem("lang", lang);

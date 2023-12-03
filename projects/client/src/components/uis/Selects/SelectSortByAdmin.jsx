@@ -23,22 +23,14 @@ const SelectSortByAdmin = ({ placeholder = "Options" }) => {
 	}, [orderField, orderDirection]);
 
 	const selectedKeys = useMemo(() => {
-		// console.log(">>>>>DISINI");
 		return keyOrder ? [String(keyOrder)] : [];
 	}, [orderField, orderDirection]);
 
 	useEffect(() => {
 		if (!orderDirection && !orderField) {
 			setKeyOrder(null);
-			// window.location.reload();
 		}
 	}, [orderField, orderDirection, setKeyOrder, keyOrder]);
-
-	useEffect(() => {
-		console.log("keyOrder changed:", keyOrder);
-		console.log(orderDirection);
-		console.log(orderField);
-	}, [keyOrder, orderField, orderDirection]);
 
 	return (
 		<Select

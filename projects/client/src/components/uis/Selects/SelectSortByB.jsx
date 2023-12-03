@@ -17,35 +17,18 @@ const SelectSortByB = ({ placeholder = "Options" }) => {
 			setKeyOrder("az");
 		} else if (orderField === "brand_name" && orderDirection === "desc") {
 			setKeyOrder("za");
-		} //else if (
-		// 	orderField === "product_price" &&
-		// 	orderDirection === "desc"
-		// ) {
-		// 	setKeyOrder("high");
-		// } else if (orderField === "product_price" && orderDirection === "asc") {
-		// 	setKeyOrder("low");
-		// } else if (orderField === "updatedAt" && orderDirection === "desc") {
-		// 	setKeyOrder("last_updated");
-		// }
+		}
 	}, [orderField, orderDirection]);
 
 	const selectedKeys = useMemo(() => {
-		console.log(">>>>>DISINI");
 		return keyOrder ? [String(keyOrder)] : [];
 	}, [orderField, orderDirection]);
 
 	useEffect(() => {
 		if (!orderDirection && !orderField) {
 			setKeyOrder(null);
-			// window.location.reload();
 		}
 	}, [orderField, orderDirection, setKeyOrder, keyOrder]);
-
-	useEffect(() => {
-		console.log("keyOrder changed:", keyOrder);
-		console.log(orderDirection);
-		console.log(orderField);
-	}, [keyOrder, orderField, orderDirection]);
 
 	return (
 		<Select

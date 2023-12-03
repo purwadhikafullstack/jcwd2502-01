@@ -27,30 +27,16 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 	const handleAddressButton = async (addressId) => {
 		try {
 			if (location.pathname === "/profile/settings") {
-				const changeMain = await axiosInstance(accessToken).patch(
+				await axiosInstance(accessToken).patch(
 					"/user-addresses/mainAddress",
 					{ id: userAddressData.id }
 				);
-				console.log(changeMain);
+
 				dispatch(onSetUserAddresses(accessToken));
 				dispatch(setSelectedUserAddressIdMain(addressId));
 			} else {
 				dispatch(onSetSelectedUserAddressId(addressId));
 			}
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const handleDeleteAddress = async (addressId) => {
-		try {
-			console.log(addressId);
-			const deleteAddress = await axiosInstance(accessToken).delete(
-				"/user-addresses/deleteAddress",
-				{ data: { id: addressId } }
-			);
-			console.log(deleteAddress);
-			dispatch(onSetUserAddresses(accessToken));
 		} catch (error) {
 			console.log(error);
 		}
@@ -65,10 +51,6 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 		province,
 		city,
 	} = userAddressData;
-
-	useEffect(() => {
-		console.log(selectedUserAddressIdMain);
-	}, [selectedUserAddressIdMain]);
 
 	return (
 		<Media
@@ -112,7 +94,6 @@ const CheckoutAddressCard = ({ userAddressData }) => {
 								<EditAddressModal data={userAddressData} />
 								<DeleteAddressModal
 									addressID={userAddressData.id}
-									handleOnDelete={handleDeleteAddress}
 								/>
 							</div>
 						) : null}
