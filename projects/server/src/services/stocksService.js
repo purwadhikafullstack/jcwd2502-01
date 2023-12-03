@@ -1,5 +1,5 @@
 const db = require("./../models");
-const { Op } = require("sequelize");
+const { Sequelize, Op } = require("sequelize");
 const { sequelize } = require("./../models");
 const fs = require("fs");
 
@@ -226,8 +226,63 @@ module.exports = {
 			return error;
 		}
 	},
-	findStockHistories: async (warehouseId) => {
+	findStockHistories: async (query, idWarehouse, role) => {
 		try {
+			const {
+				warehouse,
+				search,
+				orderField,
+				orderDirection,
+				offset,
+				month,
+				year,
+				category,
+				brand,
+			} = query;
+			console.log(warehouse);
+
+			if (idWarehouse && idWarehouse !== warehouse)
+				return {
+					isError: true,
+					message: "admin not authorized!",
+				};
+
+			if (!warehouse && role === "admin") {
+				return {
+					isError: true,
+					message: `Please select warehouse!`,
+					data: null,
+				};
+			}
+
+			const categoryInclude = {
+				model: db.category,
+				attributes: ["category_type", "id"],
+			};
+
+			const brandInclude = {
+				model: db.brand,
+				attributes: ["brand_name", "id"],
+			};
+
+			if (category) {
+				const arrayCategory = category.split(",");
+				categoryInclude.where = {
+					id: {
+						[Op.in]: arrayCategory,
+					},
+				};
+			}
+
+			if (brand) {
+				const arrayBrand = brand.split(",");
+				brandInclude.where = {
+					id: {
+						[Op.in]: arrayBrand,
+					},
+				};
+			}
+
 			const baseQuery = {
 				attributes: [
 					"id",
@@ -244,20 +299,91 @@ module.exports = {
 						include: [
 							{
 								model: db.warehouse,
-								attributes: ["warehouse_name"],
+								attributes: ["id", "warehouse_name"],
+								// where: {
+								// 	id: warehouse,
+								// },
 							},
 							{
 								model: db.product,
 								attributes: ["product_name"],
+								where: {
+									product_name: {
+										[Op.like]: `%${search}%`,
+									},
+								},
+								include: [categoryInclude, brandInclude],
 							},
 						],
 					},
 				],
+				where: {},
+				// where: {
+				// 	[Op.and]: Sequelize.literal(
+				// 		`MONTH(stock_history.createdAt) = ${month} AND YEAR(stock_history.createdAt)= ${year}`
+				// 	),
+				// },
 				order: [["createdAt", "desc"]],
+				limit: 12,
 			};
-			if (warehouseId) {
-				baseQuery.include[0].where = { warehouse_id: warehouseId };
+
+			const orderOptions = [];
+			if (orderField && orderDirection) {
+				orderOptions.push([
+					db.stock,
+					db.product,
+					orderField,
+					orderDirection,
+				]);
+				baseQuery.order = orderOptions;
 			}
+
+			if (offset) {
+				baseQuery.offset = Number(offset);
+			}
+
+			if (warehouse) {
+				baseQuery.include[0].include[0].where = { id: warehouse };
+			}
+
+			if (month && year) {
+				baseQuery.where = {
+					[Op.and]: Sequelize.literal(
+						`MONTH(stock_history.createdAt) = ${month} AND YEAR(stock_history.createdAt)= ${year}`
+					),
+				};
+			}
+
+			// if (category) {
+			// 	const arrayCategory = category.split(",");
+			// 	// categoryInclude.where = {
+			// 	// 	id: {
+			// 	// 		[Op.in]: arrayCategory,
+			// 	// 	},
+			// 	// };
+			// 	baseQuery.include[0].include[1].where.category_id = {
+			// 		[Op.in]: arrayCategory,
+			// 	};
+			// }
+
+			// if (brand) {
+			// 	const arrayBrand = brand.split(",");
+			// 	// brandInclude.where = {
+			// 	// 	id: {
+			// 	// 		[Op.in]: arrayBrand,
+			// 	// 	},
+			// 	// };
+			// }
+
+			// if (search) {
+			// 	baseQuery.include[0].include[1].where.product_name = {
+			// 		[Op.like]: `%${search}%`,
+			// 	};
+			// }
+
+			// if (warehouse) {
+			// 	baseQuery.include[0].where = { warehouse_id: warehouseId };
+			// }
 			const dataLogStock = await db.stock_history.findAll(baseQuery);
 			if (!dataLogStock) {
 				return {
@@ -266,14 +392,32 @@ module.exports = {
 					data: null,
 				};
 			}
+			const filteredDataLogStock = dataLogStock.filter(
+				(item) => item.stock !== null
+			);
+			if (!filteredDataLogStock) {
+				return {
+					isError: true,
+					message: `There is no change in stock`,
+					data: null,
+				};
+			}
 
-			const count = await db.stock_history.count({
+			if (query) console.log(">>>>>TERJADI", query);
+
+			let count;
+			count = await db.stock_history.count({
 				where: baseQuery.where,
+				include: baseQuery.include,
 			});
+			// }
+			// if (ware) {
+			// 	count = filteredDataLogStock.length;
+			// }
 
 			return {
 				message: "Get stock change log success",
-				data: { count, history: dataLogStock },
+				data: { count, history: filteredDataLogStock },
 			};
 		} catch (error) {
 			return error;

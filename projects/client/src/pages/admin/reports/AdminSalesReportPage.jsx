@@ -6,6 +6,8 @@ import AdminReportCategoryListTable from "../../../components/sections/admin/Adm
 import AdminReportBrandListTable from "../../../components/sections/admin/AdminReportBrandListTable";
 import AdminReportProductListTable from "../../../components/sections/admin/AdminReportProductListTable";
 import { useLocation, useNavigate } from "react-router-dom";
+import SelectWarehouses from "../../../components/uis/Selects/SelectWarehouses";
+import MyMonthPicker from "../../../components/uis/MyMonthPicker/MyMonthPicker";
 
 const AdminSalesReportPage = () => {
 	const location = useLocation();
@@ -59,6 +61,10 @@ const AdminSalesReportPage = () => {
 						<h1 className="font-bold w-full text-title-lg mr-4">
 							Sales Report
 						</h1>
+						<div className="mr-4">
+							<SelectWarehouses />
+						</div>
+						<MyMonthPicker />
 					</div>
 				</div>
 			</div>

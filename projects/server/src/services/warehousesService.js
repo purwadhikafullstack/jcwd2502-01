@@ -1,8 +1,9 @@
 const db = require("./../models");
-const { Op } = require("sequelize");
+const { Op, literal } = require("sequelize");
 const { sequelize } = require("./../models");
 const fetch = require("node-fetch");
 const zlib = require("zlib");
+const Sequelize = require("sequelize");
 
 const getLatitudeLongitude = async (cityName) => {
 	try {
@@ -214,6 +215,91 @@ module.exports = {
 				message: "Delete warehouse success",
 				data: null,
 			};
+		} catch (error) {
+			return error;
+		}
+	},
+	getUnassignedWarehouse: async (query) => {
+		try {
+			const baseQuery = {
+				attributes: ["id", "warehouse_name"],
+				include: [
+					{
+						model: db.user,
+						attributes: ["id", "username", "warehouse_id"],
+						as: "users",
+					},
+				],
+				where: {
+					id: {
+						[Op.notIn]: literal(
+							"(SELECT DISTINCT warehouse_id FROM users WHERE warehouse_id IS NOT NULL)"
+						),
+					},
+				},
+			};
+
+			// if (query.id) {
+			// 	// baseQuery.where = {
+			// 	// 	...baseQuery.where,
+			// 	// 	id: query.id,
+			// 	// };
+			// 	baseQuery.where[Op.and].push({ id: query.id });
+			// }
+			// const fetch = await db.warehouse.findAll(baseQuery);
+			// const { Op, literal } = require("sequelize");
+
+			const fetch = await db.warehouse.findAll({
+				attributes: ["id", "warehouse_name"],
+				include: [
+					{
+						model: db.user,
+						attributes: ["id", "username", "warehouse_id"],
+						as: "users",
+					},
+				],
+				where: {
+					[Op.or]: [
+						{
+							id: {
+								[Op.notIn]: literal(
+									"(SELECT DISTINCT warehouse_id FROM users WHERE warehouse_id IS NOT NULL)"
+								),
+							},
+						},
+						// {
+						// 	id: query.id,
+						// },
+						...(query.id ? [{ id: query.id }] : []),
+					],
+				},
+			});
+
+			console.log(fetch);
+			// let unassignedWarehouse;
+			// if (query.id) {
+			// 	unassignedWarehouse = fetch.filter((warehouse) => {
+			// 		const hasNoAdmin = !warehouse.users.some(
+			// 			(user) => user.warehouse_id !== null
+			// 		);
+			// 		const isAdminWithQueryId = warehouse.users.some(
+			// 			(user) => user.warehouse_id === query.id
+			// 		);
+
+			// 		return hasNoAdmin || (query.id && !isAdminWithQueryId);
+			// 	});
+			// } else {
+			// 	unassignedWarehouse = fetch.filter((warehouse) => {
+			// 		const isAssigned = warehouse.users.some(
+			// 			(user) => user.warehouse_id !== null
+			// 		);
+			// 		return !isAssigned;
+			// 	});
+			// }
+			return {
+				data: fetch,
+			};
+			// console.log(warehousesWithUsers);
 		} catch (error) {
 			return error;
 		}

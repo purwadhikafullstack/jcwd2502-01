@@ -2,15 +2,13 @@ import React, { useEffect, useState } from "react";
 
 import { Select, SelectItem } from "@nextui-org/react";
 import { useDispatch, useSelector } from "react-redux";
-import { onSortP } from "../../../redux/features/report";
+import { onSort } from "../../../redux/features/stocksHistory";
 
-const SelectSortByP = ({ placeholder = "Options" }) => {
+const SelectSortByHistory = ({ placeholder = "Options" }) => {
 	const dispatch = useDispatch();
 	const [keyOrder, setKeyOrder] = useState(null);
-	const orderField = useSelector((state) => state.report.orderFieldProduct);
-	const orderDirection = useSelector(
-		(state) => state.report.orderDirectionProduct
-	);
+	const orderField = useSelector((state) => state.history.orderField);
+	const orderDirection = useSelector((state) => state.history.orderDirection);
 
 	useEffect(() => {
 		if (orderField === "product_name" && orderDirection === "asc") {
@@ -21,6 +19,11 @@ const SelectSortByP = ({ placeholder = "Options" }) => {
 			setKeyOrder(null);
 		}
 	}, [orderField, orderDirection]);
+
+	useEffect(() => {
+		console.log(orderDirection);
+		console.log(orderField);
+	}, [orderDirection, orderField]);
 
 	return (
 		<Select
@@ -34,19 +37,19 @@ const SelectSortByP = ({ placeholder = "Options" }) => {
 			<SelectItem
 				key={"az"}
 				value={"az"}
-				onClick={() => dispatch(onSortP("product_name", "asc"))}
+				onClick={() => dispatch(onSort("product_name", "asc"))}
 			>
-				A-Z
+				A - Z
 			</SelectItem>
 			<SelectItem
 				key={"za"}
 				value={"za"}
-				onClick={() => dispatch(onSortP("product_name", "desc"))}
+				onClick={() => dispatch(onSort("product_name", "desc"))}
 			>
-				Z-A
+				Z - A
 			</SelectItem>
 		</Select>
 	);
 };
 
-export default SelectSortByP;
+export default SelectSortByHistory;

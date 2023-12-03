@@ -41,32 +41,33 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 	const [showPassword, setShowPassword] = useState(false);
 	const [selectedWarehouse, setSelectedWarehouse] = useState();
 	const [isLoading, setIsLoading] = useState(false);
+	const [selectedRole, setSelectedRole] = useState();
 
 	const formik = useFormik({
 		initialValues: {
 			username: "",
 			email: "",
 			password: "",
+			role: "",
 			warehouse_id: "",
 		},
 		onSubmit: async (values) => {
 			handleSubmit(values);
+			// console.log(values);
 		},
-		validationSchema: yup.object().shape({
-			username: yup.string().required(),
-			email: yup.string().required(),
-			password: yup.string().required(),
-		}),
+		// validationSchema: yup.object().shape({
+		// 	username: yup.string().required("please Insert Field!"),
+		// 	email: yup.string().required(),
+		// 	password: yup.string().required(),
+		// }),
 	});
 	const handleSubmit = async (values) => {
 		try {
 			setIsLoading(true);
 
 			const { username, email, password, warehouse_id, role } = values;
-
 			if (!username || !email || !password || !role) {
 				setIsLoading(false);
-
 				return toast.error("please Insert Field!", {
 					style: {
 						backgroundColor: "var(--background)",
@@ -119,7 +120,9 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 
 	const fetchWarehouses = async () => {
 		try {
-			const { data } = await axiosInstance().get(`warehouses/all`);
+			const { data } = await axiosInstance().get(
+				`warehouses/unassignedWarehouse`
+			);
 			setWarehouses(data.data);
 		} catch (error) {
 			console.log(error);
@@ -140,6 +143,12 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 		// const splittedProvince = province?.split(",");
 		setSelectedWarehouse(item);
 		formik.setFieldValue("warehouse_id", item);
+	};
+
+	const handleRole = (item) => {
+		// const splittedProvince = province?.split(",");
+		setSelectedRole(item);
+		formik.setFieldValue("role", item);
 	};
 
 	const role = [
@@ -166,6 +175,15 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 	useEffect(() => {
 		fetchWarehouses();
 	}, [selectedWarehouse]);
+
+	useEffect(() => {
+		// formik.setFieldValue("recipient_name", username);
+		if (selectedRole === "super") {
+			formik.setFieldValue("warehouse_id", "");
+		}
+		console.log(selectedRole);
+		console.log(formik.values);
+	}, [selectedRole]);
 
 	return (
 		<>
@@ -295,33 +313,60 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
-														onChange={
-															formik.handleChange
-														}
+														onChange={(e) => {
+															handleRole(
+																e.target.value
+															);
+														}}
+
 														placeholder="Select a role"
 														isRequired
 													>
 														{renderRoleOption()}
 													</Select>
 												</div>
-												<div className="form-control">
-													<Select
-														name="warehouse"
-														label="Warehouse"
-														labelPlacement="outside"
-														variant="bordered"
-														radius="sm"
-														size="lg"
-														onChange={(e) => {
-															handleWarehouse(
-																e.target.value
-															);
-														}}
-														placeholder="Select a warehouse"
-													>
-														{renderWarehouseOption()}
-													</Select>
-												</div>
+												{selectedRole === "admin" ? (
+													<div className="form-control">
+														<Select
+															name="warehouse"
+															label="Warehouse"
+															labelPlacement="outside"
+															variant="bordered"
+															radius="sm"
+															size="lg"
+															isDisabled={
+																selectedRole !==
+																"admin"
+															}
+															onChange={(e) => {
+																handleWarehouse(
+																	e.target
+																		.value
+																);
+																console.log(
+																	e.target
+																		.value
+																);
+															}}
+															selectedKeys={
+																formik.values
+																	.warehouse_id
+																	? [
+																			String(
+																				formik
+																					.values
+																					.warehouse_id
+																			),
+																	  ]
+																	: null
+															}
+															placeholder="Select a warehouse"
+															// isRequired
+														>
+															{renderWarehouseOption()}
+														</Select>
+													</div>
+												) : null}
 											</form>
 										</ModalBody>
 										<ModalFooter className="justify-center">

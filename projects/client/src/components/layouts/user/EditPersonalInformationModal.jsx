@@ -23,6 +23,7 @@ import toast from "react-hot-toast";
 export default function App() {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [isLoading, setIsLoading] = useState(false);
+	const [today, setToday] = useState(null);
 	const { username, gender, birth_date } = useSelector((state) => state.user);
 	const accessToken = localStorage.getItem("accessToken");
 	const dispatch = useDispatch();
@@ -107,6 +108,15 @@ export default function App() {
 		});
 	}, [username, birth_date, gender]);
 
+	useEffect(() => {
+		const getTime = new Date();
+		const getDay = getTime.getDate().toString().padStart(2, "0");
+		const getMonth = (getTime.getMonth() + 1).toString().padStart(2, "0");
+		const getYear = getTime.getFullYear();
+		const today = `${getYear}-${getMonth}-${getDay}`;
+		console.log(today);
+		setToday(today);
+	}, []);
 	return (
 		<>
 			<Tooltip content={"Edit Personal Information"}>
@@ -158,6 +168,7 @@ export default function App() {
 											variant="bordered"
 											radius="sm"
 											size="lg"
+											max={today}
 											placeholder="a"
 											onChange={(e) =>
 												handleBirthChange(

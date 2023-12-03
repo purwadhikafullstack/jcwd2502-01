@@ -298,11 +298,11 @@ const AdminReportCategoryListTable = () => {
 							className="border-neutral-200 dark:border-neutral-700 w-full"
 							onClick={() => clear()}
 						>{`Clear Filter(s)`}</Button>
-						<SelectWarehouses />
+						{/* <SelectWarehouses /> */}
 						<div className="sort-by flex items-center">
 							<SelectSortByC placeholder="Sort" />
 						</div>
-						<MyMonthPicker />
+						{/* <MyMonthPicker /> */}
 					</div>
 				</div>
 				<div className="flex justify-between items-center">
