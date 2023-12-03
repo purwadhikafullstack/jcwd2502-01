@@ -291,7 +291,7 @@ const AdminReportTransactionListTable = () => {
 					<form className="w-[30%]" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
-							placeholder="Search for product by name"
+							placeholder="Search for invoice by invoice "
 							isClearable
 							onClear={() => dispatch(setSearchTransaction(""))}
 							startContent={<IoSearch opacity={".5"} />}

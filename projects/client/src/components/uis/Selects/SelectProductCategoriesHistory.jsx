@@ -8,12 +8,12 @@ import {
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onCategory } from "../../../redux/features/products";
+import { onCategory } from "../../../redux/features/stocksHistory";
 import { axiosInstance } from "../../../lib/axios";
 
-const SelectProductCategories = (props) => {
+const SelectProductCategoriesHistory = (props) => {
 	const [categoriesList, setCategoriesList] = useState([]);
-	const category = useSelector((state) => state.products.category);
+	const category = useSelector((state) => state.history.category);
 
 	const dispatch = useDispatch();
 
@@ -63,4 +63,4 @@ const SelectProductCategories = (props) => {
 	);
 };
 
-export default SelectProductCategories;
+export default SelectProductCategoriesHistory;

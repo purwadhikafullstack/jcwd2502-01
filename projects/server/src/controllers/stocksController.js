@@ -76,8 +76,12 @@ module.exports = {
 	},
 	getStockHistories: async (req, res, next) => {
 		try {
-			const { warehouseId } = req.query;
-			const result = await findStockHistories(warehouseId);
+			// const { warehouseId } = req.query;
+			const result = await findStockHistories(
+				req.query,
+				req.idWarehouse,
+				req.role
+			);
 			respHandler(
 				res,
 				result.message,
