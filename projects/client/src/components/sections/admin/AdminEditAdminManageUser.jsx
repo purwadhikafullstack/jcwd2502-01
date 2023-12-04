@@ -113,10 +113,10 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 
 	const fetchWarehouses = async (id) => {
 		try {
-			const { data } = await axiosInstance().get(
-				`warehouses/unassignedWarehouse?id=${id ? id : ""}`
+			const { data } = await axiosInstance(accessToken).get(
+				`warehouses/all`
 			);
-			console.log(data.data);
+
 			setWarehouses(data.data);
 		} catch (error) {
 			console.log(error);
@@ -168,7 +168,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		fetchWarehouses();
 	}, []);
 
-
 	useEffect(() => {
 		formik.setValues({
 			idUser: data?.id || "",
@@ -179,20 +178,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		});
 		setSelectedRole(data.role);
 	}, [data]);
-
-	useEffect(() => {
-		if (data?.warehouse_id) {
-			fetchWarehouses(data?.warehouse_id ? data?.warehouse_id : "");
-		} else {
-			fetchWarehouses();
-		}
-		console.log(data?.warehouse_id);
-		console.log(warehouses);
-	}, []);
-	// useEffect(() => {
-	// 	// formik.setFieldValue("recipient_name", username);
-	// 	// console.log(formik.values);
-	// }, [formik]);
 
 	return (
 		<>
@@ -212,9 +197,7 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 						<Modal
 							isOpen={isOpen}
 							onOpenChange={onOpenChange}
-							placement={matches.medium ? "center" : "bottom"}
 							scrollBehavior="inside"
-							size={matches.medium ? "2xl" : "full"}
 						>
 							<ModalContent>
 								{(onClose) => (
@@ -320,10 +303,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 																	e.target
 																		.value
 																);
-																console.log(
-																	e.target
-																		.value
-																);
 															}}
 															selectedKeys={
 																formik.values
@@ -335,7 +314,7 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 																					.warehouse_id
 																			),
 																	  ]
-																	: null
+																	: []
 															}
 															placeholder="Select a warehouse"
 															// isRequired
@@ -370,7 +349,7 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 												fullWidth
 											>
 												<span className="font-medium text-black">
-													Save New Data Admin
+													Save Changes
 												</span>
 											</Button>
 										</ModalFooter>

@@ -241,7 +241,7 @@ module.exports = {
 			} = query;
 			console.log(warehouse);
 
-			if (idWarehouse && idWarehouse !== warehouse)
+			if (idWarehouse && idWarehouse !== Number(warehouse))
 				return {
 					isError: true,
 					message: "admin not authorized!",

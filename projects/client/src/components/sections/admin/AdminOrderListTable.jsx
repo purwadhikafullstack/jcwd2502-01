@@ -59,7 +59,7 @@ const AdminOrderListTable = () => {
 
 	const fetchWarehouses = async () => {
 		try {
-			const { data } = await axiosInstance().get(`warehouses/all`);
+			const { data } = await axiosInstance(token).get(`warehouses/all`);
 			setWarehouses(data.data);
 		} catch (error) {
 			console.error(error);
@@ -442,10 +442,7 @@ const AdminOrderListTable = () => {
 						</TableColumn>
 					)}
 				</TableHeader>
-				<TableBody
-					emptyContent={"Please select warehouse"}
-					items={orders}
-				>
+				<TableBody emptyContent={"No data"} items={orders}>
 					{(item) => (
 						<TableRow key={item.id}>
 							{(columnKey) => (

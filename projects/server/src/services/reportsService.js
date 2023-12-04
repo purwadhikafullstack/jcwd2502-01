@@ -19,7 +19,7 @@ module.exports = {
 			// const defaultYear = currentDate.getFullYear();
 			// const defaultMonth = currentDate.getMonth() + 1;
 
-			if (idWarehouse && idWarehouse !== warehouse)
+			if (idWarehouse && idWarehouse !== Number(warehouse))
 				return {
 					isError: true,
 					message: "admin not authorized!",
@@ -197,7 +197,7 @@ module.exports = {
 				year,
 			} = query;
 
-			if (idWarehouse && idWarehouse !== warehouse) {
+			if (idWarehouse && idWarehouse !== Number(warehouse)) {
 				return {
 					isError: true,
 					message: "Admin is not Authorized!",
@@ -311,7 +311,7 @@ module.exports = {
 				year,
 			} = query;
 
-			if (idWarehouse && idWarehouse !== warehouse)
+			if (idWarehouse && idWarehouse !== Number(warehouse))
 				return {
 					isError: true,
 					message: "admin not authorized!",
@@ -445,7 +445,7 @@ module.exports = {
 				year,
 			} = query;
 
-			if (idWarehouse && idWarehouse !== warehouse)
+			if (idWarehouse && idWarehouse !== Number(warehouse))
 				return {
 					isError: true,
 					message: "admin not authorized!",

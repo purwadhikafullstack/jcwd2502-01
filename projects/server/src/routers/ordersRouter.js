@@ -5,7 +5,7 @@ const Router = express.Router();
 const { ordersController } = require("../controllers"); // otomatis baca index.js
 
 //* Import Middleware
-const { verify } = require("./../lib/jwt");
+const { verifyAdmin, verify } = require("../lib/jwt");
 
 Router.get("/", verify, ordersController.getOrderList);
 Router.get("/:receipt_number", verify, ordersController.getOrderDetails);
@@ -15,27 +15,27 @@ Router.patch("/cancel/:order_id", verify, ordersController.cancelOrder);
 // Admins
 Router.get(
 	"/admin/order-list",
-	verify,
+	verifyAdmin,
 	ordersController.adminGetAllUserOrderList
 );
 Router.post(
 	"/admin/confirm-order/:order_id",
-	// verify,
+	verifyAdmin,
 	ordersController.adminConfirmOrder
 );
 Router.patch(
 	"/admin/reject-order/:order_id",
-	verify,
+	verifyAdmin,
 	ordersController.adminRejectOrder
 );
 Router.patch(
 	"/admin/send-order/:order_id",
-	// verify,
+	verifyAdmin,
 	ordersController.adminSendOrder
 );
 Router.patch(
 	"/admin/cancel-order/:order_id",
-	// verify,
+	verifyAdmin,
 	ordersController.adminCancelOrder
 );
 

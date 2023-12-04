@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
 	Button,
@@ -31,9 +31,11 @@ import { Link } from "react-router-dom";
 const ProductCartCard = ({ dataCart }) => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+	const [totalStocks, setTotalStocks] = useState(null);
+
 	const token = localStorage.getItem("accessToken");
 
-	const { id, status, quantity, product, total_stocks } = dataCart;
+	const { id, status, quantity, product } = dataCart;
 
 	const productPrice = product?.product_price.toLocaleString("id-ID", {
 		style: "currency",
@@ -51,6 +53,16 @@ const ProductCartCard = ({ dataCart }) => {
 	};
 
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (product?.stocks) {
+			let totalStocks = 0;
+			product?.stocks.map((stock) => {
+				totalStocks += stock.stocks;
+			});
+			setTotalStocks(totalStocks);
+		}
+	}, [product]);
 
 	return (
 		<div className="product-cart-card py-4">
@@ -156,7 +168,7 @@ const ProductCartCard = ({ dataCart }) => {
 								}}
 								isIconOnly
 								isDisabled={
-									quantity >= total_stocks ? true : false
+									quantity >= totalStocks ? true : false
 								}
 								color="primary"
 								size="sm"

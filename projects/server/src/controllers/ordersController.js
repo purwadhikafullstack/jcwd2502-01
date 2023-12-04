@@ -215,7 +215,6 @@ module.exports = {
 	},
 	adminGetAllUserOrderList: async (req, res, next) => {
 		try {
-			const { id: user_id } = req.dataToken;
 			const { page = 1, status, search, warehouse_id } = req.query;
 
 			const itemsPerPage = 12;

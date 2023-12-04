@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
 	Table,
@@ -122,9 +121,6 @@ const AdminStockLogTable = () => {
 	useEffect(() => {
 		formik.setFieldValue("searchQuery", search);
 	}, [search]);
-	useEffect(() => {
-		console.log("iini>>", history);
-	}, [history]);
 
 	const clear = async () => {
 		dispatch(onClear());
@@ -428,4 +424,3 @@ const AdminStockLogTable = () => {
 };
 
 export default AdminStockLogTable;
-

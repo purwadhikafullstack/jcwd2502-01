@@ -149,24 +149,12 @@ const AdminReportTransactionListTable = () => {
 	}, []);
 
 	useEffect(() => {
-
-		// console.log(">>>tidak");
-		console.log(month);
-		console.log(year);
 		if (oneTime) {
 			navigate(
 				`/admin/reports?warehouse=${
 					warehouse !== null ? `${warehouse}` : ""
 				}&searchTransaction=${
 					search !== null ? `${search}` : ""
-				}&orderFieldTransaction=${orderField}&orderDirectionTransaction=${orderDirection}&offsetTransaction=${offset}&month=${
-					month !== null ? `${month}` : ""
-				}&year=${year !== null ? `${year}` : ""}`
-			);
-
-			console.log(
-				`/admin/reports?${warehouse ? `warehouse=${warehouse}` : ""}${
-					search && `&searchTransaction=${search}`
 				}&orderFieldTransaction=${orderField}&orderDirectionTransaction=${orderDirection}&offsetTransaction=${offset}&month=${
 					month !== null ? `${month}` : ""
 				}&year=${year !== null ? `${year}` : ""}`

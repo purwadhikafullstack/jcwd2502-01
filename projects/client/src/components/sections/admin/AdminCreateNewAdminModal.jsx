@@ -53,13 +53,7 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 		},
 		onSubmit: async (values) => {
 			handleSubmit(values);
-			// console.log(values);
 		},
-		// validationSchema: yup.object().shape({
-		// 	username: yup.string().required("please Insert Field!"),
-		// 	email: yup.string().required(),
-		// 	password: yup.string().required(),
-		// }),
 	});
 	const handleSubmit = async (values) => {
 		try {
@@ -120,7 +114,7 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 
 	const fetchWarehouses = async () => {
 		try {
-			const { data } = await axiosInstance().get(
+			const { data } = await axiosInstance(accessToken).get(
 				`warehouses/unassignedWarehouse`
 			);
 			setWarehouses(data.data);
@@ -177,12 +171,9 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 	}, [selectedWarehouse]);
 
 	useEffect(() => {
-		// formik.setFieldValue("recipient_name", username);
 		if (selectedRole === "super") {
 			formik.setFieldValue("warehouse_id", "");
 		}
-		console.log(selectedRole);
-		console.log(formik.values);
 	}, [selectedRole]);
 
 	return (
@@ -223,7 +214,7 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 									<>
 										<ModalHeader className="flex justify-center">
 											<h2 className="text-xl font-bold mb-2 pt-3">
-												Edit Admin
+												Create New Admin
 											</h2>
 										</ModalHeader>
 										<ModalBody>
@@ -318,7 +309,6 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 																e.target.value
 															);
 														}}
-
 														placeholder="Select a role"
 														isRequired
 													>
@@ -340,10 +330,6 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 															}
 															onChange={(e) => {
 																handleWarehouse(
-																	e.target
-																		.value
-																);
-																console.log(
 																	e.target
 																		.value
 																);
@@ -374,6 +360,7 @@ const AdminCreateNewAdminModal = ({ handleRefresh }) => {
 												type="reset"
 												onClick={(e) => {
 													formik.resetForm();
+													onClose();
 												}}
 												fullWidth
 											>

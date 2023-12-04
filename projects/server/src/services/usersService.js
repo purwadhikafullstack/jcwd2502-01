@@ -101,7 +101,7 @@ module.exports = {
 					id: checkEmail.dataValues.id,
 					apiKey: "Approved",
 				},
-				"365d"
+				"7d"
 			);
 
 			return {

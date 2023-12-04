@@ -137,7 +137,7 @@ const AdminEditBrandModal = ({ brandId, brandName }) => {
 							<ModalBody>
 								<form
 									onSubmit={formik.handleSubmit}
-									className="flex flex-col justify-between gap-4 h-full"
+									className="flex flex-col justify-between gap-4 h-full pb-4"
 								>
 									<div className="form-control">
 										<Input

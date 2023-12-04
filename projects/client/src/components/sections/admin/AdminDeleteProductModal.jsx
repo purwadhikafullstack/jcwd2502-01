@@ -9,7 +9,6 @@ import {
 	Tooltip,
 	useDisclosure,
 } from "@nextui-org/react";
-import toast from "react-hot-toast";
 import { IoTrashOutline } from "react-icons/io5";
 import MySpinner from "../../uis/Spinners/Spinner";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,6 +22,7 @@ const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 	const orderDirection = useSelector(
 		(state) => state.products.orderDirection
 	);
+	const { role } = useSelector((state) => state.user);
 	const search = useSelector((state) => state.products.search);
 	const offset = useSelector((state) => state.products.offset);
 	const category = useSelector((state) => state.products.category);
@@ -53,6 +53,7 @@ const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 					variant="light"
 					className="text-lg text-danger cursor-pointer active:opacity-50"
 					onPress={onOpen}
+					isDisabled={role !== "super"}
 				>
 					<IoTrashOutline size={24} />
 				</Button>

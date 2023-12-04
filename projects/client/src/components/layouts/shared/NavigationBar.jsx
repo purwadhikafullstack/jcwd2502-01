@@ -154,22 +154,22 @@ const NavigationBar = () => {
 				) : (
 					<>
 						<NavbarItem className="">
-							<Link to={"/login"}>
-								<Button
-									color="secondary"
-									className="font-medium text-white"
-									fullWidth
-								>
-									{t("login")}
-								</Button>
-							</Link>
+							<Button
+								color="secondary"
+								className="font-medium text-white"
+								fullWidth
+								onClick={() => navigate("/login")}
+							>
+								{t("login")}
+							</Button>
 						</NavbarItem>
 						<NavbarItem className="">
-							<Link to={"/signup"}>
-								<Button className="bg-primary-500 text-black font-medium">
-									{t("sign_up")}
-								</Button>
-							</Link>
+							<Button
+								className="bg-primary-500 text-black font-medium"
+								onClick={() => navigate("/login")}
+							>
+								{t("sign_up")}
+							</Button>
 						</NavbarItem>
 					</>
 				)}

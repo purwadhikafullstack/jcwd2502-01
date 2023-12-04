@@ -116,6 +116,8 @@ export const onLoginAsync = (email, password) => async (dispatch) => {
 				color: "var(--text)",
 			},
 		});
+
+		return checkUser.data.data.role;
 	} catch (error) {
 		console.log(error);
 	}
@@ -214,7 +216,7 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 		const CheckToken = await axiosInstance(accessToken).get(
 			"/users/verifyAccess"
 		);
-		console.log(CheckToken);
+
 		dispatch(setIsLogin(true));
 		dispatch(login(CheckToken.data.data));
 
@@ -228,33 +230,43 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 			localStorage.getItem("accessToken")
 		) {
 			localStorage.removeItem("accessToken");
-			// <Navigate to={"/"} />;
-			toast.error("your account is expired");
-			console.log(">>>>>DISINI");
+			toast.error("Your account has expired!", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1000);
 		} else {
 			console.log(error);
-			console.log(error.response.data);
 		}
 	}
 };
 
-export const onSetUserAddresses = (token) => async (dispatch) => {
-	try {
-		const { data } = await axiosInstance(token).get(`user-addresses`);
+export const onSetUserAddresses =
+	(token, search = "") =>
+	async (dispatch) => {
+		try {
+			const { data } = await axiosInstance(token).get(
+				`user-addresses?search=${search}`
+			);
 
-		data.data?.map((address) => {
-			if (address.is_default === true) {
-				dispatch(setSelectedUserAddressIdMain(address.id));
-				dispatch(onSetSelectedUserAddressId(address.id));
-				return;
-			}
-		});
+			data.data?.map((address) => {
+				if (address.is_default === true) {
+					dispatch(setSelectedUserAddressIdMain(address.id));
+					dispatch(onSetSelectedUserAddressId(address.id));
+					return;
+				}
+			});
 
-		dispatch(setUserAddresses(data.data));
-	} catch (error) {
-		console.log(error);
-	}
-};
+			dispatch(setUserAddresses(data.data));
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 export const onSetSelectedUserAddressId = (address) => async (dispatch) => {
 	try {

@@ -23,6 +23,7 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 	const { offset, orderField, orderDirection } = useSelector(
 		(state) => state.products
 	);
+	const { role } = useSelector((state) => state.user);
 
 	const dispatch = useDispatch();
 
@@ -81,6 +82,7 @@ const AdminDeleteBrandModal = ({ brandID }) => {
 					variant="light"
 					className="text-lg text-danger cursor-pointer active:opacity-50"
 					onPress={onOpen}
+					isDisabled={role !== "super"}
 				>
 					<IoTrashOutline size={24} />
 				</Button>

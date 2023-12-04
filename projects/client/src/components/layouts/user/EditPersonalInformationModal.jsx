@@ -114,7 +114,6 @@ export default function App() {
 		const getMonth = (getTime.getMonth() + 1).toString().padStart(2, "0");
 		const getYear = getTime.getFullYear();
 		const today = `${getYear}-${getMonth}-${getDay}`;
-		console.log(today);
 		setToday(today);
 	}, []);
 	return (
