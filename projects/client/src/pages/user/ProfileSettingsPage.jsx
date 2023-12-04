@@ -280,7 +280,7 @@ const ProfileSettingsPage = () => {
 										userAddressesData={userAddresses}
 									/>
 								</div>
-								<div className="mt-5">
+								<div className="mt-5 dark:bg-[#181818] rounded-xl border-2 border-neutral-600 p-5 border-opacity-20 overflow-y-auto h-[400px]">
 									{renderUserAddresses()}
 								</div>
 							</div>

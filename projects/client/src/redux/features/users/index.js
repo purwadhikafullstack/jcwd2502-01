@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 import { setWarehouse } from "../products";
 import { setWarehouseId } from "../orders";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const initialState = {
 	username: "",
@@ -214,7 +214,7 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 		const CheckToken = await axiosInstance(accessToken).get(
 			"/users/verifyAccess"
 		);
-
+		console.log(CheckToken);
 		dispatch(setIsLogin(true));
 		dispatch(login(CheckToken.data.data));
 
@@ -223,11 +223,17 @@ export const OnCheckIsLogin = () => async (dispatch) => {
 			dispatch(setWarehouseId(CheckToken.data.data.warehouse_id));
 		}
 	} catch (error) {
-		if (error.response.data.isError && localStorage.getItem("tokenLogin")) {
-			localStorage.removeItem("tokenLogin");
+		if (
+			error.response.data.isError &&
+			localStorage.getItem("accessToken")
+		) {
+			localStorage.removeItem("accessToken");
+			// <Navigate to={"/"} />;
 			toast.error("your account is expired");
+			console.log(">>>>>DISINI");
 		} else {
 			console.log(error);
+			console.log(error.response.data);
 		}
 	}
 };

@@ -152,7 +152,7 @@ const LoginPage = () => {
 								</form>
 							</div>
 						</div>
-						<div className="split-form my-6 flex justify-center items-center">
+						{/* <div className="split-form my-6 flex justify-center items-center">
 							<div class="flex-grow border-t border-gray-400"></div>
 							<span className="pill border border-gray-400 px-4 py-[2px] rounded-full text-label-lg text-neutral-800 dark:text-neutral-400">
 								or continue with
@@ -170,8 +170,8 @@ const LoginPage = () => {
 									Sign in with Google
 								</span>
 							</a>
-						</div>
-						<div className="create-account text-left">
+						</div> */}
+						<div className="create-account text-left mt-6">
 							<span className="font-medium">
 								Don't have an account?{" "}
 								<Link to={"/signup"}>

@@ -109,7 +109,7 @@ function App() {
 	);
 
 	const isAdminPage = usePathName("admin");
-
+	const token = localStorage.getItem("accessToken");
 	useEffect(() => {
 		dispatch(OnCheckIsLogin());
 	}, [dispatch]);
@@ -323,7 +323,7 @@ function App() {
 		return <Navigate to={"/admin"} />;
 	}
 
-	return null;
+	return <Navigate to={"/"} />;
 
 	// return (
 	// 	<>
