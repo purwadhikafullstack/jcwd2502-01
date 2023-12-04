@@ -34,6 +34,15 @@ const CompleteOrderModal = ({ orderId }) => {
 				window.location.reload(false);
 			}, 1200);
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setTimeout(() => {
+				window.location.reload(false);
+			}, 1200);
 			console.log(error);
 		}
 	};

@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../../lib/axios";
-import toast from "react-hot-toast";
 
 const initialState = {
 	transaction: [],
@@ -37,6 +36,8 @@ const initialState = {
 	countProduct: 0,
 	month: "",
 	year: "",
+	isChildComponent: false,
+	date: null,
 };
 
 export const reportSlice = createSlice({
@@ -163,11 +164,17 @@ export const reportSlice = createSlice({
 		setTotalPageProduct: (initialState, action) => {
 			initialState.totalPageProduct = action.payload;
 		},
-		setMonth: (state, action) => {
-			return { ...state, month: action.payload };
+		setMonth: (initialState, action) => {
+			initialState.month = action.payload;
 		},
-		setYear: (state, action) => {
-			return { ...state, year: action.payload };
+		setYear: (initialState, action) => {
+			initialState.year = action.payload;
+		},
+		setIsChildComponent: (initialState, action) => {
+			initialState.isChildComponent = action.payload;
+		},
+		setDate: (initialState, action) => {
+			initialState.date = action.payload;
 		},
 	},
 });
@@ -178,8 +185,9 @@ export const getTransaction = (query) => async (dispatch) => {
 		const getData = await axiosInstance(token).get(
 			`reports/getTransaction${query ? query : ""}`
 		);
-		console.log(getData.data);
+
 		const totalPage = await Math.ceil(getData.data.data.count / 12);
+
 		dispatch(setTotalPageTransaction(totalPage));
 		dispatch(setTransaction(getData.data.data.order));
 		dispatch(setCountTransaction(getData.data.data.count));
@@ -194,10 +202,10 @@ export const getTransactionByCategory = (query) => async (dispatch) => {
 		const getData = await axiosInstance(token).get(
 			`reports/getCategory${query ? query : ""}`
 		);
-		console.log(getData.data.data);
+
 		const totalPage = await Math.ceil(getData.data.data.count / 12);
+
 		dispatch(setTotalPageCategory(totalPage));
-		// dispatch(setTBCategory(getData.data.data));
 		dispatch(setTBCategory(getData.data.data.dataBrand));
 		dispatch(setCountCategory(getData.data.data.count));
 	} catch (error) {
@@ -211,8 +219,9 @@ export const getTransactionByBrand = (query) => async (dispatch) => {
 		const getData = await axiosInstance(token).get(
 			`reports/getBrand${query ? query : ""}`
 		);
-		console.log(getData.data.data);
+
 		const totalPage = await Math.ceil(getData.data.data.count / 12);
+
 		dispatch(setTotalPageBrand(totalPage));
 		dispatch(setTBBrand(getData.data.data.dataBrand));
 		dispatch(setCountBrand(getData.data.data.count));
@@ -227,9 +236,10 @@ export const getTransactionByProduct = (query) => async (dispatch) => {
 		const getData = await axiosInstance(token).get(
 			`reports${query ? query : ""}`
 		);
+
 		const totalPage = await Math.ceil(getData.data.data.count / 12);
+
 		dispatch(setTotalPageProduct(totalPage));
-		console.log(getData.data.data.order);
 		dispatch(setTBProduct(getData.data.data.order));
 		dispatch(setCountProduct(getData.data.data.count));
 	} catch (error) {
@@ -324,8 +334,9 @@ export const onClearBrand = () => async (dispatchEvent) => {
 		dispatchEvent(setOrderFieldBrand(""));
 		dispatchEvent(setOrderDirectionBrand(""));
 		dispatchEvent(setSearchBrand(""));
-		dispatchEvent(setMonth(""));
-		dispatchEvent(setYear(""));
+		dispatchEvent(setMonth(null));
+		dispatchEvent(setYear(null));
+		dispatchEvent(setDate(null));
 	} catch (error) {
 		console.log(error);
 	}
@@ -337,8 +348,9 @@ export const onClearCategory = () => async (dispatchEvent) => {
 		dispatchEvent(setOrderFieldCategory(""));
 		dispatchEvent(setOrderDirectionCategory(""));
 		dispatchEvent(setSearchCategory(""));
-		dispatchEvent(setMonth(""));
-		dispatchEvent(setYear(""));
+		dispatchEvent(setMonth(null));
+		dispatchEvent(setYear(null));
+		dispatchEvent(setDate(null));
 	} catch (error) {
 		console.log(error);
 	}
@@ -351,8 +363,10 @@ export const onClearTransaction = () => async (dispatchEvent) => {
 		dispatchEvent(setOrderFieldTransaction(""));
 		dispatchEvent(setOrderDirectionTransaction(""));
 		dispatchEvent(setSearchTransaction(""));
-		dispatchEvent(setMonth(""));
-		dispatchEvent(setYear(""));
+		dispatchEvent(setMonth(null));
+		dispatchEvent(setYear(null));
+		dispatchEvent(setDate(null));
+		// dispatchEvent(setIsChildComponent(!isChildComponent))
 	} catch (error) {
 		console.log(error);
 	}
@@ -364,6 +378,9 @@ export const onClearProduct = () => async (dispatchEvent) => {
 		dispatchEvent(setOrderFieldProduct(""));
 		dispatchEvent(setOrderDirectionProduct(""));
 		dispatchEvent(setSearchProduct(""));
+		dispatchEvent(setMonth(null));
+		dispatchEvent(setYear(null));
+		dispatchEvent(setDate(null));
 	} catch (error) {
 		console.log(error);
 	}
@@ -401,15 +418,6 @@ export const setPaginationProduct = (page, offset) => async (dispatchEvent) => {
 	try {
 		dispatchEvent(setPageProduct(page));
 		dispatchEvent(setOffsetProduct(offset));
-	} catch (error) {
-		console.log(error);
-	}
-};
-
-export const setDate = (date) => async (dispatch) => {
-	try {
-		dispatch(setMonth(String(date.getMonth() + 1)));
-		dispatch(setYear(String(date.getFullYear())));
 	} catch (error) {
 		console.log(error);
 	}
@@ -458,5 +466,7 @@ export const {
 	setOffsetProduct,
 	setOrderFieldProduct,
 	setOrderDirectionProduct,
+	setIsChildComponent,
+	setDate,
 } = reportSlice.actions;
 export default reportSlice.reducer;

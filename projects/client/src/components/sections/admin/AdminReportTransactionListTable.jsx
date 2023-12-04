@@ -29,6 +29,7 @@ import {
 	onSortT,
 	setMonth,
 	setYear,
+	setIsChildComponent,
 } from "../../../redux/features/report";
 
 const AdminReportTransactionListTable = () => {
@@ -114,7 +115,8 @@ const AdminReportTransactionListTable = () => {
 	}, [search]);
 
 	const clear = async () => {
-		await dispatch(onClearTransaction());
+		dispatch(onClearTransaction());
+		// dispatch(setIsChildComponent(true));
 		if (role === "super") {
 			dispatch(setWarehouse(null));
 			// window.location.reload();
@@ -147,9 +149,7 @@ const AdminReportTransactionListTable = () => {
 	}, []);
 
 	useEffect(() => {
-		console.log(">>>tidak");
 		if (oneTime) {
-			console.log(">>>iniii");
 			navigate(
 				`/admin/reports?warehouse=${
 					warehouse !== null ? `${warehouse}` : ""
@@ -159,14 +159,7 @@ const AdminReportTransactionListTable = () => {
 					month !== null ? `${month}` : ""
 				}&year=${year !== null ? `${year}` : ""}`
 			);
-			console.log(
-				`/admin/reports?${warehouse ? `warehouse=${warehouse}` : ""}${
-					search && `&searchTransaction=${search}`
-				}&orderFieldTransaction=${orderField}&orderDirectionTransaction=${orderDirection}&offsetTransaction=${offset}&month=${
-					month !== null ? `${month}` : ""
-				}&year=${year !== null ? `${year}` : ""}`
-			);
-			console.log("pembatas");
+
 			dispatch(
 				getTransaction(
 					`?warehouse=${
@@ -177,15 +170,6 @@ const AdminReportTransactionListTable = () => {
 						month !== null ? `${month}` : ""
 					}&year=${year !== null ? `${year}` : ""}`
 				)
-			);
-			console.log(
-				`?warehouse=${
-					warehouse !== null ? `${warehouse}` : ""
-				}&search=${
-					search !== null ? `${search}` : ""
-				}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}&month=${
-					month !== null ? `${month}` : ""
-				}&year=${year !== null ? `${year}` : ""}`
 			);
 		}
 	}, [
@@ -298,7 +282,7 @@ const AdminReportTransactionListTable = () => {
 					<form className="w-[30%]" onSubmit={handleSubmitSearch}>
 						<Input
 							type="text"
-							placeholder="Search for product by name"
+							placeholder="Search for invoice by invoice "
 							isClearable
 							onClear={() => dispatch(setSearchTransaction(""))}
 							startContent={<IoSearch opacity={".5"} />}
@@ -319,11 +303,11 @@ const AdminReportTransactionListTable = () => {
 							className="border-neutral-200 dark:border-neutral-700 w-full"
 							onClick={() => clear()}
 						>{`Clear Filter(s)`}</Button>
-						<SelectWarehouses />
+						{/* <SelectWarehouses /> */}
 						<div className="sort-by flex items-center">
 							<SelectSortByT placeholder="Sort" />
 						</div>
-						<MyMonthPicker />
+						{/* <MyMonthPicker /> */}
 					</div>
 				</div>
 				<div className="flex justify-between items-center">

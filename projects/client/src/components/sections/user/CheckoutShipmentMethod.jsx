@@ -34,7 +34,13 @@ const CheckoutShipmentMethod = ({
 				setShipmentServices(resultRajaOngkirCost.data.data);
 			} else if (selectedUserAddressData && totalWeight >= 30000) {
 				toast.error(
-					"Whoa, too much stuff! We can't handle more than 30kg. Please lighten your load."
+					"Whoa, too much stuff! We can't handle more than 30kg. Please lighten your load.",
+					{
+						style: {
+							backgroundColor: "var(--background)",
+							color: "var(--text)",
+						},
+					}
 				);
 				navigate("/cart");
 			}

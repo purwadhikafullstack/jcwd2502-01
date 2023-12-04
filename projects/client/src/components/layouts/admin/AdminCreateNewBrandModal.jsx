@@ -7,21 +7,24 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	Select,
-	Textarea,
 	useDisclosure,
 } from "@nextui-org/react";
 import Media from "react-media";
 import { axiosInstance } from "../../../lib/axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import MySpinner from "../../uis/Spinners/Spinner";
+import { fetchBrandsAsync } from "../../../redux/features/products";
 
 const AdminCreateNewBrandModal = () => {
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const [brandName, setBrandName] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const role = useSelector((state) => state.user.role);
+	const { orderField, orderDirection, offset } = useSelector(
+		(state) => state.products
+	);
+	const dispatch = useDispatch();
 
 	const onSubmit = async (brandName) => {
 		try {
@@ -61,12 +64,23 @@ const AdminCreateNewBrandModal = () => {
 				},
 			});
 
-			setTimeout(() => {
-				window.location.reload(false);
-			}, 1200);
+			dispatch(
+				fetchBrandsAsync(
+					`?orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+				)
+			);
+
 			setIsLoading(false);
+			onOpenChange();
 			return;
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		}
 	};
@@ -93,9 +107,7 @@ const AdminCreateNewBrandModal = () => {
 					<Modal
 						isOpen={isOpen}
 						onOpenChange={onOpenChange}
-						placement={matches.medium ? "center" : "bottom"}
 						scrollBehavior="inside"
-						size={matches.medium ? "2xl" : "full"}
 					>
 						<ModalContent>
 							{(onClose) => (

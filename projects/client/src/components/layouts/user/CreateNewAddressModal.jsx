@@ -25,7 +25,7 @@ import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { onSetUserAddresses } from "../../../redux/features/users";
 import MySpinner from "../../uis/Spinners/Spinner";
-const CreateNewAddressModal = () => {
+const CreateNewAddressModal = ({ userAddressesData }) => {
 	const accessToken = localStorage.getItem("accessToken");
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 	const { username } = useSelector((state) => state.user);
@@ -158,7 +158,10 @@ const CreateNewAddressModal = () => {
 				<>
 					<Button
 						variant="faded"
-						className="md:col-span-3"
+						className={`md:col-span-3 ${
+							(!userAddressesData.length || !userAddressesData) &&
+							"animate-[pulse_0.6s_ease-in-out_infinite]"
+						}`}
 						onPress={onOpen}
 						fullWidth
 					>

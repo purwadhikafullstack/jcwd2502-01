@@ -8,12 +8,15 @@ const SelectWarehouses = () => {
 	const [warehouses, setWarehouses] = useState([]);
 	const warehouse = useSelector((state) => state.products.warehouse);
 	const role = useSelector((state) => state.user.role);
+	const accessToken = localStorage.getItem("accessToken");
 
 	const dispatch = useDispatch();
 
 	const fetchWarehouses = async () => {
 		try {
-			const { data } = await axiosInstance().get(`warehouses/all`);
+			const { data } = await axiosInstance(accessToken).get(
+				`warehouses/all`
+			);
 			setWarehouses(data.data);
 		} catch (error) {
 			console.log(error);

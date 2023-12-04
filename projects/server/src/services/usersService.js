@@ -14,15 +14,19 @@ module.exports = {
 	createUser: async (body) => {
 		try {
 			const { username, email, password } = body;
-			const checkUsername = await db.user.findOne({
-				where: { username },
-			});
-			if (checkUsername)
-				throw { isError: true, message: "username already used" };
+
+			// const checkUsername = await db.user.findOne({
+			// 	where: { username },
+			// });
+			// if (checkUsername)
+			// 	throw { isError: true, message: "username already used" };
+
 			const checkEmail = await db.user.findOne({ where: { email } });
+
 			if (checkEmail) throw { message: "email already used" };
+
 			const hashPassword = await hash(password);
-			console.log(hashPassword);
+
 			const registerUser = await db.user.create({
 				username,
 				email,
@@ -72,31 +76,34 @@ module.exports = {
 	loginUser: async (body) => {
 		try {
 			const { email, password } = body;
+
 			const checkEmail = await db.user.findOne({ where: { email } });
-			// console.log(checkEmail);
+
 			if (!checkEmail)
 				throw {
 					isError: true,
 					message: "No account associated with this email address.",
 				};
+
 			const hashMatch = await match(
 				password,
 				checkEmail.dataValues.password
 			);
-			console.log(hashMatch);
+
 			if (!hashMatch)
 				throw {
 					isError: true,
 					message: "Incorrect password. Please try again.",
 				};
+
 			const accessToken = await createJWT(
 				{
 					id: checkEmail.dataValues.id,
 					apiKey: "Approved",
 				},
-				"365d"
+				"7d"
 			);
-			console.log(checkEmail.dataValues);
+
 			return {
 				isError: false,
 				message: "Login successful. Welcome back!",
@@ -123,7 +130,7 @@ module.exports = {
 			const checkData = await db.user.findOne({ where: { id } });
 			if (!checkData)
 				throw { isError: true, message: "Account is not exist" };
-			console.log(checkData.dataValues);
+
 			return {
 				isError: false,
 				message: "token still on going!",
@@ -147,11 +154,11 @@ module.exports = {
 		try {
 			const { username } = dataToken;
 			const { password } = headers;
-			console.log(username);
+
 			const checkUser = await db.user.findOne({ where: { username } });
 			if (!checkUser)
 				throw { isError: true, message: "Account is not exist" };
-			console.log(checkUser);
+
 			const checkPassword = await match(
 				password,
 				checkUser.dataValues.password
@@ -162,7 +169,7 @@ module.exports = {
 				{ status: "verified" },
 				{ where: { id: checkUser.dataValues.id } }
 			);
-			console.log(verifyUser);
+
 			return {
 				isError: false,
 				message: "Verification is Success",
@@ -174,11 +181,10 @@ module.exports = {
 	requestPassword: async (dataToken) => {
 		try {
 			const { id } = dataToken;
-			console.log(id);
+
 			const checkUser = await db.user.findOne({ where: { id } });
 			if (!checkUser)
 				throw { isError: true, message: "Account is not found!" };
-			console.log(checkUser.dataValues);
 
 			const token = createJWT(
 				{
@@ -215,14 +221,13 @@ module.exports = {
 				message: "Request for password change has been sent.",
 			};
 		} catch (error) {
-			console.log(error);
 			return error;
 		}
 	},
 	changePassword: async (dataToken, headers) => {
 		try {
 			const { id } = dataToken;
-			console.log(id);
+
 			const { password, confirmpassword } = headers;
 			if (!(password === confirmpassword))
 				return {
@@ -230,12 +235,12 @@ module.exports = {
 					message: "confirm password is not same",
 				};
 			const checkUser = await db.user.findOne({ where: { id } });
-			console.log(checkUser);
+
 			if (!checkUser)
 				return { isError: true, message: "Account is not found!" };
-			console.log(password);
+
 			const hashPassword = await hash(password);
-			console.log(hashPassword);
+
 			const changePass = await db.user.update(
 				{
 					password: hashPassword,
@@ -253,9 +258,8 @@ module.exports = {
 		try {
 			const { id } = dataToken;
 			const { username, email, birth_date, gender, phone } = body;
-			// console.log(id);
+
 			const checkUser = await db.user.findByPk(id);
-			console.log(phone);
 
 			if (birth_date) {
 				const dateObject = new Date(birth_date);
@@ -266,7 +270,6 @@ module.exports = {
 				const formattedDate = `${year}-${month
 					.toString()
 					.padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
-				console.log(formattedDate);
 
 				dataSend = {
 					username: username || checkUser.dataValues.username,
@@ -280,7 +283,7 @@ module.exports = {
 				const updateDataUser = await db.user.update(dataSend, {
 					where: { id },
 				});
-				console.log(updateDataUser);
+
 				if (!updateDataUser) {
 					return { isError: true, message: "Update Data is Failed!" };
 				} else {
@@ -301,14 +304,13 @@ module.exports = {
 			const updateDataUser = await db.user.update(dataSend, {
 				where: { id },
 			});
-			console.log(updateDataUser);
+
 			if (!updateDataUser) {
 				return { isError: true, message: "Update Data is Failed!" };
 			} else {
 				return { isError: false, message: "Update Data is Success!" };
 			}
 		} catch (error) {
-			console.log(error);
 			return error;
 		}
 	},
@@ -343,7 +345,7 @@ module.exports = {
 				baseQuery.offset = Number(offset);
 			}
 			const allData = await db.user.findAll(baseQuery);
-			// console.log(allData);
+
 			const count = await db.user.count({
 				where: baseQuery.where,
 			});
@@ -352,7 +354,6 @@ module.exports = {
 				data: { count: count, data: allData },
 			};
 		} catch (error) {
-			console.log(error);
 			return error;
 		}
 	},
@@ -389,17 +390,16 @@ module.exports = {
 				baseQuery.offset = Number(offset);
 			}
 			const allData = await db.user.findAll(baseQuery);
-			// console.log(allData);
+
 			const count = await db.user.count({
 				where: baseQuery.where,
 			});
-			// console.log(allData.dataValues.password);
+
 			return {
 				message: "success!",
 				data: { count: count, data: allData },
 			};
 		} catch (error) {
-			console.log(error);
 			return error;
 		}
 	},
@@ -414,7 +414,7 @@ module.exports = {
 			const checkEmail = await db.user.findOne({ where: { email } });
 			if (checkEmail) throw { message: "email already used" };
 			const hashPassword = await hash(password);
-			console.log(hashPassword);
+
 			const registerAdmin = await db.user.create({
 				username,
 				email,
@@ -458,14 +458,13 @@ module.exports = {
 			});
 			return true;
 		} catch (error) {
-			console.log(error);
 			return error;
 		}
 	},
 	updateDataAdmin: async (body) => {
 		try {
 			const { idUser, username, email, role, warehouse_id } = body;
-			console.log(body);
+
 			if (!username || !email || !role)
 				throw { isError: true, message: "Input should be provided" };
 
@@ -501,7 +500,7 @@ module.exports = {
 			const updateDataUser = await db.user.update(dataSend, {
 				where: { id: idUser },
 			});
-			console.log(updateDataUser);
+
 			if (!updateDataUser) {
 				return { isError: true, message: "Update Data is Failed!" };
 			} else {
@@ -517,11 +516,11 @@ module.exports = {
 	deleteDataAdmin: async (params) => {
 		try {
 			const { id } = params;
-			// console.log(id);
+
 			const checkUser = await db.user.findOne({ where: { id: id } });
 			if (!checkUser) throw { isError: true, message: "user not found!" };
 			const deleteDataUser = await db.user.destroy({ where: { id: id } });
-			console.log(deleteDataUser);
+
 			if (!deleteDataUser)
 				throw { isError: true, message: "Failed Delete User!" };
 			return { isError: false, message: "delete User is Successful!" };
@@ -532,11 +531,10 @@ module.exports = {
 	requestPasswordByAdmin: async (params) => {
 		try {
 			const { id } = params;
-			console.log(id);
+
 			const checkUser = await db.user.findOne({ where: { id } });
 			if (!checkUser)
 				throw { isError: true, message: "Account is not found!" };
-			console.log(checkUser.dataValues);
 
 			const token = createJWT(
 				{
@@ -573,7 +571,6 @@ module.exports = {
 				message: "Request for password change has been sent.",
 			};
 		} catch (error) {
-			console.log(error);
 			return error;
 		}
 	},

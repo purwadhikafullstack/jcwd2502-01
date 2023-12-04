@@ -6,6 +6,8 @@ import AdminReportCategoryListTable from "../../../components/sections/admin/Adm
 import AdminReportBrandListTable from "../../../components/sections/admin/AdminReportBrandListTable";
 import AdminReportProductListTable from "../../../components/sections/admin/AdminReportProductListTable";
 import { useLocation, useNavigate } from "react-router-dom";
+import SelectWarehouses from "../../../components/uis/Selects/SelectWarehouses";
+import MyMonthPicker from "../../../components/uis/MyMonthPicker/MyMonthPicker";
 
 const AdminSalesReportPage = () => {
 	const location = useLocation();
@@ -16,21 +18,16 @@ const AdminSalesReportPage = () => {
 		const selectedTabs = queryParams.get("tab");
 		if (selectedTabs) {
 			setKey(selectedTabs);
-			console.log(selectedTabs);
 		}
 	};
 
 	const onTab = (value) => {
-		console.log(value);
 		navigate(`/admin/reports?tab=${value}`);
 		setKey(value);
 	};
 
-	console.log(location.pathname);
-
 	useEffect(() => {
 		takeFromQuery();
-		console.log(key);
 	}, [key, setKey, location]);
 
 	let tabs = [
@@ -64,6 +61,10 @@ const AdminSalesReportPage = () => {
 						<h1 className="font-bold w-full text-title-lg mr-4">
 							Sales Report
 						</h1>
+						<div className="mr-4">
+							<SelectWarehouses />
+						</div>
+						<MyMonthPicker />
 					</div>
 				</div>
 			</div>
@@ -72,15 +73,6 @@ const AdminSalesReportPage = () => {
 					aria-label="Dynamic tabs"
 					items={tabs}
 					defaultSelectedKey={key}
-					// selectedKey={key}
-					onClick={() => {
-						// onTab(item.id);
-						console.log(">>>>> ini ya", tabs);
-					}}
-					// onClick={(newKey) => {
-					// 	// setKey(newKey.key);
-					// 	console.log(newKey);
-					// }}
 				>
 					{(item) => (
 						<Tab

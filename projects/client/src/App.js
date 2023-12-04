@@ -1,7 +1,13 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import {
+	Navigate,
+	Route,
+	Routes,
+	useLocation,
+	useNavigate,
+} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { OnCheckIsLogin } from "./redux/features/users";
 
 //! Components
@@ -23,7 +29,6 @@ import SignupPage from "./pages/auth/SignUpPage";
 import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import AdminWarehouseListPage from "./pages/admin/warehouses/AdminWarehouseListPage";
-import NotFoundPage from "./pages/not-found/NotFoundPage";
 import AdminNavigationBar from "./components/layouts/admin/AdminNavigationBar";
 import AdminProductListPage from "./pages/admin/products/AdminProductListPage";
 import AdminCategoriesPage from "./pages/admin/categories/AdminCategoriesPage";
@@ -38,10 +43,12 @@ import AdminStocksLogPage from "./pages/admin/stocks/AdminStocksLogPage";
 import AdminUserListPage from "./pages/admin/users/AdminUserListPage";
 import AdminSalesReportPage from "./pages/admin/reports/AdminSalesReportPage";
 import AdminOrderListPage from "./pages/admin/orders/AdminOrderListPage";
-import Layout from "./routes/Layout";
+import usePathName from "./hooks/usePathName";
 
 function App() {
 	const location = useLocation();
+
+	const { role } = useSelector((state) => state.user);
 
 	const [theme, setTheme] = useState(
 		localStorage.getItem("theme") ? localStorage.getItem("theme") : "dark"
@@ -64,9 +71,10 @@ function App() {
 		localStorage.setItem("lang", lang);
 		const localTheme = localStorage.getItem("theme");
 		document.querySelector("html").setAttribute("class", localTheme);
-	}, [theme]);
+	}, [theme, lang]);
 
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (location.pathname.startsWith("verify/")) return;
@@ -104,40 +112,159 @@ function App() {
 		pathname.startsWith(path)
 	);
 
-	return (
-		<>
-			<Toaster />
-			{isExcludedNavbar ? null : <NavigationBar />}
-			{isIncludedAdminNavigation ? <AdminSidebarMenu /> : null}
-			{isIncludedAdminNavigation ? <AdminNavigationBar /> : null}
-			<ThemeToggle
-				handleToggle={handleToggle}
-				theme={theme}
-				display={"hidden md:flex"}
-			/>
-			<Routes>
-				<Route path="/" element={<Layout />}>
-					{/* //* PUBLIC */}
+	const isAdminPage = usePathName("admin");
+
+	useEffect(() => {
+		dispatch(OnCheckIsLogin());
+	}, [dispatch]);
+
+	if (isAdminPage) {
+		if (role === "user") return <Navigate to={"/"} />;
+
+		if (role === "super") {
+			return (
+				<>
+					<Toaster />
+					{isIncludedAdminNavigation ? <AdminSidebarMenu /> : null}
+					{isIncludedAdminNavigation ? <AdminNavigationBar /> : null}
+					<ThemeToggle
+						handleToggle={handleToggle}
+						theme={theme}
+						display={"hidden md:flex"}
+					/>
+					<Routes>
+						<Route
+							path="/admin"
+							element={<Navigate to="/admin/home" />}
+						/>
+						<Route
+							path="/admin/home"
+							element={<AdminOverviewDashboardPage />}
+						/>
+						<Route
+							path="/admin/warehouses"
+							element={<AdminWarehouseListPage />}
+						/>
+						<Route
+							path="/admin/users"
+							element={<AdminUserListPage />}
+						/>
+						<Route
+							path="/admin/orders"
+							element={<AdminOrderListPage />}
+						/>
+						<Route
+							path="/admin/products"
+							element={<AdminProductListPage />}
+						/>
+						<Route
+							path="/admin/add-product"
+							element={<AdminCreateNewProductPage />}
+						/>
+						<Route
+							path="/admin/edit-product/:productName"
+							element={<AdminEditProductPage />}
+						/>
+						<Route
+							path="/admin/stocks"
+							element={<AdminStocksListPage />}
+						/>
+						<Route
+							path="/admin/stock-history"
+							element={<AdminStocksLogPage />}
+						/>
+						<Route
+							path="/admin/categories"
+							element={<AdminCategoriesPage />}
+						/>
+						<Route
+							path="/admin/brands"
+							element={<AdminBrandsPage />}
+						/>
+						<Route
+							path="/admin/reports"
+							element={<AdminSalesReportPage />}
+						/>
+						<Route path="*" element={<Navigate to={"/admin"} />} />
+					</Routes>
+					{isExcludedFooter ? null : <Footer />}
+				</>
+			);
+		}
+
+		if (role === "admin") {
+			return (
+				<>
+					<Toaster />
+					{isIncludedAdminNavigation ? <AdminSidebarMenu /> : null}
+					{isIncludedAdminNavigation ? <AdminNavigationBar /> : null}
+					<ThemeToggle
+						handleToggle={handleToggle}
+						theme={theme}
+						display={"hidden md:flex"}
+					/>
+					<Routes>
+						<Route
+							path="/admin"
+							element={<Navigate to="/admin/home" />}
+						/>
+						<Route
+							path="/admin/home"
+							element={<AdminOverviewDashboardPage />}
+						/>
+						<Route
+							path="/admin/orders"
+							element={<AdminOrderListPage />}
+						/>
+						<Route
+							path="/admin/products"
+							element={<AdminProductListPage />}
+						/>
+						<Route
+							path="/admin/stocks"
+							element={<AdminStocksListPage />}
+						/>
+						<Route
+							path="/admin/categories"
+							element={<AdminCategoriesPage />}
+						/>
+						<Route
+							path="/admin/brands"
+							element={<AdminBrandsPage />}
+						/>
+						<Route
+							path="/admin/stock-history"
+							element={<AdminStocksLogPage />}
+						/>
+						<Route
+							path="/admin/reports"
+							element={<AdminSalesReportPage />}
+						/>
+						<Route path="*" element={<Navigate to={"/admin"} />} />
+					</Routes>
+					{isExcludedFooter ? null : <Footer />}
+				</>
+			);
+		}
+	}
+
+	if (role === "user" && localStorage.getItem("accessToken")) {
+		return (
+			<>
+				<Toaster />
+				{isExcludedNavbar ? null : <NavigationBar />}
+				<ThemeToggle
+					handleToggle={handleToggle}
+					theme={theme}
+					display={"hidden md:flex"}
+				/>
+				<Routes>
 					<Route path="/" element={<HomePage />} />
 					<Route path="/explore" element={<ExploreProductsPage />} />
 					<Route
 						path="/product/:productName"
 						element={<ProductPage />}
 					/>
-
-					{/* //* AUTH */}
-					<Route
-						path="/verify/:token/:email"
-						element={<AccountVerificationPage />}
-					/>
-					<Route
-						path="/reset_password/:token"
-						element={<ResetPasswordPage />}
-					/>
-					<Route path="/login" element={<LoginPage />} />
-					<Route path="/signup" element={<SignupPage />} />
-
-					{/* //* USER */}
 					<Route
 						path="/profile/settings"
 						element={<ProfileSettingsPage />}
@@ -149,64 +276,56 @@ function App() {
 					/>
 					<Route path="/cart" element={<CartPage />} />
 					<Route path="/cart/checkout" element={<CheckoutPage />} />
+					<Route
+						path="/verify/:token/:email"
+						element={<AccountVerificationPage />}
+					/>
+					<Route
+						path="/reset_password/:token"
+						element={<ResetPasswordPage />}
+					/>
+					<Route path="*" element={<Navigate to={"/"} />} />
+				</Routes>
+				{isExcludedFooter ? null : <Footer />}
+			</>
+		);
+	}
 
-					{/* //* ADMIN */}
+	if (!role || !localStorage.getItem("accessToken")) {
+		return (
+			<>
+				<Toaster />
+				{isExcludedNavbar ? null : <NavigationBar />}
+				<ThemeToggle
+					handleToggle={handleToggle}
+					theme={theme}
+					display={"hidden md:flex"}
+				/>
+				<Routes>
+					<Route path="/" element={<HomePage />} />
+					<Route path="/explore" element={<ExploreProductsPage />} />
 					<Route
-						path="/admin"
-						element={<Navigate to="/admin/home" />}
+						path="/product/:productName"
+						element={<ProductPage />}
 					/>
 					<Route
-						path="/admin/home"
-						element={<AdminOverviewDashboardPage />}
+						path="/verify/:token/:email"
+						element={<AccountVerificationPage />}
 					/>
-					<Route
-						path="/admin/warehouses"
-						element={<AdminWarehouseListPage />}
-					/>
-					<Route
-						path="/admin/users"
-						element={<AdminUserListPage />}
-					/>
-					<Route
-						path="/admin/orders"
-						element={<AdminOrderListPage />}
-					/>
-					<Route
-						path="/admin/products"
-						element={<AdminProductListPage />}
-					/>
-					<Route
-						path="/admin/add-product"
-						element={<AdminCreateNewProductPage />}
-					/>
-					<Route
-						path="/admin/edit-product/:productName"
-						element={<AdminEditProductPage />}
-					/>
-					<Route
-						path="/admin/stocks"
-						element={<AdminStocksListPage />}
-					/>
-					<Route
-						path="/admin/stock-history"
-						element={<AdminStocksLogPage />}
-					/>
-					<Route
-						path="/admin/categories"
-						element={<AdminCategoriesPage />}
-					/>
-					<Route path="/admin/brands" element={<AdminBrandsPage />} />
-					<Route
-						path="/admin/reports"
-						element={<AdminSalesReportPage />}
-					/>
+					<Route path="/login" element={<LoginPage />} />
+					<Route path="/signup" element={<SignupPage />} />
+					{/* <Route path="*" element={<Navigate to={"/"} />} /> */}
+				</Routes>
+				{isExcludedFooter ? null : <Footer />}
+			</>
+		);
+	}
 
-					<Route path="*" element={<NotFoundPage />} />
-				</Route>
-			</Routes>
-			{isExcludedFooter ? null : <Footer />}
-		</>
-	);
+	if (role === "admin" || role === "super") {
+		return <Navigate to={"/admin"} />;
+	}
+
+	return null;
 }
 
 export default App;

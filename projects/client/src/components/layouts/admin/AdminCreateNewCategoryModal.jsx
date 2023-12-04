@@ -78,6 +78,13 @@ const AdminCreateNewCategoryModal = () => {
 			setIsLoading(false);
 			return;
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		}
 	};
@@ -104,9 +111,7 @@ const AdminCreateNewCategoryModal = () => {
 					<Modal
 						isOpen={isOpen}
 						onOpenChange={onOpenChange}
-						placement={matches.medium ? "center" : "bottom"}
 						scrollBehavior="inside"
-						size={matches.medium ? "2xl" : "full"}
 					>
 						<ModalContent>
 							{(onClose) => (

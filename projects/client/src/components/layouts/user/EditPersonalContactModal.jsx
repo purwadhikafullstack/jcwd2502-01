@@ -107,7 +107,6 @@ export default function App() {
 											size="lg"
 											placeholder="81234567891"
 											startContent={"+62"}
-											defaultValue={"Warehouse 1"}
 											isRequired
 											value={formik.values.phone}
 											onChange={formik.handleChange}

@@ -113,6 +113,13 @@ const AdminEditStockModal = ({ id }) => {
 			// window.location.reload(false);
 			return;
 		} catch (error) {
+			toast.error("Network error", {
+				style: {
+					backgroundColor: "var(--background)",
+					color: "var(--text)",
+				},
+			});
+			setIsLoading(false);
 			console.log(error);
 		}
 	};

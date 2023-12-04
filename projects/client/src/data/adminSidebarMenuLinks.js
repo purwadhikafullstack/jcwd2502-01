@@ -88,6 +88,11 @@ export const adminSidebarMenuLinks = (role) => {
 				path: "/admin/categories",
 			},
 			{
+				name: "Brands",
+				icon: <TbStars size={24} />,
+				path: "/admin/brands",
+			},
+			{
 				name: "Stocks",
 				icon: <BiHash size={24} />,
 				path: "/admin/stocks",

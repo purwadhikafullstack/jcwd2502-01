@@ -12,8 +12,19 @@ module.exports = {
 	getUserAddresses: async (req, res, next) => {
 		try {
 			const { id: user_id } = req.dataToken;
+			const { search } = req.query;
+
+			const whereCondition = {};
+
+			if (search) {
+				whereCondition[Op.or] = [
+					{ recipient_name: { [Op.like]: `%${search}%` } },
+					{ address: { [Op.like]: `%${search}%` } },
+				];
+			}
 
 			const user_addresses = await db.user_address.findAll({
+				where: whereCondition,
 				attributes: [
 					"id",
 					"address_name",
@@ -103,4 +114,3 @@ module.exports = {
 		}
 	},
 };
-

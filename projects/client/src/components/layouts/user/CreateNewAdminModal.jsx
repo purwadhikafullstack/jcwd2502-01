@@ -58,20 +58,31 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 	const handleSubmit = async (values) => {
 		try {
 			const { username, email, password, warehouse_id, role } = values;
-			console.log(values);
+
 			if (!username || !email || !password || !role)
-				return toast.error("please Insert Field!");
+				return toast.error("Please Insert Field!", {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+
 			const createNewAdmin = await axiosInstance(accessToken).post(
 				"/users/createAdmin",
 				values
 			);
-			console.log(createNewAdmin);
+
 			if (!createNewAdmin.data.isError) {
-				toast.success(createNewAdmin.data.message);
-				// handleRefresh(true);
+				toast.success(createNewAdmin.data.message, {
+					style: {
+						backgroundColor: "var(--background)",
+						color: "var(--text)",
+					},
+				});
+
 				navigate(`/admin/users`);
 			}
-			// dispatch(onSetUserAddresses(accessToken));
+
 			formik.resetForm();
 		} catch (error) {
 			if (error.response.data.isError) {
@@ -85,7 +96,9 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 
 	const fetchWarehouses = async () => {
 		try {
-			const { data } = await axiosInstance().get(`warehouses/all`);
+			const { data } = await axiosInstance(accessToken).get(
+				`warehouses/all`
+			);
 			setWarehouses(data.data);
 		} catch (error) {
 			console.log(error);
@@ -131,10 +144,6 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 
 	useEffect(() => {
 		fetchWarehouses();
-	}, [selectedWarehouse]);
-	useEffect(() => {
-		// formik.setFieldValue("recipient_name", username);
-		console.log(selectedWarehouse);
 	}, [selectedWarehouse]);
 
 	return (
@@ -284,12 +293,8 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 															handleWarehouse(
 																e.target.value
 															);
-															console.log(
-																e.target.value
-															);
 														}}
 														placeholder="Select a warehouse"
-														// isRequired
 													>
 														{renderWarehouseOption()}
 													</Select>

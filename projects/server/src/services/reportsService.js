@@ -19,7 +19,7 @@ module.exports = {
 			// const defaultYear = currentDate.getFullYear();
 			// const defaultMonth = currentDate.getMonth() + 1;
 
-			if (idWarehouse && idWarehouse !== warehouse)
+			if (idWarehouse && idWarehouse !== Number(warehouse))
 				return {
 					isError: true,
 					message: "admin not authorized!",
@@ -196,16 +196,8 @@ module.exports = {
 				month,
 				year,
 			} = query;
-			console.log(
-				">>>> INII",
-				warehouse,
-				idWarehouse,
-				typeof warehouse,
-				typeof idWarehouse,
-				idWarehouse !== warehouse,
-				"1" !== null
-			);
-			if (idWarehouse && idWarehouse !== warehouse) {
+
+			if (idWarehouse && idWarehouse !== Number(warehouse)) {
 				return {
 					isError: true,
 					message: "Admin is not Authorized!",
@@ -298,7 +290,7 @@ module.exports = {
 				baseQuery.offset = Number(offset);
 			}
 			const getOrder = await db.order.findAll(baseQuery);
-			console.log(getOrder);
+
 			const count = await db.order.count({ where: baseQuery.where });
 			return {
 				data: { count, order: getOrder },
@@ -319,7 +311,7 @@ module.exports = {
 				year,
 			} = query;
 
-			if (idWarehouse && idWarehouse !== warehouse)
+			if (idWarehouse && idWarehouse !== Number(warehouse))
 				return {
 					isError: true,
 					message: "admin not authorized!",
@@ -416,10 +408,6 @@ module.exports = {
 			const mergedData = getData.map((data) => {
 				const transactionData = getDataTransaction.find(
 					(transaction) => {
-						console.log(
-							data.id,
-							transaction.dataValues.category_id
-						);
 						return data.id === transaction.dataValues.category_id;
 					}
 				);
@@ -431,8 +419,6 @@ module.exports = {
 						: 0,
 				};
 			});
-
-			console.log(mergedData);
 
 			return {
 				data: {
@@ -459,7 +445,7 @@ module.exports = {
 				year,
 			} = query;
 
-			if (idWarehouse && idWarehouse !== warehouse)
+			if (idWarehouse && idWarehouse !== Number(warehouse))
 				return {
 					isError: true,
 					message: "admin not authorized!",

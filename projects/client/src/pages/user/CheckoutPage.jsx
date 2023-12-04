@@ -89,31 +89,31 @@ const CheckoutPage = () => {
 	}, []);
 
 	const createOrder = useCallback(async () => {
-		setIsLoading(true);
+		try {
+			setIsLoading(true);
 
-		const orderData = {
-			total_amount: totalPrice,
-			total_item: selectedItems,
-			shipping_cost: shippingCost,
-			address_id: selectedUserAddressId,
-			warehouse_id: nearestWarehouseData.id,
-			items: selectedCheckoutProducts,
-		};
+			const orderData = {
+				total_amount: totalPrice,
+				total_item: selectedItems,
+				shipping_cost: shippingCost,
+				address_id: selectedUserAddressId,
+				warehouse_id: nearestWarehouseData.id,
+				items: selectedCheckoutProducts,
+			};
 
-		setTimeout(async () => {
-			try {
-				await axiosInstance(token).post(
-					`checkouts/create-order`,
-					orderData
-				);
+			await axiosInstance(token).post(
+				`checkouts/create-order`,
+				orderData
+			);
 
-				navigate("/order-list");
-			} catch (error) {
-				console.log("Error creating order:", error);
-			} finally {
-				setIsLoading(false);
-			}
-		}, 1500);
+			setIsLoading(false);
+
+			navigate("/order-list");
+		} catch (error) {
+			console.log("Error creating order:", error);
+		} finally {
+			setIsLoading(false);
+		}
 	}, [
 		totalPrice,
 		selectedItems,

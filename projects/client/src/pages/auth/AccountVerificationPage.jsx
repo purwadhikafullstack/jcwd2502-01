@@ -6,24 +6,38 @@ import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { verifyUser } from "../../redux/features/users";
+import MySpinner from "../../components/uis/Spinners/Spinner";
 
 const AccountVerificationPage = () => {
 	const [showPassword, setShowPassword] = useState(false);
-	const { token, email } = useParams();
 	const [password, setPassword] = useState("");
+	const [isLogin, setIsLogin] = useState(false);
+
+	const { isLoading } = useSelector((state) => state.user);
+
+	const { token, email } = useParams();
+
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const handleVerify = (password, token) => {
-		dispatch(verifyUser(password, token));
+	const handleVerify = async (password, token) => {
+		const { navigate } = await dispatch(verifyUser(password, token));
+
+		if (navigate === true) {
+			setIsLogin(true);
+		} else {
+			setIsLogin(false);
+		}
 	};
-	const { isLogin } = useSelector((state) => state.user);
 
 	useEffect(() => {
 		if (isLogin) {
-			navigate("/login");
+			setTimeout(() => {
+				navigate("/login");
+			}, 1200);
 		}
 	}, [isLogin]);
+
 	return (
 		<main className="account-verification-page w-full h-[100vh]">
 			<div className="login-page-container grid md:grid-cols-2 grid-cols-1">
@@ -97,6 +111,8 @@ const AccountVerificationPage = () => {
 											className="bg-primary-500 text-black font-bold hover"
 											fullWidth
 											size="lg"
+											isLoading={isLoading}
+											spinner={<MySpinner />}
 											onClick={() =>
 												handleVerify(password, token)
 											}

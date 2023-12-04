@@ -9,23 +9,40 @@ import {
 	Tooltip,
 	useDisclosure,
 } from "@nextui-org/react";
-import toast from "react-hot-toast";
 import { IoTrashOutline } from "react-icons/io5";
 import MySpinner from "../../uis/Spinners/Spinner";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProductAsync } from "../../../redux/features/products";
 
 const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 	const [isLoading, setIsLoading] = useState(false);
 	const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+	const orderField = useSelector((state) => state.products.orderField);
+	const orderDirection = useSelector(
+		(state) => state.products.orderDirection
+	);
+	const { role } = useSelector((state) => state.user);
+	const search = useSelector((state) => state.products.search);
+	const offset = useSelector((state) => state.products.offset);
+	const category = useSelector((state) => state.products.category);
+	const brand = useSelector((state) => state.products.brand);
+
+	const dispatch = useDispatch();
+
 	const onDelete = async (productId) => {
 		setIsLoading(true);
-		toast.success("Product successfully deleted", {
-			style: {
-				backgroundColor: "var(--background)",
-				color: "var(--text)",
-			},
-		});
 		handleOnDelete(productId);
+		dispatch(
+			fetchProductAsync(
+				`?&search=${search}&brand=${brand.join(
+					","
+				)}&category=${category.join(
+					","
+				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			)
+		);
+		setIsLoading(false);
 	};
 
 	return (
@@ -36,6 +53,7 @@ const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 					variant="light"
 					className="text-lg text-danger cursor-pointer active:opacity-50"
 					onPress={onOpen}
+					isDisabled={role !== "super"}
 				>
 					<IoTrashOutline size={24} />
 				</Button>

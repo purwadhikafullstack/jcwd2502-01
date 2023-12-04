@@ -51,7 +51,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		},
 		onSubmit: (values) => {
 			handleSubmit(values);
-			// console.log(values.idUser);
 		},
 		validationSchema: yup.object().shape({
 			username: yup.string().required(),
@@ -67,7 +66,6 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 				"/users/updateAdminData",
 				values
 			);
-			console.log(updateDataAdmin);
 
 			if (!updateDataAdmin.data.isError) {
 				toast.success("Add new admin success", {
@@ -113,9 +111,12 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		}
 	};
 
-	const fetchWarehouses = async () => {
+	const fetchWarehouses = async (id) => {
 		try {
-			const { data } = await axiosInstance().get(`warehouses/all`);
+			const { data } = await axiosInstance(accessToken).get(
+				`warehouses/all`
+			);
+
 			setWarehouses(data.data);
 		} catch (error) {
 			console.log(error);
@@ -157,17 +158,15 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 		setSelectedWarehouse(item);
 		formik.setFieldValue("warehouse_id", item);
 	};
+
 	const handleRole = (item) => {
 		setSelectedRole(item);
 		formik.setFieldValue("role", item);
 	};
+
 	useEffect(() => {
 		fetchWarehouses();
 	}, []);
-	// useEffect(() => {
-	// 	// formik.setFieldValue("recipient_name", username);
-	// 	// console.log(formik.values);
-	// }, [formik]);
 
 	useEffect(() => {
 		formik.setValues({
@@ -177,8 +176,7 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 			warehouse_id: data?.warehouse_id || "",
 			role: data?.role || "",
 		});
-
-		// gender ? setSelectedGender(gender):
+		setSelectedRole(data.role);
 	}, [data]);
 
 	return (
@@ -199,9 +197,7 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 						<Modal
 							isOpen={isOpen}
 							onOpenChange={onOpenChange}
-							placement={matches.medium ? "center" : "bottom"}
 							scrollBehavior="inside"
-							size={matches.medium ? "2xl" : "full"}
 						>
 							<ModalContent>
 								{(onClose) => (
@@ -269,9 +265,11 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 														variant="bordered"
 														radius="sm"
 														size="lg"
-														onChange={
-															formik.handleChange
-														}
+														onChange={(e) => {
+															handleRole(
+																e.target.value
+															);
+														}}
 														placeholder="Select a Role"
 														isRequired
 														selectedKeys={
@@ -287,41 +285,44 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 														{renderRoleOption()}
 													</Select>
 												</div>
-												<div className="form-control">
-													<Select
-														name="warehouse_id"
-														label="Warehouse"
-														labelPlacement="outside"
-														variant="bordered"
-														radius="sm"
-														size="lg"
-														onChange={(e) =>
-															handleWarehouse(
-																e.target.value
-															)
-														}
-														placeholder="Select a warehouse"
-														// isRequired
-														selectedKeys={
-															formik.values
-																.warehouse_id
-																? [
-																		String(
-																			formik
-																				.values
-																				.warehouse_id
-																		),
-																  ]
-																: null
-														}
-														value={
-															formik.values
-																.warehouse_id
-														}
-													>
-														{renderWarehouseOption()}
-													</Select>
-												</div>
+												{selectedRole === "admin" ? (
+													<div className="form-control">
+														<Select
+															name="warehouse"
+															label="Warehouse"
+															labelPlacement="outside"
+															variant="bordered"
+															radius="sm"
+															size="lg"
+															isDisabled={
+																selectedRole !==
+																"admin"
+															}
+															onChange={(e) => {
+																handleWarehouse(
+																	e.target
+																		.value
+																);
+															}}
+															selectedKeys={
+																formik.values
+																	.warehouse_id
+																	? [
+																			String(
+																				formik
+																					.values
+																					.warehouse_id
+																			),
+																	  ]
+																	: []
+															}
+															placeholder="Select a warehouse"
+															// isRequired
+														>
+															{renderWarehouseOption()}
+														</Select>
+													</div>
+												) : null}
 											</form>
 										</ModalBody>
 										<ModalFooter className="justify-center">
@@ -348,7 +349,7 @@ const AdminEditAdminManageUser = ({ data, handleRefresh }) => {
 												fullWidth
 											>
 												<span className="font-medium text-black">
-													Save New Data Admin
+													Save Changes
 												</span>
 											</Button>
 										</ModalFooter>

@@ -17,13 +17,10 @@ const SelectSortByP = ({ placeholder = "Options" }) => {
 			setKeyOrder("az");
 		} else if (orderField === "product_name" && orderDirection === "desc") {
 			setKeyOrder("za");
+		} else if (orderField === "" && orderDirection === "") {
+			setKeyOrder(null);
 		}
 	}, [orderField, orderDirection]);
-
-	useEffect(() => {
-		console.log(orderDirection);
-		console.log(orderField);
-	}, [orderDirection, orderField]);
 
 	return (
 		<Select

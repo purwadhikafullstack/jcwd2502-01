@@ -12,6 +12,7 @@ import {
 	Input,
 	Pagination,
 } from "@nextui-org/react";
+import DefaultAvatar from "../../../assets/avatars/default_avatar.png";
 import {
 	fetchAdmin,
 	onClearAdmin,
@@ -169,13 +170,18 @@ const AdminRoleAdminListTable = () => {
 	];
 
 	const renderCell = React.useCallback((users, columnKey) => {
+		const profilePicture = `${
+			process.env.REACT_APP_IMAGE_API
+		}${users?.profileUser?.substring(7)}`;
 		switch (columnKey) {
 			case "name":
 				return (
 					<User
 						avatarProps={{
 							radius: "full",
-							src: users.profile_image,
+							src: users?.profile_picture
+								? profilePicture
+								: DefaultAvatar,
 						}}
 						name={users.username}
 					>
