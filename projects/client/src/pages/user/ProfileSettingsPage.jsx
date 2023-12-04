@@ -20,6 +20,7 @@ const ProfileSettingsPage = () => {
 	const token = localStorage.getItem("accessToken");
 
 	const [isLoading, setIsLoading] = useState(false);
+	const [search, setSearch] = useState("");
 
 	const {
 		username,
@@ -81,9 +82,13 @@ const ProfileSettingsPage = () => {
 	};
 
 	useEffect(() => {
-		dispatch(onSetUserAddresses(token));
 		window.scrollTo({ top: 0 });
 	}, []);
+
+	useEffect(() => {
+		console.log(search);
+		dispatch(onSetUserAddresses(token, search));
+	}, [dispatch, search]);
 
 	return (
 		<>
@@ -273,6 +278,9 @@ const ProfileSettingsPage = () => {
 										isClearable
 										startContent={
 											<IoSearch opacity={".5"} />
+										}
+										onChange={(e) =>
+											setSearch(e.target.value)
 										}
 										variant="bordered"
 									/>

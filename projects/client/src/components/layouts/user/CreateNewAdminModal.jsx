@@ -96,7 +96,9 @@ const CreateNewAdminModal = ({ handleRefresh }) => {
 
 	const fetchWarehouses = async () => {
 		try {
-			const { data } = await axiosInstance().get(`warehouses/all`);
+			const { data } = await axiosInstance(accessToken).get(
+				`warehouses/all`
+			);
 			setWarehouses(data.data);
 		} catch (error) {
 			console.log(error);

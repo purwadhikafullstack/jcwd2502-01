@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
 	Table,
@@ -223,14 +222,6 @@ const AdminReportProductListTable = () => {
 		oneTime,
 	]);
 
-	// useEffect(() => {
-	// 	dispatch(getTransactionByProduct());
-	// }, []);
-
-	useEffect(() => {
-		console.log(transactionByProduct);
-	}, [transactionByProduct]);
-
 	const columns = [
 		{ name: "DATE", uid: "date" },
 		{ name: "INVOICE", uid: "invoice" },
@@ -445,4 +436,3 @@ const AdminReportProductListTable = () => {
 };
 
 export default AdminReportProductListTable;
-

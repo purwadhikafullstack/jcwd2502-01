@@ -22,6 +22,7 @@ const AdminDeleteCategoryModal = ({ categoryID }) => {
 	const { offset, orderField, orderDirection } = useSelector(
 		(state) => state.products
 	);
+	const { role } = useSelector((state) => state.user);
 
 	const dispatch = useDispatch();
 
@@ -79,6 +80,7 @@ const AdminDeleteCategoryModal = ({ categoryID }) => {
 					variant="light"
 					className="text-lg text-danger cursor-pointer active:opacity-50"
 					onPress={onOpen}
+					isDisabled={role !== "super" || categoryID <= 6}
 				>
 					<IoTrashOutline size={24} />
 				</Button>

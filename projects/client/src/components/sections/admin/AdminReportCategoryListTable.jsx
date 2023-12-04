@@ -340,7 +340,7 @@ const AdminReportCategoryListTable = () => {
 					)}
 				</TableHeader>
 				<TableBody
-					emptyContent={"Please select warehouse"}
+					emptyContent={"No data"}
 					items={transactionByCategory} // <<<< ganti jadi orders / order_details (?)
 				>
 					{(item) => (

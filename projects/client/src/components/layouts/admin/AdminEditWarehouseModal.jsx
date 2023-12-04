@@ -241,7 +241,11 @@ const AdminEditWarehouseModal = ({ warehouseId }) => {
 					<BiEdit size={24} />
 				</Button>
 			</Tooltip>
-			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+			<Modal
+				isOpen={isOpen}
+				onOpenChange={onOpenChange}
+				onClose={fetchWarehouse}
+			>
 				<ModalContent>
 					{(onClose) => (
 						<>
@@ -251,7 +255,7 @@ const AdminEditWarehouseModal = ({ warehouseId }) => {
 							<ModalBody>
 								<form
 									onSubmit={formik.handleSubmit}
-									className="flex flex-col justify-between gap-4 h-full"
+									className="flex flex-col justify-between gap-4 h-full pb-4"
 								>
 									<div className="form-control">
 										<Input

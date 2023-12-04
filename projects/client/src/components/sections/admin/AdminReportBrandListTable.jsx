@@ -317,10 +317,7 @@ const AdminReportBrandListTable = () => {
 						</TableColumn>
 					)}
 				</TableHeader>
-				<TableBody
-					emptyContent={"Please select warehouse"}
-					items={transactionByBrand}
-				>
+				<TableBody emptyContent={"No data"} items={transactionByBrand}>
 					{(item) => {
 						return (
 							<TableRow key={item.id}>

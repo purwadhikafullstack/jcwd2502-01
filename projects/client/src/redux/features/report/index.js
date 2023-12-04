@@ -423,15 +423,6 @@ export const setPaginationProduct = (page, offset) => async (dispatchEvent) => {
 	}
 };
 
-// export const setDate = (date) => async (dispatch) => {
-// 	try {
-// 		dispatch(setMonth(String(date.getMonth() + 1)));
-// 		dispatch(setYear(String(date.getFullYear())));
-// 	} catch (error) {
-// 		console.log(error);
-// 	}
-// };
-
 export const {
 	setMonth,
 	setYear,

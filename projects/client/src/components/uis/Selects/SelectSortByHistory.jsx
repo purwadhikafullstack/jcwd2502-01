@@ -20,11 +20,6 @@ const SelectSortByHistory = ({ placeholder = "Options" }) => {
 		}
 	}, [orderField, orderDirection]);
 
-	useEffect(() => {
-		console.log(orderDirection);
-		console.log(orderField);
-	}, [orderDirection, orderField]);
-
 	return (
 		<Select
 			labelPlacement={"outside-left"}

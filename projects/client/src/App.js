@@ -1,6 +1,12 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import {
+	Navigate,
+	Route,
+	Routes,
+	useLocation,
+	useNavigate,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { OnCheckIsLogin } from "./redux/features/users";
 
@@ -23,7 +29,6 @@ import SignupPage from "./pages/auth/SignUpPage";
 import AccountVerificationPage from "./pages/auth/AccountVerificationPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import AdminWarehouseListPage from "./pages/admin/warehouses/AdminWarehouseListPage";
-import NotFoundPage from "./pages/not-found/NotFoundPage";
 import AdminNavigationBar from "./components/layouts/admin/AdminNavigationBar";
 import AdminProductListPage from "./pages/admin/products/AdminProductListPage";
 import AdminCategoriesPage from "./pages/admin/categories/AdminCategoriesPage";
@@ -38,8 +43,6 @@ import AdminStocksLogPage from "./pages/admin/stocks/AdminStocksLogPage";
 import AdminUserListPage from "./pages/admin/users/AdminUserListPage";
 import AdminSalesReportPage from "./pages/admin/reports/AdminSalesReportPage";
 import AdminOrderListPage from "./pages/admin/orders/AdminOrderListPage";
-import Layout from "./routes/Layout";
-import ProtectedRoutes from "./routes/ProtectedRoutes";
 import usePathName from "./hooks/usePathName";
 
 function App() {
@@ -71,6 +74,7 @@ function App() {
 	}, [theme, lang]);
 
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (location.pathname.startsWith("verify/")) return;
@@ -109,19 +113,15 @@ function App() {
 	);
 
 	const isAdminPage = usePathName("admin");
-	const token = localStorage.getItem("accessToken");
+
 	useEffect(() => {
 		dispatch(OnCheckIsLogin());
 	}, [dispatch]);
 
 	if (isAdminPage) {
-		console.log("ADMIN");
-
 		if (role === "user") return <Navigate to={"/"} />;
 
 		if (role === "super") {
-			console.log("MASUK SUPER");
-
 			return (
 				<>
 					<Toaster />
@@ -193,8 +193,6 @@ function App() {
 		}
 
 		if (role === "admin") {
-			console.log("MASUK ADMIN");
-
 			return (
 				<>
 					<Toaster />
@@ -227,6 +225,14 @@ function App() {
 							element={<AdminStocksListPage />}
 						/>
 						<Route
+							path="/admin/categories"
+							element={<AdminCategoriesPage />}
+						/>
+						<Route
+							path="/admin/brands"
+							element={<AdminBrandsPage />}
+						/>
+						<Route
 							path="/admin/stock-history"
 							element={<AdminStocksLogPage />}
 						/>
@@ -243,8 +249,6 @@ function App() {
 	}
 
 	if (role === "user" && localStorage.getItem("accessToken")) {
-		console.log("USER");
-
 		return (
 			<>
 				<Toaster />
@@ -287,9 +291,7 @@ function App() {
 		);
 	}
 
-	if (!role && !localStorage.getItem("accessToken")) {
-		console.log("NOT LOGGED IN");
-
+	if (!role || !localStorage.getItem("accessToken")) {
 		return (
 			<>
 				<Toaster />
@@ -300,7 +302,6 @@ function App() {
 					display={"hidden md:flex"}
 				/>
 				<Routes>
-					<Route path="*" element={<Navigate to={"/"} />} />
 					<Route path="/" element={<HomePage />} />
 					<Route path="/explore" element={<ExploreProductsPage />} />
 					<Route
@@ -313,6 +314,7 @@ function App() {
 					/>
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/signup" element={<SignupPage />} />
+					{/* <Route path="*" element={<Navigate to={"/"} />} /> */}
 				</Routes>
 				{isExcludedFooter ? null : <Footer />}
 			</>
@@ -323,110 +325,7 @@ function App() {
 		return <Navigate to={"/admin"} />;
 	}
 
-	return <Navigate to={"/"} />;
-
-	// return (
-	// 	<>
-	// 		<Toaster />
-	// 		{isExcludedNavbar ? null : <NavigationBar />}
-	// 		{isIncludedAdminNavigation ? <AdminSidebarMenu /> : null}
-	// 		{isIncludedAdminNavigation ? <AdminNavigationBar /> : null}
-	// 		<ThemeToggle
-	// 			handleToggle={handleToggle}
-	// 			theme={theme}
-	// 			display={"hidden md:flex"}
-	// 		/>
-	// 		<Routes>
-	// 			{/* <Route path="/" element={<Layout />}> */}
-	// 			{/* //* PUBLIC */}
-	// 			<Route path="/" element={<HomePage />} />
-	// 			<Route path="/explore" element={<ExploreProductsPage />} />
-	// 			<Route path="/product/:productName" element={<ProductPage />} />
-
-	// 			{/* //* AUTH */}
-	// 			<Route
-	// 				path="/verify/:token/:email"
-	// 				element={<AccountVerificationPage />}
-	// 			/>
-	// 			<Route
-	// 				path="/reset_password/:token"
-	// 				element={<ResetPasswordPage />}
-	// 			/>
-	// 			<Route path="/login" element={<LoginPage />} />
-	// 			<Route path="/signup" element={<SignupPage />} />
-
-	// 			{/* //* USER */}
-	// 			<Route
-	// 				path="/profile/settings"
-	// 				element={<ProfileSettingsPage />}
-	// 			/>
-	// 			<Route path="/order-list" element={<OrderListPage />} />
-	// 			<Route
-	// 				path="/order-details/:receiptNumber"
-	// 				element={<OrderDetailsPage />}
-	// 			/>
-	// 			<Route path="/cart" element={<CartPage />} />
-	// 			<Route path="/cart/checkout" element={<CheckoutPage />} />
-
-	// 			<Route element={<ProtectedRoutes roles={["super", "admin"]} />}>
-	// 				{/* //* ADMIN */}
-	// 				<Route
-	// 					path="/admin"
-	// 					element={<Navigate to="/admin/home" />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/home"
-	// 					element={<AdminOverviewDashboardPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/warehouses"
-	// 					element={<AdminWarehouseListPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/users"
-	// 					element={<AdminUserListPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/orders"
-	// 					element={<AdminOrderListPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/products"
-	// 					element={<AdminProductListPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/add-product"
-	// 					element={<AdminCreateNewProductPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/edit-product/:productName"
-	// 					element={<AdminEditProductPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/stocks"
-	// 					element={<AdminStocksListPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/stock-history"
-	// 					element={<AdminStocksLogPage />}
-	// 				/>
-	// 				<Route
-	// 					path="/admin/categories"
-	// 					element={<AdminCategoriesPage />}
-	// 				/>
-	// 				<Route path="/admin/brands" element={<AdminBrandsPage />} />
-	// 				<Route
-	// 					path="/admin/reports"
-	// 					element={<AdminSalesReportPage />}
-	// 				/>
-	// 			</Route>
-
-	// 			<Route path="*" element={<NotFoundPage />} />
-	// 			{/* </Route> */}
-	// 		</Routes>
-	// 		{isExcludedFooter ? null : <Footer />}
-	// 	</>
-	// );
+	return null;
 }
 
 export default App;
