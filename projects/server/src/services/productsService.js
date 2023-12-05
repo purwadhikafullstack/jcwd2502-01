@@ -197,6 +197,7 @@ module.exports = {
 				);
 			}
 
+			dataSpec.product_id = addProduct.dataValues.id;
 			const addProductSpec = await db.specification.create(dataSpec, {
 				transaction: t,
 			});
