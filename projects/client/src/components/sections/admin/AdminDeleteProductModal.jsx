@@ -33,15 +33,6 @@ const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 	const onDelete = async (productId) => {
 		setIsLoading(true);
 		handleOnDelete(productId);
-		dispatch(
-			fetchProductAsync(
-				`?&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			)
-		);
 		setIsLoading(false);
 	};
 

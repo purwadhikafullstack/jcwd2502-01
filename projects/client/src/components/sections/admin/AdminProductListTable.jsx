@@ -133,7 +133,13 @@ const AdminProductListTable = ({ props }) => {
 					color: "var(--text)",
 				},
 			});
-
+			navigate(
+				`/admin/products?search=${search}&brand=${brand.join(
+					","
+				)}&category=${category.join(
+					","
+				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+			);
 			dispatch(
 				fetchProductAsync(
 					`?&search=${search}&brand=${brand.join(
