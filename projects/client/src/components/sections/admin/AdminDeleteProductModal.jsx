@@ -13,6 +13,7 @@ import { IoTrashOutline } from "react-icons/io5";
 import MySpinner from "../../uis/Spinners/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductAsync } from "../../../redux/features/products";
+import { useNavigate } from "react-router-dom";
 
 const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 	const [isLoading, setIsLoading] = useState(false);
@@ -29,19 +30,27 @@ const AdminDeleteProductModal = ({ productID, handleOnDelete }) => {
 	const brand = useSelector((state) => state.products.brand);
 
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const onDelete = async (productId) => {
 		setIsLoading(true);
 		handleOnDelete(productId);
-		dispatch(
-			fetchProductAsync(
-				`?&search=${search}&brand=${brand.join(
-					","
-				)}&category=${category.join(
-					","
-				)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
-			)
-		);
+		// navigate(
+		// 	`/admin/products?search=${search}&brand=${brand.join(
+		// 		","
+		// 	)}&category=${category.join(
+		// 		","
+		// 	)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+		// );
+		// dispatch(
+		// 	fetchProductAsync(
+		// 		`?&search=${search}&brand=${brand.join(
+		// 			","
+		// 		)}&category=${category.join(
+		// 			","
+		// 		)}&orderField=${orderField}&orderDirection=${orderDirection}&offset=${offset}`
+		// 	)
+		// );
 		setIsLoading(false);
 	};
 
